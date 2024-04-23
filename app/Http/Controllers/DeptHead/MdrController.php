@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DeptHead;
 
 use App\Admin\DepartmentKPI;
+use App\DeptHead\Innovation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -13,10 +14,12 @@ class MdrController extends Controller
     public function index() {
 
         $deparmentalGoalsList = DepartmentKPI::where('department_group_id', 1)->get();
+        $innovationList = Innovation::where('department_group_id', 2)->get();
         
         return view('dept-head.mdr',
             array(
-                'departmentalGoalsList' => $deparmentalGoalsList
+                'departmentalGoalsList' => $deparmentalGoalsList,
+                'innovationList' => $innovationList
             )
         );
     }
@@ -64,6 +67,7 @@ class MdrController extends Controller
 
                 if ($attachment) {
                     $attachment->file_path = public_path('file') . '/' . $fileName;
+                    $attachment->file_name = $fileName;
                     $attachment->save();
                 }
 

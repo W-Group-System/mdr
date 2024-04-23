@@ -98,17 +98,74 @@
                                             <i class="fa fa-upload"></i>
                                         </button>
 
-                                        <form method="post" class="previewForm" action="{{ $departmentalGoalsData->file_path }}">
-                                            @csrf
-                                            <input type="hidden" name="id" value="{{ $departmentalGoalsData->id }}">
-
-                                            <button class="btn btn-sm btn-primary" type="submit">
+                                        
+                                        @if(!empty($departmentalGoalsData->file_name))
+                                            <a href="{{ asset('file/' . $departmentalGoalsData->file_name) }}" class="btn btn-sm btn-primary" target="_blank">
                                                 <i class="fa fa-eye"></i>
-                                            </button>
-                                        </form>
+                                            </a>
+                                        @endif
+                                        
                                     </td>  
                                 </tr>
                             @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" style="margin-top: 10px;">
+            <div class="ibox-content">
+                <div class="table-responsive">
+                    <p><b>II:</b> <span class="period">Innovations</span></p>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Innovations / Projects</th>
+                                <th>Project Summary</th>
+                                <th>Job / Work Order Number</th>
+                                <th>Start Date</th>
+                                <th>Target Date of Completion</th>
+                                <th>Actual Date of Completion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(count($innovationList) > 0)
+                                @foreach ($innovationList as $innovationData) 
+                                    {{-- <tr>
+                                        <td width="300">{{ $departmentalGoalsData->name }}</td>
+                                        <td>{{ $departmentalGoalsData->target }}</td>
+                                        <td>
+                                            <form action="/addActual/{{ $departmentalGoalsData->id }}" method="post">
+                                                @csrf
+                                                <textarea name="actual" id="actual" cols="30" rows="10" class="form-control">{{ $departmentalGoalsData->actual }}</textarea>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form action="/addRemarks/{{ $departmentalGoalsData->id }}" method="post">
+                                                @csrf
+                                                <textarea name="remarks" id="remarks" cols="30" rows="10" class="form-control">{{ $departmentalGoalsData->remarks }}</textarea>
+                                            </form>
+                                        </td>
+                                        <td width="100">
+                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $departmentalGoalsData->id }}">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+
+                                            
+                                            @if(!empty($departmentalGoalsData->file_name))
+                                                <a href="{{ asset('file/' . $departmentalGoalsData->file_name) }}" class="btn btn-sm btn-primary" target="_blank">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            @endif
+                                            
+                                        </td>  
+                                    </tr> --}}
+                                @endforeach
+                            @else
+                                <td colspan="6" class="text-center">No data available.</td>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -122,7 +179,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add MDR</h1>
+                <h1 class="modal-title">Add Attachments</h1>
             </div>
             <div class="modal-body">
                 <div class="row">
