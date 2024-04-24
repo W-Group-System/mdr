@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
 use App\Admin\DepartmentKPI;
+use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -48,6 +49,15 @@ class DepartmentKPIController extends Controller
             $departmentKpi->name = $request->kpiName;
             $departmentKpi->target = $request->target;
             $departmentKpi->save();
+
+            $departmentalGoals = new DepartmentalGoals;
+            $departmentalGoals->department_id = $request->department;
+            $departmentalGoals->department_group_id = $request->departmentGroupKpi;
+            $departmentalGoals->department_kpi_id = $departmentKpi->id;
+            $departmentalGoals->kpi_name = $request->kpiName;
+            $departmentalGoals->target = $request->target;
+            $departmentalGoals->date = date('Y-m-d');
+            $departmentalGoals->save();
             
             return back();
         }
@@ -74,6 +84,27 @@ class DepartmentKPIController extends Controller
                 $departmentKpi->name = $request->kpiName;
                 $departmentKpi->target = $request->target;
                 $departmentKpi->save();
+
+                $month = date('m');
+                $departmentalGoals = DepartmentalGoals::where('date', "LIKE", '%'.$month.'%')
+                    ->where('department_kpi_id', $id)
+                    ->first();
+
+                if (!empty($departmentalGoals)) {
+                    $departmentalGoals->kpi_name = $request->kpiName;
+                    $departmentalGoals->target = $request->target;
+                    $departmentalGoals->save();
+                }
+                else {
+                    $departmentalGoals = new DepartmentalGoals;
+                    $departmentalGoals->department_id = $request->department;
+                    $departmentalGoals->department_group_id = $request->departmentGroupKpi;
+                    $departmentalGoals->department_kpi_id = $departmentKpi->id;
+                    $departmentalGoals->kpi_name = $request->kpiName;
+                    $departmentalGoals->target = $request->target;
+                    $departmentalGoals->date = date('Y-m-d');
+                    $departmentalGoals->save();
+                }
             }
             
             return back();

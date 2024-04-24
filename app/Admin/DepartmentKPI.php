@@ -9,7 +9,7 @@ class DepartmentKPI extends Model
 {
     protected $table = "department_kpi";
 
-    protected $fillable = ['department_id', 'name', 'target', 'department_group_id', 'actual', 'remarks', 'date', 'file_name'];
+    protected $fillable = ['department_id', 'name', 'target', 'department_group_id', 'date'];
 
     public function department() {
         return $this->hasOne(Department::class, 'id', 'department_id');

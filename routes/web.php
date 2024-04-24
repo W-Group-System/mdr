@@ -54,8 +54,12 @@ Route::group(['middleware' => 'auth'], function() {
     # === Department Head ===
     #MDR
     Route::get('/mdr', 'DeptHead\MdrController@index')->name('mdr');
-    Route::post('/addActual/{id}', 'DeptHead\MdrController@addActual');
-    Route::post('/addRemarks/{id}', 'DeptHead\MdrController@addRemarks');
-    Route::post('/uploadAttachments/{id}', 'DeptHead\MdrController@uploadAttachments');
-    Route::post('/previewAttachments/{id}', 'DeptHead\MdrController@previewAttachments')->name('previewAttachments');
+
+    Route::post('/addActual/{id}', 'DeptHead\DepartmentalGoalsController@addActual');
+    Route::post('/addRemarks/{id}', 'DeptHead\DepartmentalGoalsController@addRemarks');
+    Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
+
+    Route::post('/addInnovation', 'DeptHead\InnovationController@add');
+    Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
+    Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
 });

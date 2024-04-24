@@ -35,8 +35,8 @@
                                     <tr>
                                         <td>{{ $departmentKpiData->department->dept_name }}</td>
                                         <td>{{ $departmentKpiData->departmentGroup->name }}</td>
-                                        <td>{{ $departmentKpiData->name }}</td>
-                                        <td>{{ $departmentKpiData->target }}</td>
+                                        <td>{!! nl2br($departmentKpiData->name) !!}</td>
+                                        <td>{!! nl2br($departmentKpiData->target) !!}</td>
                                         <td>
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentKpiData->id }}">
                                                 <i class="fa fa-pencil"></i>
@@ -127,7 +127,7 @@
                                 <select name="departmentGroupKpi" class="form-control">
                                     <option value="">-Department Group KPI-</option>
                                     @foreach ($departmentGroupKpiList as $departmentGroupKpiData)
-                                        <option value="{{ $departmentGroupKpiData->id }}" {{ $departmentGroupKpiData->id == $departmentKpiData->id ? 'selected' : '' }}>{{ $departmentGroupKpiData->name }}</option>
+                                        <option value="{{ $departmentGroupKpiData->id }}" {{ $departmentGroupKpiData->id == $departmentKpiData->department_group_id ? 'selected' : '' }}>{{ $departmentGroupKpiData->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
