@@ -64,6 +64,7 @@
     </div>
     @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList))
     @include('dept-head.innovation', array('innovationList' => $innovationList))
+    @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList))
 </div>
 
 @include('components.footer')

@@ -9,7 +9,7 @@
                 </div>
             @endif
             <div class="table-responsive">
-                <p><b>II:</b> <span class="period">Innovations</span></p>
+                <p><b>II:</b> <span class="period">Innovations (Accomplished)</span></p>
                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal" {{ count($innovationList) >=2 ? 'disabled' : '' }}>Add Innovation</button>
                 <table class="table table-bordered table-hover">
                     <thead>

@@ -1,47 +1,64 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Forgot Password</title>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+    <link href="{{ asset('css/animate.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="{{ asset('js/plugins/gritter/jquery.gritter.css') }}" rel="stylesheet">
+</head>
+<body class="gray-bg">
+
+    <div class="passwordBox animated fadeInDown">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="ibox-content">
+                    @foreach ($errors->all() as $errorMsg)
+                        <div class="alert alert-danger">{{ $errorMsg }}</div>
+                    @endforeach
+                    <h2 class="font-bold">Forgot password</h2>
+
+                    <p>
+                        Enter your email address and your password will be reset and emailed to you.
+                    </p>
+
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <form class="m-t" role="form" action="{{ route('password.email') }}" method="POST">
+                                @csrf
+
+                                <div class="form-group">
+                                    <input type="email" name="email" class="form-control" placeholder="Email address" required="">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary block full-width m-b">Send new password</button>
+
+                            </form>
                         </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('password.email') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright W Group Inc.
+            </div>
+            <div class="col-md-6 text-right">
+                <small>© {{ date("Y") }}</small>
+            </div>
+        </div>
     </div>
-</div>
-@endsection
+
+</body>
+</html>
