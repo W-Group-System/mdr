@@ -19,41 +19,21 @@ class MdrController extends Controller
 {
     public function index() {
         
-        $departmentalGoalsCount = $this->departmentalGoalsCount();
+        // $mdrs = [];
 
-        $innovationCount = $this->innovationCount();
+        return view('dept-head.mdr-list',
+            array(
+                
+            )
+        );
+    }
+    public function create() {
 
-        $businessPlanCount = $this->businessPlanCount();
-
-        $ongoingInnovationCount = $this->ongoingInnovationCount();
-
-        $departmentalGoalsList = DepartmentGroup::with('departmentalGoals')
-            ->has('departmentalGoals')
+        $departmentalGoalsList = DepartmentGroup::with('departmentalGoals','innovations','businessPlans','ongoingInnovation')
             ->get();
-
-        $innovationList = DepartmentGroup::with('innovations')
-            ->has('innovations')
-            ->get();
-
-        $businessPlanList = DepartmentGroup::with('businessPlans')
-            ->has('businessPlans')
-            ->get();
-
-        $ongoingInnovationList = DepartmentGroup::with('ongoingInnovation')
-            ->has('ongoingInnovation')
-            ->get();
-
         return view('dept-head.mdr',
             array(
                 'departmentalGoalsList' => $departmentalGoalsList,
-                'innovationList' => $innovationList,
-                'businessPlanList' => $businessPlanList,
-                'ongoingInnovationList' => $ongoingInnovationList,
-
-                'departmentalGoalsCount' => $departmentalGoalsCount,
-                'innovationCount' => $innovationCount,
-                'businessPlanCount' => $businessPlanCount,
-                'ongoingInnovationCount' => $ongoingInnovationCount
             )
         );
     }

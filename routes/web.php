@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth'], function() {
     # === Department Head ===
     #MDR
     Route::get('/mdr', 'DeptHead\MdrController@index')->name('mdr');
+    Route::get('/new-mdr', 'DeptHead\MdrController@create')->name('mdr');
 
     # Departmental Goals
     Route::post('/addActual/{id}', 'DeptHead\DepartmentalGoalsController@addActual');

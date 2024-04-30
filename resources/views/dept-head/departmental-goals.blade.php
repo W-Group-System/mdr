@@ -2,7 +2,9 @@
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-content">
             <div class="table-responsive">
-                <p><b>I:</b> <span class="period">Departmental Goals</span></p>
+                <p><b>I:</b> <span class="period">{{$goal->name}}</span></p>
+                
+                @if($goal->name == "Departmental Goals")
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
@@ -14,51 +16,63 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if(count($departmentalGoalsList) > 0)
-                            @foreach ($departmentalGoalsList as $departmentalGoalsData) 
-                                @foreach ($departmentalGoalsData->departmentalGoals as $item)
-                                    <tr>
-                                        <td width="300">{!! nl2br($item->kpi_name) !!}</td>
-                                        <td width="300">{!! nl2br($item->target) !!}</td>
-                                        <td>
-                                            <form action="/addActual/{{ $item->id }}" method="post">
-                                                @csrf
-                                                <textarea name="actual" id="actual" cols="30" rows="10" class="form-control">{{ $item->actual }}</textarea>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form action="/addRemarks/{{ $item->id }}" method="post">
-                                                @csrf
-                                                <textarea name="remarks" id="remarks" cols="30" rows="10" class="form-control">{{ $item->remarks }}</textarea>
-                                            </form>
-                                        </td>
-                                        <td width="100">
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
-                                                <i class="fa fa-upload"></i>
-                                            </button>
-        
-                                            @if(!empty($item->file_name))
-                                                <a href="{{ asset('file/' . $item->file_name) }}" class="btn btn-sm btn-info" target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            @endif
-                                            
-                                        </td> 
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                        @else
+                        @foreach($goal->departmentalGoals as $key => $depgoals)
                             <tr>
-                                <td colspan="5" class="text-center">No data available</td>
+                                <td>{{$depgoals->kpi_name}}</td>
+                                <td>{{$depgoals->target}}</td>
+                                <td><textarea class='form-control' name='actual[{{$depgoals->id}}]' >{{$depgoals->actual}}</textarea></td>
+                                <td>{{count($goal->departmentalGoals)}}</td>
+                                <td>Attachments</td>
                             </tr>
-                        @endif
+                        @endforeach
                     </tbody>
                 </table>
+                @else
+                @if(count($goal->innovations) < 2)
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Innovation</button>
+                    @endif
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Innovations / Projects</th>
+                                <th>Project Summary</th>
+                                <th>Job / Work Order Number</th>
+                                <th>Start Date</th>
+                                <th>Target Date of Completion</th>
+                                <th>Actual Date of Completion</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($goal->innovations as $item)
+                                    <tr>
+                                        <td>{{ $item->projects }}</td>
+                                        <td>{!! nl2br($item->project_summary) !!}</td>
+                                        <td>{{ $item->work_order_number }}</td>
+                                        <td>{{ date('F d, Y' , strtotime($item->start_date)) }}</td>
+                                        <td>{{ date('F d, Y', strtotime($item->target_date ))}}</td>
+                                        <td>{{ !empty($item->actual_date) ? date('F d, Y', strtotime($item->actual_date)) : null }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $item->id }}">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <form action="/deleteInnovation/{{ $item->id }}" method="post">
+                                                @csrf
+                                                <button class="btn btn-sm btn-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
         </div>
     </div>
 </div>
-
+{{-- 
 @foreach ($departmentalGoalsList as $departmentalGoalsData)
     @foreach ($departmentalGoalsData->departmentalGoals as $item)
         <div class="modal fade" id="uploadModal-{{ $item->id }}">
@@ -98,7 +112,7 @@
             </div>
         </div>
     @endforeach
-@endforeach
+@endforeach --}}
 
 @push('scripts')
     <script>
