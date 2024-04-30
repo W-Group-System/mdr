@@ -14,6 +14,10 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function() {
+    return redirect('/login');
+});
+
 Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth'], function() {
@@ -69,4 +73,9 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');
     Route::post('/updateBusinessPlan/{id}', 'DeptHead\BusinessPlanController@update');
     Route::post('/deleteBusinessPlan/{id}', 'DeptHead\BusinessPlanController@delete');
+
+    # Ongoing Innovation
+    Route::post('/addOngoingInnovation', 'DeptHead\OngoingInnovationController@add');
+    Route::post('/updateOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@update');
+    Route::post('/deleteOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@delete');
 });

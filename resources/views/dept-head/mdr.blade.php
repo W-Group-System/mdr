@@ -62,9 +62,10 @@
             </div>
         </div>
     </div>
-    @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList))
-    @include('dept-head.innovation', array('innovationList' => $innovationList))
-    @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList))
+    @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList, 'departmentalGoalsCount' => $departmentalGoalsCount))
+    @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount))
+    @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList, 'businessPlanCount' => $businessPlanCount))
+    @include('dept-head.ongoing-innovation', array('ongoingInnovationList' => $ongoingInnovationList, 'ongoingInnovationCount' => $ongoingInnovationCount))
 </div>
 
 @include('components.footer')
