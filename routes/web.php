@@ -57,25 +57,27 @@ Route::group(['middleware' => 'auth'], function() {
 
     # === Department Head ===
     #MDR
-    Route::get('/mdr', 'DeptHead\MdrController@index')->name('mdr');
+    Route::get('/mdr', 'DeptHead\MdrController@create')->name('mdr');
+    Route::get('/new-mdr', 'DeptHead\MdrController@index');
 
     # Departmental Goals
     Route::post('/addActual/{id}', 'DeptHead\DepartmentalGoalsController@addActual');
     Route::post('/addRemarks/{id}', 'DeptHead\DepartmentalGoalsController@addRemarks');
     Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
+    Route::post('/deleteAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
 
-    # Innovations
-    Route::post('/addInnovation', 'DeptHead\InnovationController@add');
-    Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
-    Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
+    // # Innovations
+    // Route::post('/addInnovation', 'DeptHead\InnovationController@add');
+    // Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
+    // Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
 
-    # Business Plan
-    Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');
-    Route::post('/updateBusinessPlan/{id}', 'DeptHead\BusinessPlanController@update');
-    Route::post('/deleteBusinessPlan/{id}', 'DeptHead\BusinessPlanController@delete');
+    // # Business Plan
+    // Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');
+    // Route::post('/updateBusinessPlan/{id}', 'DeptHead\BusinessPlanController@update');
+    // Route::post('/deleteBusinessPlan/{id}', 'DeptHead\BusinessPlanController@delete');
 
-    # Ongoing Innovation
-    Route::post('/addOngoingInnovation', 'DeptHead\OngoingInnovationController@add');
-    Route::post('/updateOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@update');
-    Route::post('/deleteOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@delete');
+    // # Ongoing Innovation
+    // Route::post('/addOngoingInnovation', 'DeptHead\OngoingInnovationController@add');
+    // Route::post('/updateOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@update');
+    // Route::post('/deleteOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@delete');
 });

@@ -79,7 +79,7 @@
                     @endif
                     @if(Auth::user()->account_role == 2)
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
-                            <a href="{{ route('mdr') }}">
+                            <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>
                                 <span class="nav-label">MDR</span>
                             </a>

@@ -1,7 +1,12 @@
 @extends('layouts.app')
 @section('css')
 <link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+<link href="css/plugins/dropzone/basic.css" rel="stylesheet">
+<link href="css/plugins/dropzone/dropzone.css" rel="stylesheet">
 <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+
+<!-- Sweet Alert -->
+<link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 <style>
     .period {
         margin-left: 5px;
@@ -62,10 +67,13 @@
             </div>
         </div>
     </div>
-    @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList, 'departmentalGoalsCount' => $departmentalGoalsCount))
-    @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount))
-    @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList, 'businessPlanCount' => $businessPlanCount))
-    @include('dept-head.ongoing-innovation', array('ongoingInnovationList' => $ongoingInnovationList, 'ongoingInnovationCount' => $ongoingInnovationCount))
+
+    @foreach ($departmentalGoalsList as $departmentalGoalsData)
+        @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList))
+    @endforeach
+    {{-- @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount)) --}}
+    {{-- @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList, 'businessPlanCount' => $businessPlanCount)) --}}
+    {{-- @include('dept-head.ongoing-innovation', array('ongoingInnovationList' => $ongoingInnovationList, 'ongoingInnovationCount' => $ongoingInnovationCount)) --}}
 </div>
 
 @include('components.footer')
@@ -73,8 +81,11 @@
 @endsection
 
 @push('scripts')
-
+<!-- DROPZONE -->
+<script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
 <!-- Jasny -->
 <script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
+<!-- Sweet alert -->
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 
 @endpush

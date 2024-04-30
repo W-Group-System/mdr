@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <div class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Department Group</div>
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Department Group</button>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="departmentGroupTable">
                             <thead>
@@ -65,10 +65,10 @@
                             @csrf
                             <div class="form-group">
                                 <label>Department KPI Groups</label>
-                                <input type="text" name="departmentGroupName" placeholder="Enter department kpi groups" class="form-control">
+                                <input type="text" name="departmentGroupName" placeholder="Enter department kpi groups" class="form-control input-sm">
                             </div>
                             <div>
-                                <button class="btn btn-primary btn-rounded btn-block">Add</button>
+                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
                             </div>
                         </form>
                     </div>

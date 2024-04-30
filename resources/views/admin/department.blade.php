@@ -19,11 +19,11 @@
                             @csrf
                             <div class="form-group">
                                 <label>Department Code</label>
-                                <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control">
+                                <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm">
                             </div>
                             <div class="form-group">
                                 <label>Department Name</label>
-                                <input type="text" name="departmentName" placeholder="Enter department name" class="form-control">
+                                <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm">
                             </div>
                             <div class="form-group">
                                 <label>Department Head</label>
@@ -34,8 +34,17 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label>Target Date</label>
+                                <select name="targetDate" id="targetDate" name="targetDate" class="form-control input-sm">
+                                    <option value="">- Target Date -</option>
+                                    @for ($i = 1; $i <= 31; $i++)
+                                        <option value={{ $i }}>{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
                             <div>
-                                <button class="btn btn-primary btn-rounded btn-block">Add</button>
+                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
                             </div>
                         </form>
                     </div>
@@ -58,7 +67,7 @@
                         </div>
                     @endif
 
-                    <div class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Department</div>
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Department</button>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="departmentTable">
                             <thead>
@@ -66,6 +75,7 @@
                                     <th>Department Code</th>
                                     <th>Department Name</th>
                                     <th>Department Head</th>
+                                    <th>Target Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -75,6 +85,7 @@
                                         <td>{{ $departmentData->dept_code }}</td>
                                         <td>{{ $departmentData->dept_name }}</td>
                                         <td>{{ isset($departmentData->user->name) ? $departmentData->user->name : '' }}</td>
+                                        <td>{{ $departmentData->target_date }}</td>
                                         <td>
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentData->id }}">
                                                 <i class="fa fa-pencil"></i>
@@ -114,11 +125,11 @@
                                 @csrf
                                 <div class="form-group">
                                     <label>Department Code</label>
-                                    <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control" value="{{ $departmentData->dept_code }}">
+                                    <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm" value="{{ $departmentData->dept_code }}">
                                 </div>
                                 <div class="form-group">
                                     <label>Department Name</label>
-                                    <input type="text" name="departmentName" placeholder="Enter department name" class="form-control" value="{{ $departmentData->dept_name }}">
+                                    <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm" value="{{ $departmentData->dept_name }}">
                                 </div>
                                 <div class="form-group">
                                     <label>Department Head</label>
@@ -129,8 +140,17 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label>Target Date</label>
+                                    <select name="targetDate" id="targetDate" name="targetDate" class="form-control input-sm">
+                                        <option value="">- Target Date -</option>
+                                        @for ($i = 1; $i <= 31; $i++)
+                                            <option value={{ $i }} {{ $i === $departmentData->target_date ? 'selected' : '' }}>{{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
                                 <div>
-                                    <button class="btn btn-primary btn-rounded btn-block">Update</button>
+                                    <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -174,6 +194,7 @@
         });
         
         $("[name='departmentHead']").chosen({width: "100%"});
+        $("[name='targetDate']").chosen({width: "100%"});
     })
 </script>
 @endpush

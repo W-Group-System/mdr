@@ -12,19 +12,20 @@ use Illuminate\Support\Facades\Validator;
 
 class DepartmentKPIController extends Controller
 {
-    public function index() {
-
+    public function index(Request $request) {
         $departmentList = Department::select('id', 'dept_name')->get();
 
-        $departmentKpi = DepartmentKPI::all();
-
-        $departmentGroupKpiList = DepartmentGroup::all();
+        $departmentKpi = DepartmentKPI::where('department_id', $request->department)
+            ->get();
+        
+        $departmentGroupKpiList = DepartmentGroup::get();
 
         return view('admin.department-kpi',
             array(
                 'departmentList' => $departmentList,
                 'departmentKpi' => $departmentKpi,
-                'departmentGroupKpiList' => $departmentGroupKpiList
+                'departmentGroupKpiList' => $departmentGroupKpiList,
+                'department' => $request->department
             )
         );
     }

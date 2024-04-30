@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class DepartmentController extends Controller
 {
     public function index() {
-        $departmentList = Department::select('id', 'dept_code', 'dept_name', 'dept_head_id')->get();
+        $departmentList = Department::select('id', 'dept_code', 'dept_name', 'dept_head_id', 'target_date')->get();
 
         $departmentHead = User::select('name', 'id')
             ->where('account_role', 2)
@@ -30,7 +30,8 @@ class DepartmentController extends Controller
         $validator = Validator::make($request->all(), [
             'departmentCode' => 'required|unique:departments,dept_code',
             'departmentName' => 'required',
-            'departmentHead' => 'required'
+            'departmentHead' => 'required',
+            'targetDate' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -42,6 +43,7 @@ class DepartmentController extends Controller
             $dept->dept_code = $request->departmentCode;
             $dept->dept_name = $request->departmentName;
             $dept->dept_head_id = $request->departmentHead;
+            $dept->target_date = $request->targetDate;
             $dept->save();
 
             return back();
@@ -52,7 +54,8 @@ class DepartmentController extends Controller
         $validator = Validator::make($request->all(), [
             'departmentCode' => 'required|unique:departments,dept_code, ' . $id,
             'departmentName' => 'required',
-            'departmentHead' => 'required'
+            'departmentHead' => 'required',
+            'targetDate' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -65,6 +68,7 @@ class DepartmentController extends Controller
                 $dept->dept_code = $request->departmentCode;
                 $dept->dept_name = $request->departmentName;
                 $dept->dept_head_id = $request->departmentHead;
+                $dept->target_date = $request->targetDate;
                 $dept->save();
             }
 

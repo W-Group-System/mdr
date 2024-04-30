@@ -18,35 +18,53 @@
                         </div>
                     @endif
 
-                    <div class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Department KPI</div>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
-                            <thead>
-                                <tr>
-                                    <th>Departments</th>
-                                    <th>Departmental Goals</th>
-                                    <th>Department KPI</th>
-                                    <th>Target</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($departmentKpi as $departmentKpiData)
+                    <form action="" method="get" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <select name="department" id="departmentFilter" class="form-control">
+                                    <option value="">- Departments -</option>
+                                    @foreach ($departmentList as $departmentData)
+                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <button class="btn btn-sm btn-primary">Filter</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    @if(count($departmentKpi) > 0)
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Department KPI</button>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
+                                <thead>
                                     <tr>
-                                        <td>{{ $departmentKpiData->department->dept_name }}</td>
-                                        <td>{{ $departmentKpiData->departmentGroup->name }}</td>
-                                        <td>{!! nl2br($departmentKpiData->name) !!}</td>
-                                        <td>{!! nl2br($departmentKpiData->target) !!}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentKpiData->id }}">
-                                                <i class="fa fa-pencil"></i>
-                                            </button>
-                                        </td>
+                                        <th>Departments</th>
+                                        <th>Departmental Goals</th>
+                                        <th>Department KPI</th>
+                                        <th>Target</th>
+                                        <th>Actions</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @foreach ($departmentKpi as $departmentKpiData)
+                                        <tr>
+                                            <td>{{ $departmentKpiData->department->dept_name }}</td>
+                                            <td>{{ $departmentKpiData->departmentGroup->name }}</td>
+                                            <td>{!! nl2br($departmentKpiData->name) !!}</td>
+                                            <td>{!! nl2br($departmentKpiData->target) !!}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentKpiData->id }}">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -91,7 +109,7 @@
                                 <textarea name="target" id="" class="form-control" cols="30" rows="10" placeholder="Enter Target"></textarea>
                             </div>
                             <div>
-                                <button class="btn btn-primary btn-rounded btn-block">Add</button>
+                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
                             </div>
                         </form>
                     </div>
@@ -133,14 +151,14 @@
                             </div>
                             <div class="form-group">
                                 <label>Department KPI</label>
-                                <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" placeholder="Enter KPI">{{ $departmentKpiData->name }}</textarea>
+                                <textarea name="kpiName" id="" class="form-control input-sm" cols="30" rows="10" placeholder="Enter KPI">{{ $departmentKpiData->name }}</textarea>
                             </div>
                             <div class="form-group">
                                 <label>Target</label>
-                                <textarea name="target" id="" class="form-control" cols="30" rows="10" placeholder="Enter Target">{{ $departmentKpiData->target }}</textarea>
+                                <textarea name="target" id="" class="form-control input-sm" cols="30" rows="10" placeholder="Enter Target">{{ $departmentKpiData->target }}</textarea>
                             </div>
                             <div>
-                                <button class="btn btn-primary btn-rounded btn-block">Update</button>
+                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
                             </div>
                         </form>
                     </div>
@@ -171,6 +189,12 @@
         });
         
         $("[name='department']").chosen({width: "100%"});
+        $("[name='departmentGroupKpi']").chosen({width: "100%"});
+
+        // $("#departmentFilter").on('change', function() {
+            
+            
+        // })
     })
 </script>
 @endpush

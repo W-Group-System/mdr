@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DeptHead;
 
 use App\Admin\DepartmentKPI;
+use App\DeptHead\Attachments;
 use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -34,7 +35,6 @@ class DepartmentalGoalsController extends Controller
     }
     
     public function uploadAttachments(Request $request, $id) {
-        
         $validator = Validator::make($request->all(), [
             'file' => 'required|max:2048'
         ]);
@@ -49,13 +49,11 @@ class DepartmentalGoalsController extends Controller
                 $fileName = time() . '-' . $file->getClientOriginalName();
                 $file->move(public_path('file'),  $fileName);
 
-                $attachment = DepartmentalGoals::findOrFail($id);
-
-                if ($attachment) {
-                    $attachment->file_path = public_path('file') . '/' . $fileName;
-                    $attachment->file_name = $fileName;
-                    $attachment->save();
-                }
+                $attachment = new Attachments;
+                $attachment->departmental_goals_id = $id;
+                $attachment->file_path = public_path('file') . '/' . $fileName;
+                $attachment->file_name = $fileName;
+                $attachment->save();
 
                 return back();
             }
@@ -63,5 +61,15 @@ class DepartmentalGoalsController extends Controller
                 return back()->with('errors', 'You are not selecting a file');
             }
         }
+    }
+
+    public function deleteAttachments(Request $request) {
+        
+        $attachmentData = Attachments::where('id', $request->id)->first();
+
+        if ($attachmentData) {
+            $attachmentData->delete();
+        }
+
     }
 }
