@@ -128,7 +128,7 @@
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 @endif
-                                                <button class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal">
+                                                <button class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal-{{ $userData->id }}">
                                                     <i class="fa fa-key"></i>
                                                 </button>
                                             </div>
@@ -193,7 +193,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="changePasswordModal">
+    <div class="modal fade" id="changePasswordModal-{{ $userData->id }}">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

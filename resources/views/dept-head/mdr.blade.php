@@ -7,6 +7,9 @@
 
 <!-- Sweet Alert -->
 <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+{{-- Chosen --}}
+<link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
+
 <style>
     .period {
         margin-left: 5px;
@@ -16,7 +19,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-lg-12">
+    {{-- <div class="col-lg-12">
         <div class="ibox float-e-margins" style="margin-top: 10px;">
             <div class="ibox-content">
                 <div class="table-responsive">
@@ -66,11 +69,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     @foreach ($departmentalGoalsList as $departmentalGoalsData)
-        @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList))
+        @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList, 'months' => $months, 'currentMonth' => $currentMonth))
     @endforeach
+
     {{-- @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount)) --}}
     {{-- @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList, 'businessPlanCount' => $businessPlanCount)) --}}
     {{-- @include('dept-head.ongoing-innovation', array('ongoingInnovationList' => $ongoingInnovationList, 'ongoingInnovationCount' => $ongoingInnovationCount)) --}}
@@ -84,8 +88,10 @@
 <!-- DROPZONE -->
 <script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
 <!-- Jasny -->
-<script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
+<script src="{{ asset('js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 <!-- Sweet alert -->
-<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
+{{-- chosen --}}
+<script src="js/plugins/chosen/chosen.jquery.js"></script>
 
 @endpush
