@@ -72,7 +72,7 @@
     </div> --}}
 
     @foreach ($departmentalGoalsList as $departmentalGoalsData)
-        @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList, 'months' => $months, 'currentMonth' => $currentMonth))
+        @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList))
     @endforeach
 
     {{-- @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount)) --}}

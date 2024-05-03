@@ -20,8 +20,8 @@
                                 <tr>
                                     <th>KPI</th>
                                     <th>Target</th>
+                                    <th>Actual</th>
                                     <th>Grade</th>
-                                    {{-- <th>Actual</th> --}}
                                     <th>Remarks</th>
                                     <th>Attachments</th>
                                 </tr>
@@ -29,19 +29,22 @@
                             <tbody>
                                 @if(count($departmentalGoalsData->departmentalGoals) > 0)
                                     @php
-                                        $goalsList = $departmentalGoalsData->departmentalGoals->where('department_id', auth()->user()->department_id);
+                                        $goalsList = $departmentalGoalsData->departmentalGoals->where('department_id', auth()->user()->department_id)
+                                            ->unique('kpi_name');
                                     @endphp
                                     @foreach ($goalsList as $item)
                                         <input type="hidden" name="departmental_goals_id[]" value="{{ $item->id }}">
+                                        <input type="hidden" name="department_kpi_id[]" value="{{ $item->department_kpi_id }}">
                                         <tr>
                                             <td width="300">{!! nl2br($item->kpi_name) !!}</td>
                                             <td width="300">{!! nl2br($item->target) !!}</td>
                                             <td>
-                                                <textarea name="grade[]" id="grade" class="form-control" cols="30" rows="10"></textarea>
+                                                <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control"></textarea>
                                             </td>
-                                            {{-- <td>
-                                                <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control">{{ $item->actual }}</textarea>
-                                            </td> --}}
+                                            <td>
+                                                {{-- <textarea name="grade[]" id="grade" class="form-control" cols="30" rows="10"></textarea> --}}
+                                                <input type="text" name="grade[]" id="grade" class="form-control input-sm" >
+                                            </td>
                                             <td>
                                                 <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control"></textarea>
                                             </td>
@@ -90,14 +93,17 @@
                                                         </div>
                                                     </div> --}}
                                                     
-                                                    <select name="month" id="month" class="form-control">
+                                                    {{-- <select name="month" id="month" class="form-control">
                                                         <option value="">- Month -</option>
                                                         @foreach ($months as $key => $month)
                                                             <option value="{{ $key }}" {{ $currentMonth >= $key ? '' : 'disabled' }}>
                                                                 {{ $month }}
                                                             </option>
                                                         @endforeach
-                                                    </select>
+                                                    </select> --}}
+
+                                                    <input type="month" name="yearAndMonth" max="{{ date('Y-m') }}" class="form-control input-sm">
+                                                    
                                                 </div>
                                                 <div class="form-group">
                                                     <button class="btn btn-sm btn-primary btn-block" type="submit">Submit</button>

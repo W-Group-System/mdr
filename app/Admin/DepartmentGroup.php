@@ -21,4 +21,8 @@ class DepartmentGroup extends Model
     public function departmentalGoals() {
         return $this->hasMany(DepartmentalGoals::class);
     }
+
+    // public function department_group() {
+    //     return $this->hasMany(DepartmentKPI::class, 'department_group_id');
+    // }
 }

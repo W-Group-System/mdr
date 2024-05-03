@@ -34,7 +34,7 @@
                         </div>
                     </form>
 
-                    @if(count($departmentKpi) > 0)
+                    @if($department)
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Department KPI</button>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">

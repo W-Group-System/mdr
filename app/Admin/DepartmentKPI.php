@@ -18,4 +18,8 @@ class DepartmentKPI extends Model
     public function departmentGroup() {
         return $this->hasOne(DepartmentGroup::class, 'id', 'department_group_id');
     }
+
+    public function departments() {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }

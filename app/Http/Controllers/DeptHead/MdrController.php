@@ -23,28 +23,9 @@ class MdrController extends Controller
         $departmentalGoalsList = DepartmentGroup::with('departmentalGoals')
             ->get();
 
-        $month = array(
-            "01" =>  'January',
-            "02" => 'February',
-            "03" => 'March',
-            "04" => 'April',
-            "05" => 'May',
-            "06" => 'June',
-            "07" => 'July',
-            "08" => 'August',
-            "09" => 'September',
-            "10" => 'October',
-            "11" => 'November',
-            "12" => 'December'
-        );
-
-        $currentMonth = date('m');
-        
         return view('dept-head.mdr',
             array(
                 'departmentalGoalsList' => $departmentalGoalsList,
-                'months' => $month,
-                'currentMonth' => $currentMonth
             )
         );
     }
@@ -67,14 +48,14 @@ class MdrController extends Controller
         }
         else {
             $validator = Validator::make($request->all(), [
-                // 'actual[]' => 'array',
+                'actual[]' => 'array',
                 'remarks[]' => 'array',
                 'grade[]' => 'array',
-                // 'actual.*' => 'required',
+                'actual.*' => 'required',
                 'remarks.*' => 'required',
                 'grade.*' => 'required'
             ], [
-                // 'actual.*' => 'The actual field is required.',
+                'actual.*' => 'The actual field is required.',
                 'remarks.*' => 'The remarks field is required.',
                 'grade.*' => 'The grades field is required.'
             ]);
@@ -83,33 +64,56 @@ class MdrController extends Controller
 
                 return back()->with('kpiErrors', $validator->errors()->all());
             } else {
-                $departmentalGoalsList = DepartmentalGoals::findMany($request->departmental_goals_id);
                 
-                $targetDate = 0;
-                foreach($departmentalGoalsList as $dept) {
-                    $targetDate = $dept->departments->target_date;
+                $departmentalGoalsList = DepartmentalGoals::whereIn('id', $request->departmental_goals_id)
+                    // ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->yearAndMonth)
+                    ->get();
+
+                if ($departmentalGoalsList->isEmpty()) {
+                    
+                    // $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
+
+                    // $targetDate = 0;
+                    // foreach($departmentKpi as $dept) {
+                    //     $targetDate = $dept->departments->target_date;
+                    // }
+                    
+                    // foreach($departmentKpi as $key => $data) {
+                    //     $deptGoals = new  DepartmentalGoals;
+                    //     $deptGoals->department_id = $data->department_id;
+                    //     $deptGoals->department_group_id = $data->department_group_id;
+                    //     $deptGoals->department_kpi_id = $data->id;
+                    //     $deptGoals->kpi_name = $data->name;
+                    //     $deptGoals->target = $data->target;
+                    //     $deptGoals->actual = $request->actual[$key];
+                    //     $deptGoals->grade = $request->grade[$key];
+                    //     $deptGoals->remarks = $request->remarks[$key];
+                    //     $deptGoals->date = $request->yearAndMonth.'-'.$targetDate;
+                    //     $deptGoals->save();
+                    // }
+
+                }
+                else {
+                    $targetDate = 0;
+                    foreach($departmentalGoalsList as $dept) {
+                        $targetDate = $dept->departments->target_date;
+                    }
+    
+                    $actual = $request->input('actual');
+                    $remarks = $request->input('remarks');
+                    $grades = $request->input('grade');
+                    
+                    $departmentalGoalsList->each(function($item, $index) use($remarks, $actual, $grades, $targetDate, $request) {
+                        $item->update([
+                            'actual' => $actual[$index],
+                            'remarks' => $remarks[$index],
+                            'grade' => $grades[$index],
+                            'date' =>  $request->yearAndMonth.'-'.$targetDate
+                        ]);
+                    });
                 }
 
-                $year = date('Y');
-                $month = $request->month;
-                $day = $targetDate;
-
-                $date = $year.'-'.$month.'-'.$day;
-
-                // $actual = $request->input('actual');
-                $remarks = $request->input('remarks');
-                $grades = $request->input('grade');
-                
-                $departmentalGoalsList->each(function($item, $index) use($remarks, $grades, $date) {
-                    $item->update([
-                        // 'actual' => $actual[$index],
-                        'remarks' => $remarks[$index],
-                        'grade' => $grades[$index],
-                        'date' => $date
-                    ]);
-                });
-
-                // $this->computeKpi($grades, $targetDate);
+                $this->computeKpi($grades, $targetDate);
                 
                 return back();
             }
@@ -117,6 +121,7 @@ class MdrController extends Controller
     }
 
     public function computeKpi($grades, $targetDate) {
+        dd($targetDate);
         $grade = collect($grades);
 
         $kpiValue = $grade->map(function($item, $key) {
