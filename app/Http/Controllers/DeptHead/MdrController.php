@@ -9,6 +9,7 @@ use App\DeptHead\Attachments;
 use App\DeptHead\BusinessPlan;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
+use App\DeptHead\KpiScore;
 use App\DeptHead\OnGoingInnovation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,29 +21,41 @@ class MdrController extends Controller
 {
     public function index() {
         
-        $departmentalGoalsList = DepartmentGroup::with('departmentalGoals')
+        $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment')
             ->get();
 
         return view('dept-head.mdr',
             array(
-                'departmentalGoalsList' => $departmentalGoalsList,
+                'departmentKpi' => $departmentKpi,
             )
         );
     }
 
     public function create() {
 
-        return view('dept-head.mdr-list');
+        $mdrScoreList = Department::with('kpi_scores')
+            ->where('id', auth()->user()->department_id)
+            ->get();
+            
+
+        return view('dept-head.mdr-list', 
+            array(
+                'mdrScoreList' => $mdrScoreList
+            )
+        );
     }
 
     public function submitKpi(Request $request) {
-        $departmentalGoalsCount = DepartmentalGoals::count();
-        
-        $attachmentList = DepartmentalGoals::has('attachments')
-            ->get()
-            ->count();
-        
-        if ($departmentalGoalsCount != $attachmentList) {
+
+        $checkIfHaveAttachments = DepartmentKPI::with('attachments')
+            ->where('department_id', auth()->user()->department_id)
+            ->get();
+
+        $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
+            return $value->attachments->isNotEmpty();
+        });
+
+        if (!$hasAttachments) {
             
             return back()->with('kpiErrors', ['Please attach a file in every KPI.']);
         }
@@ -65,32 +78,32 @@ class MdrController extends Controller
                 return back()->with('kpiErrors', $validator->errors()->all());
             } else {
                 
-                $departmentalGoalsList = DepartmentalGoals::whereIn('id', $request->departmental_goals_id)
-                    // ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->yearAndMonth)
+                $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
+                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->yearAndMonth)
                     ->get();
 
                 if ($departmentalGoalsList->isEmpty()) {
                     
-                    // $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
+                    $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
 
-                    // $targetDate = 0;
-                    // foreach($departmentKpi as $dept) {
-                    //     $targetDate = $dept->departments->target_date;
-                    // }
+                    $targetDate = 0;
+                    foreach($departmentKpi as $dept) {
+                        $targetDate = $dept->departments->target_date;
+                    }
                     
-                    // foreach($departmentKpi as $key => $data) {
-                    //     $deptGoals = new  DepartmentalGoals;
-                    //     $deptGoals->department_id = $data->department_id;
-                    //     $deptGoals->department_group_id = $data->department_group_id;
-                    //     $deptGoals->department_kpi_id = $data->id;
-                    //     $deptGoals->kpi_name = $data->name;
-                    //     $deptGoals->target = $data->target;
-                    //     $deptGoals->actual = $request->actual[$key];
-                    //     $deptGoals->grade = $request->grade[$key];
-                    //     $deptGoals->remarks = $request->remarks[$key];
-                    //     $deptGoals->date = $request->yearAndMonth.'-'.$targetDate;
-                    //     $deptGoals->save();
-                    // }
+                    foreach($departmentKpi as $key => $data) {
+                        $deptGoals = new  DepartmentalGoals;
+                        $deptGoals->department_id = $data->department_id;
+                        $deptGoals->department_group_id = $data->department_group_id;
+                        $deptGoals->department_kpi_id = $data->id;
+                        $deptGoals->kpi_name = $data->name;
+                        $deptGoals->target = $data->target;
+                        $deptGoals->actual = $request->actual[$key];
+                        $deptGoals->grade = $request->grade[$key];
+                        $deptGoals->remarks = $request->remarks[$key];
+                        $deptGoals->date = $request->yearAndMonth.'-'.$targetDate;
+                        $deptGoals->save();
+                    }
 
                 }
                 else {
@@ -113,15 +126,16 @@ class MdrController extends Controller
                     });
                 }
 
-                $this->computeKpi($grades, $targetDate);
+                $date = $request->yearAndMonth.'-'.$targetDate;
+                
+                $this->computeKpi($grades, $date, $request->yearAndMonth);
                 
                 return back();
             }
         }
     }
 
-    public function computeKpi($grades, $targetDate) {
-        dd($targetDate);
+    public function computeKpi($grades, $date) {
         $grade = collect($grades);
 
         $kpiValue = $grade->map(function($item, $key) {
@@ -139,8 +153,26 @@ class MdrController extends Controller
         $value = number_format($kpiValue->sum(), 2);
         $rating = 3.00;
         $score = number_format($kpiScore->sum(), 2);
+        
+        $yearAndMonth = substr($date, 0, 7);
+        $kpiScoreData = KpiScore::where('department_id', auth()->user()->department_id)
+            ->where(DB::raw("DATE_FORMAT(date, '%Y-%m')"), $yearAndMonth)
+            ->first();
 
-        
-        
+        if (!empty($kpiScoreData)) {
+            $kpiScoreData->grade = $value;
+            $kpiScoreData->rating = $rating;
+            $kpiScoreData->score = $score;
+            $kpiScoreData->save();
+        }
+        else {
+            $kpiScore = new KpiScore;
+            $kpiScore->department_id = auth()->user()->department_id;
+            $kpiScore->grade = $value;
+            $kpiScore->rating = $rating;
+            $kpiScore->score = $score;
+            $kpiScore->date = $date;
+            $kpiScore->save();
+        }
     }
 }

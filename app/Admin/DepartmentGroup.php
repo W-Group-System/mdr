@@ -7,6 +7,7 @@ use App\DeptHead\BusinessPlan;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\OnGoingInnovation;
+use App\DeptHead\ProcessDevelopment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +23,11 @@ class DepartmentGroup extends Model
         return $this->hasMany(DepartmentalGoals::class);
     }
 
-    // public function department_group() {
-    //     return $this->hasMany(DepartmentKPI::class, 'department_group_id');
-    // }
+    public function departmentKpi() {
+        return $this->hasMany(DepartmentKPI::class, 'department_group_id');
+    }
+
+    public function processDevelopment() {
+        return $this->hasMany(ProcessDevelopment::class);
+    }
 }

@@ -35,19 +35,19 @@
                             </div>
                             <div class="form-group">
                                 <label>Name</label>
-                                <input type="text" name="name" placeholder="Enter name" class="form-control">
+                                <input type="text" name="name" placeholder="Enter name" class="form-control input-sm">
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" name="email" placeholder="Enter email" class="form-control">
+                                <input type="email" name="email" placeholder="Enter email" class="form-control input-sm">
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
-                                <input type="password" name="password" placeholder="Enter password" class="form-control">
+                                <input type="password" name="password" placeholder="Enter password" class="form-control input-sm">
                             </div>
                             <div class="form-group">
                                 <label>Confirm Password</label>
-                                <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control">
+                                <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control input-sm">
                             </div>
                             <div class="form-group">
                                 <label>Account Role</label>
@@ -56,6 +56,7 @@
                                     <option value="0">Admin</option>
                                     <option value="1">Approver</option>
                                     <option value="2">Department Head</option>
+                                    <option value="3">Users</option>
                                 </select>
                             </div>
                             <div>
@@ -82,7 +83,7 @@
                             </div>
                         @endif
 
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Users</button>
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Users</button>
 
                         <table class="table table-striped table-bordered table-hover" id="userTable">
                             <thead>
@@ -110,6 +111,9 @@
                                                 @break
                                             @case(2)
                                                 <td>Department Head</td>
+                                                @break
+                                            @case(3)
+                                                <td>Users</td>
                                                 @break
                                             @default
                                                 
@@ -167,11 +171,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Name</label>
-                                    <input type="text" name="name" placeholder="Enter name" class="form-control" value="{{ $userData->name }}" readonly>
+                                    <input type="text" name="name" placeholder="Enter name" class="form-control input-sm" value="{{ $userData->name }}" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="email" name="email" placeholder="Enter email" class="form-control" value="{{ $userData->email }}">
+                                    <input type="email" name="email" placeholder="Enter email" class="form-control input-sm" value="{{ $userData->email }}">
                                 </div>
                                 <div class="form-group">
                                     <label>Account Role</label>
@@ -278,6 +282,7 @@
 
         $("[name='department']").chosen({width: "100%"});
 
+        $("#accountRole").chosen({width: "100%"});
     })
 </script>
 @endpush

@@ -1,5 +1,5 @@
 <div class="col-lg-12">
-    @if($departmentalGoalsData->name == "Departmental Goals")
+    @if($departmentKpiData->name == "Departmental Goals")
         <div class="ibox float-e-margins" style="margin-top: 10px;">
             <div class="ibox-content">
                 @if(Session::get('kpiErrors'))
@@ -11,7 +11,7 @@
                 @endif
                 
                 <div class="table-responsive">
-                    <p><b>I:</b> <span class="period">{{ $departmentalGoalsData->name }}</span></p>
+                    <p><b>I:</b> <span class="period">{{ $departmentKpiData->name }}</span></p>
 
                     <form action="{{ url('submitKpi') }}" method="post">
                         @csrf
@@ -27,27 +27,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($departmentalGoalsData->departmentalGoals) > 0)
+                                @if(count($departmentKpiData->departmentKpi) > 0)
                                     @php
-                                        $goalsList = $departmentalGoalsData->departmentalGoals->where('department_id', auth()->user()->department_id)
-                                            ->unique('kpi_name');
+                                        $goalsList = $departmentKpiData->departmentKpi->where('department_id', auth()->user()->department_id);
                                     @endphp
                                     @foreach ($goalsList as $item)
-                                        <input type="hidden" name="departmental_goals_id[]" value="{{ $item->id }}">
-                                        <input type="hidden" name="department_kpi_id[]" value="{{ $item->department_kpi_id }}">
+                                        {{-- <input type="hidden" name="departmental_goals_id[]" value="{{ $item->id }}"> --}}
+                                        <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
                                         <tr>
-                                            <td width="300">{!! nl2br($item->kpi_name) !!}</td>
+                                            <td width="300">{!! nl2br($item->name) !!}</td>
                                             <td width="300">{!! nl2br($item->target) !!}</td>
                                             <td>
                                                 <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control"></textarea>
                                             </td>
                                             <td>
-                                                {{-- <textarea name="grade[]" id="grade" class="form-control" cols="30" rows="10"></textarea> --}}
                                                 <input type="text" name="grade[]" id="grade" class="form-control input-sm" >
                                             </td>
                                             <td>
                                                 <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control"></textarea>
                                             </td>
+                                            
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
                                                     <i class="fa fa-upload"></i>
@@ -86,21 +85,6 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    {{-- <div class="form-group" id="data_4">
-                                                        <label class="font-normal">Month select</label>
-                                                        <div class="input-group date">
-                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="07/01/2014">
-                                                        </div>
-                                                    </div> --}}
-                                                    
-                                                    {{-- <select name="month" id="month" class="form-control">
-                                                        <option value="">- Month -</option>
-                                                        @foreach ($months as $key => $month)
-                                                            <option value="{{ $key }}" {{ $currentMonth >= $key ? '' : 'disabled' }}>
-                                                                {{ $month }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select> --}}
 
                                                     <input type="month" name="yearAndMonth" max="{{ date('Y-m') }}" class="form-control input-sm">
                                                     
@@ -121,7 +105,7 @@
     @endif
 </div>
 
-@foreach ($departmentalGoalsData->departmentalGoals as $item)
+@foreach ($departmentKpiData->departmentKpi as $item)
     <div class="modal fade uploadModal" id="uploadModal-{{ $item->id }}">
         <div class="modal-dialog">
             <div class="modal-content">

@@ -2,6 +2,9 @@
 
 namespace App\Admin;
 
+use App\DeptHead\Attachments;
+use App\DeptHead\DepartmentalGoals;
+use App\DeptHead\MdrAttachments;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,5 +24,13 @@ class DepartmentKPI extends Model
 
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function departmentalGoals() {
+        return $this->hasOne(DepartmentalGoals::class, 'department_kpi_id');
+    }
+
+    public function attachments() {
+        return $this->hasMany(Attachments::class, 'department_kpi_id');
     }
 }

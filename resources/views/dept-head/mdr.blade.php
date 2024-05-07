@@ -71,9 +71,13 @@
         </div>
     </div> --}}
 
-    @foreach ($departmentalGoalsList as $departmentalGoalsData)
-        @include('dept-head.departmental-goals', array('departmentalGoalsList' => $departmentalGoalsList))
+    @foreach ($departmentKpi as $departmentKpiData)
+        @include('dept-head.departmental-goals', array('departmentKpi' => $departmentKpi))
+        @include('dept-head.process-development', array('departmentKpi' => $departmentKpi))
     @endforeach
+
+    {{-- @foreach ($departmentKpi as $departmentKpiData)
+    @endforeach --}}
 
     {{-- @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount)) --}}
     {{-- @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList, 'businessPlanCount' => $businessPlanCount)) --}}
@@ -93,5 +97,20 @@
 <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
+
+<script src="js/plugins/dataTables/datatables.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('#processDevelopmentTable').DataTable({
+        pageLength: 10,
+        ordering: false,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [],
+    });
+})
+
+</script>
 
 @endpush

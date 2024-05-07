@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\DeptHead\KpiScore;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,5 +14,9 @@ class Department extends Model
 
     public function user() {
         return $this->hasOne(User::class, 'id', 'dept_head_id');
+    }
+
+    public function kpi_scores() {
+        return $this->hasMany(KpiScore::class);
     }
 }

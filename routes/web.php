@@ -68,6 +68,11 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::post('/submitKpi', 'DeptHead\MdrController@submitKpi');
 
+    # Process Development
+    Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
+    Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
+
+
     // # Innovations
     // Route::post('/addInnovation', 'DeptHead\InnovationController@add');
     // Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
@@ -82,4 +87,7 @@ Route::group(['middleware' => 'auth'], function() {
     // Route::post('/addOngoingInnovation', 'DeptHead\OngoingInnovationController@add');
     // Route::post('/updateOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@update');
     // Route::post('/deleteOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@delete');
+
+    # Approver
+    Route::get('/list_of_mdr', 'Approver\ListOfMdr@index')->name('listOfMdr');
 });

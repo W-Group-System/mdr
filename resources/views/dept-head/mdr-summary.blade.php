@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('css')
+{{-- @section('css')
 <link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
 <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <style>
@@ -7,7 +7,7 @@
         margin-left: 5px;
     }
 </style>
-@endsection
+@endsection --}}
 
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -23,7 +23,7 @@
                         </div>
                     @endif
 
-                    <a class="btn btn-sm btn-primary" target="_blank" href="{{ url('new-mdr') }}">New MDR</a>
+                    {{-- <a class="btn btn-sm btn-primary" target="_blank" href="{{ url('new-mdr') }}">New MDR</a>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
                             <thead>
@@ -43,8 +43,7 @@
                                     @endphp
                                     @foreach ($scoreList as $item)
                                         <tr>
-                                            {{-- <td><a href="{{ url('mdr_summary/' . $item->id) }}" class="text">{{ $mdrScoreData->dept_name }}</a></td> --}}
-                                            <td>{{ $mdrScoreData->dept_name }} </td>
+                                            <td>{{ $mdrScoreData->dept_name }}</td>
                                             <td>{{ date('F', strtotime($item->date)) }}</td>
                                             <td>{{ $item->score }}</td>
                                             <td></td>
@@ -55,7 +54,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -65,28 +64,3 @@
 @include('components.footer')
 
 @endsection
-
-@push('scripts')
-
-<!-- Jasny -->
-<script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
-<script src="js/plugins/dataTables/datatables.min.js"></script>
-
-{{-- chosen --}}
-<script src="js/plugins/chosen/chosen.jquery.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $('#departmentKpiTable').DataTable({
-            pageLength: 10,
-            ordering: false,
-            responsive: true,
-            stateSave: true,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: []
-        });
-        
-        $("[name='department']").chosen({width: "100%"});
-    })
-</script>
-@endpush

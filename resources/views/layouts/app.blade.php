@@ -77,7 +77,7 @@
                             </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->account_role == 2)
+                    @if(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>
@@ -90,6 +90,14 @@
                                 <span class="nav-label">Manage Approver</span>
                             </a>
                         </li> --}}
+                    @endif
+                    @if(Auth::user()->account_role == 1)
+                        <li class="{{ Route::currentRouteName() == "listOfMdr" ? 'active' : '' }}">
+                            <a href="{{ url('list_of_mdr') }}">
+                                <i class="fa fa-file"></i>
+                                <span class="nav-label">List of MDR</span>
+                            </a>
+                        </li>
                     @endif
                 </ul>
             </div>

@@ -12,10 +12,10 @@ class DepartmentalGoals extends Model
 
     protected $fillable = ['department_id', 'department_group_id', 'actual', 'remarks', 'date', 'file_path', 'file_name', 'kpi_name', 'target', 'department_kpi_id', 'grade'];
 
-    public function attachments() {
+    // public function attachments() {
         
-        return $this->hasMany(Attachments::class);
-    }
+    //     return $this->hasMany(Attachments::class);
+    // }
 
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
