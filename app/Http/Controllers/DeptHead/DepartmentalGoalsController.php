@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\DeptHead;
 
+use App\Admin\Department;
 use App\Admin\DepartmentKPI;
 use App\DeptHead\Attachments;
 use App\DeptHead\DepartmentalGoals;
@@ -11,28 +12,28 @@ use Illuminate\Support\Facades\Validator;
 
 class DepartmentalGoalsController extends Controller
 {
-    public function addActual(Request $request, $id) {
+    // public function addActual(Request $request, $id) {
         
-        $actualData = DepartmentalGoals::findOrFail($id);
+    //     $actualData = DepartmentalGoals::findOrFail($id);
 
-        if ($actualData) {
-            $actualData->actual = $request->actual;
-            $actualData->save();
+    //     if ($actualData) {
+    //         $actualData->actual = $request->actual;
+    //         $actualData->save();
 
-            return back();
-        }
-    }
+    //         return back();
+    //     }
+    // }
 
-    public function addRemarks(Request $request, $id) {
-        $remarksData = DepartmentalGoals::findOrFail($id);
+    // public function addRemarks(Request $request, $id) {
+    //     $remarksData = DepartmentalGoals::findOrFail($id);
 
-        if ($remarksData) {
-            $remarksData->remarks = $request->remarks;
-            $remarksData->save();
+    //     if ($remarksData) {
+    //         $remarksData->remarks = $request->remarks;
+    //         $remarksData->save();
 
-            return back();
-        }
-    }
+    //         return back();
+    //     }
+    // }
     
     public function uploadAttachments(Request $request, $id) {
         $validator = Validator::make($request->all(), [

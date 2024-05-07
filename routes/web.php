@@ -70,8 +70,10 @@ Route::group(['middleware' => 'auth'], function() {
 
     # Process Development
     Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
-    Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
+    Route::post('/updateProcessDevelopment/{id}', 'DeptHead\ProcessDevelopmentController@update');
+    Route::post('/deleteProcessDevelopment/{id}', 'DeptHead\ProcessDevelopmentController@delete');
 
+    Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
 
     // # Innovations
     // Route::post('/addInnovation', 'DeptHead\InnovationController@add');

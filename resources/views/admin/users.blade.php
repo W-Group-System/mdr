@@ -99,7 +99,7 @@
                             <tbody>
                                 @foreach ($userList as $userData)
                                     <tr>
-                                        <td>{{ isset($userData->department->dept_name) ? $userData->department->dept_name : '' }}</td>
+                                        <td>{{ $userData->dept_name->dept_name }}</td>
                                         <td>{{ $userData->name }}</td>
                                         <td>{{ $userData->email }}</td>
                                         @switch($userData->account_role )

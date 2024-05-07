@@ -54,7 +54,7 @@ class DepartmentController extends Controller
         $validator = Validator::make($request->all(), [
             'departmentCode' => 'required|unique:departments,dept_code, ' . $id,
             'departmentName' => 'required',
-            'departmentHead' => 'required',
+            // 'departmentHead' => 'required',
             'targetDate' => 'required'
         ]);
 

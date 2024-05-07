@@ -57,6 +57,7 @@ class DepartmentKPIController extends Controller
             $departmentalGoals->department_kpi_id = $departmentKpi->id;
             $departmentalGoals->kpi_name = $request->kpiName;
             $departmentalGoals->target = $request->target;
+            $departmentalGoals->date = date('Y-m').'-'.$departmentKpi->departments->target_date;
             $departmentalGoals->save();
             
             return back();
@@ -90,6 +91,7 @@ class DepartmentKPIController extends Controller
                 if (!empty($departmentalGoals)) {
                     $departmentalGoals->kpi_name = $request->kpiName;
                     $departmentalGoals->target = $request->target;
+                    $departmentalGoals->date = date('Y-m').'-'.$departmentKpi->departments->target_date;
                     $departmentalGoals->save();
                 }
                 // else {

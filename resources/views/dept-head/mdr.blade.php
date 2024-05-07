@@ -82,6 +82,59 @@
     {{-- @include('dept-head.innovation', array('innovationList' => $innovationList, 'innovationCount' => $innovationCount)) --}}
     {{-- @include('dept-head.business-plan', array('businessPlanList' => $businessPlanList, 'businessPlanCount' => $businessPlanCount)) --}}
     {{-- @include('dept-head.ongoing-innovation', array('ongoingInnovationList' => $ongoingInnovationList, 'ongoingInnovationCount' => $ongoingInnovationCount)) --}}
+
+    @if(auth()->user()->account_role == 2)
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins" style="margin-top: 10px;">
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="processDevelopmentTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td> {{ $deptHead->user->name }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">Approve</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="approveModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title">Month of</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form action="" method="post">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="monthOf">Month</label>
+                                        <input type="month" name="monthOf" id="monthOf" class="form-control input-sm">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-sm btn-primary">Approve</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
 @include('components.footer')

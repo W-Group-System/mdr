@@ -149,7 +149,7 @@
                                             <option value={{ $i }} {{ $i === $departmentData->target_date ? 'selected' : '' }}>{{ $i }}</option>
                                         @endfor --}}
                                         @foreach (range(1, 31) as $item)
-                                            <option value="{{ sprintf("%02d", $item) }}">{{ $item }}</option>
+                                            <option value="{{ sprintf("%02d", $item) }}" {{ $item == $departmentData->target_date ? 'selected' : '' }}>{{ $item }}</option>
                                         @endforeach
                                     </select>
                                 </div>

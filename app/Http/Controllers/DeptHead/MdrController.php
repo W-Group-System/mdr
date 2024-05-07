@@ -24,9 +24,14 @@ class MdrController extends Controller
         $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment')
             ->get();
 
+        $departmentHead = Department::select('dept_head_id')
+            ->where('id', auth()->user()->department_id)
+            ->first();
+
         return view('dept-head.mdr',
             array(
                 'departmentKpi' => $departmentKpi,
+                'deptHead' => $departmentHead
             )
         );
     }
@@ -102,9 +107,13 @@ class MdrController extends Controller
                         $deptGoals->grade = $request->grade[$key];
                         $deptGoals->remarks = $request->remarks[$key];
                         $deptGoals->date = $request->yearAndMonth.'-'.$targetDate;
+                        $deptGoals->status_level = 0;
                         $deptGoals->save();
                     }
 
+                    $date = $request->yearAndMonth.'-'.$targetDate;
+                    
+                    $this->computeKpi($request->grade, $date);
                 }
                 else {
                     $targetDate = 0;
@@ -121,14 +130,16 @@ class MdrController extends Controller
                             'actual' => $actual[$index],
                             'remarks' => $remarks[$index],
                             'grade' => $grades[$index],
-                            'date' =>  $request->yearAndMonth.'-'.$targetDate
+                            'date' =>  $request->yearAndMonth.'-'.$targetDate,
+                            'status_level' => 0
                         ]);
                     });
+
+                    $date = $request->yearAndMonth.'-'.$targetDate;
+                    
+                    $this->computeKpi($grades, $date);
                 }
 
-                $date = $request->yearAndMonth.'-'.$targetDate;
-                
-                $this->computeKpi($grades, $date, $request->yearAndMonth);
                 
                 return back();
             }

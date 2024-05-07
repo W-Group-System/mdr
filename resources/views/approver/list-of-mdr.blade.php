@@ -107,31 +107,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(count($departmentKpiGroup) > 0)
-                                        @foreach ($departmentKpiGroup as $data)
-                                            @php
-                                                $deptGoals = $data->departmentalGoals()->where('department_id', $department)
-                                                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
-                                                    ->get();
-                                            @endphp
+                                    @foreach ($departmentKpiGroup as $data)
+                                        @php
+                                            $deptGoals = $data->departmentalGoals()->where('department_id', $department)
+                                                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
+                                                ->where('status_level', 1)
+                                                ->get();
+                                        @endphp
 
-                                            @foreach ($deptGoals as $item)
-                                                <tr>
-                                                    <td width="300">{!! nl2br($item->kpi_name) !!}</td>
-                                                    <td width="300">{!! nl2br($item->target) !!}</td>
-                                                    <td>{{ $item->grade }}</td>
-                                                    <td>{{ $item->actual }}</td>
-                                                    <td>{{ $item->remarks }}</td>
-                                                    <td></td>
-                                                </tr>
-                                            @endforeach
-
+                                        @foreach ($deptGoals as $item)
+                                            <tr>
+                                                <td width="300">{!! nl2br($item->kpi_name) !!}</td>
+                                                <td width="300">{!! nl2br($item->target) !!}</td>
+                                                <td>{{ $item->grade }}</td>
+                                                <td>{{ $item->actual }}</td>
+                                                <td>{{ $item->remarks }}</td>
+                                                <td></td>
+                                            </tr>
                                         @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="6" class="text-center">No data available.</td>
-                                        </tr>
-                                    @endif
+
+                                    @endforeach
+                                    {{-- <tr>
+                                        <td colspan="6" class="text-center">No data available.</td>
+                                    </tr> --}}
                                 </tbody>
                             </table>
                         </div>

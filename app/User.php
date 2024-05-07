@@ -40,11 +40,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function department() {
-        return $this->hasOne(Department::class, 'id', 'department_id');
-    }
+    // public function department() {
+    //     return $this->hasOne(Department::class, 'dept_head_id');
+    // }
 
     public function approver() {
         return $this->hasOne(Approve::class, 'approver_id');
+    }
+
+    public function dept_name() {
+        return $this->belongsTo(Department::class, 'department_id');
     }
 }
