@@ -44,7 +44,6 @@
                 <div class="ibox float-e-margins" style="margin-top: 10px;">
                     <div class="ibox-content">
                         <div class="table-responsive">
-                            {{-- <p><b>Period:</b> <span class="period">April 1 - 30, 2024</span></p> --}}
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
@@ -55,7 +54,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    @foreach ($departmentKpiGroups as $departmentKpi)
+                                    
+                                    @endforeach
+                                    {{-- <tr>
                                         <td>KPI</td>
                                         <td>0.00</td>
                                         <td>0.00</td>
@@ -84,51 +86,6 @@
                                         <td>0.00</td>
                                         <td>0.00</td>
                                         <td>0.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins" style="margin-top: 10px;">
-                    <div class="ibox-content">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>KPI</th>
-                                        <th>Target</th>
-                                        <th>Grade</th>
-                                        <th>Actual</th>
-                                        <th>Remarks</th>
-                                        <th>Attachments</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($departmentKpiGroup as $data)
-                                        @php
-                                            $deptGoals = $data->departmentalGoals()->where('department_id', $department)
-                                                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
-                                                ->where('status_level', 1)
-                                                ->get();
-                                        @endphp
-
-                                        @foreach ($deptGoals as $item)
-                                            <tr>
-                                                <td width="300">{!! nl2br($item->kpi_name) !!}</td>
-                                                <td width="300">{!! nl2br($item->target) !!}</td>
-                                                <td>{{ $item->grade }}</td>
-                                                <td>{{ $item->actual }}</td>
-                                                <td>{{ $item->remarks }}</td>
-                                                <td></td>
-                                            </tr>
-                                        @endforeach
-
-                                    @endforeach
-                                    {{-- <tr>
-                                        <td colspan="6" class="text-center">No data available.</td>
                                     </tr> --}}
                                 </tbody>
                             </table>
@@ -136,6 +93,60 @@
                     </div>
                 </div>
             </div>
+            @foreach ($departmentKpiGroups as $departmentKpiGroup)
+                @if($departmentKpiGroup->name == "Departmental Goals")
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins" style="margin-top: 10px;">
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>KPI</th>
+                                                <th>Target</th>
+                                                <th>Grade</th>
+                                                <th>Actual</th>
+                                                <th>Remarks</th>
+                                                <th>Attachments</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($departmentKpiGroup->departmentKpi as $departmentKpi)
+                                                @php
+                                                    if (auth()->user()->id == 10) {
+                                                        $deptGoals = $departmentKpi->departmentalGoals()
+                                                            ->where('department_id', $department)
+                                                            ->get();
+                                                            
+                                                    }
+                                                @endphp
+        
+                                                @foreach ($deptGoals as $item)
+                                                    <tr>
+                                                        <td width="300">{!! nl2br($item->kpi_name) !!}</td>
+                                                        <td width="300">{!! nl2br($item->target) !!}</td>
+                                                        <td>{{ $item->grade }}</td>
+                                                        <td>{{ $item->actual }}</td>
+                                                        <td>{{ $item->remarks }}</td>
+                                                        <td>
+                                                            @foreach ($departmentKpi->attachments as $attachment)
+                                                                <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            @endforeach
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+        
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
         @endif
     </div>
 </div>

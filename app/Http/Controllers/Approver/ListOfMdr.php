@@ -14,14 +14,14 @@ class ListOfMdr extends Controller
     public function index(Request $request) {
         $departmentList = Department::get();
 
-        $departmentKpiGroup = DepartmentGroup::with('departmentalGoals')->get();
+        $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment')->get();
 
         return view('approver.list-of-mdr', 
             array(
                 'departmentList' => $departmentList , 
                 'department' => $request->department,
                 'yearAndMonth' => $request->yearAndMonth,
-                'departmentKpiGroup' => $departmentKpiGroup
+                'departmentKpiGroups' => $departmentKpi
             )
         );
     }

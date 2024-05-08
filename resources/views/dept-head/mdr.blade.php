@@ -118,14 +118,15 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <form action="" method="post">
+                                <form action="{{ url('approveMdr') }}" method="post">
                                     @csrf
+
                                     <div class="form-group">
                                         <label for="monthOf">Month</label>
-                                        <input type="month" name="monthOf" id="monthOf" class="form-control input-sm">
+                                        <input type="month" name="monthOf" id="monthOf" max="{{ date('Y-m') }}" class="form-control input-sm">
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-sm btn-primary">Approve</button>
+                                        <button type="submit" class="btn btn-sm btn-primary pull-right">Approve</button>
                                     </div>
                                 </form>
                             </div>

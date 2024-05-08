@@ -12,30 +12,9 @@ use Illuminate\Support\Facades\Validator;
 
 class DepartmentalGoalsController extends Controller
 {
-    // public function addActual(Request $request, $id) {
-        
-    //     $actualData = DepartmentalGoals::findOrFail($id);
-
-    //     if ($actualData) {
-    //         $actualData->actual = $request->actual;
-    //         $actualData->save();
-
-    //         return back();
-    //     }
-    // }
-
-    // public function addRemarks(Request $request, $id) {
-    //     $remarksData = DepartmentalGoals::findOrFail($id);
-
-    //     if ($remarksData) {
-    //         $remarksData->remarks = $request->remarks;
-    //         $remarksData->save();
-
-    //         return back();
-    //     }
-    // }
-    
     public function uploadAttachments(Request $request, $id) {
+        $departmentData = Department::where('id', auth()->user()->department_id)->first();
+
         $validator = Validator::make($request->all(), [
             'file' => 'required|max:2048'
         ]);
@@ -54,6 +33,7 @@ class DepartmentalGoalsController extends Controller
                 $attachment->department_kpi_id = $id;
                 $attachment->file_path = public_path('file') . '/' . $fileName;
                 $attachment->file_name = $fileName;
+                $attachment->date = date('Y-m').'-'.$departmentData->target_date;
                 $attachment->save();
 
                 return back();

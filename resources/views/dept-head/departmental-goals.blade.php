@@ -27,50 +27,70 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if(count($departmentKpiData->departmentKpi) > 0)
-                                    @php
-                                        $goalsList = $departmentKpiData->departmentKpi->where('department_id', auth()->user()->department_id);
-                                    @endphp
-                                    @foreach ($goalsList as $item)
-                                        {{-- <input type="hidden" name="departmental_goals_id[]" value="{{ $item->id }}"> --}}
-                                        <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
-                                        <tr>
-                                            <td width="300">{!! nl2br($item->name) !!}</td>
-                                            <td width="300">{!! nl2br($item->target) !!}</td>
+                                @php
+                                    $goalsList = $departmentKpiData->departmentKpi()
+                                        ->where('department_id', auth()->user()->department_id)
+                                        ->get();
+                                @endphp
+                                @foreach ($goalsList as $item)
+                                    <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
+                                    <tr>
+                                        <td width="300">{!! nl2br($item->name) !!}</td>
+                                        <td width="300">{!! nl2br($item->target) !!}</td>
+                                        
+                                        @php
+                                            $dptGoals = $item->departmentalGoals()
+                                                ->where('department_id', auth()->user()->department_id)
+                                                // ->where('date', '>=', now())
+                                                ->get();
+                                        @endphp
+                                        @if(count($dptGoals) > 0)
+                                            @foreach ($dptGoals as $goals)
+                                                <td>
+                                                    <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control">{{ $goals->actual }}</textarea>
+                                                    <td>
+                                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $goals->grade }}">
+                                                    </td>
+                                                </td>
+                                                <td>
+                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control">{{ $goals->remarks }}</textarea>
+                                                </td>
+                                            @endforeach
+                                        @else
                                             <td>
                                                 <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control"></textarea>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="grade[]" id="grade" class="form-control input-sm" >
+                                                <td>
+                                                    <input type="text" name="grade[]" id="grade" class="form-control input-sm">
+                                                </td>
                                             </td>
                                             <td>
                                                 <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control"></textarea>
                                             </td>
-                                            
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
-                                                    <i class="fa fa-upload"></i>
-                                                </button>   
-    
-                                                @foreach ($item->attachments as $file)
-                                                    <div>
-                                                        <a href="{{ asset('file/' . $file->file_name) }}" class="btn btn-sm btn-info" target="_blank">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
-    
-                                                        <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                @endforeach
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    @else
-                                    <tr>
-                                        <td colspan="5" class="text-center">No data available</td>
+                                        @endif
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
+                                                <i class="fa fa-upload"></i>
+                                            </button>   
+
+                                            @php
+                                                $fileAttachments = $item->attachments()
+                                                    // ->where('date', '>=', now())
+                                                    ->get();
+                                            @endphp
+                                            @foreach ($fileAttachments as $file)
+                                                <div>
+                                                    <a href="{{ asset('file/' . $file->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+
+                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endforeach
+                                        </td>
                                     </tr>
-                                @endif
+                                @endforeach
                             </tbody>
                         </table>
                         <button class="btn btn-sm btn-primary pull-right" type="button" data-toggle="modal" data-target="#submitModal">Submit KPI</button>
@@ -85,7 +105,7 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-
+                                                    
                                                     <input type="month" name="yearAndMonth" max="{{ date('Y-m') }}" class="form-control input-sm">
                                                     
                                                 </div>
@@ -116,9 +136,9 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <label>File Upload</label>
-                            <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST">
+                            <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
                                 @csrf
-
+                                {{-- <input type="hidden" name="dept_goals_id" value="{{ $item->departmentalGoals->id}}"> --}}
                                 <div class="fallback">
                                     <input name="file" type="file" multiple />
                                 </div>

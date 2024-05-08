@@ -31,7 +31,8 @@
                                     <th>Department</th>
                                     <th>Month</th>
                                     <th>KPI</th>
-                                    <th>Business Plan</th>
+                                    {{-- <th>Business Plan</th> --}}
+                                    <th>Process Development</th>
                                     <th>Innovation</th>
                                     <th>Rate</th>
                                 </tr>
@@ -39,6 +40,7 @@
                             <tbody>
                                 @foreach ($mdrScoreList as $mdrScoreData)
                                     @php
+                                        $pdScores = $mdrScoreData->process_development();
                                         $scoreList = $mdrScoreData->kpi_scores->sortBy('date');
                                     @endphp
                                     @foreach ($scoreList as $item)
@@ -47,9 +49,9 @@
                                             <td>{{ $mdrScoreData->dept_name }} </td>
                                             <td>{{ date('F', strtotime($item->date)) }}</td>
                                             <td>{{ $item->score }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{ !empty($item->pd_scores) ? $item->pd_scores : '0.0' }}</td>
+                                            <td>0.0</td>
+                                            <td>0.0</td>
                                         </tr>
                                     @endforeach
                                 @endforeach

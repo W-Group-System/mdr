@@ -10,5 +10,5 @@ class Attachments extends Model
 
     protected $primaryKey = 'id';
 
-    protected $fillable = ['department_goals_id', 'file_path', 'file_name'];
+    protected $fillable = ['department_kpi_id', 'file_path', 'file_name'];
 }

@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\DeptHead;
 
+use App\Admin\Department;
+use App\DeptHead\KpiScore;
 use App\DeptHead\ProcessDevelopment;
 use App\DeptHead\ProcessDevelopmentAttachments;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProcessDevelopmentController extends Controller
 {
     public function add(Request $request) {
+        
+        $departmentData = Department::where('id',  auth()->user()->department_id)->first();
+
         $validator = Validator::make($request->all(), [
             'description' => 'required',
             'accomplishedDate' => 'required',
@@ -30,6 +35,7 @@ class ProcessDevelopmentController extends Controller
                 $processDevelopment->description = $request->description;
                 $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
                 $processDevelopment->status_level = 0;
+                $processDevelopment->date = $request->monthOf . '-' . $departmentData->target_date;
                 $processDevelopment->save();
 
                 $file = $request->file('file');
@@ -41,6 +47,14 @@ class ProcessDevelopmentController extends Controller
                 $attachment->filepath = public_path('file') . '/' . $fileName;
                 $attachment->filename = $fileName;
                 $attachment->save();
+
+                $pdScores = KpiScore::where('department_id', auth()->user()->department_id)
+                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                    ->first();
+                
+                if (!empty($pdScores)) {
+                    $pdScores->update(['pd_scores' => 0.5]);
+                }
 
                 return back();
             }

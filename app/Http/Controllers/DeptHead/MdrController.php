@@ -11,6 +11,7 @@ use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\KpiScore;
 use App\DeptHead\OnGoingInnovation;
+use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -38,20 +39,18 @@ class MdrController extends Controller
 
     public function create() {
 
-        $mdrScoreList = Department::with('kpi_scores')
+        $mdrScoreList = Department::with('kpi_scores', 'process_development')
             ->where('id', auth()->user()->department_id)
             ->get();
-            
 
         return view('dept-head.mdr-list', 
             array(
-                'mdrScoreList' => $mdrScoreList
+                'mdrScoreList' => $mdrScoreList,
             )
         );
     }
 
     public function submitKpi(Request $request) {
-
         $checkIfHaveAttachments = DepartmentKPI::with('attachments')
             ->where('department_id', auth()->user()->department_id)
             ->get();
@@ -185,5 +184,30 @@ class MdrController extends Controller
             $kpiScore->date = $date;
             $kpiScore->save();
         }
+    }
+
+    public function approveMdr(Request $request) {
+        $departmentId = auth()->user()->department_id;
+        
+        $departmentalGoalsList = DepartmentalGoals::where('department_id', $departmentId)
+            ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+            ->where('status_level', 0)
+            ->get();
+
+        if (!empty($departmentalGoalsList)) {
+            $departmentalGoalsList->each(function($item, $key) {
+                $item->update(
+                    [
+                        'status_level' => 1
+                    ]
+                );
+            });
+
+            return back()->with('approve', 'The MDR is successfully approved');
+        }
+        else {
+            return back();
+        }
+        // dd($departmentalGoalsList);
     }
 }

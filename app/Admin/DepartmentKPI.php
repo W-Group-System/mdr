@@ -14,9 +14,9 @@ class DepartmentKPI extends Model
 
     protected $fillable = ['department_id', 'name', 'target', 'department_group_id', 'date'];
 
-    public function department() {
-        return $this->hasOne(Department::class, 'id', 'department_id');
-    }
+    // public function department() {
+    //     return $this->hasOne(Department::class);
+    // }
 
     public function departmentGroup() {
         return $this->hasOne(DepartmentGroup::class, 'id', 'department_group_id');

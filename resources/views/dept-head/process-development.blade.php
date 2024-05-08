@@ -25,7 +25,10 @@
                         </thead>
                         <tbody>
                             @php
-                                $processDevelopmentList = $departmentKpiData->processDevelopment->where('department_id', auth()->user()->department_id);
+                                $processDevelopmentList = $departmentKpiData->processDevelopment()
+                                    ->where('department_id', auth()->user()->department_id)
+                                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), date('Y-m'))
+                                    ->get();
                             @endphp
                             @foreach ($processDevelopmentList as $processDevelopmentData)
                                 <tr>
@@ -96,6 +99,10 @@
                                             </span>
                                             <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="monthOf">Month Of</label>
+                                        <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}">
                                     </div>
                                     <div class="form-group">
                                         <button class="btn btn-sm btn-primary btn-block">Add</button>

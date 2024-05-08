@@ -50,7 +50,7 @@
                                 <tbody>
                                     @foreach ($departmentKpi as $departmentKpiData)
                                         <tr>
-                                            <td>{{ $departmentKpiData->department->dept_name }}</td>
+                                            <td>{{ $departmentKpiData->departments->dept_name }}</td>
                                             <td>{{ $departmentKpiData->departmentGroup->name }}</td>
                                             <td>{!! nl2br($departmentKpiData->name) !!}</td>
                                             <td>{!! nl2br($departmentKpiData->target) !!}</td>

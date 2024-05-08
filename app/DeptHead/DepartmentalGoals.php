@@ -20,4 +20,8 @@ class DepartmentalGoals extends Model
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function departmentKpi() {
+        return $this->belongsTo(DepartmentKPI::class, 'department_kpi_id');
+    }
 }
