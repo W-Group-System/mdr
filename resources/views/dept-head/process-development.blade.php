@@ -40,14 +40,14 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal">
+                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
                                             <i class="fa fa-pencil"></i>
                                         </button>
 
                                         <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post">
                                             @csrf
 
-                                            <button type="submit" class="btn btn-sm btn-danger">
+                                            <button type="submit" class="btn btn-sm btn-danger" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>

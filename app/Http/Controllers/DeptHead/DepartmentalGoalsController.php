@@ -30,6 +30,7 @@ class DepartmentalGoalsController extends Controller
                 $file->move(public_path('file'),  $fileName);
 
                 $attachment = new Attachments;
+                $attachment->department_id = $departmentData->id;
                 $attachment->department_kpi_id = $id;
                 $attachment->file_path = public_path('file') . '/' . $fileName;
                 $attachment->file_name = $fileName;

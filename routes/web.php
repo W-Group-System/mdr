@@ -91,5 +91,13 @@ Route::group(['middleware' => 'auth'], function() {
     // Route::post('/deleteOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@delete');
 
     # Approver
+    
+    # List Of MDR
     Route::get('/list_of_mdr', 'Approver\ListOfMdr@index')->name('listOfMdr');
+    Route::post('/return_mdr', 'Approver\ListOfMdr@returnMdr');
+    Route::post('/add_remarks', 'Approver\ListOfMdr@addRemarks');
+
+    # Department Deadline
+    // Route::get('/department_deadline', 'Approver\DepartmentDeadlineController@index')->name('departmentDeadline');
+    // Route::post('/edit_deadline', 'Approver\DepartmentDeadlineController@edit');
 });

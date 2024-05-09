@@ -145,9 +145,6 @@
                                     <label>Target Date</label>
                                     <select name="targetDate" id="targetDate" name="targetDate" class="form-control input-sm">
                                         <option value="">- Target Date -</option>
-                                        {{-- @for ($i = 1; $i <= 31; $i++)
-                                            <option value={{ $i }} {{ $i === $departmentData->target_date ? 'selected' : '' }}>{{ $i }}</option>
-                                        @endfor --}}
                                         @foreach (range(1, 31) as $item)
                                             <option value="{{ sprintf("%02d", $item) }}" {{ $item == $departmentData->target_date ? 'selected' : '' }}>{{ $item }}</option>
                                         @endforeach

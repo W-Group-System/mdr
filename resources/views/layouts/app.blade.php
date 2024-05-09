@@ -98,6 +98,12 @@
                                 <span class="nav-label">List of MDR</span>
                             </a>
                         </li>
+                        {{-- <li class="{{ Route::currentRouteName() == "departmentDeadline" ? 'active' : '' }}">
+                            <a href="{{ url('department_deadline') }}">
+                                <i class="fa fa-calendar"></i>
+                                <span class="nav-label">Department Deadlines</span>
+                            </a>
+                        </li> --}}
                     @endif
                 </ul>
             </div>

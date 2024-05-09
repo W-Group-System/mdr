@@ -41,19 +41,19 @@
                                         @php
                                             $dptGoals = $item->departmentalGoals()
                                                 ->where('department_id', auth()->user()->department_id)
-                                                // ->where('date', '>=', now())
+                                                ->where('date', '>=', now())
                                                 ->get();
                                         @endphp
                                         @if(count($dptGoals) > 0)
                                             @foreach ($dptGoals as $goals)
                                                 <td>
-                                                    <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control">{{ $goals->actual }}</textarea>
+                                                    <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" {{ $goals->status_level == 1 ? 'readonly' : '' }}>{{ $goals->actual }}</textarea>
                                                     <td>
-                                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $goals->grade }}">
+                                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $goals->grade }}" {{ $goals->status_level == 1 ? 'readonly' : '' }}>
                                                     </td>
                                                 </td>
                                                 <td>
-                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control">{{ $goals->remarks }}</textarea>
+                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" readonly>{{ $goals->remarks }}</textarea>
                                                 </td>
                                             @endforeach
                                         @else
@@ -68,13 +68,13 @@
                                             </td>
                                         @endif
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $goals->status_level == 1 ? 'disabled' : '' }}>
                                                 <i class="fa fa-upload"></i>
                                             </button>   
 
                                             @php
                                                 $fileAttachments = $item->attachments()
-                                                    // ->where('date', '>=', now())
+                                                    ->where('date', '>=', now())
                                                     ->get();
                                             @endphp
                                             @foreach ($fileAttachments as $file)
@@ -83,7 +83,7 @@
                                                         <i class="fa fa-eye"></i>
                                                     </a>
 
-                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}">
+                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}" {{ $goals->status_level == 1 ? 'disabled' : '' }}>
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </div>
@@ -122,34 +122,35 @@
                 </div>
             </div>
         </div>
-    @endif
-</div>
 
-@foreach ($departmentKpiData->departmentKpi as $item)
-    <div class="modal fade uploadModal" id="uploadModal-{{ $item->id }}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">Add Attachments</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <label>File Upload</label>
-                            <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                {{-- <input type="hidden" name="dept_goals_id" value="{{ $item->departmentalGoals->id}}"> --}}
-                                <div class="fallback">
-                                    <input name="file" type="file" multiple />
+        @foreach ($departmentKpiData->departmentKpi as $item)
+            <div class="modal fade uploadModal" id="uploadModal-{{ $item->id }}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title">Add Attachments</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <label>File Upload</label>
+                                    <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        {{-- <input type="hidden" name="dept_goals_id" value="{{ $item->departmentalGoals->id}}"> --}}
+                                        <div class="fallback">
+                                            <input name="file" type="file" multiple />
+                                        </div>
+                                    </form> 
                                 </div>
-                            </form> 
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-@endforeach
+        @endforeach
+    @endif
+</div>
+
 
 @push('scripts')
     <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>

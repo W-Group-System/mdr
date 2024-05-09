@@ -28,39 +28,49 @@ class ProcessDevelopmentController extends Controller
             return back()->with('pdError', $validator->errors()->all());
         }
         else {
-            if($request->hasFile('file')) {
-                $processDevelopment = new ProcessDevelopment;
-                $processDevelopment->department_id = auth()->user()->department_id;
-                $processDevelopment->department_group_id = $request->pd_id;
-                $processDevelopment->description = $request->description;
-                $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
-                $processDevelopment->status_level = 0;
-                $processDevelopment->date = $request->monthOf . '-' . $departmentData->target_date;
-                $processDevelopment->save();
+            $checkStatus = ProcessDevelopment::where('status_level', 1)
+                ->where('date', $request->monthOf . '-' . $departmentData->target_date)
+                ->get();
 
-                $file = $request->file('file');
-                $fileName = time() . '-' . $file->getClientOriginalName();
-                $file->move(public_path('file'),  $fileName);
+            if (!empty($checkStatus)) {
 
-                $attachment = new ProcessDevelopmentAttachments;
-                $attachment->pd_id = $processDevelopment->id;
-                $attachment->filepath = public_path('file') . '/' . $fileName;
-                $attachment->filename = $fileName;
-                $attachment->save();
-
-                $pdScores = KpiScore::where('department_id', auth()->user()->department_id)
-                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-                    ->first();
-                
-                if (!empty($pdScores)) {
-                    $pdScores->update(['pd_scores' => 0.5]);
-                }
-
-                return back();
+                return back()->with('pdError', ['Failed. Because your MDR has been approved.']);
             }
             else {
-                
-                return back()->with('pdError', 'You are not selecting a file.');
+                if($request->hasFile('file')) {
+                    $processDevelopment = new ProcessDevelopment;
+                    $processDevelopment->department_id = auth()->user()->department_id;
+                    $processDevelopment->department_group_id = $request->pd_id;
+                    $processDevelopment->description = $request->description;
+                    $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
+                    $processDevelopment->status_level = 0;
+                    $processDevelopment->date = $request->monthOf . '-' . $departmentData->target_date;
+                    $processDevelopment->save();
+    
+                    $file = $request->file('file');
+                    $fileName = time() . '-' . $file->getClientOriginalName();
+                    $file->move(public_path('file'),  $fileName);
+    
+                    $attachment = new ProcessDevelopmentAttachments;
+                    $attachment->pd_id = $processDevelopment->id;
+                    $attachment->filepath = public_path('file') . '/' . $fileName;
+                    $attachment->filename = $fileName;
+                    $attachment->save();
+    
+                    $pdScores = KpiScore::where('department_id', auth()->user()->department_id)
+                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                        ->first();
+                    
+                    if (!empty($pdScores)) {
+                        $pdScores->update(['pd_scores' => 0.5]);
+                    }
+    
+                    return back();
+                }
+                else {
+                    
+                    return back()->with('pdError', 'You are not selecting a file.');
+                }
             }
         }   
     }
