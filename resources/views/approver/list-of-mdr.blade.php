@@ -93,6 +93,11 @@
                         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
                         ->where('status_level', 1)
                         ->get();
+
+                    $innovation = $department->innovation()
+                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
+                        ->where('status_level', 1)
+                        ->get();
                 @endphp
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
@@ -100,6 +105,8 @@
                             <div class="table-responsive">
                                 <p><strong>I.</strong>Departmental Goals</p>
                                 <form action="{{ url('add_remarks') }}" method="post" id="addRemarksForm">
+                                    @csrf
+                                    
                                     <table class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
@@ -155,7 +162,49 @@
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <p><strong>II.</strong>Process Development</p>
+                                <p><strong>II.</strong>Innovation</p>
+                                <table class="table table-bordered table-hover" id="innovationTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Innovations / Projects</th>
+                                            <th>Project Summary</th>
+                                            <th>Job / Work Order Number</th>
+                                            <th>Start Date</th>
+                                            <th>Target Date of Completion</th>
+                                            <th>Actual Date of Completion</th>
+                                            <th>Attachments</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($innovation as $innovationData)
+                                            <tr>
+                                                <td>{{ $innovationData->projects }}</td>
+                                                <td>{{ $innovationData->project_summary }}</td>
+                                                <td>{{ $innovationData->work_order_number }}</td>
+                                                <td>{{ date('F m, Y', strtotime($innovationData->start_date)) }}</td>
+                                                <td>{{ date('F m, Y', strtotime($innovationData->target_date)) }}</td>
+                                                <td>{{ date('F m, Y', strtotime($innovationData->actual_date)) }}</td>
+                                                <td>
+                                                    @foreach ($innovationData->innovationAttachments as $file)
+                                                        <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    @endforeach
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <p><strong>III.</strong>Process Development</p>
 
                                 <table class="table table-bordered table-hover" id="processDevelopmentTable">
                                     <thead>
@@ -256,6 +305,15 @@
 <script>
     $(document).ready(function() {
         $('#processDevelopmentTable').DataTable({
+            pageLength: 10,
+            ordering: false,
+            responsive: true,
+            stateSave: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: []
+        });
+
+        $('#innovationTable').DataTable({
             pageLength: 10,
             ordering: false,
             responsive: true,

@@ -76,6 +76,7 @@
                                     <th>Department Name</th>
                                     <th>Department Head</th>
                                     <th>Target Date</th>
+                                    <th>Approvers</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -86,6 +87,11 @@
                                         <td>{{ $departmentData->dept_name }}</td>
                                         <td>{{ isset($departmentData->user->name) ? $departmentData->user->name : '' }}</td>
                                         <td>{{ $departmentData->target_date }}</td>
+                                        <td>
+                                            @foreach ($departmentData->approver as $approver)
+                                                <p>{{ $approver->status_level .'.' . $approver->user->name }}</p>
+                                            @endforeach
+                                        </td>
                                         <td>
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentData->id }}">
                                                 <i class="fa fa-pencil"></i>
@@ -150,6 +156,24 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                <button type="button" class="btn btn-sm btn-primary addApprover">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                <div class="form-group">
+                                    <label for="approver">Approver</label>
+
+                                    <div class="approverFormGroup">
+                                        @foreach ($departmentData->approver as $approver)
+                                            <select name="approver[]" id="" class="form-control approver" style="margin-bottom: 10px;" required="">
+                                                <option value=""></option>
+                                                @foreach($approverList as $approverData)
+                                                    <option value="{{ $approverData->id }}" {{ $approverData->id == $approver->user_id ? 'selected' : '' }}>{{ $approverData->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @endforeach
+                                    </div>
+                                </div>
+
                                 <div>
                                     <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
                                 </div>
@@ -196,6 +220,27 @@
         
         $("[name='departmentHead']").chosen({width: "100%"});
         $("[name='targetDate']").chosen({width: "100%"});
+
+        $(".addApprover").on('click', function() {
+            
+            $(".approverFormGroup").append(`
+                <select name="approver[]" id="" class="form-control approver" style="margin-bottom: 10px;" required="">
+                    <option value=""></option>
+                    @foreach($approverList as $approverData)
+                        <option value="{{ $approverData->id }}">{{ $approverData->name }}</option>
+                    @endforeach
+                </select>
+            `)
+
+            $(".approver").chosen({width: "100%"});
+        })
+
+        $(".deleteApprover").on('click', function() {
+            $(".approverFormGroup").children(":last-child").remove()
+        })
+
+        $(".approver").chosen({width: "100%"});
+
     })
 </script>
 @endpush

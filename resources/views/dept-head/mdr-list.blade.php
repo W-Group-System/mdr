@@ -49,8 +49,8 @@
                                             <td>{{ $mdrScoreData->dept_name }} </td>
                                             <td>{{ date('F', strtotime($item->date)) }}</td>
                                             <td>{{ $item->score }}</td>
-                                            <td>{{ !empty($item->pd_scores) ? $item->pd_scores : '0.0' }}</td>
-                                            <td>0.0</td>
+                                            <td>{{ !empty($item->pd_scores) ? number_format($item->pd_scores, 1) : '0.0' }}</td>
+                                            <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
                                             <td>0.0</td>
                                         </tr>
                                     @endforeach

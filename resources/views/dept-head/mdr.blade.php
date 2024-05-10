@@ -22,6 +22,7 @@
     @foreach ($departmentKpi as $departmentKpiData)
         @include('dept-head.departmental-goals', array('departmentKpi' => $departmentKpi))
         @include('dept-head.process-development', array('departmentKpi' => $departmentKpi))
+        @include('dept-head.innovation', array('departmentKpi' => $departmentKpi))
     @endforeach
 
     @if(auth()->user()->account_role == 2)
@@ -98,6 +99,14 @@
 <script>
 $(document).ready(function() {
     $('#processDevelopmentTable').DataTable({
+        pageLength: 10,
+        ordering: false,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [],
+    });
+
+    $('#innovationTable').DataTable({
         pageLength: 10,
         ordering: false,
         responsive: true,

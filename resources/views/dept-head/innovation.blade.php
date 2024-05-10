@@ -1,3 +1,4 @@
+@if($departmentKpiData->name == "Innovations (Accomplished)")
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-content">
@@ -9,11 +10,11 @@
                 </div>
             @endif
             <div class="table-responsive">
-                <p><b>II:</b> <span class="period">Innovations (Accomplished)</span></p>
-                @if($innovationCount < 2)
-                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Innovation</button>
-                @endif
-                <table class="table table-bordered table-hover">
+                <p><b>II:</b> <span class="period">{{ $departmentKpiData->name }}</span></p>
+
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Innovation</button>
+
+                <table class="table table-bordered table-hover" id="innovationTable">
                     <thead>
                         <tr>
                             <th>Innovations / Projects</th>
@@ -22,37 +23,56 @@
                             <th>Start Date</th>
                             <th>Target Date of Completion</th>
                             <th>Actual Date of Completion</th>
+                            <th>Attachments</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if(count($innovationList) > 0)
-                            @foreach ($innovationList as $innovationData)
-                                @foreach ($innovationData->innovations as $item)
-                                    <tr>
-                                        <td>{{ $item->projects }}</td>
-                                        <td>{!! nl2br($item->project_summary) !!}</td>
-                                        <td>{{ $item->work_order_number }}</td>
-                                        <td>{{ date('F d, Y' , strtotime($item->start_date)) }}</td>
-                                        <td>{{ date('F d, Y', strtotime($item->target_date ))}}</td>
-                                        <td>{{ !empty($item->actual_date) ? date('F d, Y', strtotime($item->actual_date)) : null }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $item->id }}">
-                                                <i class="fa fa-pencil"></i>
-                                            </button>
-                                            <form action="/deleteInnovation/{{ $item->id }}" method="post">
-                                                @csrf
-                                                <button class="btn btn-sm btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endforeach
-                        @else
-                            <td colspan="7" class="text-center">No data available.</td>
-                        @endif
+                        @php
+                            $innovationList = $departmentKpiData->innovation()
+                                ->where('department_id', auth()->user()->department_id)
+                                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), date('Y-m'))
+                                ->get();
+                        @endphp
+                        @foreach ($innovationList as $innovationData)
+                            <tr>
+                                <td>{{ $innovationData->projects }}</td>
+                                <td>{{ $innovationData->project_summary }}</td>
+                                <td>{{ $innovationData->work_order_number }}</td>
+                                <td>{{ $innovationData->start_date }}</td>
+                                <td>{{ $innovationData->target_date }}</td>
+                                <td>{{ $innovationData->actual_date }}</td>
+                                <td width="100">
+
+                                    @foreach ($innovationData->innovationAttachments as $file)
+                                        <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        
+                                        <button class="btn btn-sm btn-danger" name="deleteAttachments[]" type="button" data-id="{{ $file->id }}" id="deleteAttachments" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $innovationData->id }}" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
+                                        <i class="fa fa-pencil"></i>
+                                    </button>
+
+                                    <form action="{{ url('deleteInnovation/' . $innovationData->id) }}" method="post">
+                                        @csrf
+
+                                        <input type="hidden" name="department_id" value="{{ $innovationData->department_id }}">
+                                        <input type="hidden" name="date" value="{{ $innovationData->date }}">
+
+                                        <button type="submit" class="btn btn-sm btn-danger" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -69,8 +89,11 @@
             <div class="modal-body p-4" >
                 <div class="row">
                     <div class="col-lg-12">
-                        <form action="/addInnovation" method="post">
+                        <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data">
                             @csrf
+
+                            <input type="hidden" name="department_group_id" value="{{ $departmentKpiData->id }}">
+
                             <div class="form-group">
                                 <label for="innovationProjects">Innovation Projects</label>
                                 <input type="text" name="innovationProjects" id="innovationProjects" class="form-control input-sm">
@@ -111,6 +134,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="monthOf">Month Of</label>
+                                <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="file">Month Of</label>
+                                <input type="file" name="file[]" id="file" class="form-control" multiple>
+                            </div>
+                            <div class="form-group">
                                 <button class="btn btn-sm btn-primary btn-block" type="submit">Add</button>
                             </div>
                         </form>
@@ -122,69 +153,79 @@
 </div>
 
 @foreach ($innovationList as $innovationData)
-    @foreach ($innovationData->innovations as $item)
-        <div class="modal fade" id="editModal-{{ $item->id }}">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">Edit Innovations</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <form action="/updateInnovation/{{ $item->id }}" method="post">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="innovationProjects">Innovation Projects</label>
-                                        <input type="text" name="innovationProjects" id="innovationProjects" class="form-control input-sm" value="{{ $item->projects }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="projectSummary">Project Summary</label>
-                                        <textarea name="projectSummary" id="" cols="30" rows="10" class="form-control">{{ $item->project_summary }}</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="jobOrWorkNum">Job / Work Number</label>
-                                        <input type="text" name="jobOrWorkNum" id="jobOrWorkNum" class="form-control input-sm" value="{{ $item->work_order_number }}">
-                                    </div>
-                                    <div class="form-group" id="startDate">
-                                        <label for="startDate">Start Date</label>
-                                        <div class="input-group date">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                            <input type="text" class="form-control input-sm" name="startDate" value="{{ $item->start_date }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group" id="targetDate">
-                                        <label for="targetDate">Target Date</label>
-                                        <div class="input-group date">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                            <input type="text" class="form-control input-sm" name="targetDate" value="{{ $item->target_date }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group" id="actualDate">
-                                        <label for="actualDate">Actual Date</label>
-                                        <div class="input-group date">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                            <input type="text" class="form-control input-sm" name="actualDate" value="{{ $item->actual_date }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-sm btn-primary btn-block" type="submit"Update>Update</button>
-                                    </div>
-                                </form>
+<div class="modal fade" id="editModal-{{ $innovationData->id }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">Edit Innovations</h1>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <form action="/updateInnovation/{{ $innovationData->id }}" method="post" enctype="multipart/form-data">
+                            @csrf
+
+                            <input type="hidden" name="department_group_id" value="{{ $departmentKpiData->id }}">
+
+                            <div class="form-group">
+                                <label for="innovationProjects">Innovation Projects</label>
+                                <input type="text" name="innovationProjects" id="innovationProjects" class="form-control input-sm" value="{{ $innovationData->projects }}">
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <label for="projectSummary">Project Summary</label>
+                                <textarea name="projectSummary" cols="30" rows="10" class="form-control">{{ $innovationData->project_summary }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="jobOrWorkNum">Job / Work Number</label>
+                                <input type="text" name="jobOrWorkNum" id="jobOrWorkNum" class="form-control input-sm" value="{{ $innovationData->work_order_number }}">
+                            </div>
+                            <div class="form-group" id="startDate">
+                                <label for="startDate">Start Date</label>
+                                <div class="input-group date">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                    <input type="text" class="form-control input-sm" name="startDate" value="{{ $innovationData->start_date }}">
+                                </div>
+                            </div>
+                            <div class="form-group" id="targetDate">
+                                <label for="targetDate">Target Date</label>
+                                <div class="input-group date">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                    <input type="text" class="form-control input-sm" name="targetDate" value="{{ $innovationData->target_date }}">
+                                </div>
+                            </div>
+                            <div class="form-group" id="actualDate">
+                                <label for="actualDate">Actual Date</label>
+                                <div class="input-group date">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                    <input type="text" class="form-control input-sm" name="actualDate" value="{{ $innovationData->actual_date }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="monthOf">Month Of</label>
+                                <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ date('Y-m', strtotime($innovationData->date)) }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="file">Month Of</label>
+                                <input type="file" name="file[]" id="file" class="form-control" multiple>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-primary btn-block" type="submit">Update</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    @endforeach
+    </div>
+</div>
 @endforeach
+@endif
 
 @push('scripts')
 <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
@@ -219,6 +260,40 @@
             autoclose: true,
             startDate: dateToday
         });
+
+        $("[name='deleteAttachments[]']").on('click', function() {
+            var id = $(this).data('id');
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover your file!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('deleteAttachments') }}",
+                    data: {
+                        file_id: id
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        swal("Deleted!", response.message, "success");
+
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1000);
+                    }
+                })
+            });
+
+            
+        })
     })
 </script>
 @endpush

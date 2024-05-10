@@ -25,7 +25,7 @@ class ApproverController extends Controller
 
     public function updateApprover(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'noApprover' => 'unique:manage_approvers,no_approver'
+            'noApprover' => 'unique:manage_approvers,status_level'
         ]);
 
         if ($validator->fails()) {

@@ -22,7 +22,7 @@ class MdrController extends Controller
 {
     public function index() {
         
-        $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment')
+        $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment', 'innovation')
             ->get();
 
         return view('dept-head.mdr',
@@ -193,7 +193,7 @@ class MdrController extends Controller
     public function approveMdr(Request $request) {
         $departmentId = auth()->user()->department_id;
         
-        $departmentData = Department::with('departmentalGoals', 'process_development', 'kpi_scores')
+        $departmentData = Department::with('departmentalGoals', 'process_development', 'kpi_scores', 'innovation')
             ->where('id', $departmentId)
             ->get();
 
@@ -214,7 +214,12 @@ class MdrController extends Controller
                 ->where('status_level', 0)
                 ->get();
 
-            if (!empty($departmentalGoalsList) && !empty($processDevelopmentList) && !empty($kpiScore)) {
+            $innovation = $department->innovation()
+                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                ->where('status_level', 0)
+                ->get();
+        
+            if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
                 $departmentalGoalsList->each(function($item, $key) {
                     $item->update([
                         'status_level' => 1
@@ -228,6 +233,12 @@ class MdrController extends Controller
                 });
 
                 $kpiScore->each(function($item, $key) {
+                    $item->update([
+                        'status_level' => 1
+                    ]);
+                });
+
+                $innovation->each(function($item, $key) {
                     $item->update([
                         'status_level' => 1
                     ]);

@@ -30,4 +30,8 @@ class DepartmentGroup extends Model
     public function processDevelopment() {
         return $this->hasMany(ProcessDevelopment::class);
     }
+
+    public function innovation() {
+        return $this->hasMany(Innovation::class);
+    }
 }

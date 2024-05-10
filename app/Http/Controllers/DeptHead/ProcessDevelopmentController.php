@@ -15,7 +15,9 @@ class ProcessDevelopmentController extends Controller
 {
     public function add(Request $request) {
         
-        $departmentData = Department::where('id',  auth()->user()->department_id)->first();
+        $departmentData = Department::with('kpi_scores')
+            ->where('id',  auth()->user()->department_id)
+            ->first();
 
         $validator = Validator::make($request->all(), [
             'description' => 'required',
@@ -30,9 +32,10 @@ class ProcessDevelopmentController extends Controller
         else {
             $checkStatus = ProcessDevelopment::where('status_level', 1)
                 ->where('date', $request->monthOf . '-' . $departmentData->target_date)
+                ->where('department_id', auth()->user()->department_id)
                 ->get();
 
-            if (!empty($checkStatus)) {
+            if ($checkStatus->isNotEmpty()) {
 
                 return back()->with('pdError', ['Failed. Because your MDR has been approved.']);
             }
@@ -57,14 +60,11 @@ class ProcessDevelopmentController extends Controller
                     $attachment->filename = $fileName;
                     $attachment->save();
     
-                    $pdScores = KpiScore::where('department_id', auth()->user()->department_id)
-                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-                        ->first();
-                    
-                    if (!empty($pdScores)) {
-                        $pdScores->update(['pd_scores' => 0.5]);
-                    }
-    
+                    $departmentData->kpi_scores()
+                        ->where('department_id', $departmentData->id)
+                        ->where('date', $request->monthOf.'-'.$departmentData->target_date)
+                        ->update(['pd_scores' => 0.5]);
+
                     return back();
                 }
                 else {
@@ -124,15 +124,42 @@ class ProcessDevelopmentController extends Controller
         }   
     }
 
-    public function delete($id) {
-        $processDevelopmentData = ProcessDevelopment::findOrFail($id);
+    public function delete(Request $request, $id) {
+        // dd($request->all());
+        // $processDevelopmentData = ProcessDevelopment::findOrFail($id);
         
-        if ($processDevelopmentData) {
+        // if ($processDevelopmentData) {
 
+        //     $processDevelopmentData->delete();
+
+        //     return back();
+        // }
+
+        $department = Department::with('kpi_scores', 'process_development')
+            ->where('id', $request->department_id)
+            ->first();
+        
+        $processDevelopmentData = $department->process_development()
+            ->where('id', $id)
+            ->first();
+
+        if (!empty($processDevelopmentData)) {
             $processDevelopmentData->delete();
-
-            return back();
         }
+
+        $processDevelopmentList = $department->process_development()
+            ->where('date', $request->date)
+            ->where('department_id', $request->department_id)
+            ->get();
+
+        if (count($processDevelopmentList) == 0) {
+            $department->kpi_scores()
+                ->where('department_id', $request->department_id)
+                ->where('date', $request->date)
+                ->update(['pd_scores' => 0.0]);
+        }
+
+        return back();
         
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Admin;
 
 use App\DeptHead\DepartmentalGoals;
+use App\DeptHead\Innovation;
 use App\DeptHead\KpiScore;
 use App\DeptHead\ProcessDevelopment;
 use App\User;
@@ -32,5 +33,13 @@ class Department extends Model
 
     public function departmentalGoals() {
         return $this->hasMany(DepartmentalGoals::class);
+    }
+
+    public function innovation() {
+        return $this->hasMany(Innovation::class);
+    }
+
+    public function approver() {
+        return $this->hasMany(Approve::class);
     }
 }

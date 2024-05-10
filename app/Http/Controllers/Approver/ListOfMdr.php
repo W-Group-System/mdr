@@ -8,6 +8,7 @@ use App\Admin\DepartmentKPI;
 use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -16,13 +17,7 @@ class ListOfMdr extends Controller
     public function index(Request $request) {
         $departmentList = Department::get();
 
-        // $departmentKpi = DepartmentGroup::with('departmentKpi')->get();
-        // $departmentKpi = DepartmentGroup::with(['departmentKpi' => function($query)use($request) {
-        //     // dd($query);
-        //     $query->where('department_id', $request->department);
-        // }])->get();
-        
-        $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development')
+        $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development', 'innovation', 'user')
             ->where('id', $request->department)
             ->get();
 
@@ -59,7 +54,12 @@ class ListOfMdr extends Controller
                 ->where('status_level', 1)
                 ->get();
 
-            if (!empty($departmentalGoalsList) && !empty($processDevelopmentList) && !empty($kpiScore)) {
+            $innovation = $department->innovation()
+                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                ->where('status_level', 1)
+                ->get();
+
+            if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
                 $departmentalGoalsList->each(function($item, $key) {
                     $item->update([
                         'status_level' => 0
@@ -78,6 +78,12 @@ class ListOfMdr extends Controller
                     ]);
                 });
 
+                $innovation->each(function($item, $key) {
+                    $item->update([
+                        'status_level' => 0
+                    ]);
+                });
+
                 return back()->with('return', 'Successfully Return');
             }
             else {
@@ -91,7 +97,7 @@ class ListOfMdr extends Controller
             ->where('department_id', $request->department_id)
             ->get();
 
-        if (!empty($departmentalGoalsList)) {
+        if ($departmentalGoalsList->isNotEmpty()) {
             $departmentalGoalsList->each(function($item, $key)use($request) {
                 $item->update([
                     'remarks' => $request->remarks[$key]
@@ -99,6 +105,9 @@ class ListOfMdr extends Controller
             });
 
             return back();
+        }
+        else {
+            return back()->with('errors', ["Can not add remarks"]);
         }
     }
 

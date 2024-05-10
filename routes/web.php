@@ -76,9 +76,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
 
     // # Innovations
-    // Route::post('/addInnovation', 'DeptHead\InnovationController@add');
-    // Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
-    // Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
+    Route::post('/addInnovation', 'DeptHead\InnovationController@add');
+    Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
+    Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
+    Route::post('/deleteAttachments', 'DeptHead\InnovationController@deleteAttachments');
 
     // # Business Plan
     // Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');

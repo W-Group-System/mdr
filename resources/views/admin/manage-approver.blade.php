@@ -30,10 +30,10 @@
                                 @foreach ($approverList as $approverData)
                                     <tr>
                                         <td>{{ $approverData->name }}</td>
-                                        <td>{{ isset($approverData->approver->no_approver) ? $approverData->approver->no_approver : '' }}</td>
+                                        <td>{{ isset($approverData->approver->status_level) ? $approverData->approver->status_level : '' }}</td>
                                         <td>
                                             <div class="btn btn-group-sm">
-                                                <button class="btn btn-warning" data-toggle="modal" data-target="#editModal-{{ $approverData->id }}">
+                                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $approverData->id }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
                                             </div>
@@ -77,7 +77,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <button class="btn btn-primary btn-rounded btn-block">Update</button>
+                                    <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
                                 </div>
                             </form>
                         </div>

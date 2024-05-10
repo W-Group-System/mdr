@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Admin\Approve;
 use App\Admin\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,16 +12,23 @@ use Illuminate\Support\Facades\Validator;
 class DepartmentController extends Controller
 {
     public function index() {
-        $departmentList = Department::select('id', 'dept_code', 'dept_name', 'dept_head_id', 'target_date')->get();
+        $departmentList = Department::with('approver')
+            ->select('id', 'dept_code', 'dept_name', 'dept_head_id', 'target_date')
+            ->get();
 
         $departmentHead = User::select('name', 'id')
             ->where('account_role', 2)
             ->get();
 
+        $approverList = User::select('name', 'id')
+            ->where('account_role', 1)
+            ->get();
+
         return view('admin.department',
             array(
                 'departmentList' => $departmentList,
-                'departmentHead' => $departmentHead
+                'departmentHead' => $departmentHead,
+                'approverList' => $approverList
             )
         );
     }
@@ -51,11 +59,13 @@ class DepartmentController extends Controller
     }
 
     public function updateDepartments(Request $request, $id) {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'departmentCode' => 'required|unique:departments,dept_code, ' . $id,
             'departmentName' => 'required',
             // 'departmentHead' => 'required',
-            'targetDate' => 'required'
+            'targetDate' => 'required',
+            'approver' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -70,6 +80,16 @@ class DepartmentController extends Controller
                 $dept->dept_head_id = $request->departmentHead;
                 $dept->target_date = $request->targetDate;
                 $dept->save();
+
+                $approver = Approve::where('department_id', $id)->delete();
+                
+                foreach($request->approver as $key => $value) {
+                    $approver = new Approve;
+                    $approver->department_id = $id;
+                    $approver->user_id = $value;
+                    $approver->status_level = $key+1;
+                    $approver->save();
+                }
             }
 
             return back();
