@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Approver;
 
+use App\Admin\Approve;
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
 use App\Admin\DepartmentKPI;
@@ -17,9 +18,9 @@ class ListOfMdr extends Controller
     public function index(Request $request) {
         $departmentList = Department::get();
 
-        $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development', 'innovation', 'user')
+        $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver')
             ->where('id', $request->department)
-            ->get();
+            ->first();
 
         return view('approver.list-of-mdr', 
             array(
@@ -111,4 +112,64 @@ class ListOfMdr extends Controller
         }
     }
 
+    public function approveMdr(Request $request) {
+
+        // $departmentData = Department::with('departmentalGoals', 'process_development', 'kpi_scores', 'approver')
+        //     ->where('id', $request->department_id)
+        //     ->first();
+        
+        // foreach($departmentData as $department) {
+
+        //     $departmentalGoalsList = $department->departmentalGoals()
+        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+        //         ->where('status_level', 1)
+        //         ->get();
+
+        //     $processDevelopmentList = $department->process_development()
+        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+        //         ->where('status_level', 1)
+        //         ->get();
+
+        //     $kpiScore = $department->kpi_scores()
+        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+        //         ->where('status_level', 1)
+        //         ->get();
+
+        //     $innovation = $department->innovation()
+        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+        //         ->where('status_level', 1)
+        //         ->get();
+
+        //     if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
+        //         $departmentalGoalsList->each(function($item, $key) {
+        //             $item->update([
+        //                 'status_level' => 0
+        //             ]);
+        //         });
+
+        //         $processDevelopmentList->each(function($item, $key) {
+        //             $item->update([
+        //                 'status_level' => 0
+        //             ]);
+        //         });
+
+        //         $kpiScore->each(function($item, $key) {
+        //             $item->update([
+        //                 'status_level' => 0
+        //             ]);
+        //         });
+
+        //         $innovation->each(function($item, $key) {
+        //             $item->update([
+        //                 'status_level' => 0
+        //             ]);
+        //         });
+
+        //         return back()->with('return', 'Successfully Return');
+        //     }
+        //     else {
+        //         return back();
+        //     }
+        // }
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\DeptHead\DepartmentalGoals;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 

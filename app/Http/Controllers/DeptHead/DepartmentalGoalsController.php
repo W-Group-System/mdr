@@ -16,12 +16,12 @@ class DepartmentalGoalsController extends Controller
         $departmentData = Department::where('id', auth()->user()->department_id)->first();
 
         $validator = Validator::make($request->all(), [
-            'file' => 'required|max:2048'
+            'file' => 'required|max:2048|mimes:pdf'
         ]);
 
         if ($validator->fails()) {
 
-            return back()->with('errors', $validator->errors()->all());
+            return back()->with('kpiErrors', $validator->errors()->all());
         }
         else {
             if ($request->hasFile('file')) {
@@ -40,7 +40,7 @@ class DepartmentalGoalsController extends Controller
                 return back();
             }
             else {
-                return back()->with('errors', 'You are not selecting a file');
+                return back()->with('kpiErrors', 'You are not selecting a file');
             }
         }
     }
