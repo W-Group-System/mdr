@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class InnovationController extends Controller
 {
@@ -84,6 +85,7 @@ class InnovationController extends Controller
                         ->where('date', $request->monthOf.'-'.$department->target_date)
                         ->update(['innovation_scores' => 1.0]);
     
+                    Alert::success('SUCCESS', 'Successfully Added.');
                     return back();
                 }
                 else {
@@ -119,6 +121,7 @@ class InnovationController extends Controller
                 ->update(['innovation_scores' => 0.0]);
         }
 
+        Alert::success('SUCCESS', 'Successfully Deleted.');
         return back();
     }
 
@@ -173,6 +176,8 @@ class InnovationController extends Controller
                 }
 
             }
+            Alert::success('SUCCESS', 'Successfully Updated.');
+
             return back();
 
         }

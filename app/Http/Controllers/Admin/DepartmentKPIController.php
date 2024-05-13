@@ -9,6 +9,7 @@ use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentKPIController extends Controller
 {
@@ -60,6 +61,7 @@ class DepartmentKPIController extends Controller
             $departmentalGoals->date = date('Y-m').'-'.$departmentKpi->departments->target_date;
             $departmentalGoals->save();
             
+            Alert::success('SUCCESS', 'Successfully Added.');
             return back();
         }
     }
@@ -84,6 +86,8 @@ class DepartmentKPIController extends Controller
                 $departmentKpi->department_group_id = $request->departmentGroupKpi;
                 $departmentKpi->name = $request->kpiName;
                 $departmentKpi->target = $request->target;
+
+                Alert::success('SUCCESS', 'Successfully Updated.');
                 $departmentKpi->save();
 
                 $departmentalGoals = DepartmentalGoals::where('department_kpi_id', $id)->first();

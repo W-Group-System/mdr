@@ -83,7 +83,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add Department KPI Group</h1>
+                <h1 class="modal-title">Update Department KPI Group</h1>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -95,7 +95,7 @@
                                 <input type="text" name="departmentGroupName" placeholder="Enter department kpi groups" class="form-control" value="{{ $departmentGroupData->name }}">
                             </div>
                             <div>
-                                <button class="btn btn-primary btn-rounded btn-block">Add</button>
+                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
                             </div>
                         </form>
                     </div>

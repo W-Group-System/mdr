@@ -65,12 +65,17 @@
                                             @endphp
                                             @if(count($kpiScores) > 0)
                                                 @foreach ($kpiScores as $score)
-                                                    <tr>
-                                                        <td>{{ date('F Y', strtotime($score->date)) }}</td>
-                                                        <td>{{ $score->score }}</td>
-                                                        <td>{{ $score->pd_scores }}</td>
-                                                        <td>{{ number_format($score->innovation_scores, 1) }}</td>
-                                                    </tr>
+                                                    <form action="{{ url('submit_scores') }}" method="post" id="submitScoresForm">
+                                                        @csrf
+
+                                                        <input type="hidden" name="id" value="{{ $score->id }}">
+                                                        <tr>
+                                                            <td>{{ date('F Y', strtotime($score->date)) }}</td>
+                                                            <td><input type="text" name="kpiScores" class="form-control input-sm" value="{{ $score->score }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
+                                                            <td><input type="text" name="pdScores" class="form-control input-sm" value="{{ $score->pd_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
+                                                            <td><input type="text" name="innovationScores" class="form-control input-sm" value="{{ $score->innovation_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
+                                                        </tr>
+                                                    </form>
                                                 @endforeach
                                             @else
                                                 <tr>
@@ -79,6 +84,9 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                    @if($approver->status_level == 1)
+                                        <button type="submit" class="btn btn-sm btn-primary pull-right" form="submitScoresForm">Submit Scores</button>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -132,7 +140,7 @@
                                                                     <input type="hidden" name="date" value="{{ $item->date }}">
                                                                     <input type="hidden" name="department_id" value="{{ $item->department_id }}">
         
-                                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control">{{ $item->remarks }}</textarea>
+                                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" {{ $approver->status_level != 1 ? 'disabled' : '' }}>{{ $item->remarks }}</textarea>
                                                                 </td>
                                                                 <td>
                                                                     @foreach ($item->departmentKpi->attachments as $attachment)
@@ -150,8 +158,9 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        
-                                        <button class="btn btn-sm btn-primary pull-right" type="submit">Add Remarks</button>
+                                        @if($approver->status_level == 1)
+                                            <button class="btn btn-sm btn-primary pull-right" type="submit">Add Remarks</button>
+                                        @endif
                                     </form>
                                 </div>
                             </div>

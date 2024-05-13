@@ -4,11 +4,11 @@
     {{-- switch --}}
     <link href="css/plugins/switchery/switchery.css" rel="stylesheet">
 
-    {{-- select2 --}}
-    <link href="css/plugins/select2/select2.min.css" rel="stylesheet">
-
+    {{-- chosen --}}
     <link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
 
+    <!-- Sweet Alert -->
+    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -60,7 +60,7 @@
                                 </select>
                             </div>
                             <div>
-                                <button class="btn btn-primary btn-rounded btn-block">Add</button>
+                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
                             </div>
                         </form>
                     </div>
@@ -99,7 +99,7 @@
                             <tbody>
                                 @foreach ($userList as $userData)
                                     <tr>
-                                        <td>{{ $userData->dept_name->dept_name }}</td>
+                                        <td>{{ isset($userData->dept_name->dept_name) ? $userData->dept_name->dept_name : '' }}</td>
                                         <td>{{ $userData->name }}</td>
                                         <td>{{ $userData->email }}</td>
                                         @switch($userData->account_role )
@@ -127,12 +127,12 @@
                                                 <button class="btn btn-warning" data-toggle="modal" data-target="#editModal-{{ $userData->id }}">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
-                                                @if($userData->id !== Auth::user()->id)
+                                                {{-- @if($userData->id !== Auth::user()->id)
                                                     <button class="btn btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
-                                                @endif
-                                                <button class="btn btn-primary" data-toggle="modal" data-target="#changePasswordModal-{{ $userData->id }}">
+                                                @endif --}}
+                                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#changePasswordModal-{{ $userData->id }}">
                                                     <i class="fa fa-key"></i>
                                                 </button>
                                             </div>
@@ -187,7 +187,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <button class="btn btn-primary btn-rounded btn-block">Update</button>
+                                    <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
                                 </div>
                             </form>
                         </div>
@@ -249,6 +249,9 @@
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
 
+<!-- Sweet alert -->
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+
 <script>
     $(document).ready(function() {
         var userTable = $('#userTable').DataTable({
@@ -275,7 +278,11 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(res) {
-                    console.log(res);
+                    swal({
+                        title: res.status > 0 ? 'SUCCESS' : 'ERROR',
+                        type: 'success',
+                        text: res.status > 0 ? 'The user is activate.' : 'The user is deactivated.',
+                    })
                 }
             })
         });

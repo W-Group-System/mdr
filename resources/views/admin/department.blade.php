@@ -2,6 +2,12 @@
 
 @section('css')
     <link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
+
+    <style>
+        .chosen-container {
+            margin-bottom: 5px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -89,7 +95,7 @@
                                         <td>{{ $departmentData->target_date }}</td>
                                         <td>
                                             @foreach ($departmentData->approver as $approver)
-                                                <p>{{ $approver->status_level .'.' . $approver->user->name }}</p>
+                                                <p>{{ $approver->status_level .'. ' . $approver->user->name }}</p>
                                             @endforeach
                                         </td>
                                         <td>
@@ -159,12 +165,15 @@
                                 <button type="button" class="btn btn-sm btn-primary addApprover">
                                     <i class="fa fa-plus"></i>
                                 </button>
+                                <button type="button" class="btn btn-sm btn-danger deleteApprover">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                                 <div class="form-group">
                                     <label for="approver">Approver</label>
 
                                     <div class="approverFormGroup">
                                         @foreach ($departmentData->approver as $approver)
-                                            <select name="approver[]" id="" class="form-control approver" style="margin-bottom: 10px;" required="">
+                                            <select name="approver[]" id="" class="form-control approver" required="">
                                                 <option value=""></option>
                                                 @foreach($approverList as $approverData)
                                                     <option value="{{ $approverData->id }}" {{ $approverData->id == $approver->user_id ? 'selected' : '' }}>{{ $approverData->name }}</option>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
 {
@@ -26,7 +27,7 @@ class UserController extends Controller
 
     public function addUserAccounts(Request $request) {
         $validator = Validator::make($request->all(), [
-            'department' => 'required',
+            // 'department' => 'required',
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:6',
@@ -47,6 +48,7 @@ class UserController extends Controller
             $user->account_status = 1;
             $user->save();
 
+            Alert::success('SUCCESS', 'Successfully Added.');
             return back();
         }
     }
@@ -71,6 +73,7 @@ class UserController extends Controller
                 $user->save();
             }
             
+            Alert::success('SUCCESS', 'Successfully Updated');
             return back();
         }
     }
@@ -81,10 +84,14 @@ class UserController extends Controller
         if ($userData->account_status == 1) {
             $userData->account_status = 0;
             $userData->save();
+
+            return array('status' => 0);
         }
         else {
             $userData->account_status = 1;
             $userData->save();
+
+            return array('status' => 1);
         }
     }
 
@@ -104,6 +111,7 @@ class UserController extends Controller
                 $userData->password = bcrypt($request->password);
                 $userData->save();
 
+                Alert::success('SUCCESS', 'Your password has been changed.');
                 return back();
             }
         }

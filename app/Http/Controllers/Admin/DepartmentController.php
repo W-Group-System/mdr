@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentController extends Controller
 {
@@ -54,6 +55,7 @@ class DepartmentController extends Controller
             $dept->target_date = $request->targetDate;
             $dept->save();
 
+            Alert::success('SUCCESS', 'Successfully Added.');
             return back();
         }
     }
@@ -92,6 +94,7 @@ class DepartmentController extends Controller
                 }
             }
 
+            Alert::success('SUCCESS', 'Successfully Updated.');
             return back();
         }
 
@@ -104,6 +107,7 @@ class DepartmentController extends Controller
         if ($departmentData) {
             $departmentData->delete();
 
+            Alert::success('SUCCESS', 'Successfully Deleted.');
             return back();
         }
     }

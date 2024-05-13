@@ -34,26 +34,20 @@
                                     {{-- <th>Business Plan</th> --}}
                                     <th>Process Development</th>
                                     <th>Innovation</th>
-                                    <th>Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($mdrScoreList as $mdrScoreData)
-                                    @php
-                                        $pdScores = $mdrScoreData->process_development();
-                                        $scoreList = $mdrScoreData->kpi_scores->sortBy('date');
-                                    @endphp
-                                    @foreach ($scoreList as $item)
-                                        <tr>
-                                            {{-- <td><a href="{{ url('mdr_summary/' . $item->id) }}" class="text">{{ $mdrScoreData->dept_name }}</a></td> --}}
-                                            <td>{{ $mdrScoreData->dept_name }} </td>
-                                            <td>{{ date('F', strtotime($item->date)) }}</td>
-                                            <td>{{ $item->score }}</td>
-                                            <td>{{ !empty($item->pd_scores) ? number_format($item->pd_scores, 1) : '0.0' }}</td>
-                                            <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
-                                            <td>0.0</td>
-                                        </tr>
-                                    @endforeach
+                                @php
+                                    $scoreList = $mdrScoreList->kpi_scores->sortBy('date');
+                                @endphp
+                                @foreach ($scoreList as $item)
+                                    <tr>
+                                        <td>{{ $mdrScoreList->dept_name }} </td>
+                                        <td>{{ date('F, Y', strtotime($item->date)) }}</td>
+                                        <td>{{ $item->score }}</td>
+                                        <td>{{ !empty($item->pd_scores) ? number_format($item->pd_scores, 1) : '0.0' }}</td>
+                                        <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

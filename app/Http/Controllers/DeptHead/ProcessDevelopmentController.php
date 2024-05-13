@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProcessDevelopmentController extends Controller
 {
@@ -65,6 +66,7 @@ class ProcessDevelopmentController extends Controller
                         ->where('date', $request->monthOf.'-'.$departmentData->target_date)
                         ->update(['pd_scores' => 0.5]);
 
+                    Alert::success('SUCCESS', 'Successfully Added.');
                     return back();
                 }
                 else {
@@ -108,6 +110,7 @@ class ProcessDevelopmentController extends Controller
                     $attachment->save();
                 }
 
+                Alert::success('SUCCESS', 'Successfully Updated.');
                 return back();
             }
             else {
@@ -119,22 +122,13 @@ class ProcessDevelopmentController extends Controller
                     $processDevelopmentData->save();
                 }
 
+                Alert::success('SUCCESS', 'Successfully Updated.');
                 return back();
             }
         }   
     }
 
     public function delete(Request $request, $id) {
-        // dd($request->all());
-        // $processDevelopmentData = ProcessDevelopment::findOrFail($id);
-        
-        // if ($processDevelopmentData) {
-
-        //     $processDevelopmentData->delete();
-
-        //     return back();
-        // }
-
         $department = Department::with('kpi_scores', 'process_development')
             ->where('id', $request->department_id)
             ->first();
@@ -159,6 +153,7 @@ class ProcessDevelopmentController extends Controller
                 ->update(['pd_scores' => 0.0]);
         }
 
+        Alert::success('SUCCESS', 'Successfully Deleted.');
         return back();
         
     }

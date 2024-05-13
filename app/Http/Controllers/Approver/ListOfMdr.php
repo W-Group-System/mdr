@@ -7,11 +7,13 @@ use App\Admin\Department;
 use App\Admin\DepartmentGroup;
 use App\Admin\DepartmentKPI;
 use App\DeptHead\DepartmentalGoals;
+use App\DeptHead\KpiScore;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ListOfMdr extends Controller
 {
@@ -61,9 +63,32 @@ class ListOfMdr extends Controller
                     ->where('status_level', $approver->status_level)
                     ->get();
 
+
                 if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
+                    $departmentalGoals = $departmentalGoalsList->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
+    
+                    $kpiScores = $kpiScore->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
+    
+                    $processDevelopment = $processDevelopmentList->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
+    
+                    $innovations = $innovation->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
+                    
+                    if ($departmentalGoals && $kpiScores && $processDevelopment && $innovations) {
+                        Alert::error('ERROR', 'Cannot return the MDR because its already been approved.');
+                        
+                        return back();
+                    }
+                    
                     $departmentalGoalsList->each(function($item, $key)use($approver) {
-                        if ($approver->status_level == 2) {
+                        if ($approver->status_level != 1) {
                             $item->update([
                                 'status_level' => 1
                             ]);
@@ -76,7 +101,7 @@ class ListOfMdr extends Controller
                     });
 
                     $processDevelopmentList->each(function($item, $key)use($approver) {
-                        if ($approver->status_level == 2) {
+                        if ($approver->status_level != 1) {
                             $item->update([
                                 'status_level' => 1
                             ]);
@@ -89,7 +114,7 @@ class ListOfMdr extends Controller
                     });
 
                     $kpiScore->each(function($item, $key)use($approver) {
-                        if ($approver->status_level == 2) {
+                        if ($approver->status_level != 1) {
                             $item->update([
                                 'status_level' => 1
                             ]);
@@ -102,7 +127,7 @@ class ListOfMdr extends Controller
                     });
 
                     $innovation->each(function($item, $key)use($approver) {
-                        if ($approver->status_level == 2) {
+                        if ($approver->status_level != 1) {
                             $item->update([
                                 'status_level' => 1
                             ]);
@@ -114,9 +139,11 @@ class ListOfMdr extends Controller
                         }
                     });
 
-                    return back()->with('return', 'Successfully Return');
+                    Alert::success('SUCCESS', 'Successfully Returned.');
+                    return back();
                 }
                 else {
+                    
                     return back();
                 }
             }
@@ -135,6 +162,7 @@ class ListOfMdr extends Controller
                 ]);
             });
 
+            Alert::success('SUCCESS', 'Successfully Added.');
             return back();
         }
         else {
@@ -149,7 +177,7 @@ class ListOfMdr extends Controller
             ->first();
 
         foreach($departmentData->approver as $approver) {
-
+            
             if (auth()->user()->id == $approver->user_id) {
 
                 $departmentalGoalsList = $departmentData->departmentalGoals()
@@ -174,36 +202,78 @@ class ListOfMdr extends Controller
 
                     if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
                         
-                        $departmentalGoalsList->each(function($item, $key)use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
+                        if($departmentData->approver->last() == $approver) {
+                            $departmentalGoalsList->each(function($item, $key)use($approver) {
+                                $item->update([
+                                    'final_approved' => 1
+                                ]);
+                            });
+    
+                            $processDevelopmentList->each(function($item, $key)use($approver) {
+                                $item->update([
+                                    'final_approved' => 1
+                                ]);
+                            });
+    
+                            $kpiScore->each(function($item, $key) use($approver) {
+                                $item->update([
+                                    'final_approved' => 1
+                                ]);
+                            });
+    
+                            $innovation->each(function($item, $key) use($approver) {
+                                $item->update([
+                                    'final_approved' => 1
+                                ]);
+                            });
+                        }
+                        else {
+                            $departmentalGoalsList->each(function($item, $key)use($approver) {
+                                $item->update([
+                                    'status_level' => $approver->status_level+1
+                                ]);
+                            });
+    
+                            $processDevelopmentList->each(function($item, $key)use($approver) {
+                                $item->update([
+                                    'status_level' => $approver->status_level+1
+                                ]);
+                            });
+    
+                            $kpiScore->each(function($item, $key) use($approver) {
+                                $item->update([
+                                    'status_level' => $approver->status_level+1
+                                ]);
+                            });
+    
+                            $innovation->each(function($item, $key) use($approver) {
+                                $item->update([
+                                    'status_level' => $approver->status_level+1
+                                ]);
+                            });
+                        }
 
-                        $processDevelopmentList->each(function($item, $key)use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
-
-                        $kpiScore->each(function($item, $key) use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
-
-                        $innovation->each(function($item, $key) use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
-
-                        return back()->with('success', 'Successfully Approved');
+                        Alert::success('SUCCESS', 'Successfully Approved.');
+                        return back();
                     }
                     else {
                         return back();
                     }
             }
         }        
+    }
+
+    public function submitScores(Request $request) {
+        $kpiScoreData = KpiScore::findOrFail($request->id);
+
+        if ($kpiScoreData) {
+            $kpiScoreData->score = $request->kpiScores;
+            $kpiScoreData->pd_scores = $request->pdScores;
+            $kpiScoreData->innovation_scores = $request->innovationScores;
+            $kpiScoreData->save();
+
+            Alert::success('SUCCESS', 'Successfully Updated.');
+            return back();
+        }
     }
 }

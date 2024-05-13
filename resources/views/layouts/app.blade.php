@@ -57,12 +57,12 @@
                         </a>
                     </li>
                     @if(Auth::user()->account_role == 0)
-                        <li class="{{ Route::currentRouteName() == "manageApprover" ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::currentRouteName() == "manageApprover" ? 'active' : '' }}">
                             <a href="{{ route('manageApprover') }}">
                                 <i class="fa fa-users"></i>
                                 <span class="nav-label">Manage Approver</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="{{ Route::currentRouteName() == 'departments' || Route::currentRouteName() == 'userAccounts' || Route::currentRouteName() == 'departmentKpi' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-cog"></i>
@@ -129,6 +129,9 @@
             @yield('content')
         </div>
     </div>
+
+    {{-- Sweet Alert --}}
+    @include('sweetalert::alert')
 
     <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
 

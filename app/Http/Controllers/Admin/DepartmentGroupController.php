@@ -6,6 +6,7 @@ use App\Admin\DepartmentGroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentGroupController extends Controller
 {
@@ -36,6 +37,7 @@ class DepartmentGroupController extends Controller
             $departmentGroup->name =  $request->departmentGroupName;
             $departmentGroup->save();
 
+            Alert::success('SUCCESS', 'Successfully Added.');
             return back();
         }
     }
@@ -58,6 +60,7 @@ class DepartmentGroupController extends Controller
                 $departmentGroup->save();
             }
 
+            Alert::success('SUCCESS', 'Successfully Updated.');
             return back();
         }
     }
@@ -69,6 +72,7 @@ class DepartmentGroupController extends Controller
         if ($departmentGroupData) {
             $departmentGroupData->delete();
 
+            Alert::success('SUCCESS', 'Successfully Deleted.');
             return back();
         } 
     }

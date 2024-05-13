@@ -14,9 +14,12 @@ use App\DeptHead\OnGoingInnovation;
 use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\EmailNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class MdrController extends Controller
 {
@@ -36,7 +39,7 @@ class MdrController extends Controller
 
         $mdrScoreList = Department::with('kpi_scores', 'process_development')
             ->where('id', auth()->user()->department_id)
-            ->get();
+            ->first();
 
         return view('dept-head.mdr-list', 
             array(
@@ -244,9 +247,11 @@ class MdrController extends Controller
                     ]);
                 });
 
-                return back()->with('approve', 'The MDR is successfully approved');
+                Alert::success('SUCCESS', 'Your MDR is been approved.');
+                return back();
             }
             else {
+                // Alert::error("ERROR", "Your MDR is already approved.");
                 return back();
             }
         }
