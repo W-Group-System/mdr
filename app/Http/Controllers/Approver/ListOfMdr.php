@@ -34,63 +34,93 @@ class ListOfMdr extends Controller
     }
 
     public function returnMdr(Request $request) {
-        $departmentData = Department::with('departmentalGoals', 'process_development', 'kpi_scores')
+        $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
             ->where('id', $request->department_id)
-            ->get();
+            ->first();
 
-        foreach($departmentData as $department) {
+        foreach($departmentData->approver as $approver) {
 
-            $departmentalGoalsList = $department->departmentalGoals()
-                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-                ->where('status_level', 1)
-                ->get();
+            if (auth()->user()->id == $approver->user_id) {
+                $departmentalGoalsList = $departmentData->departmentalGoals()
+                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-            $processDevelopmentList = $department->process_development()
-                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-                ->where('status_level', 1)
-                ->get();
+                $processDevelopmentList = $departmentData->process_development()
+                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-            $kpiScore = $department->kpi_scores()
-                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-                ->where('status_level', 1)
-                ->get();
+                $kpiScore = $departmentData->kpi_scores()
+                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-            $innovation = $department->innovation()
-                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-                ->where('status_level', 1)
-                ->get();
+                $innovation = $departmentData->innovation()
+                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-            if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
-                $departmentalGoalsList->each(function($item, $key) {
-                    $item->update([
-                        'status_level' => 0
-                    ]);
-                });
+                if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
+                    $departmentalGoalsList->each(function($item, $key)use($approver) {
+                        if ($approver->status_level == 2) {
+                            $item->update([
+                                'status_level' => 1
+                            ]);
+                        }
+                        else {
+                            $item->update([
+                                'status_level' => 0
+                            ]);
+                        }
+                    });
 
-                $processDevelopmentList->each(function($item, $key) {
-                    $item->update([
-                        'status_level' => 0
-                    ]);
-                });
+                    $processDevelopmentList->each(function($item, $key)use($approver) {
+                        if ($approver->status_level == 2) {
+                            $item->update([
+                                'status_level' => 1
+                            ]);
+                        }
+                        else {
+                            $item->update([
+                                'status_level' => 0
+                            ]);
+                        }
+                    });
 
-                $kpiScore->each(function($item, $key) {
-                    $item->update([
-                        'status_level' => 0
-                    ]);
-                });
+                    $kpiScore->each(function($item, $key)use($approver) {
+                        if ($approver->status_level == 2) {
+                            $item->update([
+                                'status_level' => 1
+                            ]);
+                        }
+                        else {
+                            $item->update([
+                                'status_level' => 0
+                            ]);
+                        }
+                    });
 
-                $innovation->each(function($item, $key) {
-                    $item->update([
-                        'status_level' => 0
-                    ]);
-                });
+                    $innovation->each(function($item, $key)use($approver) {
+                        if ($approver->status_level == 2) {
+                            $item->update([
+                                'status_level' => 1
+                            ]);
+                        }
+                        else {
+                            $item->update([
+                                'status_level' => 0
+                            ]);
+                        }
+                    });
 
-                return back()->with('return', 'Successfully Return');
+                    return back()->with('return', 'Successfully Return');
+                }
+                else {
+                    return back();
+                }
             }
-            else {
-                return back();
-            }
-        }
+        }        
     }
 
     public function addRemarks(Request $request) {
@@ -114,62 +144,66 @@ class ListOfMdr extends Controller
 
     public function approveMdr(Request $request) {
 
-        // $departmentData = Department::with('departmentalGoals', 'process_development', 'kpi_scores', 'approver')
-        //     ->where('id', $request->department_id)
-        //     ->first();
-        
-        // foreach($departmentData as $department) {
+        $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
+            ->where('id', $request->department_id)
+            ->first();
 
-        //     $departmentalGoalsList = $department->departmentalGoals()
-        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-        //         ->where('status_level', 1)
-        //         ->get();
+        foreach($departmentData->approver as $approver) {
 
-        //     $processDevelopmentList = $department->process_development()
-        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-        //         ->where('status_level', 1)
-        //         ->get();
+            if (auth()->user()->id == $approver->user_id) {
 
-        //     $kpiScore = $department->kpi_scores()
-        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-        //         ->where('status_level', 1)
-        //         ->get();
+                $departmentalGoalsList = $departmentData->departmentalGoals()
+                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                        ->where('status_level', $approver->status_level)
+                        ->get();
 
-        //     $innovation = $department->innovation()
-        //         ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
-        //         ->where('status_level', 1)
-        //         ->get();
+                    $processDevelopmentList = $departmentData->process_development()
+                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                        ->where('status_level', $approver->status_level)
+                        ->get();
 
-        //     if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
-        //         $departmentalGoalsList->each(function($item, $key) {
-        //             $item->update([
-        //                 'status_level' => 0
-        //             ]);
-        //         });
+                    $kpiScore = $departmentData->kpi_scores()
+                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                        ->where('status_level', $approver->status_level)
+                        ->get();
 
-        //         $processDevelopmentList->each(function($item, $key) {
-        //             $item->update([
-        //                 'status_level' => 0
-        //             ]);
-        //         });
+                    $innovation = $departmentData->innovation()
+                        ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $request->monthOf)
+                        ->where('status_level', $approver->status_level)
+                        ->get();
 
-        //         $kpiScore->each(function($item, $key) {
-        //             $item->update([
-        //                 'status_level' => 0
-        //             ]);
-        //         });
+                    if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
+                        
+                        $departmentalGoalsList->each(function($item, $key)use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
 
-        //         $innovation->each(function($item, $key) {
-        //             $item->update([
-        //                 'status_level' => 0
-        //             ]);
-        //         });
+                        $processDevelopmentList->each(function($item, $key)use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
 
-        //         return back()->with('return', 'Successfully Return');
-        //     }
-        //     else {
-        //         return back();
-        //     }
-        // }
+                        $kpiScore->each(function($item, $key) use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
+
+                        $innovation->each(function($item, $key) use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
+
+                        return back()->with('success', 'Successfully Approved');
+                    }
+                    else {
+                        return back();
+                    }
+            }
+        }        
     }
 }

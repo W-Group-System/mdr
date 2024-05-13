@@ -46,7 +46,7 @@
                         <div class="ibox float-e-margins" style="margin-top: 10px;">
                             <div class="ibox-content">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
+                                    <table class="table table-bordered table-hover" id="kpiScores">
                                         <thead>
                                             <tr>
                                                 <th>Month</th>
@@ -86,17 +86,17 @@
                     @php
                         $departmentalGoals = $data->departmentalGoals()
                             ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
-                            ->where('status_level', 1)
+                            ->where('status_level', $approver->status_level)
                             ->get();
-        
+
                         $processDevelopment = $data->process_development()
                             ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
-                            ->where('status_level', 1)
+                            ->where('status_level', $approver->status_level)
                             ->get();
         
                         $innovation = $data->innovation()
                             ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
-                            ->where('status_level', 1)
+                            ->where('status_level', $approver->status_level)
                             ->get();
                     @endphp
                     <div class="col-lg-12">
