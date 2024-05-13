@@ -146,6 +146,7 @@ class MdrController extends Controller
                         $this->computeKpi($grades, $date);
                     }
 
+                    Alert::success('SUCCESS', 'Your KPI is submitted.');
                     return back();
                 }
             }
