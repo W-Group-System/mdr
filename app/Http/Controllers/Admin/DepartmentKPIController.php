@@ -14,17 +14,19 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentKPIController extends Controller
 {
     public function index(Request $request) {
-        $departmentList = Department::select('id', 'dept_name')->get();
-
-        $departmentKpi = DepartmentKPI::where('department_id', $request->department)
+        $departmentList = Department::with('departmentKpi')
+            ->select('id', 'dept_name')
             ->get();
+        
+        // $departmentKpi = DepartmentKPI::where('department_id', $request->department)
+        //     ->get();
         
         $departmentGroupKpiList = DepartmentGroup::get();
 
         return view('admin.department-kpi',
             array(
                 'departmentList' => $departmentList,
-                'departmentKpi' => $departmentKpi,
+                // 'departmentKpi' => $departmentKpi,
                 'departmentGroupKpiList' => $departmentGroupKpiList,
                 'department' => $request->department
             )
