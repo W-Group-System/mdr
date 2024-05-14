@@ -184,6 +184,7 @@
                                         <option value="0" {{ $userData->account_role == 0 ? 'selected' : '' }}>Admin</option>
                                         <option value="1" {{ $userData->account_role == 1 ? 'selected' : '' }}>Approver</option>
                                         <option value="2" {{ $userData->account_role == 2 ? 'selected' : '' }}>Department Head</option>
+                                        <option value="3" {{ $userData->account_role == 3 ? 'selected' : '' }}>User</option>
                                     </select>
                                 </div>
                                 <div>
@@ -228,14 +229,7 @@
     </div>
 @endforeach
 
-<div class="footer">
-    <div class="pull-right">
-        10GB of <strong>250GB</strong> Free.
-    </div>
-    <div>
-        <strong>Copyright</strong> Example Company &copy; 2014-2017
-    </div>
-</div>
+@include('components.footer')
 
 @endsection
 
@@ -279,7 +273,7 @@
                 },
                 success: function(res) {
                     swal({
-                        title: res.status > 0 ? 'SUCCESS' : 'ERROR',
+                        title: "SUCCESS",
                         type: 'success',
                         text: res.status > 0 ? 'The user is activate.' : 'The user is deactivated.',
                     })
@@ -289,7 +283,7 @@
 
         $("[name='department']").chosen({width: "100%"});
 
-        $("#accountRole").chosen({width: "100%"});
+        $("[name='accountRole']").chosen({width: "100%"});
     })
 </script>
 @endpush

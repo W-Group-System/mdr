@@ -4,9 +4,12 @@ namespace App\DeptHead;
 
 use App\Admin\Department;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class ProcessDevelopment extends Model
+class ProcessDevelopment extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $table = 'process_development';
 
     protected $fillable = ['department_id', 'department_group_id', 'description', 'accomplished_date', 'status_level', 'final_approved'];

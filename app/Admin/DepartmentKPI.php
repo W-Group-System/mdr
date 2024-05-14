@@ -7,9 +7,12 @@ use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\MdrAttachments;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class DepartmentKPI extends Model
+class DepartmentKPI extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $table = "department_kpi";
 
     protected $fillable = ['department_id', 'name', 'target', 'department_group_id', 'date'];

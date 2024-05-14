@@ -5,9 +5,12 @@ namespace App\Admin;
 use App\DeptHead\DepartmentalGoals;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Approve extends Model
+class Approve extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $table = 'manage_approvers';
 
     protected $fillable = ['user_id', 'status_level'];

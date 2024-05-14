@@ -10,9 +10,12 @@ use App\DeptHead\OnGoingInnovation;
 use App\DeptHead\ProcessDevelopment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class DepartmentGroup extends Model
+class DepartmentGroup extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $table = 'department_kpi_groups';
 
     protected $primaryKey = 'id';
