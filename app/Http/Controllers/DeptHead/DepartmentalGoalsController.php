@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Validator;
 class DepartmentalGoalsController extends Controller
 {
     public function uploadAttachments(Request $request, $id) {
-        $departmentData = Department::where('id', auth()->user()->department_id)->first();
-
         $validator = Validator::make($request->all(), [
             'file' => 'required|max:2048|mimes:pdf'
         ]);
@@ -29,12 +27,18 @@ class DepartmentalGoalsController extends Controller
                 $fileName = time() . '-' . $file->getClientOriginalName();
                 $file->move(public_path('file'),  $fileName);
 
+                $departmentData = Department::select('id', 'target_date')
+                    ->where('id', auth()->user()->department_id)
+                    ->first();
+
                 $attachment = new Attachments;
                 $attachment->department_id = $departmentData->id;
                 $attachment->department_kpi_id = $id;
                 $attachment->file_path = public_path('file') . '/' . $fileName;
                 $attachment->file_name = $fileName;
-                $attachment->date = date('Y-m').'-'.$departmentData->target_date;
+                $attachment->year = date('Y');
+                $attachment->month = date('m');
+                $attachment->deadline = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
                 $attachment->save();
 
                 return back();

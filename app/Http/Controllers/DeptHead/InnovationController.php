@@ -42,7 +42,8 @@ class InnovationController extends Controller
         else {
             $checkStatus = Innovation::where('status_level', 1)
                 ->where('department_id', $department->id)
-                ->where('date', $request->monthOf . '-' . $department->target_date)
+                ->where('year', date('Y', strtotime($request->monthOf)))
+                ->where('month', date('m', strtotime($request->monthOf)))
                 ->get();
 
             if ($checkStatus->isNotEmpty()) {
@@ -61,7 +62,10 @@ class InnovationController extends Controller
                     $innovation->start_date = date('Y-m-d', strtotime($request->startDate));
                     $innovation->target_date = date('Y-m-d', strtotime($request->targetDate));
                     $innovation->actual_date = date('Y-m-d', strtotime($request->actualDate));
-                    $innovation->date = $request->monthOf.'-'.$department->target_date;
+                    $innovation->year = date('Y', strtotime($request->monthOf));
+                    $innovation->month = date('m', strtotime($request->monthOf));
+                    $innovation->deadline = date('Y-m', strtotime("+1month")).'-'.$department->target_date;
+                    $innovation->remarks = $request->remarks;
                     $innovation->save();
     
                     $file = $request->file('file');
@@ -76,13 +80,16 @@ class InnovationController extends Controller
                         $innovationAttachments->innovation_id = $innovation->id;
                         $innovationAttachments->filepath = public_path('file') . '/' .$fileName;
                         $innovationAttachments->filename = $fileName;
-                        $innovationAttachments->date = $request->monthOf.'-'.$department->target_date;
+                        $innovationAttachments->year = $innovation->year;
+                        $innovationAttachments->month = $innovation->month;
+                        $innovationAttachments->deadline = date('Y-m', strtotime("+1month")).'-'.$department->target_date;
                         $innovationAttachments->save();
                     }
     
                     $department->kpi_scores()
                         ->where('department_id', $department->id)
-                        ->where('date', $request->monthOf.'-'.$department->target_date)
+                        ->where('year',  date('Y', strtotime($request->monthOf)))
+                        ->where('month',  date('m', strtotime($request->monthOf)))
                         ->update(['innovation_scores' => 1.0]);
     
                     Alert::success('SUCCESS', 'Successfully Added.');
@@ -97,27 +104,34 @@ class InnovationController extends Controller
     }
 
     public function delete(Request $request, $id) {
-        $department = Department::with('kpi_scores', 'innovation')
+        $department = Department::with('kpi_scores')
             ->where('id', $request->department_id)
             ->first();
         
-        $innovationData = $department->innovation()
-            ->where('id', $id)
-            ->first();
+        // $innovationData = $department->innovation()
+        //     ->where('id', $id)
+        //     ->first();
         
-        if (!empty($innovationData)) {
+        // if (!empty($innovationData)) {
+        //     $innovationData->delete();
+        // }
+
+        $innovationData = Innovation::findOrFail($id);
+        if ($innovationData) {
             $innovationData->delete();
         }
 
         $innovationList = $department->innovation()
-            ->where('date', $request->date)
+            ->where('year', $request->year)
+            ->where('month', $request->month)
             ->where('department_id', $request->department_id)
             ->get();
 
         if (count($innovationList) == 0) {
             $department->kpi_scores()
                 ->where('department_id', $request->department_id)
-                ->where('date', $request->date)
+                ->where('year', $request->year)
+                ->where('month', $request->month)
                 ->update(['innovation_scores' => 0.0]);
         }
 
@@ -154,7 +168,7 @@ class InnovationController extends Controller
                 $innovation->start_date = date('Y-m-d', strtotime($request->startDate));
                 $innovation->target_date = date('Y-m-d', strtotime($request->targetDate));
                 $innovation->actual_date = date('Y-m-d', strtotime($request->actualDate));
-                $innovation->date = $request->monthOf.'-'.$department->target_date;
+                $innovation->remarks = $request->remarks;
                 $innovation->save();
             }
 
@@ -171,7 +185,9 @@ class InnovationController extends Controller
                     $innovationAttachments->innovation_id = $innovation->id;
                     $innovationAttachments->filepath = public_path('file') . '/' .$fileName;
                     $innovationAttachments->filename = $fileName;
-                    $innovationAttachments->date = $request->monthOf.'-'.$department->target_date;
+                    $innovationAttachments->year = $innovation->year;
+                    $innovationAttachments->month = $innovation->month;
+                    $innovationAttachments->deadline = date('Y-m', strtotime("+1month")).'-'.$department->target_date;
                     $innovationAttachments->save();
                 }
 

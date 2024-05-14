@@ -13,34 +13,47 @@
 
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('img/wgroup.png') }}" type="image/x-icon">
 
     <!-- Gritter -->
     <link href="js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
 </head>
 
+<style>
+    #login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .loginscreen {
+        padding: 0;
+        margin-bottom: 70px;
+    }
+</style>
+
 <body class="gray-bg">
-    <div class="middle-box text-center loginscreen animated fadeInDown">
-        <div>
-            <h2>Online MDR System</h2>
-            <h3 class="text-center">Login</h3>
-            @if($errors->any())
-                <div class="alert alert-danger">{{ $errors->first() }}</div>
-            @endif
-            <form class="m-t" role="form" action="{{ route('login') }}" method="POST">
-                @csrf
-                <div class="form-group mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Email" required="">
-                </div>
-                <div class="form-group mb-3">
-                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
-                </div>
-                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
-    
-                <a href="{{ route('password.request') }}"><small>Forgot password?</small></a>
-                {{-- <p class="text-muted text-center"><small>Do not have an account?</small></p>
-                <a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a> --}}
-            </form>
-            {{-- <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p> --}}
+    <div class="container my-auto" id="login-container" style="height: 100vh">
+        <div class="middle-box text-center loginscreen animated fadeInDown">
+            <div>
+                <h2>Online MDR System</h2>
+                <h3 class="text-center">Login</h3>
+                @if($errors->any())
+                    <div class="alert alert-danger">{{ $errors->first() }}</div>
+                @endif
+                <form class="m-t" role="form" action="{{ route('login') }}" method="POST">
+                    @csrf
+                    <div class="form-group mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Email" required="">
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="password" name="password" class="form-control" placeholder="Password" required="">
+                    </div>
+                    <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+        
+                    <a href="{{ route('password.request') }}"><small>Forgot password?</small></a>
+                </form>
+            </div>
         </div>
     </div>
 

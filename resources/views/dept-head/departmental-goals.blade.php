@@ -41,7 +41,7 @@
                                     @php
                                         $dptGoals = $item->departmentalGoals()
                                             ->where('department_id', auth()->user()->department_id)
-                                            ->where('date', '>=', now())
+                                            ->where('deadline', '>=', now())
                                             ->get();
                                     @endphp
                                     @if(count($dptGoals) > 0)
@@ -53,7 +53,7 @@
                                                 </td>
                                             </td>
                                             <td>
-                                                <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" readonly>{{ $goals->remarks }}</textarea>
+                                                <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" {{ $goals->status_level == 1 ? 'readonly' : '' }}>{{ $goals->remarks }}</textarea>
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $goals->status_level == 1 ? 'disabled' : '' }}>
@@ -62,7 +62,7 @@
         
                                                 @php
                                                     $fileAttachments = $item->attachments()
-                                                        ->where('date', '>=', now())
+                                                        ->where('deadline', '>=', now())
                                                         ->get();
                                                 @endphp
                                                 @foreach ($fileAttachments as $file)
@@ -92,6 +92,23 @@
                                             <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
                                                 <i class="fa fa-upload"></i>
                                             </button>
+
+                                            @php
+                                                $fileAttachments = $item->attachments()
+                                                    ->where('deadline', '>=', now())
+                                                    ->get();
+                                            @endphp
+                                            @foreach ($fileAttachments as $file)
+                                                <div>
+                                                    <a href="{{ asset('file/' . $file->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+
+                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endforeach
                                         </td>
                                     @endif
                                 </tr>

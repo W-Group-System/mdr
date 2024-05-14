@@ -23,6 +23,7 @@
                             <th>Start Date</th>
                             <th>Target Date of Completion</th>
                             <th>Actual Date of Completion</th>
+                            <th>Remarks</th>
                             <th>Attachments</th>
                             <th>Actions</th>
                         </tr>
@@ -31,7 +32,8 @@
                         @php
                             $innovationList = $departmentKpiData->innovation()
                                 ->where('department_id', auth()->user()->department_id)
-                                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), date('Y-m'))
+                                ->where('year', date('Y'))
+                                ->where('month', date('m'))
                                 ->get();
                         @endphp
                         @foreach ($innovationList as $innovationData)
@@ -39,9 +41,10 @@
                                 <td>{{ $innovationData->projects }}</td>
                                 <td>{{ $innovationData->project_summary }}</td>
                                 <td>{{ $innovationData->work_order_number }}</td>
-                                <td>{{ $innovationData->start_date }}</td>
-                                <td>{{ $innovationData->target_date }}</td>
-                                <td>{{ $innovationData->actual_date }}</td>
+                                <td>{{ date('F d, Y', strtotime($innovationData->start_date)) }}</td>
+                                <td>{{ date('F d, Y', strtotime($innovationData->target_date)) }}</td>
+                                <td>{{ date('F d, Y', strtotime($innovationData->actual_date)) }}</td>
+                                <td>{{ $innovationData->remarks }}</td>
                                 <td width="100">
 
                                     @foreach ($innovationData->innovationAttachments as $file)
@@ -63,7 +66,8 @@
                                         @csrf
 
                                         <input type="hidden" name="department_id" value="{{ $innovationData->department_id }}">
-                                        <input type="hidden" name="date" value="{{ $innovationData->date }}">
+                                        <input type="hidden" name="year" value="{{ $innovationData->year }}">
+                                        <input type="hidden" name="month" value="{{ $innovationData->month }}">
 
                                         <button type="submit" class="btn btn-sm btn-danger" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
@@ -89,7 +93,7 @@
             <div class="modal-body p-4" >
                 <div class="row">
                     <div class="col-lg-12">
-                        <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data" autocomplete="off">
                             @csrf
 
                             <input type="hidden" name="department_group_id" value="{{ $departmentKpiData->id }}">
@@ -138,8 +142,12 @@
                                 <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}">
                             </div>
                             <div class="form-group">
-                                <label for="file">Month Of</label>
+                                <label for="file">File</label>
                                 <input type="file" name="file[]" id="file" class="form-control" multiple>
+                            </div>
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <textarea name="remarks" id="remarks" class="form-control input-sm" cols="30" rows="10"></textarea>
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-sm btn-primary btn-block" type="submit">Add</button>
@@ -206,13 +214,17 @@
                                     <input type="text" class="form-control input-sm" name="actualDate" value="{{ $innovationData->actual_date }}">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="monthOf">Month Of</label>
-                                <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ date('Y-m', strtotime($innovationData->date)) }}">
+                                <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}">
+                            </div> --}}
+                            <div class="form-group">
+                                <label for="file">File</label>
+                                <input type="file" name="file[]" id="file" class="form-control" multiple>
                             </div>
                             <div class="form-group">
-                                <label for="file">Month Of</label>
-                                <input type="file" name="file[]" id="file" class="form-control" multiple>
+                                <label for="remarks">Remarks</label>
+                                <textarea name="remarks" id="remarks" class="form-control input-sm" cols="30" rows="10">{{ $innovationData->remarks }}</textarea>
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-sm btn-primary btn-block" type="submit">Update</button>
