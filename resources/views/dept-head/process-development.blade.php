@@ -20,6 +20,7 @@
                             <th>Description</th>
                             <th>Accomplished Date</th>
                             <th>Attachments</th>
+                            <th>Remarks</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -27,7 +28,8 @@
                         @php
                             $processDevelopmentList = $departmentKpiData->processDevelopment()
                                 ->where('department_id', auth()->user()->department_id)
-                                ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), date('Y-m'))
+                                ->where('year', date('Y'))
+                                ->where('month', date('m'))
                                 ->get();
                         @endphp
                         @foreach ($processDevelopmentList as $processDevelopmentData)
@@ -39,8 +41,9 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
+                                <td>{{ $processDevelopmentData->remarks }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal-{{ $processDevelopmentData->id }}" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
                                         <i class="fa fa-pencil"></i>
                                     </button>
 
@@ -48,7 +51,8 @@
                                         @csrf
 
                                         <input type="hidden" name="department_id" value="{{ $processDevelopmentData->department_id }}">
-                                        <input type="hidden" name="date" value="{{ $processDevelopmentData->date }}">
+                                        <input type="hidden" name="year" value="{{ $processDevelopmentData->year }}">
+                                        <input type="hidden" name="month" value="{{ $processDevelopmentData->month }}">
 
                                         <button type="submit" class="btn btn-sm btn-danger" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
@@ -108,6 +112,10 @@
                                     <input type="month" name="monthOf" id="monthOf" class="form-control input-sm" max="{{ date('Y-m') }}">
                                 </div>
                                 <div class="form-group">
+                                    <label for="remarks">Remarks</label>
+                                    <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10"></textarea>
+                                </div>
+                                <div class="form-group">
                                     <button class="btn btn-sm btn-primary btn-block">Add</button>
                                 </div>
                             </form>
@@ -119,7 +127,7 @@
     </div>
 
     @foreach ($processDevelopmentList as $pd)
-        <div class="modal fade" id="editPdModal">
+        <div class="modal fade" id="editPdModal-{{ $pd->id }}">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -159,6 +167,10 @@
                                             </span>
                                             <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="remarks">Remarks</label>
+                                        <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $pd->remarks }}</textarea>
                                     </div>
                                     <div class="form-group">
                                         <button class="btn btn-sm btn-primary btn-block">Update</button>

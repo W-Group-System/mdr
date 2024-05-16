@@ -32,7 +32,8 @@ class ProcessDevelopmentController extends Controller
         }
         else {
             $checkStatus = ProcessDevelopment::where('status_level', 1)
-                ->where('date', $request->monthOf . '-' . $departmentData->target_date)
+                ->where('year', date('Y', strtotime($request->monthOf)))
+                ->where('month', date('m', strtotime($request->monthOf)))
                 ->where('department_id', auth()->user()->department_id)
                 ->get();
 
@@ -43,12 +44,15 @@ class ProcessDevelopmentController extends Controller
             else {
                 if($request->hasFile('file')) {
                     $processDevelopment = new ProcessDevelopment;
-                    $processDevelopment->department_id = auth()->user()->department_id;
+                    $processDevelopment->department_id = $departmentData->id;
                     $processDevelopment->department_group_id = $request->pd_id;
                     $processDevelopment->description = $request->description;
                     $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
                     $processDevelopment->status_level = 0;
-                    $processDevelopment->date = $request->monthOf . '-' . $departmentData->target_date;
+                    $processDevelopment->year = date('Y', strtotime($request->monthOf));
+                    $processDevelopment->month = date('m', strtotime($request->monthOf));
+                    $processDevelopment->deadline = date('Y-m', strtotime('+1month')).'-'.$departmentData->target_date;
+                    $processDevelopment->remarks = $request->remarks;
                     $processDevelopment->save();
     
                     $file = $request->file('file');
@@ -63,7 +67,8 @@ class ProcessDevelopmentController extends Controller
     
                     $departmentData->kpi_scores()
                         ->where('department_id', $departmentData->id)
-                        ->where('date', $request->monthOf.'-'.$departmentData->target_date)
+                        ->where('year', date('Y', strtotime($request->monthOf)))
+                        ->where('month', date('m', strtotime($request->monthOf)))
                         ->update(['pd_scores' => 0.5]);
 
                     Alert::success('SUCCESS', 'Successfully Added.');
@@ -95,6 +100,7 @@ class ProcessDevelopmentController extends Controller
                 if ($processDevelopmentData) {
                     $processDevelopmentData->description = $request->description;
                     $processDevelopmentData->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
+                    $processDevelopmentData->remarks = $request->remarks;
                     $processDevelopmentData->save();
                 }
 
@@ -115,10 +121,11 @@ class ProcessDevelopmentController extends Controller
             }
             else {
                 $processDevelopmentData = ProcessDevelopment::findOrFail($id);
-
+                
                 if ($processDevelopmentData) {
                     $processDevelopmentData->description = $request->description;
                     $processDevelopmentData->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
+                    $processDevelopmentData->remarks = $request->remarks;
                     $processDevelopmentData->save();
                 }
 
@@ -133,23 +140,23 @@ class ProcessDevelopmentController extends Controller
             ->where('id', $request->department_id)
             ->first();
         
-        $processDevelopmentData = $department->process_development()
-            ->where('id', $id)
-            ->first();
+        $processDevelopmentData = ProcessDevelopment::findOrFail($id);
 
-        if (!empty($processDevelopmentData)) {
+        if ($processDevelopmentData) {
             $processDevelopmentData->delete();
         }
 
         $processDevelopmentList = $department->process_development()
-            ->where('date', $request->date)
+            ->where('year', date('Y', strtotime($request->monthOf)))
+            ->where('month', date('m', strtotime($request->monthOf)))
             ->where('department_id', $request->department_id)
             ->get();
 
         if (count($processDevelopmentList) == 0) {
             $department->kpi_scores()
                 ->where('department_id', $request->department_id)
-                ->where('date', $request->date)
+                ->where('year', date('Y', strtotime($request->monthOf)))
+                ->where('month', date('m', strtotime($request->monthOf)))
                 ->update(['pd_scores' => 0.0]);
         }
 

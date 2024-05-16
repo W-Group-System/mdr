@@ -11,7 +11,7 @@ class Innovation extends Model implements Auditable
 
     protected $table = 'innovations';
 
-    // protected $fillable = ['department_group_id', 'department_id', 'projects', 'project_summary', 'work_order_number', 'start_date', 'end_date', 'actual_date', 'date', 'status_level', 'final_approved'];
+    protected $fillable = ['department_group_id', 'department_id', 'projects', 'project_summary', 'work_order_number', 'start_date', 'end_date', 'actual_date', 'date', 'status_level', 'final_approved'];
 
     public function innovationAttachments() {
         return $this->hasMany(InnovationAttachments::class);

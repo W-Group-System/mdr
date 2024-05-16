@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/addActual/{id}', 'DeptHead\DepartmentalGoalsController@addActual');
         Route::post('/addRemarks/{id}', 'DeptHead\DepartmentalGoalsController@addRemarks');
         Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
-        Route::post('/deleteAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
+        Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
 
         Route::post('/submitKpi', 'DeptHead\MdrController@submitKpi');
 

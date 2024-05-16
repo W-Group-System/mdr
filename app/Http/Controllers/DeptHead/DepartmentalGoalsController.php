@@ -50,8 +50,7 @@ class DepartmentalGoalsController extends Controller
     }
 
     public function deleteAttachments(Request $request) {
-        
-        $attachmentData = Attachments::where('id', $request->id)->first();
+        $attachmentData = Attachments::findOrFail($request->id);
 
         if ($attachmentData) {
             $attachmentData->delete();

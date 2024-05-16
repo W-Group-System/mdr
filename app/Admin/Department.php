@@ -2,6 +2,7 @@
 
 namespace App\Admin;
 
+use App\Approver\MdrSummary;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\KpiScore;
@@ -44,5 +45,9 @@ class Department extends Model implements Auditable
 
     public function approver() {
         return $this->hasMany(Approve::class);
+    }
+
+    public function mdrSummary() {
+        return $this->hasMany(MdrSummary::class);
     }
 }

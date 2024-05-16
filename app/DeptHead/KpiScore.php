@@ -11,5 +11,5 @@ class KpiScore extends Model implements Auditable
 
     protected $table = 'kpi_scores';
 
-    protected $fillable = ['department_id', 'grade', 'rating', 'score', 'date', 'pd_scores', 'status_level', 'innovation_scores', 'final_approved'];
+    protected $fillable = ['department_id', 'grade', 'rating', 'score', 'date', 'pd_scores', 'status_level', 'innovation_scores', 'final_approved', 'total_rating', 'timeliness'];
 }

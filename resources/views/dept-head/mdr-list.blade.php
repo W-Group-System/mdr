@@ -44,12 +44,12 @@
                                 @foreach ($scoreList as $item)
                                     <tr>
                                         <td>{{ $mdrScoreList->dept_name }} </td>
-                                        <td>{{ $item->month . '-' . $item->year}}</td>
+                                        <td>{{ date("F, Y", strtotime($item->year . '-' . $item->month))}}</td>
                                         <td>{{ $item->score }}</td>
                                         <td>{{ !empty($item->pd_scores) ? number_format($item->pd_scores, 1) : '0.0' }}</td>
                                         <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
-                                        <td>0.0</td>
-                                        <td>0.0</td>
+                                        <td>{{ $item->timeliness }}</td>
+                                        <td>{{ $item->total_rating }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

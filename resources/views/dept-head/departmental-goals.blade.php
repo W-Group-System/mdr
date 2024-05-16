@@ -199,11 +199,12 @@
                     
                     $.ajax({
                         type: "POST",
-                        url: "/deleteAttachments",
+                        url: "{{ url('deleteKpiAttachments') }}",
                         data: {
                             id: id
                         },
-                        success: function() {
+                        success: function(res) {
+                            console.log(res);
                             swal("Deleted!", "Your file has been deleted.", "success");
 
                             setTimeout(() => {

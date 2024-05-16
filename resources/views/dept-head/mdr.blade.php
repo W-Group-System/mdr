@@ -34,12 +34,18 @@
                             <thead>
                                 <tr>
                                     <th></th>
+                                    <th>MDR Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td> {{ auth()->user()->name  }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mdrStatusModal">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </td>
                                     <td>
                                         <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">Approve</button>
                                     </td>
@@ -71,6 +77,42 @@
                                         <button type="submit" class="btn btn-sm btn-primary pull-right">Approve</button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="mdrStatusModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title">MDR Status</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Approver</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($approver as $approverData)
+                                            <tr>
+                                                <td>{{ $approverData->status_level }}</td>
+                                                <td>{{ $approverData->user->name }}</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

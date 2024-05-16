@@ -60,8 +60,10 @@
                                                 $kpiScores = $data->kpi_scores()
                                                     // ->where('status_level', '<>', 0)
                                                     ->where('status_level', $approver->status_level)
-                                                    ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")') , $yearAndMonth)
+                                                    ->where('year', date('Y', strtotime($yearAndMonth)))
+                                                    ->where('month', date('m', strtotime($yearAndMonth)))
                                                     ->get();
+                                                
                                             @endphp
                                             @if(count($kpiScores) > 0)
                                                 @foreach ($kpiScores as $score)
@@ -70,7 +72,7 @@
 
                                                         <input type="hidden" name="id" value="{{ $score->id }}">
                                                         <tr>
-                                                            <td>{{ date('F Y', strtotime($score->date)) }}</td>
+                                                            <td>{{ date('F Y', strtotime($score->year.'-'.$score->month)) }}</td>
                                                             <td><input type="text" name="kpiScores" class="form-control input-sm" value="{{ $score->score }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                             <td><input type="text" name="pdScores" class="form-control input-sm" value="{{ $score->pd_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                             <td><input type="text" name="innovationScores" class="form-control input-sm" value="{{ $score->innovation_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
@@ -93,19 +95,23 @@
                     </div>
                     @php
                         $departmentalGoals = $data->departmentalGoals()
-                            ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
+                            ->where('year', date('Y', strtotime($yearAndMonth)))
+                            ->where('month', date('m', strtotime($yearAndMonth)))
                             ->where('status_level', $approver->status_level)
                             ->get();
 
                         $processDevelopment = $data->process_development()
-                            ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
+                            ->where('year', date('Y', strtotime($yearAndMonth)))
+                            ->where('month', date('m', strtotime($yearAndMonth)))
                             ->where('status_level', $approver->status_level)
                             ->get();
         
                         $innovation = $data->innovation()
-                            ->where(DB::raw('DATE_FORMAT(date, "%Y-%m")'), $yearAndMonth)
+                            ->where('year', date('Y', strtotime($yearAndMonth)))
+                            ->where('month', date('m', strtotime($yearAndMonth)))
                             ->where('status_level', $approver->status_level)
                             ->get();
+                        
                     @endphp
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins" style="margin-top: 10px;">
@@ -137,7 +143,8 @@
                                                                 <td width="200">
                                                                     @csrf
                                                                     
-                                                                    <input type="hidden" name="date" value="{{ $item->date }}">
+                                                                    <input type="hidden" name="year" value="{{ $item->year }}">
+                                                                    <input type="hidden" name="month" value="{{ $item->month }}">
                                                                     <input type="hidden" name="department_id" value="{{ $item->department_id }}">
         
                                                                     <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" {{ $approver->status_level != 1 ? 'disabled' : '' }}>{{ $item->remarks }}</textarea>
@@ -182,6 +189,7 @@
                                                 <th>Target Date of Completion</th>
                                                 <th>Actual Date of Completion</th>
                                                 <th>Attachments</th>
+                                                <th>Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -200,6 +208,11 @@
                                                             </a>
                                                         @endforeach
                                                     </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#innovationRemarksModal-{{ $innovationData->id }}">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -208,6 +221,30 @@
                             </div>
                         </div>
                     </div>
+
+                    @foreach ($innovation as $innovationData)
+                    <div class="modal fade" id="innovationRemarksModal-{{ $innovationData->id }}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title">Add Remarks</h1>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $innovationData->remarks }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-sm btn-block btn-primary">Add Remarks</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
                     
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins" style="margin-top: 10px;">
@@ -221,6 +258,7 @@
                                                 <th>Description</th>
                                                 <th>Accomplished Date</th>
                                                 <th>Attachments</th>
+                                                <th>Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -233,6 +271,11 @@
                                                             <i class="fa fa-eye"></i>
                                                         </a>
                                                     </td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#processDevelopmentRemarks-{{ $item->id }}">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -241,6 +284,30 @@
                             </div>
                         </div>
                     </div>
+
+                    @foreach ($processDevelopment as $processDevelopmentData)
+                    <div class="modal fade" id="processDevelopmentRemarks-{{ $processDevelopmentData->id }}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title">Add Remarks</h1>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $processDevelopmentData->remarks }}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-sm btn-block btn-primary">Add Remarks</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
         
                     <div class="col-lg-12">
                         <div class="ibox float-e-margins" style="margin-top: 10px;">
