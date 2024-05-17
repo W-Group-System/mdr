@@ -12,6 +12,7 @@ use App\DeptHead\BusinessPlan;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\KpiScore;
+use App\DeptHead\MdrStatus;
 use App\DeptHead\OnGoingInnovation;
 use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
@@ -30,8 +31,14 @@ class MdrController extends Controller
         $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment', 'innovation')
             ->get();
 
-        $approver = Approve::where('department_id', auth()->user()->department_id)
-            ->orderBy('status_level', 'ASC')
+        // $approver = Approve::where('department_id', auth()->user()->department_id)
+        //     ->orderBy('status_level', 'ASC')
+        //     ->get();
+
+        $approver = MdrSummary::with('mdrStatus')
+            ->where('year', date('Y'))
+            ->where('month', date('m'))
+            ->where('department_id', auth()->user()->department_id)
             ->get();
 
         return view('dept-head.mdr',
@@ -207,6 +214,44 @@ class MdrController extends Controller
             $kpiScore->deadline = $targetDate;
             $kpiScore->save();
         }
+
+        $departmentData = Department::where('id', auth()->user()->department_id)->first();
+
+        $mdrSummary = MdrSummary::with('mdrStatus')
+            ->where('department_id', $departmentData->id)
+            ->where('year', date('Y', strtotime($date)))
+            ->where('month', date('m', strtotime($date)))
+            ->first();
+
+        $deadlineDate = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
+
+        if(empty($mdrSummary)) {
+            $mdrSummary = new MdrSummary;
+            $mdrSummary->department_id =$departmentData->id;
+            $mdrSummary->user_id = auth()->user()->id;
+            $mdrSummary->deadline = $deadlineDate;
+            $mdrSummary->submission_date = date('Y-m-d');
+            $mdrSummary->status = $deadlineDate >= date('Y-m-d') ? 'On-Time' : 'Delayed';
+            $mdrSummary->year = date('Y', strtotime($date));
+            $mdrSummary->month = date('m', strtotime($date));
+            $mdrSummary->rate = $kpiScoreData->total_rating;
+            $mdrSummary->save();
+        }
+
+        $mdrStatus = $mdrSummary->mdrStatus()
+            ->where('mdr_summary_id', $mdrSummary->id)
+            ->get();
+
+        if ($mdrStatus->isEmpty()) {
+            foreach($departmentData->approver as $data) {
+                $mdrStatus = new MdrStatus;
+                $mdrStatus->user_id = $data->user_id;
+                $mdrStatus->mdr_summary_id = $mdrSummary->id;
+                $mdrStatus->status = 0;
+                $mdrStatus->save();
+            }
+        }
+        
     }
 
     public function approveMdr(Request $request) {
@@ -269,25 +314,26 @@ class MdrController extends Controller
                 ]);
             });
 
-            $mdrSummary = MdrSummary::where('department_id', $departmentData->id)
+            MdrSummary::where('department_id', $departmentData->id)
                 ->where('year', date('Y', strtotime($request->monthOf)))
                 ->where('month', date('m', strtotime($request->monthOf)))
-                ->first();
+                ->update(['rate' => $kpiScore->total_rating]);
+                // ->first();
 
-            $deadlineDate = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
+            // $deadlineDate = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
 
-            if(empty($mdrSummary)) {
-                $mdrSummary = new MdrSummary;
-                $mdrSummary->department_id =$departmentData->id;
-                $mdrSummary->user_id = auth()->user()->id;
-                $mdrSummary->deadline = $deadlineDate;
-                $mdrSummary->submission_date = date('Y-m-d');
-                $mdrSummary->status = $deadlineDate >= date('Y-m-d') ? 'On-Time' : 'Delayed';
-                $mdrSummary->year = date('Y', strtotime($request->monthOf));
-                $mdrSummary->month = date('m', strtotime($request->monthOf));
-                $mdrSummary->rate = $kpiScore->total_rating;
-                $mdrSummary->save();
-            }
+            // if(empty($mdrSummary)) {
+            //     $mdrSummary = new MdrSummary;
+            //     $mdrSummary->department_id =$departmentData->id;
+            //     $mdrSummary->user_id = auth()->user()->id;
+            //     $mdrSummary->deadline = $deadlineDate;
+            //     $mdrSummary->submission_date = date('Y-m-d');
+            //     $mdrSummary->status = $deadlineDate >= date('Y-m-d') ? 'On-Time' : 'Delayed';
+            //     $mdrSummary->year = date('Y', strtotime($request->monthOf));
+            //     $mdrSummary->month = date('m', strtotime($request->monthOf));
+            //     $mdrSummary->rate = $kpiScore->total_rating;
+            //     $mdrSummary->save();
+            // }
 
             Alert::success('SUCCESS', 'Your MDR is been approved.');
             return back();

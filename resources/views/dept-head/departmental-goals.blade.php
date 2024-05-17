@@ -42,21 +42,22 @@
                                         $dptGoals = $item->departmentalGoals()
                                             ->where('department_id', auth()->user()->department_id)
                                             ->where('deadline', '>=', now())
+                                            ->where('final_approved', 0)
                                             ->get();
                                     @endphp
                                     @if(count($dptGoals) > 0)
                                         @foreach ($dptGoals as $goals)
                                             <td>
-                                                <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" {{ $goals->status_level == 1 ? 'readonly' : '' }}>{{ $goals->actual }}</textarea>
+                                                <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" {{ $goals->status_level != 0 ? 'readonly' : '' }}>{{ $goals->actual }}</textarea>
                                                 <td>
-                                                    <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $goals->grade }}" {{ $goals->status_level == 1 ? 'readonly' : '' }}>
+                                                    <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $goals->grade }}" {{ $goals->status_level != 0 ? 'readonly' : '' }}>
                                                 </td>
                                             </td>
                                             <td>
-                                                <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" {{ $goals->status_level == 1 ? 'readonly' : '' }}>{{ $goals->remarks }}</textarea>
+                                                <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" {{ $goals->status_level != 0 ? 'readonly' : '' }}>{{ $goals->remarks }}</textarea>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $goals->status_level == 1 ? 'disabled' : '' }}>
+                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $goals->status_level != 0 ? 'disabled' : '' }}>
                                                     <i class="fa fa-upload"></i>
                                                 </button>
         
@@ -67,11 +68,11 @@
                                                 @endphp
                                                 @foreach ($fileAttachments as $file)
                                                     <div>
-                                                        <a href="{{ asset('file/' . $file->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                        <a href="{{ url('file/' . $file->file_name) }}" class="btn btn-sm btn-info" target="_blank">
                                                             <i class="fa fa-eye"></i>
                                                         </a>
         
-                                                        <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}" {{ $goals->status_level == 1 ? 'disabled' : '' }}>
+                                                        <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $file->id }}" {{ $goals->status_level != 0 ? 'disabled' : '' }}>
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>

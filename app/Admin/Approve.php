@@ -19,7 +19,4 @@ class Approve extends Model implements Auditable
         return $this->belongsTo(User::class);
     }
 
-    public function dgStatusLevel() {
-        return $this->hasMany(DepartmentalGoals::class, 'status_level', 'status_level');
-    }
 }

@@ -96,7 +96,6 @@
                                 <table class="table table-hover">
                                     <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Approver</th>
                                         <th>Status</th>
                                         <th>Date</th>
@@ -104,12 +103,16 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($approver as $approverData)
-                                            <tr>
-                                                <td>{{ $approverData->status_level }}</td>
-                                                <td>{{ $approverData->user->name }}</td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
+                                            @php
+                                                $mdrStatus = $approverData->mdrStatus()->get();
+                                            @endphp
+                                            @foreach ($mdrStatus as $item)
+                                                <tr>
+                                                    <td>{{ $item->users->name }}</td>
+                                                    <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
+                                                    <td>{{ $item->start_date }}</td>
+                                                </tr>
+                                            @endforeach
                                         @endforeach
                                     </tbody>
                                 </table>

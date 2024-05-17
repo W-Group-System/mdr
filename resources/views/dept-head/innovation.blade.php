@@ -34,6 +34,7 @@
                                 ->where('department_id', auth()->user()->department_id)
                                 ->where('year', date('Y'))
                                 ->where('month', date('m'))
+                                ->where('final_approved', 0)
                                 ->get();
                         @endphp
                         @foreach ($innovationList as $innovationData)
@@ -52,13 +53,13 @@
                                             <i class="fa fa-eye"></i>
                                         </a>
                                         
-                                        <button class="btn btn-sm btn-danger" name="deleteAttachments[]" type="button" data-id="{{ $file->id }}" id="deleteAttachments" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
+                                        <button class="btn btn-sm btn-danger" name="deleteAttachments[]" type="button" data-id="{{ $file->id }}" id="deleteAttachments" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     @endforeach
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $innovationData->id }}" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $innovationData->id }}" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
                                         <i class="fa fa-pencil"></i>
                                     </button>
 
@@ -69,7 +70,7 @@
                                         <input type="hidden" name="year" value="{{ $innovationData->year }}">
                                         <input type="hidden" name="month" value="{{ $innovationData->month }}">
 
-                                        <button type="submit" class="btn btn-sm btn-danger" {{ $innovationData->status_level == 1 ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-sm btn-danger" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>

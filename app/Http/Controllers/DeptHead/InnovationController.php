@@ -183,7 +183,7 @@ class InnovationController extends Controller
                     $innovationAttachments->department_id = $department->id;
                     $innovationAttachments->department_group_id = $request->department_group_id;
                     $innovationAttachments->innovation_id = $innovation->id;
-                    $innovationAttachments->filepath = public_path('file') . '/' .$fileName;
+                    $innovationAttachments->filepath = 'file/' .$fileName;
                     $innovationAttachments->filename = $fileName;
                     $innovationAttachments->year = $innovation->year;
                     $innovationAttachments->month = $innovation->month;

@@ -30,6 +30,7 @@
                                 ->where('department_id', auth()->user()->department_id)
                                 ->where('year', date('Y'))
                                 ->where('month', date('m'))
+                                ->where('final_approved', 0)
                                 ->get();
                         @endphp
                         @foreach ($processDevelopmentList as $processDevelopmentData)
@@ -43,7 +44,7 @@
                                 </td>
                                 <td>{{ $processDevelopmentData->remarks }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal-{{ $processDevelopmentData->id }}" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal-{{ $processDevelopmentData->id }}" {{ $processDevelopmentData->status_level != 0 ? 'disabled' : '' }}>
                                         <i class="fa fa-pencil"></i>
                                     </button>
 
@@ -54,7 +55,7 @@
                                         <input type="hidden" name="year" value="{{ $processDevelopmentData->year }}">
                                         <input type="hidden" name="month" value="{{ $processDevelopmentData->month }}">
 
-                                        <button type="submit" class="btn btn-sm btn-danger" {{ $processDevelopmentData->status_level == 1 ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-sm btn-danger" {{ $processDevelopmentData->status_level != 0 ? 'disabled' : '' }}>
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>

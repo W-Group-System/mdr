@@ -119,6 +119,34 @@
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
 <script>
+    $('#mdrSummaryTable').DataTable({
+        pageLength: 25,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [
+            // { extend: 'copy'},
+            // {extend: 'csv'},
+            // {extend: 'excel', title: 'ExampleFile'},
+            {extend: 'pdf', title: 'MDR Summary'},
+
+            {extend: 'print',
+                customize: function (win){
+                    $(win.document.body).addClass('white-bg');
+                    $(win.document.body).css('font-size', '10px');
+
+                    $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+            }
+            }
+        ]
+    });
+
+    $("[name='department']").chosen({width: "100%"});
+
+</script>
+@if(Auth::user()->account_role == 2)
+<script>
     var lineData = {
             labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             datasets: [
@@ -147,33 +175,6 @@
 
         var ctx = document.getElementById("lineChart").getContext("2d");
         new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
-
-    
-
-    $('#mdrSummaryTable').DataTable({
-        pageLength: 25,
-        responsive: true,
-        dom: '<"html5buttons"B>lTfgitp',
-        buttons: [
-            { extend: 'copy'},
-            {extend: 'csv'},
-            {extend: 'excel', title: 'ExampleFile'},
-            {extend: 'pdf', title: 'ExampleFile'},
-
-            {extend: 'print',
-                customize: function (win){
-                    $(win.document.body).addClass('white-bg');
-                    $(win.document.body).css('font-size', '10px');
-
-                    $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
-            }
-            }
-        ]
-    });
-
-    $("[name='department']").chosen({width: "100%"});
-
 </script>
+@endif
 @endpush

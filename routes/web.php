@@ -98,5 +98,9 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/add_remarks', 'Approver\ListOfMdr@addRemarks');
         Route::post('/approver_mdr', 'Approver\ListOfMdr@approveMdr');
         Route::post('/submit_scores', 'Approver\ListOfMdr@submitScores');
+
+        Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
+        Route::post('/add_pd_remarks', 'Approver\ListOfMdr@addPdRemarks');
+
     });
 });

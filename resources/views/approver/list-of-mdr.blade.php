@@ -147,7 +147,7 @@
                                                                     <input type="hidden" name="month" value="{{ $item->month }}">
                                                                     <input type="hidden" name="department_id" value="{{ $item->department_id }}">
         
-                                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" {{ $approver->status_level != 1 ? 'disabled' : '' }}>{{ $item->remarks }}</textarea>
+                                                                    <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control">{{ $item->remarks }}</textarea>
                                                                 </td>
                                                                 <td>
                                                                     @foreach ($item->departmentKpi->attachments as $attachment)
@@ -165,9 +165,7 @@
                                                 @endif
                                             </tbody>
                                         </table>
-                                        @if($approver->status_level == 1)
-                                            <button class="btn btn-sm btn-primary pull-right" type="submit">Add Remarks</button>
-                                        @endif
+                                        <button class="btn btn-sm btn-primary pull-right" type="submit">Add Remarks</button>
                                     </form>
                                 </div>
                             </div>
@@ -232,12 +230,18 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="form-group">
-                                                <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $innovationData->remarks }}</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-sm btn-block btn-primary">Add Remarks</button>
-                                            </div>
+                                            <form action="{{ url('add_innovation_remarks') }}" method="post">
+                                                @csrf
+
+                                                <input type="hidden" name="id" value="{{ $innovationData->id }}">
+
+                                                <div class="form-group">
+                                                    <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $innovationData->remarks }}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-block btn-primary">Add Remarks</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -295,12 +299,17 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="form-group">
-                                                <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $processDevelopmentData->remarks }}</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-sm btn-block btn-primary">Add Remarks</button>
-                                            </div>
+                                            <form action="{{ url('add_pd_remarks') }}" method="post">
+                                                @csrf
+
+                                                <input type="hidden" name="id" value="{{ $processDevelopmentData->id }}">
+                                                <div class="form-group">
+                                                    <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $processDevelopmentData->remarks }}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-sm btn-block btn-primary">Add Remarks</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
