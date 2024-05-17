@@ -93,7 +93,7 @@ Route::group(['middleware' => 'auth'], function() {
         # Approver
         
         # List Of MDR
-        Route::get('/list_of_mdr', 'Approver\ListOfMdr@index')->name('listOfMdr');
+        Route::get('/list_of_mdr/{mdr_summary_id}', 'Approver\ListOfMdr@index')->name('listOfMdr');
         Route::post('/return_mdr', 'Approver\ListOfMdr@returnMdr');
         Route::post('/add_remarks', 'Approver\ListOfMdr@addRemarks');
         Route::post('/approver_mdr', 'Approver\ListOfMdr@approveMdr');
@@ -101,6 +101,9 @@ Route::group(['middleware' => 'auth'], function() {
 
         Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
         Route::post('/add_pd_remarks', 'Approver\ListOfMdr@addPdRemarks');
+
+        # Pending of MDR
+        Route::get('/pending_mdr', 'Approver\PendingMdrController@index')->name('pendingMdr');
 
     });
 });

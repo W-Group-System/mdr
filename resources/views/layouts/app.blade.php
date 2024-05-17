@@ -94,10 +94,16 @@
                         </li> --}}
                     @endif
                     @if(Auth::user()->account_role == 1)
+                        <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
+                            <a href="{{ url('pending_mdr') }}">
+                                <i class="fa fa-clock-o"></i>
+                                <span class="nav-label">Pending MDR</span>
+                            </a>
+                        </li>
                         <li class="{{ Route::currentRouteName() == "listOfMdr" ? 'active' : '' }}">
                             <a href="{{ url('list_of_mdr') }}">
                                 <i class="fa fa-file"></i>
-                                <span class="nav-label">List of MDR</span>
+                                <span class="nav-label">History of MDR</span>
                             </a>
                         </li>
                         {{-- <li class="{{ Route::currentRouteName() == "departmentDeadline" ? 'active' : '' }}">

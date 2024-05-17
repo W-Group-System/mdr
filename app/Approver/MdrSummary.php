@@ -11,7 +11,7 @@ class MdrSummary extends Model
 {
     protected $table = 'mdr_summary';
 
-    protected $fillable = ['approved_date'];
+    protected $fillable = ['approved_date', 'rate'];
 
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');

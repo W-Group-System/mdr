@@ -26,7 +26,8 @@ class DepartmentalGoals extends Model implements Auditable
         'month', 
         'deadline', 
         'status_level', 
-        'final_approved'
+        'final_approved',
+        'mdr_summary_id'
     ];
 
     public function departments() {

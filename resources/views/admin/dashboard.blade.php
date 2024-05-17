@@ -48,14 +48,6 @@
         
                             <form action="" method="get" enctype="multipart/form-data">
                                 <div class="row">
-                                    {{-- <div class="col-lg-3">
-                                        <select name="department" id="departmentFilter" class="form-control">
-                                            <option value="">- Departments -</option>
-                                            @foreach ($departmentList as $departmentData)
-                                                <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div> --}}
                                     <div class="col-lg-3">
                                         <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
                                     </div>
