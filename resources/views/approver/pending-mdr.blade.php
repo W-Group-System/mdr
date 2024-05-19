@@ -16,33 +16,46 @@
                                 <th>PIC</th>
                                 <th>Deadline</th>
                                 <th>Submission Date</th>
-                                <th>Approver Status</th>
+                                {{-- <th>Approver Status</th> --}}
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrSummary as $mdrSummaryData)
-                                @foreach ($mdrSummaryData->mdrStatus as $key => $status)
-                                    @if(auth()->user()->id == $status->user_id)
-                                        <tr>
-                                            <td>{{ $mdrSummaryData->department_id }}</td>
-                                            <td>{{ $mdrSummaryData->user_id }}</td>
-                                            <td>{{ $mdrSummaryData->deadline }}</td>
-                                            <td>{{ $mdrSummaryData->submission_date }}</td>
-                                            <td>
-                                                @foreach ($mdrSummaryData->mdrStatus as $key => $status)
-                                                    {{ $key+1 .'. '. $status->user_id }} - {{ $status->status == 1 ? 'APPROVED' : 'WAITING' }} <br>
-                                                @endforeach
-                                            </td>
-                                            <td>
-                                                <a href="{{ url('list_of_mdr/' . $mdrSummaryData->id) }}" class="btn btn-sm btn-info" target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endif
+                            @if(count($mdrSummary) > 0)
+                                @foreach ($mdrSummary as $mdrSummaryData)
+                                    @foreach ($mdrSummaryData->mdrStatus as $key => $status)
+                                        @if(auth()->user()->id == $status->user_id)
+                                            <tr>
+                                                <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                                <td>{{ $mdrSummaryData->users->name }}</td>
+                                                <td>{{ $mdrSummaryData->deadline }}</td>
+                                                <td>{{ $mdrSummaryData->submission_date }}</td>
+                                                {{-- <td>
+                                                    @foreach ($mdrSummaryData->mdrStatus as $key => $status)
+                                                        {{ $status }}
+                                                        {{ $key+1 .'. '. $status->user_id }} - {{ $status->status == 1 ? 'APPROVED' : 'WAITING' }} <br>
+                                                    @endforeach
+                                                </td> --}}
+                                                <td>
+                                                    <form action="{{ url('list_of_mdr') }}" method="get" target="_blank">
+
+                                                        <input type="hidden" name="department_id" value="{{ $mdrSummaryData->department_id }}">
+                                                        <input type="hidden" name="yearAndMonth" value="{{ $mdrSummaryData->year.'-'.$mdrSummaryData->month}}">
+
+                                                        <button type="submit" class="btn btn-sm btn-info viewMdr">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
                                 @endforeach
-                            @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" class="text-center">No pending approval.</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>

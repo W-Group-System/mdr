@@ -100,12 +100,12 @@
                                 <span class="nav-label">Pending MDR</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() == "listOfMdr" ? 'active' : '' }}">
-                            <a href="{{ url('list_of_mdr') }}">
+                        {{-- <li class="{{ Route::currentRouteName() == "#" ? 'active' : '' }}">
+                            <a href="#">
                                 <i class="fa fa-file"></i>
                                 <span class="nav-label">History of MDR</span>
                             </a>
-                        </li>
+                        </li> --}}
                         {{-- <li class="{{ Route::currentRouteName() == "departmentDeadline" ? 'active' : '' }}">
                             <a href="{{ url('department_deadline') }}">
                                 <i class="fa fa-calendar"></i>

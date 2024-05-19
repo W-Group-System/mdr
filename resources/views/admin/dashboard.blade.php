@@ -49,7 +49,7 @@
                             <form action="" method="get" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-lg-3">
-                                        <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
+                                        <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}">
                                     </div>
                                     <div class="col-lg-3">
                                         <button class="btn btn-sm btn-primary">Filter</button>

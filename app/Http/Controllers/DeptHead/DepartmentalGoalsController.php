@@ -14,7 +14,7 @@ class DepartmentalGoalsController extends Controller
 {
     public function uploadAttachments(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|max:2048|mimes:pdf'
+            'file' => 'required|max:2048|mimes:pdf,jpg,png,jpeg'
         ]);
 
         if ($validator->fails()) {

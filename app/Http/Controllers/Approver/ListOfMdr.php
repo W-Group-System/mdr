@@ -6,6 +6,7 @@ use App\Admin\Approve;
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
 use App\Admin\DepartmentKPI;
+use App\Approver\MdrSummary;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\KpiScore;
@@ -21,276 +22,273 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ListOfMdr extends Controller
 {
     public function index(Request $request) {
-        dd($request->all());
-
-        // $departmentList = Department::get();
-
-        // $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver')
-        //     ->where('id', $request->department)
-        //     ->first();
+        $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver')
+            ->where('id', $request->department_id)
+            ->first();
 
         return view('approver.list-of-mdr', 
-            // array(
+            array(
             //     'departmentList' => $departmentList , 
-            //     'department' => $request->department,
-            //     'yearAndMonth' => $request->yearAndMonth,
+                'department' => $request->department_id,
+                'yearAndMonth' => $request->yearAndMonth,
             //     // 'departmentKpiGroups' => $departmentKpi,
-            //     'data' => $departmentData
-            // )
+                'data' => $departmentData,
+            )
         );
     }
 
-    // public function returnMdr(Request $request) {
-    //     $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
-    //         ->where('id', $request->department_id)
-    //         ->first();
+    public function returnMdr(Request $request) {
+        $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
+            ->where('id', $request->department_id)
+            ->first();
 
-    //     foreach($departmentData->approver as $approver) {
+        foreach($departmentData->approver as $approver) {
 
-    //         if (auth()->user()->id == $approver->user_id) {
-    //             $departmentalGoalsList = $departmentData->departmentalGoals()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+            if (auth()->user()->id == $approver->user_id) {
+                $departmentalGoalsList = $departmentData->departmentalGoals()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $processDevelopmentList = $departmentData->process_development()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+                $processDevelopmentList = $departmentData->process_development()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $kpiScore = $departmentData->kpi_scores()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+                $kpiScore = $departmentData->kpi_scores()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $innovation = $departmentData->innovation()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+                $innovation = $departmentData->innovation()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $mdrSummary = $departmentData->mdrSummary()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('department_id', $departmentData->id)
-    //                 ->first();
+                $mdrSummary = $departmentData->mdrSummary()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('department_id', $departmentData->id)
+                    ->first();
 
-    //             if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && $kpiScore->isNotEmpty() && $innovation->isNotEmpty()) {
-    //                 $departmentalGoals = $departmentalGoalsList->when(true, function($q) {
-    //                     return $q->where('final_approved', 1)->isNotEmpty();
-    //                 });
+                if ($departmentalGoalsList->isNotEmpty()) {
+                    $departmentalGoals = $departmentalGoalsList->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
     
-    //                 $kpiScores = $kpiScore->when(true, function($q) {
-    //                     return $q->where('final_approved', 1)->isNotEmpty();
-    //                 });
+                    $kpiScores = $kpiScore->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
     
-    //                 $processDevelopment = $processDevelopmentList->when(true, function($q) {
-    //                     return $q->where('final_approved', 1)->isNotEmpty();
-    //                 });
+                    $processDevelopment = $processDevelopmentList->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
     
-    //                 $innovations = $innovation->when(true, function($q) {
-    //                     return $q->where('final_approved', 1)->isNotEmpty();
-    //                 });
+                    $innovations = $innovation->when(true, function($q) {
+                        return $q->where('final_approved', 1)->isNotEmpty();
+                    });
                     
-    //                 if ($departmentalGoals && $kpiScores && $processDevelopment && $innovations) {
-    //                     Alert::error('ERROR', 'Cannot return the MDR because its already been approved.');
+                    if ($departmentalGoals && $kpiScores && $processDevelopment && $innovations) {
+                        Alert::error('ERROR', 'Cannot return the MDR because its already been approved.');
                         
-    //                     return back();
-    //                 }
+                        return back();
+                    }
                     
-    //                 $departmentalGoalsList->each(function($item, $key)use($approver) {
-    //                     $item->update([
-    //                         'status_level' => 0
-    //                     ]);
-    //                 });
+                    $departmentalGoalsList->each(function($item, $key)use($approver) {
+                        $item->update([
+                            'status_level' => 0
+                        ]);
+                    });
 
-    //                 $processDevelopmentList->each(function($item, $key)use($approver) {
-    //                     $item->update([
-    //                         'status_level' => 0
-    //                     ]);
-    //                 });
+                    $processDevelopmentList->each(function($item, $key)use($approver) {
+                        $item->update([
+                            'status_level' => 0
+                        ]);
+                    });
 
-    //                 $kpiScore->each(function($item, $key)use($approver) {
-    //                     $item->update([
-    //                         'status_level' => 0
-    //                     ]);
-    //                 });
+                    $kpiScore->each(function($item, $key)use($approver) {
+                        $item->update([
+                            'status_level' => 0
+                        ]);
+                    });
 
-    //                 $innovation->each(function($item, $key)use($approver) {
-    //                     $item->update([
-    //                         'status_level' => 0
-    //                     ]);
-    //                 });
+                    $innovation->each(function($item, $key)use($approver) {
+                        $item->update([
+                            'status_level' => 0
+                        ]);
+                    });
 
-    //                 MdrStatus::where('mdr_summary_id', $mdrSummary->id)
-    //                     ->update(['status' => 0, 'start_date' => null]);
+                    MdrStatus::where('mdr_summary_id', $mdrSummary->id)
+                        ->update(['status' => 0, 'start_date' => null]);
 
-    //                 Alert::success('SUCCESS', 'Successfully Returned.');
-    //                 return back();
-    //             }
-    //             else {
+                    $mdrSummary = $mdrSummary->update(['status_level' => 0]);
+
+                    Alert::success('SUCCESS', 'Successfully Returned.');
+                    return back();
+                }
+                else {
+                    Alert::error('ERROR', 'error');
                     
-    //                 return back();
-    //             }
-    //         }
-    //     }        
-    // }
+                    return back();
+                }
+            }
+        }        
+    }
 
-    // public function addRemarks(Request $request) {
-    //     $departmentalGoalsList =  DepartmentalGoals::where('department_id', $request->department_id)
-    //         ->where('year', $request->year)
-    //         ->where('month', $request->month)
-    //         ->get();
+    public function addRemarks(Request $request) {
+        $departmentalGoalsList =  DepartmentalGoals::where('department_id', $request->department_id)
+            ->where('year', $request->year)
+            ->where('month', $request->month)
+            ->get();
 
-    //     if ($departmentalGoalsList->isNotEmpty()) {
-    //         $departmentalGoalsList->each(function($item, $key)use($request) {
-    //             $item->update([
-    //                 'remarks' => $request->remarks[$key]
-    //             ]);
-    //         });
+        if ($departmentalGoalsList->isNotEmpty()) {
+            $departmentalGoalsList->each(function($item, $key)use($request) {
+                $item->update([
+                    'remarks' => $request->remarks[$key]
+                ]);
+            });
 
-    //         Alert::success('SUCCESS', 'Successfully Added.');
-    //         return back();
-    //     }
-    //     else {
-    //         return back()->with('errors', ["Can not add remarks"]);
-    //     }
-    // }
+            Alert::success('SUCCESS', 'Successfully Added.');
+            return back();
+        }
+        else {
+            return back()->with('errors', ["Can not add remarks"]);
+        }
+    }
 
-    // public function approveMdr(Request $request) {
+    public function approveMdr(Request $request) {
 
-    //     $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
-    //         ->where('id', $request->department_id)
-    //         ->first();
+        $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
+            ->where('id', $request->department_id)
+            ->first();
 
-    //     foreach($departmentData->approver as $approver) {
+        foreach($departmentData->approver as $approver) {
             
-    //         if (auth()->user()->id == $approver->user_id) {
+            if (auth()->user()->id == $approver->user_id) {
 
-    //             $departmentalGoalsList = $departmentData->departmentalGoals()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+                $departmentalGoalsList = $departmentData->departmentalGoals()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $processDevelopmentList = $departmentData->process_development()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+                $processDevelopmentList = $departmentData->process_development()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $kpiScore = $departmentData->kpi_scores()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->first();
+                $kpiScore = $departmentData->kpi_scores()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->first();
 
-    //             $innovation = $departmentData->innovation()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('status_level', $approver->status_level)
-    //                 ->get();
+                $innovation = $departmentData->innovation()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->get();
 
-    //             $mdrSummary = $departmentData->mdrSummary()
-    //                 ->where('year', date('Y', strtotime($request->monthOf)))
-    //                 ->where('month', date('m', strtotime($request->monthOf)))
-    //                 ->where('department_id', $departmentData->id)
-    //                 ->first();
+                $mdrSummary = $departmentData->mdrSummary()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('department_id', $departmentData->id)
+                    ->first();
 
-    //             if ($departmentalGoalsList->isNotEmpty() && $processDevelopmentList->isNotEmpty() && !empty($kpiScore) && $innovation->isNotEmpty()) {
+                if ($departmentalGoalsList->isNotEmpty()) {
                     
-    //                 if($departmentData->approver->last() == $approver) {
-    //                     $departmentalGoalsList->each(function($item, $key)use($approver) {
-    //                         $item->update([
-    //                             'final_approved' => 1
-    //                         ]);
-    //                     });
+                    if($departmentData->approver->last() == $approver) {
+                        $departmentalGoalsList->each(function($item, $key)use($approver) {
+                            $item->update([
+                                'final_approved' => 1
+                            ]);
+                        });
 
-    //                     $processDevelopmentList->each(function($item, $key)use($approver) {
-    //                         $item->update([
-    //                             'final_approved' => 1
-    //                         ]);
-    //                     });
+                        $processDevelopmentList->each(function($item, $key)use($approver) {
+                            $item->update([
+                                'final_approved' => 1
+                            ]);
+                        });
 
-    //                     $kpiScore->each(function($item, $key) use($approver) {
-    //                         $item->update([
-    //                             'final_approved' => 1
-    //                         ]);
-    //                     });
+                        $kpiScore->each(function($item, $key) use($approver) {
+                            $item->update([
+                                'final_approved' => 1
+                            ]);
+                        });
 
-    //                     $innovation->each(function($item, $key) use($approver) {
-    //                         $item->update([
-    //                             'final_approved' => 1
-    //                         ]);
-    //                     });
+                        $innovation->each(function($item, $key) use($approver) {
+                            $item->update([
+                                'final_approved' => 1
+                            ]);
+                        });
 
-    //                     $mdrSummary->each(function($item, $key) use($approver) {
-    //                         $item->update([
-    //                             'approved_date' => date('Y-m-d')
-    //                         ]);
-    //                     });
+                        $mdrSummary->update(['approved_date' => date('Y-m-d'), 'final_approved' => 1]);
 
-    //                     $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
-    //                     foreach($mdrStatus as $status) {
-    //                         if ($approver->user_id == $status->user_id) {
-    //                             $status->update([
-    //                                 'status' => 1,
-    //                                 'start_date' => date('Y-m-d')
-    //                             ]);
-    //                         }
-    //                     }
-    //                 }
-    //                 else {
-    //                     $departmentalGoalsList->each(function($item, $key)use($approver) {
-    //                         $item->update([
-    //                             'status_level' => $approver->status_level+1
-    //                         ]);
-    //                     });
+                        $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
+                        foreach($mdrStatus as $status) {
+                            if ($approver->user_id == $status->user_id) {
+                                $status->update([
+                                    'status' => 1,
+                                    'start_date' => date('Y-m-d')
+                                ]);
+                            }
+                        }
+                    }
+                    else {
+                        $departmentalGoalsList->each(function($item, $key)use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
 
-    //                     $processDevelopmentList->each(function($item, $key)use($approver) {
-    //                         $item->update([
-    //                             'status_level' => $approver->status_level+1
-    //                         ]);
-    //                     });
+                        $processDevelopmentList->each(function($item, $key)use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
 
-    //                     $kpiScore->each(function($item, $key) use($approver) {
-    //                         $item->update([
-    //                             'status_level' => $approver->status_level+1
-    //                         ]);
-    //                     });
+                        $kpiScore->each(function($item, $key) use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
 
-    //                     $innovation->each(function($item, $key) use($approver) {
-    //                         $item->update([
-    //                             'status_level' => $approver->status_level+1
-    //                         ]);
-    //                     });
+                        $innovation->each(function($item, $key) use($approver) {
+                            $item->update([
+                                'status_level' => $approver->status_level+1
+                            ]);
+                        });
                     
                         
-    //                     $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
-    //                     foreach($mdrStatus as $status) {
-    //                         if ($approver->user_id == $status->user_id) {
-    //                             $status->update([
-    //                                 'status' => 1,
-    //                                 'start_date' => date('Y-m-d')
-    //                             ]);
-    //                         }
-    //                     }
-    //                 }
+                        $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
+                        foreach($mdrStatus as $status) {
+                            if ($approver->user_id == $status->user_id) {
+                                $status->update([
+                                    'status' => 1,
+                                    'start_date' => date('Y-m-d')
+                                ]);
+                            }
+                        }
 
-    //                 Alert::success('SUCCESS', 'Successfully Approved.');
-    //                 return back();
-    //             }
-    //             else {
-    //                 Alert::error('ERROR', 'Cannot approved the MDR.');
+                        $mdrSummary = $mdrSummary->update(['status_level' => $approver->status_level+1]);
+                    }
 
-    //                 return back();
-    //             }
-    //         }
-    //     }        
-    // }
+                    Alert::success('SUCCESS', 'Successfully Approved.');
+                    return back();
+                }
+                else {
+                    Alert::error('ERROR', 'Cannot approved the MDR.');
+
+                    return back();
+                }
+            }
+        }        
+    }
 
     // public function submitScores(Request $request) {
     //     $kpiScoreData = KpiScore::findOrFail($request->id);

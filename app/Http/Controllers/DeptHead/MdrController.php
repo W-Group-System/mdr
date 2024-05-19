@@ -269,31 +269,17 @@ class MdrController extends Controller
             'innovation' => function($q)use($request) {
                 $q->where('year', date('Y', strtotime($request->monthOf)))
                     ->where('month', date('m', strtotime($request->monthOf)))
-                    ->where('status_level', 0)
-                    ->first();
+                    ->where('status_level', 0);
+            },
+            'mdrSummary' => function($q)use($request) {
+                $q->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', 0);
             },
             'kpi_scores'
         ])
             ->where('id', auth()->user()->department_id)
             ->first();
-
-        // $departmentalGoalsList = $departmentData->departmentalGoals()
-        //     ->where('year', date('Y', strtotime($request->monthOf)))
-        //     ->where('month', date('m', strtotime($request->monthOf)))
-        //     ->where('status_level', 0)
-        //     ->get();
-            
-        // $processDevelopmentList = $departmentData->process_development()
-        //     ->where('year', date('Y', strtotime($request->monthOf)))
-        //     ->where('month', date('m', strtotime($request->monthOf)))
-        //     ->where('status_level', 0)
-        //     ->get();
-        
-        // $innovation = $departmentData->innovation()
-        //     ->where('year', date('Y', strtotime($request->monthOf)))
-        //     ->where('month', date('m', strtotime($request->monthOf)))
-        //     ->where('status_level', 0)
-        //     ->get();
 
         $kpiScore = $departmentData->kpi_scores()
             ->where('year', date('Y', strtotime($request->monthOf)))
@@ -335,14 +321,14 @@ class MdrController extends Controller
             ]);
 
             if (!empty($mdrSummary)) {
-                $mdrSummary = $mdrSummary->update(['rate' => $kpiScore->total_rating]);
+                $mdrSummary = $mdrSummary->update(['rate' => $kpiScore->total_rating, 'status_level' => 1]);
             }
 
             Alert::success('SUCCESS', 'Your MDR is been approved.');
             return back();
         }
         else {
-            // Alert::error("ERROR", "Your MDR is already approved.");
+            Alert::error("ERROR", "error");
             return back();
         }
     }
