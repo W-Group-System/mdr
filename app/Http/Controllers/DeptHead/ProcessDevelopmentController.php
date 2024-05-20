@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DeptHead;
 
 use App\Admin\Department;
+use App\Approver\MdrSummary;
 use App\DeptHead\KpiScore;
 use App\DeptHead\ProcessDevelopment;
 use App\DeptHead\ProcessDevelopmentAttachments;
@@ -31,15 +32,22 @@ class ProcessDevelopmentController extends Controller
             return back()->with('pdError', $validator->errors()->all());
         }
         else {
-            $checkStatus = ProcessDevelopment::where('status_level', 1)
-                ->where('year', date('Y', strtotime($request->monthOf)))
+            // $checkStatus = ProcessDevelopment::where('status_level', 1)
+            //     ->where('year', date('Y', strtotime($request->monthOf)))
+            //     ->where('month', date('m', strtotime($request->monthOf)))
+            //     ->where('department_id', auth()->user()->department_id)
+            //     ->get();
+
+            $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->monthOf)))
                 ->where('month', date('m', strtotime($request->monthOf)))
                 ->where('department_id', auth()->user()->department_id)
-                ->get();
+                ->where('status_level', "<>", 0)
+                ->first();
 
-            if ($checkStatus->isNotEmpty()) {
+            if (!empty($checkStatus)) {
 
-                return back()->with('pdError', ['Failed. Because your MDR has been approved.']);
+                Alert::error('ERROR', 'Failed. Because your MDR has been approved.');
+                return back();
             }
             else {
                 if($request->hasFile('file')) {
@@ -147,16 +155,16 @@ class ProcessDevelopmentController extends Controller
         }
 
         $processDevelopmentList = $department->process_development()
-            ->where('year', date('Y', strtotime($request->monthOf)))
-            ->where('month', date('m', strtotime($request->monthOf)))
+            ->where('year', $request->year)
+            ->where('month', $request->month)
             ->where('department_id', $request->department_id)
             ->get();
 
         if (count($processDevelopmentList) == 0) {
             $department->kpi_scores()
                 ->where('department_id', $request->department_id)
-                ->where('year', date('Y', strtotime($request->monthOf)))
-                ->where('month', date('m', strtotime($request->monthOf)))
+                ->where('year', $request->year)
+                ->where('month', $request->month)
                 ->update(['pd_scores' => 0.0]);
         }
 

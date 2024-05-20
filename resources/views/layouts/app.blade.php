@@ -59,12 +59,6 @@
                         </a>
                     </li>
                     @if(Auth::user()->account_role == 0)
-                        {{-- <li class="{{ Route::currentRouteName() == "manageApprover" ? 'active' : '' }}">
-                            <a href="{{ route('manageApprover') }}">
-                                <i class="fa fa-users"></i>
-                                <span class="nav-label">Manage Approver</span>
-                            </a>
-                        </li> --}}
                         <li class="{{ Route::currentRouteName() == 'departments' || Route::currentRouteName() == 'userAccounts' || Route::currentRouteName() == 'departmentKpi' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-cog"></i>
@@ -79,6 +73,26 @@
                             </ul>
                         </li>
                     @endif
+                    @if(Auth::user()->account_role == 1)
+                        <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
+                            <a href="{{ url('pending_mdr') }}">
+                                <i class="fa fa-clock-o"></i>
+                                <span class="nav-label">Pending MDR</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == "historyMdr" ? 'active' : '' }}">
+                            <a href="{{ url('history_mdr') }}">
+                                <i class="fa fa-history"></i>
+                                <span class="nav-label">History of MDR</span>
+                            </a>
+                        </li>
+                        {{-- <li class="{{ Route::currentRouteName() == "departmentDeadline" ? 'active' : '' }}">
+                            <a href="{{ url('department_deadline') }}">
+                                <i class="fa fa-calendar"></i>
+                                <span class="nav-label">Department Deadlines</span>
+                            </a>
+                        </li> --}}
+                    @endif
                     @if(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="{{ url('mdr') }}">
@@ -90,26 +104,6 @@
                             <a href="{{ route('manageApprover') }}">
                                 <i class="fa fa-users"></i>
                                 <span class="nav-label">Manage Approver</span>
-                            </a>
-                        </li> --}}
-                    @endif
-                    @if(Auth::user()->account_role == 1)
-                        <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
-                            <a href="{{ url('pending_mdr') }}">
-                                <i class="fa fa-clock-o"></i>
-                                <span class="nav-label">Pending MDR</span>
-                            </a>
-                        </li>
-                        {{-- <li class="{{ Route::currentRouteName() == "#" ? 'active' : '' }}">
-                            <a href="#">
-                                <i class="fa fa-file"></i>
-                                <span class="nav-label">History of MDR</span>
-                            </a>
-                        </li> --}}
-                        {{-- <li class="{{ Route::currentRouteName() == "departmentDeadline" ? 'active' : '' }}">
-                            <a href="{{ url('department_deadline') }}">
-                                <i class="fa fa-calendar"></i>
-                                <span class="nav-label">Department Deadlines</span>
                             </a>
                         </li> --}}
                     @endif

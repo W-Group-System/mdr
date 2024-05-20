@@ -105,5 +105,8 @@ Route::group(['middleware' => 'auth'], function() {
         # Pending of MDR
         Route::get('/pending_mdr', 'Approver\PendingMdrController@index')->name('pendingMdr');
 
+        # History of MDR
+        Route::get('/history_mdr', 'Approver\HistoryMdrController@index')->name('historyMdr');
+
     });
 });

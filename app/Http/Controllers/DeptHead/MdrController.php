@@ -93,7 +93,7 @@ class MdrController extends Controller
 
                 return back()->with('kpiErrors', $validator->errors()->all());
             } else {
-                $checkStatus = DepartmentalGoals::where('status_level', 1)
+                $checkStatus = DepartmentalGoals::where('status_level', "<>", 0)
                     ->where('department_id', auth()->user()->department_id)
                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)))
@@ -101,7 +101,8 @@ class MdrController extends Controller
                 
                 if ($checkStatus->isNotEmpty()) {
 
-                    return back()->with('kpiErrors', ['Failed. Because your MDR has been approved.']);
+                    Alert::error("ERROR", "Failed. Because your MDR has been approved.");
+                    return back();
                 }
                 else {
                     $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
@@ -251,6 +252,19 @@ class MdrController extends Controller
                 $mdrStatus->save();
             }
         }
+        else {
+            foreach($mdrStatus as $status) {
+                $status->delete();
+            }
+            
+            foreach($departmentData->approver as $data) {
+                $mdrStatus = new MdrStatus;
+                $mdrStatus->user_id = $data->user_id;
+                $mdrStatus->mdr_summary_id = $mdrSummary->id;
+                $mdrStatus->status = 0;
+                $mdrStatus->save();
+            }
+        }
         
     }
 
@@ -271,11 +285,7 @@ class MdrController extends Controller
                     ->where('month', date('m', strtotime($request->monthOf)))
                     ->where('status_level', 0);
             },
-            'mdrSummary' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->monthOf)))
-                    ->where('month', date('m', strtotime($request->monthOf)))
-                    ->where('status_level', 0);
-            },
+            'mdrSummary',
             'kpi_scores'
         ])
             ->where('id', auth()->user()->department_id)
@@ -287,11 +297,13 @@ class MdrController extends Controller
             ->where('status_level', 0)
             ->first();
     
+        $mdrSummary = $departmentData->mdrSummary()
+            ->where('department_id', $departmentData->id)
+            ->where('year', date('Y', strtotime($request->monthOf)))
+            ->where('month', date('m', strtotime($request->monthOf)))
+            ->first();
+
         if ($departmentData->departmentalGoals->isNotEmpty()) {
-            $mdrSummary = MdrSummary::where('department_id', $departmentData->id)
-                ->where('year', date('Y', strtotime($request->monthOf)))
-                ->where('month', date('m', strtotime($request->monthOf)))
-                ->first();
 
             $departmentData->departmentalGoals->each(function($item, $key)use($mdrSummary) {
                 $item->update([
@@ -328,6 +340,12 @@ class MdrController extends Controller
             return back();
         }
         else {
+            if ($mdrSummary->status_level != 0) {
+                Alert::error("ERROR", "Your MDR is currently approved.");
+
+                return back();
+            };
+
             Alert::error("ERROR", "error");
             return back();
         }

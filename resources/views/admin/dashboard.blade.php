@@ -49,13 +49,20 @@
                             <form action="" method="get" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-lg-3">
-                                        <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}">
+                                        <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
                                     </div>
                                     <div class="col-lg-3">
                                         <button class="btn btn-sm btn-primary">Filter</button>
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <canvas id="lineChart" height="70"></canvas>
                         </div>
                     </div>
                 </div>
@@ -77,7 +84,7 @@
                                 <tbody>
                                     @foreach ($mdrSummary as $data)
                                         <tr>
-                                            <td>{{ $data->departments->dept_name }}</td>
+                                            <td>{{ $data->departments->dept_code .' - '. $data->departments->dept_name }}</td>
                                             <td>{{ $data->users->name }}</td>
                                             <td>{{ $data->deadline }}</td>
                                             <td>{{ $data->submission_date }}</td>
@@ -95,9 +102,17 @@
         </div>
     @elseif(Auth::user()->account_role == 2)
     <div class="wrapper wrapper-content">
-        <div class="ibox float-e-margins" style="margin-top: 10px;">
-            <div class="ibox-content">
-                <canvas id="lineChart" height="70"></canvas>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Pie </h5>
+
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <div id="stocked"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -105,59 +120,57 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/plugins/chartJs/Chart.min.js') }}"></script>  
 <!-- Mainly scripts -->
 <script src="js/plugins/dataTables/datatables.min.js"></script>
+
+@if(Auth::user()->account_role == 1)
+<!-- ChartJS-->
+<script src="js/plugins/chartJs/Chart.min.js"></script>
+<script src="js/demo/chartjs-demo.js"></script>
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
+
 <script>
-    $('#mdrSummaryTable').DataTable({
-        pageLength: 25,
-        responsive: true,
-        dom: '<"html5buttons"B>lTfgitp',
-        buttons: [
-            // { extend: 'copy'},
-            // {extend: 'csv'},
-            // {extend: 'excel', title: 'ExampleFile'},
-            {extend: 'pdf', title: 'MDR Summary'},
+    $(document).ready(function() {
+        $('#mdrSummaryTable').DataTable({
+            pageLength: 25,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                // { extend: 'copy'},
+                // {extend: 'csv'},
+                // {extend: 'excel', title: 'ExampleFile'},
+                {extend: 'pdf', title: 'MDR Summary'},
 
-            {extend: 'print',
-                customize: function (win){
-                    $(win.document.body).addClass('white-bg');
-                    $(win.document.body).css('font-size', '10px');
+                {extend: 'print',
+                    customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
 
-                    $(win.document.body).find('table')
-                            .addClass('compact')
-                            .css('font-size', 'inherit');
-            }
-            }
-        ]
-    });
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
+        });
 
-    $("[name='department']").chosen({width: "100%"});
+        $("[name='department']").chosen({width: "100%"});
 
-</script>
-@if(Auth::user()->account_role == 2)
-<script>
-    var lineData = {
-            labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        var department = {!! json_encode($departmentList) !!}
+        var dashboardData = {!! json_encode($dashboardData) !!}
+        
+        var lineData = {
+            labels: department,
             datasets: [
                 {
-                    label: "Example dataset",
-                    backgroundColor: "rgba(26,179,148,0.5)",
+                    label: "Total Rating",
+                    // backgroundColor: "rgba(26,179,148,0.5)",
                     borderColor: "rgba(26,179,148,0.7)",
-                    pointBackgroundColor: "rgba(26,179,148,1)",
-                    pointBorderColor: "#fff",
-                    data: [28, 48, 40, 19, 86, 27, 90]
+                    // pointBackgroundColor: "rgba(26,179,148,1)",
+                    // pointBorderColor: "#fff",
+                    data: dashboardData
                 },
-                {
-                    label: "Example dataset",
-                    backgroundColor: "rgba(220,220,220,0.5)",
-                    borderColor: "rgba(220,220,220,1)",
-                    pointBackgroundColor: "rgba(220,220,220,1)",
-                    pointBorderColor: "#fff",
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                }
             ]
         };
 
@@ -167,6 +180,28 @@
 
         var ctx = document.getElementById("lineChart").getContext("2d");
         new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
+    })
+
+</script>
+@endif
+@if(Auth::user()->account_role == 2)
+<script src="js/plugins/d3/d3.min.js"></script>
+<script src="js/plugins/c3/c3.min.js"></script>
+<script>
+c3.generate({
+    bindto: '#stocked',
+    data:{
+        columns: [],
+        colors:{
+            data1: '#1ab394',
+        },
+        type: 'bar',
+        // groups: [
+        //     ['data1', 'data2']
+        // ]
+    }
+});
+
 </script>
 @endif
 @endpush

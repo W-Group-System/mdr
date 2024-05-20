@@ -19,6 +19,8 @@
                                             <th>KPI</th>
                                             <th>Process Development</th>
                                             <th>Innovation</th>
+                                            <th>Timeliness</th>
+                                            <th>Rating</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -42,6 +44,8 @@
                                                         <td><input type="text" name="kpiScores" class="form-control input-sm" value="{{ $score->score }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                         <td><input type="text" name="pdScores" class="form-control input-sm" value="{{ $score->pd_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                         <td><input type="text" name="innovationScores" class="form-control input-sm" value="{{ $score->innovation_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
+                                                        <td><input type="text" name="timelinessScores" class="form-control input-sm" value="{{ $score->timeliness }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
+                                                        <td><input type="text" name="ratingScores" class="form-control input-sm" value="{{ $score->total_rating }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                     </tr>
                                                 </form>
                                             @endforeach

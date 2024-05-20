@@ -43,7 +43,6 @@ class ListOfMdr extends Controller
             ->first();
 
         foreach($departmentData->approver as $approver) {
-
             if (auth()->user()->id == $approver->user_id) {
                 $departmentalGoalsList = $departmentData->departmentalGoals()
                     ->where('year', date('Y', strtotime($request->monthOf)))
@@ -57,17 +56,17 @@ class ListOfMdr extends Controller
                     ->where('status_level', $approver->status_level)
                     ->get();
 
-                $kpiScore = $departmentData->kpi_scores()
-                    ->where('year', date('Y', strtotime($request->monthOf)))
-                    ->where('month', date('m', strtotime($request->monthOf)))
-                    ->where('status_level', $approver->status_level)
-                    ->get();
-
                 $innovation = $departmentData->innovation()
                     ->where('year', date('Y', strtotime($request->monthOf)))
                     ->where('month', date('m', strtotime($request->monthOf)))
                     ->where('status_level', $approver->status_level)
                     ->get();
+
+                $kpiScore = $departmentData->kpi_scores()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->first();
 
                 $mdrSummary = $departmentData->mdrSummary()
                     ->where('year', date('Y', strtotime($request->monthOf)))
@@ -76,27 +75,27 @@ class ListOfMdr extends Controller
                     ->first();
 
                 if ($departmentalGoalsList->isNotEmpty()) {
-                    $departmentalGoals = $departmentalGoalsList->when(true, function($q) {
-                        return $q->where('final_approved', 1)->isNotEmpty();
-                    });
+                    // $departmentalGoals = $departmentalGoalsList->when(true, function($q) {
+                    //     return $q->where('final_approved', 1)->isNotEmpty();
+                    // });
     
-                    $kpiScores = $kpiScore->when(true, function($q) {
-                        return $q->where('final_approved', 1)->isNotEmpty();
-                    });
+                    // $processDevelopment = $processDevelopmentList->when(true, function($q) {
+                    //     return $q->where('final_approved', 1)->isNotEmpty();
+                    // });
     
-                    $processDevelopment = $processDevelopmentList->when(true, function($q) {
-                        return $q->where('final_approved', 1)->isNotEmpty();
-                    });
-    
-                    $innovations = $innovation->when(true, function($q) {
-                        return $q->where('final_approved', 1)->isNotEmpty();
-                    });
+                    // $innovations = $innovation->when(true, function($q) {
+                    //     return $q->where('final_approved', 1)->isNotEmpty();
+                    // });
+
+                    // if ($kpiScore->final_approved == 1) {
+                    //     return true;
+                    // }
                     
-                    if ($departmentalGoals && $kpiScores && $processDevelopment && $innovations) {
-                        Alert::error('ERROR', 'Cannot return the MDR because its already been approved.');
+                    // if ($departmentalGoals && $kpiScore && $processDevelopment && $innovations) {
+                    //     Alert::error('ERROR', 'Cannot return the MDR because its already been approved.');
                         
-                        return back();
-                    }
+                    //     return back();
+                    // }
                     
                     $departmentalGoalsList->each(function($item, $key)use($approver) {
                         $item->update([
@@ -110,17 +109,15 @@ class ListOfMdr extends Controller
                         ]);
                     });
 
-                    $kpiScore->each(function($item, $key)use($approver) {
-                        $item->update([
-                            'status_level' => 0
-                        ]);
-                    });
-
                     $innovation->each(function($item, $key)use($approver) {
                         $item->update([
                             'status_level' => 0
                         ]);
                     });
+
+                    $kpiScore->update([
+                        'status_level' => 0
+                    ]);
 
                     MdrStatus::where('mdr_summary_id', $mdrSummary->id)
                         ->update(['status' => 0, 'start_date' => null]);
@@ -182,17 +179,17 @@ class ListOfMdr extends Controller
                     ->where('status_level', $approver->status_level)
                     ->get();
 
-                $kpiScore = $departmentData->kpi_scores()
-                    ->where('year', date('Y', strtotime($request->monthOf)))
-                    ->where('month', date('m', strtotime($request->monthOf)))
-                    ->where('status_level', $approver->status_level)
-                    ->first();
-
                 $innovation = $departmentData->innovation()
                     ->where('year', date('Y', strtotime($request->monthOf)))
                     ->where('month', date('m', strtotime($request->monthOf)))
                     ->where('status_level', $approver->status_level)
                     ->get();
+
+                $kpiScore = $departmentData->kpi_scores()
+                    ->where('year', date('Y', strtotime($request->monthOf)))
+                    ->where('month', date('m', strtotime($request->monthOf)))
+                    ->where('status_level', $approver->status_level)
+                    ->first();
 
                 $mdrSummary = $departmentData->mdrSummary()
                     ->where('year', date('Y', strtotime($request->monthOf)))
@@ -214,20 +211,21 @@ class ListOfMdr extends Controller
                                 'final_approved' => 1
                             ]);
                         });
-
-                        $kpiScore->each(function($item, $key) use($approver) {
-                            $item->update([
-                                'final_approved' => 1
-                            ]);
-                        });
-
+                        
                         $innovation->each(function($item, $key) use($approver) {
                             $item->update([
                                 'final_approved' => 1
                             ]);
                         });
 
-                        $mdrSummary->update(['approved_date' => date('Y-m-d'), 'final_approved' => 1]);
+                        $kpiScore->update([
+                            'final_approved' => 1
+                        ]);
+                        
+                        $mdrSummary->update([
+                            'approved_date' => date('Y-m-d'), 
+                            'final_approved' => 1
+                        ]);
 
                         $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
                         foreach($mdrStatus as $status) {
@@ -252,19 +250,16 @@ class ListOfMdr extends Controller
                             ]);
                         });
 
-                        $kpiScore->each(function($item, $key) use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
-
                         $innovation->each(function($item, $key) use($approver) {
                             $item->update([
                                 'status_level' => $approver->status_level+1
                             ]);
                         });
+
+                        $kpiScore->update([
+                            'status_level' => $approver->status_level+1
+                        ]);
                     
-                        
                         $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
                         foreach($mdrStatus as $status) {
                             if ($approver->user_id == $status->user_id) {
@@ -275,7 +270,9 @@ class ListOfMdr extends Controller
                             }
                         }
 
-                        $mdrSummary = $mdrSummary->update(['status_level' => $approver->status_level+1]);
+                        $mdrSummary->update([
+                            'status_level' => $approver->status_level+1
+                        ]);
                     }
 
                     Alert::success('SUCCESS', 'Successfully Approved.');
@@ -290,42 +287,44 @@ class ListOfMdr extends Controller
         }        
     }
 
-    // public function submitScores(Request $request) {
-    //     $kpiScoreData = KpiScore::findOrFail($request->id);
+    public function submitScores(Request $request) {
+        $kpiScoreData = KpiScore::findOrFail($request->id);
 
-    //     if ($kpiScoreData) {
-    //         $kpiScoreData->score = $request->kpiScores;
-    //         $kpiScoreData->pd_scores = $request->pdScores;
-    //         $kpiScoreData->innovation_scores = $request->innovationScores;
-    //         $kpiScoreData->save();
+        if ($kpiScoreData) {
+            $kpiScoreData->score = $request->kpiScores;
+            $kpiScoreData->pd_scores = $request->pdScores;
+            $kpiScoreData->innovation_scores = $request->innovationScores;
+            $kpiScoreData->timeliness = $request->timelinessScores;
+            $kpiScoreData->total_rating = $request->ratingScores;
+            $kpiScoreData->save();
 
-    //         Alert::success('SUCCESS', 'Successfully Updated.');
-    //         return back();
-    //     }
-    // }
+            Alert::success('SUCCESS', 'Successfully Updated.');
+            return back();
+        }
+    }
 
-    // public function addInnovationRemarks(Request $request) {
-    //     $innovationData = Innovation::findOrFail($request->id);
+    public function addInnovationRemarks(Request $request) {
+        $innovationData = Innovation::findOrFail($request->id);
 
-    //     if ($innovationData) {
-    //         $innovationData->remarks = $request->remarks;
-    //         $innovationData->save();
+        if ($innovationData) {
+            $innovationData->remarks = $request->remarks;
+            $innovationData->save();
 
-    //         Alert::success('SUCCESS', 'Successfully Updated.');
+            Alert::success('SUCCESS', 'Successfully Updated.');
 
-    //         return back();
-    //     }
-    // }
+            return back();
+        }
+    }
 
-    // public function addPdRemarks(Request $request) {
-    //     $pdData = ProcessDevelopment::findOrFail($request->id);
+    public function addPdRemarks(Request $request) {
+        $pdData = ProcessDevelopment::findOrFail($request->id);
 
-    //     if ($pdData) {
-    //         $pdData->remarks = $request->remarks;
-    //         $pdData->save();
+        if ($pdData) {
+            $pdData->remarks = $request->remarks;
+            $pdData->save();
 
-    //         Alert::success('SUCCESS', 'Successfully Updated.');
-    //         return back();
-    //     }
-    // }
+            Alert::success('SUCCESS', 'Successfully Updated.');
+            return back();
+        }
+    }
 }

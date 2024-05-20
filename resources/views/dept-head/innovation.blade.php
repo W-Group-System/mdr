@@ -34,7 +34,7 @@
                                 ->where('department_id', auth()->user()->department_id)
                                 ->where('year', date('Y'))
                                 ->where('month', date('m'))
-                                ->where('final_approved', 0)
+                                // ->where('final_approved', 0)
                                 ->get();
                         @endphp
                         @foreach ($innovationList as $innovationData)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DeptHead;
 
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
+use App\Approver\MdrSummary;
 use App\DeptHead\Innovation;
 use App\DeptHead\InnovationAttachments;
 use App\DeptHead\KpiScore;
@@ -40,19 +41,25 @@ class InnovationController extends Controller
             return back()->with('errors', $validator->errors()->all());
         }
         else {
-            $checkStatus = Innovation::where('status_level', 1)
-                ->where('department_id', $department->id)
-                ->where('year', date('Y', strtotime($request->monthOf)))
+            // $checkStatus = Innovation::where('status_level', 1)
+            //     ->where('department_id', $department->id)
+            //     ->where('year', date('Y', strtotime($request->monthOf)))
+            //     ->where('month', date('m', strtotime($request->monthOf)))
+            //     ->get();
+
+            $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->monthOf)))
                 ->where('month', date('m', strtotime($request->monthOf)))
-                ->get();
+                ->where('department_id', auth()->user()->department_id)
+                ->where('status_level', "<>", 0)
+                ->first();
 
-            if ($checkStatus->isNotEmpty()) {
+            if (!empty($checkStatus)) {
 
-                return back()->with('errors', ['Failed. Because your MDR has been approved.']);
+                Alert::error('ERROR', 'Failed. Because your MDR has been approved.');
+                return back();
             }
             else {
                 if ($request->hasFile('file')) {
-                    
                     $innovation = new Innovation;
                     $innovation->department_group_id = $request->department_group_id;
                     $innovation->department_id = $department->id;

@@ -23,27 +23,72 @@ class DashboardController extends Controller
                 )
             );
         } else if(auth()->user()->account_role == 1) {
-            // $departmentList = Department::with('mdrSummary')->get();
-
             $mdrSummary = MdrSummary::query();
 
             if(!empty($request->yearAndMonth)) {
-                $mdrSummary = $mdrSummary->where('year', date("Y", strtotime($request->yearAndMonth)));
-                $mdrSummary = $mdrSummary->where('month', date("m", strtotime($request->yearAndMonth)));
+                $mdrSummary = $mdrSummary->where('year', date("Y", strtotime($request->yearAndMonth)))
+                    ->where('month', date("m", strtotime($request->yearAndMonth)));
             }
+            
+            $mdrSummary = $mdrSummary
+                ->orderBy('department_id', "ASC")
+                ->get();
 
-            $mdrSummary = $mdrSummary->get();
-
+            $dashboardDataArray = array();
+            $departmentArray = array();
+            foreach($mdrSummary as $data) {
+                $departmentArray[] = $data->departments->dept_code;
+                $dashboardDataArray[] = $data->rate;
+            }
+            
             return view('admin.dashboard',
                 array(
-                    // 'departmentList' => $departmentList,
+                    'departmentList' => $departmentArray,
                     'yearAndMonth' => $request->yearAndMonth,
                     'mdrSummary' => $mdrSummary,
+                    'dashboardData' => $dashboardDataArray
                 )
             );
+        } else if (auth()->user()->account_role == 2) {
+            $mdrSummary = MdrSummary::where('year', date("Y"))
+                ->where('department_id', auth()->user()->department_id)
+                ->orderBy('month', "ASC")
+                ->get();
+
+            $monthArray = array(
+                '01' => 'January',
+                '02' => 'February',
+                '03' => 'March',
+                '04' => 'April',
+                '05' => 'May',
+                '06' => 'June',
+                '07' => 'July',
+                '08' => 'August',
+                '09' => 'September',
+                '10' => 'October',
+                '11' => 'November',
+                '12' => 'December'
+            );
+
+            $dashboardDataArray = array();
+
+            foreach($monthArray as $key => $month) {
+                $dashboardDataArray[$key] = $month;
+
+                foreach($mdrSummary as $data) {
+                    if($data->month == $key) {
+                        $dashboardDataArray[$key] = [
+                            $data->rate
+                        ];
+                    }
+                }
+            }
+
+            dd($dashboardDataArray);
+
+            return view('admin.dashboard');
         }
         
-        return view('admin.dashboard');
         
     }
 }
