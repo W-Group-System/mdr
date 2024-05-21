@@ -71,22 +71,18 @@ class DashboardController extends Controller
             );
 
             $dashboardDataArray = array();
-
-            foreach($monthArray as $key => $month) {
-                $dashboardDataArray[$key] = $month;
-
-                foreach($mdrSummary as $data) {
-                    if($data->month == $key) {
-                        $dashboardDataArray[$key] = [
-                            $data->rate
-                        ];
-                    }
-                }
+            $months = array();
+            foreach($mdrSummary as $data) {
+                $months[] = $monthArray[$data->month];
+                $dashboardDataArray[] = $data->rate;
             }
 
-            dd($dashboardDataArray);
-
-            return view('admin.dashboard');
+            return view('admin.dashboard',
+                array(
+                    'data' => $dashboardDataArray,
+                    'month' => $months
+                )
+            );
         }
         
         

@@ -211,14 +211,14 @@
                                 @csrf
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input type="password" name="password" placeholder="Enter password" class="form-control">
+                                    <input type="password" name="password" placeholder="Enter password" class="form-control input-sm">
                                 </div>
                                 <div class="form-group">
                                     <label>Confirm Password</label>
-                                    <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control">
+                                    <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control input-sm">
                                 </div>
                                 <div>
-                                    <button class="btn btn-primary btn-rounded btn-block">Change</button>
+                                    <button class="btn btn-sm btn-primary btn-rounded btn-block">Change</button>
                                 </div>
                             </form>
                         </div>
@@ -248,14 +248,6 @@
 
 <script>
     $(document).ready(function() {
-        var userTable = $('#userTable').DataTable({
-            pageLength: 10,
-            ordering: false,
-            responsive: true,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: [],
-        });
-
         var elems = document.querySelectorAll('.js-switch');
         elems.forEach(function(elem) {
             new Switchery(elem, { color: '#1AB394' });
@@ -279,6 +271,14 @@
                     })
                 }
             })
+        });
+        
+        var userTable = $('#userTable').DataTable({
+            pageLength: 10,
+            ordering: false,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [],
         });
 
         $("[name='department']").chosen({width: "100%"});

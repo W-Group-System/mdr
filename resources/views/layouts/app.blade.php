@@ -136,10 +136,9 @@
     @include('sweetalert::alert')
 
     <script src="{{ asset('js/jquery-3.1.1.min.js') }}"></script>
-
+    
     @stack('scripts')
     <!-- Mainly scripts -->
-    {{-- <script src="js/plugins/dataTables/datatables.min.js"></script> --}}
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
     <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>

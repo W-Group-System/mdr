@@ -102,15 +102,29 @@
         </div>
     @elseif(Auth::user()->account_role == 2)
     <div class="wrapper wrapper-content">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Pie </h5>
-
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <form action="" method="get" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="">
+                                </div>
+                                <div class="col-lg-3">
+                                    <button class="btn btn-sm btn-primary">Filter</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="ibox-content">
-                    <div>
-                        <div id="stocked"></div>
+            </div>
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div>
+                            <canvas id="barChart" height="100"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -122,16 +136,42 @@
 @push('scripts')
 <!-- Mainly scripts -->
 <script src="js/plugins/dataTables/datatables.min.js"></script>
-
-@if(Auth::user()->account_role == 1)
 <!-- ChartJS-->
-<script src="js/plugins/chartJs/Chart.min.js"></script>
-<script src="js/demo/chartjs-demo.js"></script>
+<script src="{{ asset('js/plugins/chartJs/Chart.min.js') }}"></script>
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
-
+@if(Auth::user()->account_role == 1)
 <script>
     $(document).ready(function() {
+        var department = {!! json_encode($departmentList) !!}
+        var dashboardData = {!! json_encode($dashboardData) !!}
+        
+        var ctx = document.getElementById("lineChart").getContext("2d");
+        
+        var lineData = {
+            labels: department,
+            datasets: [
+                {
+                    label: "Total Rating",
+                    borderColor: "rgba(26,179,148,0.7)",
+                    data: dashboardData
+                },
+            ]
+        };
+
+        var lineOptions = {
+            responsive: true
+        };
+
+        new Chart(
+            ctx, 
+            {
+                type: 'line', 
+                data: lineData, 
+                options:lineOptions
+            }
+        );
+
         $('#mdrSummaryTable').DataTable({
             pageLength: 25,
             responsive: true,
@@ -156,52 +196,35 @@
         });
 
         $("[name='department']").chosen({width: "100%"});
-
-        var department = {!! json_encode($departmentList) !!}
-        var dashboardData = {!! json_encode($dashboardData) !!}
-        
-        var lineData = {
-            labels: department,
-            datasets: [
-                {
-                    label: "Total Rating",
-                    // backgroundColor: "rgba(26,179,148,0.5)",
-                    borderColor: "rgba(26,179,148,0.7)",
-                    // pointBackgroundColor: "rgba(26,179,148,1)",
-                    // pointBorderColor: "#fff",
-                    data: dashboardData
-                },
-            ]
-        };
-
-        var lineOptions = {
-            responsive: true
-        };
-
-        var ctx = document.getElementById("lineChart").getContext("2d");
-        new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
     })
-
 </script>
 @endif
 @if(Auth::user()->account_role == 2)
-<script src="js/plugins/d3/d3.min.js"></script>
-<script src="js/plugins/c3/c3.min.js"></script>
 <script>
-c3.generate({
-    bindto: '#stocked',
-    data:{
-        columns: [],
-        colors:{
-            data1: '#1ab394',
-        },
-        type: 'bar',
-        // groups: [
-        //     ['data1', 'data2']
-        // ]
-    }
-});
+    var month = {!! json_encode($month) !!}
 
+    var data = {!! json_encode($data) !!}
+
+    var barData = {
+        labels: month,
+        datasets: [
+            {
+                label: "Total Rating",
+                backgroundColor: 'rgba(26,179,148,0.5)',
+                borderColor: "rgba(26,179,148,0.7)",
+                pointBackgroundColor: "rgba(26,179,148,1)",
+                pointBorderColor: "#fff",
+                data: data
+            }
+        ]
+    };
+
+    var barOptions = {
+        responsive: true
+    };
+
+    var ctx2 = document.getElementById("barChart").getContext("2d");
+    new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
 </script>
 @endif
 @endpush

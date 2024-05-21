@@ -105,7 +105,7 @@
     </div>
 </div>
 @endforeach
-    
+@include('components.footer')
 @endsection
 
 @push('scripts')
