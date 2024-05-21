@@ -50,10 +50,14 @@ class DashboardController extends Controller
                 )
             );
         } else if (auth()->user()->account_role == 2) {
-            $mdrSummary = MdrSummary::where('year', date("Y"))
-                ->where('department_id', auth()->user()->department_id)
-                ->orderBy('month', "ASC")
-                ->get();
+            $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id);
+            
+            if (!empty($request->year)) {
+                $mdrSummary = $mdrSummary->where('year', $request->year)->get();
+            }
+            else {
+                $mdrSummary = $mdrSummary->where('year', date("Y"))->get();
+            }
 
             $monthArray = array(
                 '01' => 'January',
@@ -80,7 +84,8 @@ class DashboardController extends Controller
             return view('admin.dashboard',
                 array(
                     'data' => $dashboardDataArray,
-                    'month' => $months
+                    'month' => $months,
+                    'years' => $request->year
                 )
             );
         }

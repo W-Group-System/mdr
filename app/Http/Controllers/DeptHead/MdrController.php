@@ -235,7 +235,7 @@ class MdrController extends Controller
             $mdrSummary->status = $deadlineDate >= date('Y-m-d') ? 'On-Time' : 'Delayed';
             $mdrSummary->year = date('Y', strtotime($date));
             $mdrSummary->month = date('m', strtotime($date));
-            $mdrSummary->rate = $kpiScoreData->total_rating;
+            // $mdrSummary->rate = $kpiScoreData->total_rating;
             $mdrSummary->save();
         }
 
@@ -340,13 +340,15 @@ class MdrController extends Controller
             return back();
         }
         else {
-            if ($mdrSummary->status_level != 0) {
-                Alert::error("ERROR", "Your MDR is currently approved.");
+            if (!empty($mdrSummary)) {
+                if ($mdrSummary->status_level != 0) {
+                    Alert::error("ERROR", "Your MDR is currently approved.");
+    
+                    return back();
+                };
+            }
 
-                return back();
-            };
-
-            Alert::error("ERROR", "error");
+            Alert::error("ERROR", "Cannot Approve. Please fill-up your KPI.");
             return back();
         }
     }
