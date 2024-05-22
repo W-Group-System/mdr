@@ -23,30 +23,49 @@ class DashboardController extends Controller
                 )
             );
         } else if(auth()->user()->account_role == 1) {
-            $mdrSummary = MdrSummary::query();
+            $departmentList = Department::with([
+                'mdrSummary' => function($q)use($request) {
+                    $q->where('month',date('m', strtotime($request->yearAndMonth)))
+                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->orderBy('department_id', 'ASC');
+                },
+            ])
+            ->orderBy('id', 'ASC')
+            ->get();
 
-            if(!empty($request->yearAndMonth)) {
-                $mdrSummary = $mdrSummary->where('year', date("Y", strtotime($request->yearAndMonth)))
-                    ->where('month', date("m", strtotime($request->yearAndMonth)));
-            }
-            
-            $mdrSummary = $mdrSummary
-                ->orderBy('department_id', "ASC")
-                ->get();
-
+            $mdrStatusArray = array();
             $dashboardDataArray = array();
             $departmentArray = array();
-            foreach($mdrSummary as $data) {
-                $departmentArray[] = $data->departments->dept_code;
-                $dashboardDataArray[] = $data->rate;
+            foreach($departmentList as $data) {
+                $mdrStatusArray[$data->id] = [
+                    'action' => 'Not Yet Submitted',
+                    'status' => '',
+                    'deadline' => date('Y-m', strtotime("+1month", strtotime($request->yearAndMonth))).'-'.$data->target_date,
+                    'department' => $data->dept_code.' - '.$data->dept_name,
+                    'rate' => 0.00
+                ];
+
+                $dashboardDataArray[$data->dept_code] = 0.00;
+
+                foreach($data->mdrSummary as $mdrSummaryData) {
+                    $mdrStatusArray[$mdrSummaryData->department_id] = [
+                        'action' => 'Submitted',
+                        'status' => $mdrSummaryData->status,
+                        'deadline' => $mdrSummaryData->deadline,
+                        'department' => $mdrSummaryData->departments->dept_code .' - '. $mdrSummaryData->departments->dept_name,
+                        'rate' => $mdrSummaryData->rate
+                    ];
+
+                    $dashboardDataArray[$mdrSummaryData->departments->dept_code] = $mdrSummaryData->rate;
+                }
             }
             
             return view('admin.dashboard',
                 array(
                     'departmentList' => $departmentArray,
                     'yearAndMonth' => $request->yearAndMonth,
-                    'mdrSummary' => $mdrSummary,
-                    'dashboardData' => $dashboardDataArray
+                    'dashboardData' => $dashboardDataArray,
+                    'mdrStatus' => $mdrStatusArray
                 )
             );
         } else if (auth()->user()->account_role == 2) {

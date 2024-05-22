@@ -14,6 +14,7 @@
                             <tr>
                                 <th>Department</th>
                                 <th>PIC</th>
+                                <th>Month</th>
                                 <th>Deadline</th>
                                 <th>Submission Date</th>
                                 {{-- <th>Approver Status</th> --}}
@@ -28,14 +29,15 @@
                                             <tr>
                                                 <td>{{ $mdrSummaryData->departments->dept_name }}</td>
                                                 <td>{{ $mdrSummaryData->users->name }}</td>
-                                                <td>{{ $mdrSummaryData->deadline }}</td>
-                                                <td>{{ $mdrSummaryData->submission_date }}</td>
+                                                <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
+                                                <td>{{ date('F d, Y', strtotime($mdrSummaryData->deadline)) }}</td>
+                                                <td>{{ date('F d, Y', strtotime($mdrSummaryData->submission_date)) }}</td>
                                                 {{-- <td>
                                                     @foreach ($mdrSummaryData->mdrStatus as $key => $status)
                                                         {{ $status }}
                                                         {{ $key+1 .'. '. $status->user_id }} - {{ $status->status == 1 ? 'APPROVED' : 'WAITING' }} <br>
                                                     @endforeach
-                                                </td> --}}
+                                                </td> --}}  
                                                 <td>
                                                     <form action="{{ url('list_of_mdr') }}" method="get" target="_blank">
 

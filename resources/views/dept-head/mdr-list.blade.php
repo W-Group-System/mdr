@@ -23,7 +23,32 @@
                         </div>
                     @endif
 
-                    <a class="btn btn-sm btn-primary" target="_blank" href="{{ url('new-mdr') }}">New MDR</a>
+                    <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">New MDR</button>
+
+                    <div class="modal fade" id="monthModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title">Select a Month</h1>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form action="{{ url('new-mdr') }}" method="get" target="_blank">
+                                                <div class="form-group">
+                                                    <input type="month" name="yearAndMonth" min="{{ date('Y-m', strtotime($yearAndMonth)) }}" max="{{ date('Y-m') }}" class="form-control input-sm" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button class="btn btn-sm btn-primary btn-block" type="submit">Next</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
                             <thead>
@@ -35,6 +60,7 @@
                                     <th>Innovation</th>
                                     <th>Timeliness</th>
                                     <th>Rating</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,12 +70,22 @@
                                 @foreach ($scoreList as $item)
                                     <tr>
                                         <td>{{ $mdrScoreList->dept_name }} </td>
-                                        <td>{{ date("F, Y", strtotime($item->year . '-' . $item->month))}}</td>
+                                        <td>{{ date("F Y", strtotime($item->year . '-' . $item->month))}}</td>
                                         <td>{{ $item->score }}</td>
                                         <td>{{ !empty($item->pd_scores) ? number_format($item->pd_scores, 1) : '0.0' }}</td>
                                         <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
                                         <td>{{ $item->timeliness }}</td>
                                         <td>{{ $item->total_rating }}</td>
+                                        <td>
+                                            <form action="{{ url('edit_mdr') }}" method="get">
+                                                
+                                                <input type="hidden" name="yearAndMonth" value="{{ $item->year.'-'.$item->month }}">
+
+                                                <button type="submit" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

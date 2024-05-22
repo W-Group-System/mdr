@@ -18,7 +18,7 @@ class DepartmentalGoalsController extends Controller
         ]);
 
         if ($validator->fails()) {
-
+            
             return back()->with('kpiErrors', $validator->errors()->all());
         }
         else {
@@ -36,9 +36,9 @@ class DepartmentalGoalsController extends Controller
                 $attachment->department_kpi_id = $id;
                 $attachment->file_path = 'file/' . $fileName;
                 $attachment->file_name = $fileName;
-                $attachment->year = date('Y');
-                $attachment->month = date('m');
-                $attachment->deadline = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
+                $attachment->year = date('Y', strtotime($request->yearAndMonth));
+                $attachment->month = date('m', strtotime($request->yearAndMonth));
+                $attachment->deadline = date('Y-m', strtotime("+1month", strtotime($attachment->year.'-'.$attachment->month))).'-'.$departmentData->target_date;
                 $attachment->save();
 
                 return back();

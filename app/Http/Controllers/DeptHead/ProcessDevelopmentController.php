@@ -12,11 +12,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
+use Symfony\Component\Process\Process;
 
 class ProcessDevelopmentController extends Controller
 {
+    public function get() {
+        $processDevelopment = ProcessDevelopment::get();
+
+        return response()->json($processDevelopment);
+    }
+
     public function add(Request $request) {
-        
+        // dd($request->all());
         $departmentData = Department::with('kpi_scores')
             ->where('id',  auth()->user()->department_id)
             ->first();
@@ -32,14 +39,8 @@ class ProcessDevelopmentController extends Controller
             return back()->with('pdError', $validator->errors()->all());
         }
         else {
-            // $checkStatus = ProcessDevelopment::where('status_level', 1)
-            //     ->where('year', date('Y', strtotime($request->monthOf)))
-            //     ->where('month', date('m', strtotime($request->monthOf)))
-            //     ->where('department_id', auth()->user()->department_id)
-            //     ->get();
-
-            $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->monthOf)))
-                ->where('month', date('m', strtotime($request->monthOf)))
+            $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->yearAndMonth)))
+                ->where('month', date('m', strtotime($request->yearAndMonth)))
                 ->where('department_id', auth()->user()->department_id)
                 ->where('status_level', "<>", 0)
                 ->first();
@@ -53,25 +54,27 @@ class ProcessDevelopmentController extends Controller
                 if($request->hasFile('file')) {
                     $processDevelopment = new ProcessDevelopment;
                     $processDevelopment->department_id = $departmentData->id;
-                    $processDevelopment->department_group_id = $request->pd_id;
+                    $processDevelopment->department_group_id = $request->dptGroup;
                     $processDevelopment->description = $request->description;
                     $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
                     $processDevelopment->status_level = 0;
-                    $processDevelopment->year = date('Y', strtotime($request->monthOf));
-                    $processDevelopment->month = date('m', strtotime($request->monthOf));
-                    $processDevelopment->deadline = date('Y-m', strtotime('+1month')).'-'.$departmentData->target_date;
+                    $processDevelopment->year = date('Y', strtotime($request->yearAndMonth));
+                    $processDevelopment->month = date('m', strtotime($request->yearAndMonth));
+                    $processDevelopment->deadline = date('Y-m', strtotime('+1month', strtotime($request->yearAndMonth))).'-'.$departmentData->target_date;
                     $processDevelopment->remarks = $request->remarks;
                     $processDevelopment->save();
     
                     $file = $request->file('file');
-                    $fileName = time() . '-' . $file->getClientOriginalName();
-                    $file->move(public_path('file'),  $fileName);
-    
-                    $attachment = new ProcessDevelopmentAttachments;
-                    $attachment->pd_id = $processDevelopment->id;
-                    $attachment->filepath = public_path('file') . '/' . $fileName;
-                    $attachment->filename = $fileName;
-                    $attachment->save();
+                    foreach($file as $attachment) {
+                        $fileName = time() . '-' . $attachment->getClientOriginalName();
+                        $attachment->move(public_path('file'),  $fileName);
+
+                        $pdAttachments = new ProcessDevelopmentAttachments;
+                        $pdAttachments->pd_id = $processDevelopment->id;
+                        $pdAttachments->filepath = 'file/' . $fileName;
+                        $pdAttachments->filename = $fileName;
+                        $pdAttachments->save();
+                    }
     
                     $departmentData->kpi_scores()
                         ->where('department_id', $departmentData->id)
@@ -113,15 +116,15 @@ class ProcessDevelopmentController extends Controller
                 }
 
                 $file = $request->file('file');
-                $fileName = time() . '-' . $file->getClientOriginalName();
-                $file->move(public_path('file'),  $fileName);
-
-                $attachment = ProcessDevelopmentAttachments::where('pd_id', $id)->first();
-
-                if (!empty($attachment)) {
-                    $attachment->filepath = public_path('file') . '/' . $fileName;
-                    $attachment->filename = $fileName;
-                    $attachment->save();
+                foreach($file as $attachment) {
+                    $fileName = time() . '-' . $attachment->getClientOriginalName();
+                    $attachment->move(public_path('file'),  $fileName);
+    
+                    $processDevelopmentAttachment = new ProcessDevelopmentAttachments;
+                    $processDevelopmentAttachment->pd_id = $request->pd_id;
+                    $processDevelopmentAttachment->filepath = 'file/' . $fileName;
+                    $processDevelopmentAttachment->filename = $fileName;
+                    $processDevelopmentAttachment->save();
                 }
 
                 Alert::success('SUCCESS', 'Successfully Updated.');
@@ -171,5 +174,13 @@ class ProcessDevelopmentController extends Controller
         Alert::success('SUCCESS', 'Successfully Deleted.');
         return back();
         
+    }
+
+    public function deletePdAttachments(Request $request) {
+        $attachments = ProcessDevelopmentAttachments::findOrFail($request->file_id);
+
+        if ($attachments) {
+            $attachments->delete();
+        }
     }
 }

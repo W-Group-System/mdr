@@ -26,7 +26,6 @@
                                     <tbody>
                                         @php
                                             $kpiScores = $data->kpi_scores()
-                                                // ->where('status_level', '<>', 0)
                                                 ->where('status_level', $approver->status_level)
                                                 ->where('year', date('Y', strtotime($yearAndMonth)))
                                                 ->where('month', date('m', strtotime($yearAndMonth)))
@@ -51,7 +50,7 @@
                                             @endforeach
                                         @else
                                             <tr>
-                                                <td colspan="4" class="text-center">No data available.</td>
+                                                <td colspan="6" class="text-center">No data available.</td>
                                             </tr>
                                         @endif
                                     </tbody>
@@ -169,14 +168,14 @@
                                                 <td>{{ date('F m, Y', strtotime($innovationData->start_date)) }}</td>
                                                 <td>{{ date('F m, Y', strtotime($innovationData->target_date)) }}</td>
                                                 <td>{{ date('F m, Y', strtotime($innovationData->actual_date)) }}</td>
-                                                <td>
+                                                <td width="10">
                                                     @foreach ($innovationData->innovationAttachments as $file)
-                                                        <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
+                                                        <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
                                                             <i class="fa fa-eye"></i>
                                                         </a>
                                                     @endforeach
                                                 </td>
-                                                <td>
+                                                <td width="10">
                                                     <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#innovationRemarksModal-{{ $innovationData->id }}">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
@@ -240,12 +239,14 @@
                                             <tr>
                                                 <td>{{ $item->description }}</td>
                                                 <td>{{ date('F d, Y', strtotime($item->accomplished_date)) }}</td>
-                                                <td>
-                                                    <a href="{{ asset('file/' . $item->pd_attachments->filename) }}" class="btn btn-sm btn-info" target="_blank">
-                                                        <i class="fa fa-eye"></i>
-                                                    </a>
+                                                <td width="10">
+                                                    @foreach ($item->pdAttachments as $file)
+                                                        <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    @endforeach
                                                 </td>
-                                                <td>
+                                                <td width="10">
                                                     <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#processDevelopmentRemarks-{{ $item->id }}">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>

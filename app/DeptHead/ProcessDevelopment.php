@@ -14,8 +14,8 @@ class ProcessDevelopment extends Model implements Auditable
 
     protected $fillable = ['department_id', 'department_group_id', 'description', 'accomplished_date', 'status_level', 'final_approved', 'deadline', 'month', 'year', 'remarks'];
 
-    public function pd_attachments() {
-        return $this->hasOne(ProcessDevelopmentAttachments::class, 'pd_id');
+    public function pdAttachments() {
+        return $this->hasMany(ProcessDevelopmentAttachments::class, 'pd_id');
     }
 
     public function departments() {

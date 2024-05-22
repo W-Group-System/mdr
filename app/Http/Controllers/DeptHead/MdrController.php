@@ -26,14 +26,14 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MdrController extends Controller
 {
-    public function index() {
-        
-        $departmentKpi = DepartmentGroup::with('departmentKpi', 'processDevelopment', 'innovation')
+    public function index(Request $request) {
+        $departmentKpi = DepartmentGroup::with([
+                'departmentKpi' => function($q) {
+                    $q->where('department_id', auth()->user()->department_id);
+                },
+                'processDevelopment', 
+                'innovation'])
             ->get();
-
-        // $approver = Approve::where('department_id', auth()->user()->department_id)
-        //     ->orderBy('status_level', 'ASC')
-        //     ->get();
 
         $approver = MdrSummary::with('mdrStatus')
             ->where('year', date('Y'))
@@ -44,25 +44,35 @@ class MdrController extends Controller
         return view('dept-head.mdr',
             array(
                 'departmentKpi' => $departmentKpi,
-                'approver' => $approver
+                'approver' => $approver,
+                'yearAndMonth' => $request->yearAndMonth
             )
         );
     }
 
-    public function create() {
-
+    public function mdrView() {
         $mdrScoreList = Department::with('kpi_scores', 'process_development')
             ->where('id', auth()->user()->department_id)
             ->first();
 
+        $kpiScore = KpiScore::orderBy('month', 'DESC')->first();
+        
+        if (!empty($kpiScore->year) && !empty($kpiScore->month)) {
+            $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
+        }
+        else {
+            $yearAndMonth = "";
+        }
+
         return view('dept-head.mdr-list', 
             array(
                 'mdrScoreList' => $mdrScoreList,
+                'yearAndMonth' => $yearAndMonth
             )
         );
     }
 
-    public function submitKpi(Request $request) {
+    public function create(Request $request) {
         $checkIfHaveAttachments = DepartmentKPI::with('attachments')
             ->where('department_id', auth()->user()->department_id)
             ->get();
@@ -73,7 +83,89 @@ class MdrController extends Controller
 
         if (!$hasAttachments) {
             
-            return back()->with('kpiErrors', ['Please attach a file in every KPI.']);
+            Alert::error("ERROR", "Please attach a file in every KPI.");
+            return back();
+        }
+        else {
+            $validator = Validator::make($request->all(), [
+                'actual[]' => 'array',
+                // 'remarks[]' => 'array',
+                'grade[]' => 'array',
+                'actual.*' => 'required',
+                // 'remarks.*' => 'required',
+                'grade.*' => 'required'
+            ], [
+                'actual.*' => 'The actual field is required.',
+                // 'remarks.*' => 'The remarks field is required.',
+                'grade.*' => 'The grades field is required.'
+            ]);
+    
+            if ($validator->fails()) {
+
+                return back()->with('kpiErrors', $validator->errors()->all());
+            } else {
+                $checkStatus = DepartmentalGoals::where('status_level', "<>", 0)
+                    ->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
+                    ->get();
+                
+                if ($checkStatus->isNotEmpty()) {
+
+                    Alert::error("ERROR", "Failed. Because your MDR has been approved.");
+                    return back();
+                }
+                else {
+                    $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
+                    
+                    $targetDate = 0;
+                    foreach($departmentKpi as $dept) {
+                        $targetDate = $dept->departments->target_date;
+                    }
+                    
+                    foreach($departmentKpi as $key => $data) {
+                        $deptGoals = new  DepartmentalGoals;
+                        $deptGoals->department_id = $data->department_id;
+                        $deptGoals->department_group_id = $data->department_group_id;
+                        $deptGoals->department_kpi_id = $data->id;
+                        $deptGoals->kpi_name = $data->name;
+                        $deptGoals->target = $data->target;
+                        $deptGoals->actual = $request->actual[$key];
+                        $deptGoals->grade = $request->grade[$key];
+                        $deptGoals->remarks = $request->remarks[$key];
+                        $deptGoals->year = date('Y', strtotime($request->yearAndMonth));
+                        $deptGoals->month = date('m', strtotime($request->yearAndMonth));
+                        $deptGoals->deadline = date('Y-m', strtotime("+1month", strtotime($deptGoals->year.'-'.$deptGoals->month))).'-'.$targetDate;
+                        $deptGoals->status_level = 0;
+                        $deptGoals->save();
+                    }
+
+                    $date = $request->yearAndMonth;
+                    $deadlineDate = $deptGoals->deadline;
+
+                    $this->computeKpi($request->grade, $date, $deadlineDate);
+
+                    Alert::success('SUCCESS', 'Your KPI is submitted.');
+                    return back();
+                }
+            }
+        }
+    }
+
+    public function update(Request $request) {
+        // dd($request->all());
+        $checkIfHaveAttachments = DepartmentKPI::with('attachments')
+            ->where('department_id', auth()->user()->department_id)
+            ->get();
+
+        $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
+            return $value->attachments->isNotEmpty();
+        });
+
+        if (!$hasAttachments) {
+            
+            Alert::error("ERROR", "Please attach a file in every KPI.");
+            return back();
         }
         else {
             $validator = Validator::make($request->all(), [
@@ -109,63 +201,29 @@ class MdrController extends Controller
                         ->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)))
                         ->get();
-    
-                    if ($departmentalGoalsList->isEmpty()) {
-                        
-                        $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
-                        
-                        $targetDate = 0;
-                        foreach($departmentKpi as $dept) {
-                            $targetDate = $dept->departments->target_date;
-                        }
-                        
-                        foreach($departmentKpi as $key => $data) {
-                            $deptGoals = new  DepartmentalGoals;
-                            $deptGoals->department_id = $data->department_id;
-                            $deptGoals->department_group_id = $data->department_group_id;
-                            $deptGoals->department_kpi_id = $data->id;
-                            $deptGoals->kpi_name = $data->name;
-                            $deptGoals->target = $data->target;
-                            $deptGoals->actual = $request->actual[$key];
-                            $deptGoals->grade = $request->grade[$key];
-                            $deptGoals->remarks = $request->remarks[$key];
-                            $deptGoals->year = date('Y', strtotime($request->yearAndMonth));
-                            $deptGoals->month = date('m', strtotime($request->yearAndMonth));
-                            $deptGoals->deadline = date('Y-m', strtotime("+1month")).'-'.$targetDate;
-                            $deptGoals->status_level = 0;
-                            $deptGoals->save();
-
-                            $date = $request->yearAndMonth;
-                        }
-
-                        $targetDate = date('Y-m', strtotime("+1month")).'-'.$targetDate;
-                        $this->computeKpi($request->grade, $date, $targetDate);
+                    
+                    $targetDate = 0;
+                    $deadlineDate = "0000-00-00";
+                    foreach($departmentalGoalsList as $dept) {
+                        $targetDate = $dept->departments->target_date;
+                        $deadlineDate = $dept->deadline;
                     }
-                    else {
-                        $targetDate = 0;
-                        foreach($departmentalGoalsList as $dept) {
-                            $targetDate = $dept->departments->target_date;
-                        }
-        
-                        $actual = $request->input('actual');
-                        $remarks = $request->input('remarks');
-                        $grades = $request->input('grade');
-                        
-                        $departmentalGoalsList->each(function($item, $index) use($actual, $grades, $request, $remarks, $targetDate) {
-                            $item->update([
-                                'actual' => $actual[$index],
-                                'remarks' => $remarks[$index],
-                                'grade' => $grades[$index],
-                                // 'deadline' =>  date('Y-m', strtotime("+1month")).'-'.$targetDate,
-                                // 'status_level' => 0
-                            ]);
-                        });
     
-                        $date = $request->yearAndMonth;
-                        $targetDate = date('Y-m', strtotime("+1month")).'-'.$targetDate;
-                        
-                        $this->computeKpi($grades, $date, $targetDate);
-                    }
+                    $actual = $request->input('actual');
+                    $remarks = $request->input('remarks');
+                    $grades = $request->input('grade');
+                    
+                    $departmentalGoalsList->each(function($item, $index) use($actual, $grades, $request, $remarks, $targetDate) {
+                        $item->update([
+                            'actual' => $actual[$index],
+                            'remarks' => $remarks[$index],
+                            'grade' => $grades[$index],
+                        ]);
+                    });
+
+                    $date = $request->yearAndMonth;
+                    
+                    $this->computeKpi($grades, $date, $deadlineDate);
 
                     Alert::success('SUCCESS', 'Your KPI is submitted.');
                     return back();
@@ -174,7 +232,45 @@ class MdrController extends Controller
         }
     }
 
-    public function computeKpi($grades, $date, $targetDate) {
+    public function edit(Request $request) {
+        $departmentKpiGroup = DepartmentGroup::with([
+            'departmentKpi' => function($q) {
+                $q->where('department_id', auth()->user()->department_id);
+            },
+            'departmentalGoals' => function($q)use($request) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
+            },
+            'innovation' => function($q)use($request) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
+            },
+            'processDevelopment' => function($q)use($request) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
+            },
+        ])
+        ->get();
+
+        $approver = MdrSummary::with('mdrStatus')
+            ->where('year', date('Y', strtotime($request->yearAndMonth)))
+            ->where('month', date('m', strtotime($request->yearAndMonth)))
+            ->where('department_id', auth()->user()->department_id)
+            ->get();
+
+        return view('dept-head.edit-mdr',
+            array(
+                'departmentKpiGroup' => $departmentKpiGroup,
+                'approver' => $approver,
+                'yearAndMonth' => $request->yearAndMonth
+            )
+        );
+    }
+
+    public function computeKpi($grades, $date, $deadlineDate) {
         $grade = collect($grades);
 
         $kpiValue = $grade->map(function($item, $key) {
@@ -212,19 +308,17 @@ class MdrController extends Controller
             $kpiScore->score = $score;
             $kpiScore->year = date('Y', strtotime($date));
             $kpiScore->month = date('m', strtotime($date));
-            $kpiScore->deadline = $targetDate;
+            $kpiScore->deadline = $deadlineDate;
             $kpiScore->save();
         }
 
         $departmentData = Department::where('id', auth()->user()->department_id)->first();
 
-        $mdrSummary = MdrSummary::with('mdrStatus')
+        $mdrSummary = MdrSummary::with(['mdrStatus'])
             ->where('department_id', $departmentData->id)
             ->where('year', date('Y', strtotime($date)))
             ->where('month', date('m', strtotime($date)))
             ->first();
-
-        $deadlineDate = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
 
         if(empty($mdrSummary)) {
             $mdrSummary = new MdrSummary;
@@ -271,18 +365,18 @@ class MdrController extends Controller
     public function approveMdr(Request $request) {
         $departmentData = Department::with([
             'departmentalGoals' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->monthOf)))
-                    ->where('month', date('m', strtotime($request->monthOf)))
+                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
                     ->where('status_level', 0);
             },
             'process_development' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->monthOf)))
-                    ->where('month', date('m', strtotime($request->monthOf)))
+                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
                     ->where('status_level', 0);
             },
             'innovation' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->monthOf)))
-                    ->where('month', date('m', strtotime($request->monthOf)))
+                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
                     ->where('status_level', 0);
             },
             'mdrSummary',
@@ -292,15 +386,15 @@ class MdrController extends Controller
             ->first();
 
         $kpiScore = $departmentData->kpi_scores()
-            ->where('year', date('Y', strtotime($request->monthOf)))
-            ->where('month', date('m', strtotime($request->monthOf)))
+            ->where('year', date('Y', strtotime($request->yearAndMonth)))
+            ->where('month', date('m', strtotime($request->yearAndMonth)))
             ->where('status_level', 0)
             ->first();
     
         $mdrSummary = $departmentData->mdrSummary()
             ->where('department_id', $departmentData->id)
-            ->where('year', date('Y', strtotime($request->monthOf)))
-            ->where('month', date('m', strtotime($request->monthOf)))
+            ->where('year', date('Y', strtotime($request->yearAndMonth)))
+            ->where('month', date('m', strtotime($request->yearAndMonth)))
             ->first();
 
         if ($departmentData->departmentalGoals->isNotEmpty()) {
@@ -324,7 +418,7 @@ class MdrController extends Controller
             });
 
             $totalRating = $kpiScore->score + $kpiScore->pd_scores + $kpiScore->innovation_scores + $kpiScore->timeliness;
-            $deadlineDate = date('Y-m', strtotime("+1month")).'-'.$departmentData->target_date;
+            $deadlineDate = $kpiScore->deadline;
 
             $kpiScore->update([
                 'status_level' => 1,

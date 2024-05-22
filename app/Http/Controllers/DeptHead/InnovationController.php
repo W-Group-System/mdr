@@ -41,14 +41,8 @@ class InnovationController extends Controller
             return back()->with('errors', $validator->errors()->all());
         }
         else {
-            // $checkStatus = Innovation::where('status_level', 1)
-            //     ->where('department_id', $department->id)
-            //     ->where('year', date('Y', strtotime($request->monthOf)))
-            //     ->where('month', date('m', strtotime($request->monthOf)))
-            //     ->get();
-
-            $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->monthOf)))
-                ->where('month', date('m', strtotime($request->monthOf)))
+            $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->yearAndMonth)))
+                ->where('month', date('m', strtotime($request->yearAndMonth)))
                 ->where('department_id', auth()->user()->department_id)
                 ->where('status_level', "<>", 0)
                 ->first();
@@ -69,9 +63,9 @@ class InnovationController extends Controller
                     $innovation->start_date = date('Y-m-d', strtotime($request->startDate));
                     $innovation->target_date = date('Y-m-d', strtotime($request->targetDate));
                     $innovation->actual_date = date('Y-m-d', strtotime($request->actualDate));
-                    $innovation->year = date('Y', strtotime($request->monthOf));
-                    $innovation->month = date('m', strtotime($request->monthOf));
-                    $innovation->deadline = date('Y-m', strtotime("+1month")).'-'.$department->target_date;
+                    $innovation->year = date('Y', strtotime($request->yearAndMonth));
+                    $innovation->month = date('m', strtotime($request->yearAndMonth));
+                    $innovation->deadline = date('Y-m', strtotime("+1month", strtotime($request->yearAndMonth))).'-'.$department->target_date;
                     $innovation->remarks = $request->remarks;
                     $innovation->save();
     
@@ -85,7 +79,7 @@ class InnovationController extends Controller
                         $innovationAttachments->department_id = $department->id;
                         $innovationAttachments->department_group_id = $request->department_group_id;
                         $innovationAttachments->innovation_id = $innovation->id;
-                        $innovationAttachments->filepath = public_path('file') . '/' .$fileName;
+                        $innovationAttachments->filepath = 'file/' . $fileName;
                         $innovationAttachments->filename = $fileName;
                         $innovationAttachments->year = $innovation->year;
                         $innovationAttachments->month = $innovation->month;
@@ -95,8 +89,8 @@ class InnovationController extends Controller
     
                     $department->kpi_scores()
                         ->where('department_id', $department->id)
-                        ->where('year',  date('Y', strtotime($request->monthOf)))
-                        ->where('month',  date('m', strtotime($request->monthOf)))
+                        ->where('year',  date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month',  date('m', strtotime($request->yearAndMonth)))
                         ->update(['innovation_scores' => 1.0]);
     
                     Alert::success('SUCCESS', 'Successfully Added.');
@@ -114,14 +108,6 @@ class InnovationController extends Controller
         $department = Department::with('kpi_scores')
             ->where('id', $request->department_id)
             ->first();
-        
-        // $innovationData = $department->innovation()
-        //     ->where('id', $id)
-        //     ->first();
-        
-        // if (!empty($innovationData)) {
-        //     $innovationData->delete();
-        // }
 
         $innovationData = Innovation::findOrFail($id);
         if ($innovationData) {
@@ -194,7 +180,7 @@ class InnovationController extends Controller
                     $innovationAttachments->filename = $fileName;
                     $innovationAttachments->year = $innovation->year;
                     $innovationAttachments->month = $innovation->month;
-                    $innovationAttachments->deadline = date('Y-m', strtotime("+1month")).'-'.$department->target_date;
+                    $innovationAttachments->deadline = $innovation->deadline;
                     $innovationAttachments->save();
                 }
 

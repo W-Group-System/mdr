@@ -16,4 +16,8 @@ class MdrStatus extends Model
     public function users() {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function departments() {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }

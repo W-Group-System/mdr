@@ -28,10 +28,8 @@ class ListOfMdr extends Controller
 
         return view('approver.list-of-mdr', 
             array(
-            //     'departmentList' => $departmentList , 
                 'department' => $request->department_id,
                 'yearAndMonth' => $request->yearAndMonth,
-            //     // 'departmentKpiGroups' => $departmentKpi,
                 'data' => $departmentData,
             )
         );

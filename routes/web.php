@@ -56,29 +56,31 @@ Route::group(['middleware' => 'auth'], function() {
 
         # === Department Head ===
         #MDR
-        Route::get('/mdr', 'DeptHead\MdrController@create')->name('mdr');
+        Route::get('/mdr', 'DeptHead\MdrController@mdrView')->name('mdr');
         Route::get('/new-mdr', 'DeptHead\MdrController@index');
+        Route::get('/edit_mdr', 'DeptHead\MdrController@edit');
 
         # Departmental Goals
-        Route::post('/addActual/{id}', 'DeptHead\DepartmentalGoalsController@addActual');
-        Route::post('/addRemarks/{id}', 'DeptHead\DepartmentalGoalsController@addRemarks');
         Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
         Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
-
-        Route::post('/submitKpi', 'DeptHead\MdrController@submitKpi');
+        Route::post('/create', 'DeptHead\MdrController@create');
+        Route::post('/update_mdr', 'DeptHead\MdrController@update');
 
         # Process Development
+        Route::get('/getProcessDevelopment', 'DeptHead\ProcessDevelopmentController@get');
         Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
         Route::post('/updateProcessDevelopment/{id}', 'DeptHead\ProcessDevelopmentController@update');
         Route::post('/deleteProcessDevelopment/{id}', 'DeptHead\ProcessDevelopmentController@delete');
-
-        Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
+        Route::post('/deletePdAttachments', 'DeptHead\ProcessDevelopmentController@deletePdAttachments');
 
         // # Innovations
         Route::post('/addInnovation', 'DeptHead\InnovationController@add');
         Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
         Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
         Route::post('/deleteAttachments', 'DeptHead\InnovationController@deleteAttachments');
+
+        # Approve MDR
+        Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
 
         // # Business Plan
         // Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');
