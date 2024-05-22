@@ -96,35 +96,59 @@
             </div>
         </div>
     @elseif(Auth::user()->account_role == 2)
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-content">
-                        <form action="" method="get" enctype="multipart/form-data">
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <input type="text" name="year" id="year" class="form-control input-sm" maxlength="4" value="{{ $years }}" placeholder="Enter a year">
+        <div class="wrapper wrapper-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <form action="" method="get" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <input type="text" name="year" id="year" class="form-control input-sm" maxlength="4" value="{{ $years }}" placeholder="Enter a year">
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <button class="btn btn-sm btn-primary">Filter</button>
+                                    </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <button class="btn btn-sm btn-primary">Filter</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-content">
-                        <div>
-                            <canvas id="barChart" height="140"></canvas>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div>
+                                <canvas id="barChart" height="140"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <h3>Status in year {{ isset($years) ? $years : date('Y') }}</h3>
+                            <table class="table table-striped table-bordered table-hover" id="">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($status as $statusData)
+                                        <tr>
+                                            <td>{{ $statusData['month'] }}</td>
+                                            <td>{{ $statusData['status'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     @endif
 @endsection
 
@@ -219,15 +243,15 @@
 @endif
 @if(Auth::user()->account_role == 2)
 <script>
-    var month = {!! json_encode($month) !!}
+    var month = {!! json_encode(array_keys($data)) !!}
 
-    var data = {!! json_encode($data) !!}
+    var data = {!! json_encode(array_values($data)) !!}
 
     var barData = {
         labels: month,
         datasets: [
             {
-                label: "Total Rating",
+                label: "Total Rating in year " + "{{ isset($years) ? $years : date('Y') }}",
                 backgroundColor: 'rgba(26,179,148,0.5)',
                 borderColor: "rgba(26,179,148,0.7)",
                 pointBackgroundColor: "rgba(26,179,148,1)",

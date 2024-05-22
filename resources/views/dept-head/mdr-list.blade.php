@@ -64,10 +64,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $scoreList = $mdrScoreList->kpi_scores->sortBy('date');
-                                @endphp
-                                @foreach ($scoreList as $item)
+                                @foreach ($mdrScoreList->kpi_scores as $item)
                                     <tr>
                                         <td>{{ $mdrScoreList->dept_name }} </td>
                                         <td>{{ date("F Y", strtotime($item->year . '-' . $item->month))}}</td>
@@ -77,7 +74,7 @@
                                         <td>{{ $item->timeliness }}</td>
                                         <td>{{ $item->total_rating }}</td>
                                         <td>
-                                            <form action="{{ url('edit_mdr') }}" method="get">
+                                            <form action="{{ url('edit_mdr') }}" method="get" target="_blank">
                                                 
                                                 <input type="hidden" name="yearAndMonth" value="{{ $item->year.'-'.$item->month }}">
 

@@ -51,23 +51,27 @@ class MdrController extends Controller
     }
 
     public function mdrView() {
-        $mdrScoreList = Department::with('kpi_scores', 'process_development')
-            ->where('id', auth()->user()->department_id)
-            ->first();
+        $mdrScoreList = Department::with([
+            'kpi_scores' => function($q) {
+                $q->orderBy('month', 'DESC');
+            }
+        ])
+        ->where('id', auth()->user()->department_id)
+        ->first();
 
-        $kpiScore = KpiScore::orderBy('month', 'DESC')->first();
-        
-        if (!empty($kpiScore->year) && !empty($kpiScore->month)) {
-            $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
-        }
-        else {
-            $yearAndMonth = "";
+        foreach($mdrScoreList->kpi_scores as $kpiScore) {
+            if($kpiScore->final_approved == 0)
+                $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
+            else {
+                $yearAndMonth = date('Y-m');
+            }
         }
 
         return view('dept-head.mdr-list', 
             array(
                 'mdrScoreList' => $mdrScoreList,
-                'yearAndMonth' => $yearAndMonth
+                'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : '',
+                // 'kpiScore' => $kpiScore
             )
         );
     }

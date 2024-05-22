@@ -25,8 +25,8 @@ class DashboardController extends Controller
         } else if(auth()->user()->account_role == 1) {
             $departmentList = Department::with([
                 'mdrSummary' => function($q)use($request) {
-                    $q->where('month',date('m', strtotime($request->yearAndMonth)))
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)))
                         ->orderBy('department_id', 'ASC');
                 },
             ])
@@ -94,16 +94,41 @@ class DashboardController extends Controller
             );
 
             $dashboardDataArray = array();
-            $months = array();
-            foreach($mdrSummary as $data) {
-                $months[] = $monthArray[$data->month];
-                $dashboardDataArray[] = $data->rate;
+            
+            foreach($monthArray as $key => $monthData) {
+                $yearNow = date('Y');
+
+                $dashboardDataArray[$key] = [
+                    'month' => date('F', strtotime($yearNow.'-'.$key)),
+                    'rate' => 0.0,
+                    'status' => 'No MDR Submitted'
+                ];
+
+                foreach($mdrSummary as $data) {
+                    $dashboardDataArray[$data->month] = [
+                        'month' => date('F', strtotime($data->year.'-'.$data->month)),
+                        'rate' => $data->rate,
+                        'status' => $data->status
+                    ];
+                    ksort($dashboardDataArray);
+                }
+            }
+
+            $dataArray = array();
+            $statusArray = array();
+            foreach($dashboardDataArray as $data) {
+                $dataArray[$data['month']] = $data['rate'];
+                
+                $statusArray[] = [
+                    'month' => $data['month'],
+                    'status' => $data['status']
+                ];
             }
 
             return view('admin.dashboard',
                 array(
-                    'data' => $dashboardDataArray,
-                    'month' => $months,
+                    'data' => $dataArray,
+                    'status' => $statusArray,
                     'years' => $request->year
                 )
             );

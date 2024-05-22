@@ -128,8 +128,8 @@
                                         <th>Start Date</th>
                                         <th>Target Date of Completion</th>
                                         <th>Actual Date of Completion</th>
-                                        <th>Attachments</th>
                                         <th>Remarks</th>
+                                        <th>Attachments</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -141,6 +141,7 @@
                                             <td>{{ date('F m, Y', strtotime($innovationData->start_date)) }}</td>
                                             <td>{{ date('F m, Y', strtotime($innovationData->target_date)) }}</td>
                                             <td>{{ date('F m, Y', strtotime($innovationData->actual_date)) }}</td>
+                                            <td>{{ $innovationData->remarks }}</td>
                                             <td>
                                                 @foreach ($innovationData->innovationAttachments as $file)
                                                     <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
@@ -148,7 +149,6 @@
                                                     </a>
                                                 @endforeach
                                             </td>
-                                            <td>{{ $innovationData->remarks }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -168,8 +168,8 @@
                                     <tr>
                                         <th>Description</th>
                                         <th>Accomplished Date</th>
-                                        <th>Attachments</th>
                                         <th>Remarks</th>
+                                        <th>Attachments</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -177,12 +177,14 @@
                                         <tr>
                                             <td>{{ $item->description }}</td>
                                             <td>{{ date('F d, Y', strtotime($item->accomplished_date)) }}</td>
-                                            <td>
-                                                <a href="{{ asset('file/' . $item->pd_attachments->filename) }}" class="btn btn-sm btn-info" target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            </td>
                                             <td>{{ $item->remarks }}</td>
+                                            <td>
+                                                @foreach ($item->pdAttachments as $file)
+                                                    <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                @endforeach
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

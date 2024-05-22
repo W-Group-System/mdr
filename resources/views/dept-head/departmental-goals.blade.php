@@ -15,7 +15,7 @@
                 <div class="alert alert-info">
                     <strong>Note: </strong> Attach a file first before submitting a KPI
                 </div>
-                <form action="{{ url('create') }}" method="post">
+                <form action="{{ url('create') }}" method="post" id="submitKpiForm">
                     @csrf
                     <table class="table table-bordered table-hover">
                         <thead>
@@ -30,22 +30,22 @@
                         </thead>
                         <tbody>
                             @foreach ($departmentKpiData->departmentKpi as $item)
-                                <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
-                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-
                                 <tr>
+                                    <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
+                                    <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+
                                     <td width="300">{!! nl2br($item->name) !!}</td>
                                     <td width="300">{!! nl2br($item->target) !!}</td>
                                     <td>
-                                        <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" required></textarea>
+                                        <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required></textarea>
                                     </td>
                                     <td>
-                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" required>
+                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" required>
                                     </td>
                                     <td>
-                                        <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" required></textarea>
+                                        <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required></textarea>
                                     </td>
-                                    <td>
+                                    <td class="tdUpload">
                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
                                             <i class="fa fa-upload"></i>
                                         </button>
@@ -127,7 +127,7 @@
             })
 
             $("[name='grade[]']").keypress(function(event) {
-                if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 37) {
+                if ( event.keyCode == 46 || event.keyCode == 8) {
                 }
                 else {
                     if (event.keyCode < 48 || event.keyCode > 57) {
@@ -136,9 +136,15 @@
                 }
             });
 
-            $("#month").chosen({width: "100%"})
+            $("#submitKpiForm").on('submit', function(e) {
+                console.log('asd');
+                e.preventDefault();
 
-            
+                var files = $(this).data();
+
+                console.log(files);
+            })
+
         })
     </script>
 @endpush
