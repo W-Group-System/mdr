@@ -16,6 +16,91 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentalGoalsController extends Controller
 {
+    public function create(Request $request) {
+        $checkIfHaveAttachments = DepartmentKPI::with([
+                'attachments' => function($q)use($request) {
+                    $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)));
+                }
+            ])
+            ->where('department_id', auth()->user()->department_id)
+            ->get();
+
+        $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
+            return $value->attachments->isNotEmpty();
+        });
+
+        if (!$hasAttachments) {
+            
+            Alert::error("ERROR", "Please attach a file in every KPI.");
+            return back();
+        }
+        else {
+            $validator = Validator::make($request->all(), [
+                'actual[]' => 'array',
+                // 'remarks[]' => 'array',
+                'grade[]' => 'array',
+                'actual.*' => 'required',
+                // 'remarks.*' => 'required',
+                'grade.*' => 'required'
+            ], [
+                'actual.*' => 'The actual field is required.',
+                // 'remarks.*' => 'The remarks field is required.',
+                'grade.*' => 'The grades field is required.'
+            ]);
+    
+            if ($validator->fails()) {
+
+                return back()->with('kpiErrors', $validator->errors()->all());
+            } else {
+                $checkStatus = DepartmentalGoals::where('status_level', "<>", 0)
+                    ->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
+                    ->get();
+                
+                if ($checkStatus->isNotEmpty()) {
+
+                    Alert::error("ERROR", "Failed. Because your MDR has been approved.");
+                    return back();
+                }
+                else {
+                    $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
+                    
+                    $targetDate = 0;
+                    foreach($departmentKpi as $dept) {
+                        $targetDate = $dept->departments->target_date;
+                    }
+                    
+                    foreach($departmentKpi as $key => $data) {
+                        $deptGoals = new  DepartmentalGoals;
+                        $deptGoals->department_id = $data->department_id;
+                        $deptGoals->department_group_id = $data->department_group_id;
+                        $deptGoals->department_kpi_id = $data->id;
+                        $deptGoals->kpi_name = $data->name;
+                        $deptGoals->target = $data->target;
+                        $deptGoals->actual = $request->actual[$key];
+                        $deptGoals->grade = $request->grade[$key];
+                        $deptGoals->remarks = $request->remarks[$key];
+                        $deptGoals->year = date('Y', strtotime($request->yearAndMonth));
+                        $deptGoals->month = date('m', strtotime($request->yearAndMonth));
+                        $deptGoals->deadline = date('Y-m', strtotime("+1month", strtotime($deptGoals->year.'-'.$deptGoals->month))).'-'.$targetDate;
+                        $deptGoals->status_level = 0;
+                        $deptGoals->save();
+                    }
+
+                    $date = $request->yearAndMonth;
+                    $deadlineDate = $deptGoals->deadline;
+
+                    $this->computeKpi($request->grade, $date, $deadlineDate);
+
+                    Alert::success('SUCCESS', 'Your KPI is submitted.');
+                    return back();
+                }
+            }
+        }
+    }
+
     public function update(Request $request) {
         $checkIfHaveAttachments = DepartmentKPI::with([
                 'attachments' => function($q)use($request) {
@@ -192,6 +277,8 @@ class DepartmentalGoalsController extends Controller
     }
     
     public function uploadAttachments(Request $request, $id) {
+        // dd($request->all());
+
         $validator = Validator::make($request->all(), [
             'file[]' => 'max:2048|mimes:pdf,jpg,png,jpeg'
         ]);
@@ -230,8 +317,7 @@ class DepartmentalGoalsController extends Controller
                     'id' => $id,
                     'file' => count($request->file('file')),
                     'filePath' => $filePathArray,
-                    'keys' => array_keys($request->file('file')),
-                    'attachmentId' => $attachment->id
+                    'attachmentId' => $attachment->id,
                 ]);
             }
             else {
@@ -241,6 +327,7 @@ class DepartmentalGoalsController extends Controller
     }
 
     public function deleteAttachments(Request $request) {
+        // dd($request->all());
         $attachmentData = Attachments::findOrFail($request->id);
 
         if ($attachmentData) {

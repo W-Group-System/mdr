@@ -15,8 +15,9 @@
                 <div class="alert alert-info">
                     <strong>Note: </strong> Attach a file first before submitting a KPI
                 </div>
-                <form action="{{ url('create') }}" method="post" id="submitKpiForm">
+                <form action="{{ url('create') }}" method="post">
                     @csrf
+
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
@@ -45,106 +46,76 @@
                                     <td>
                                         <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required></textarea>
                                     </td>
-                                    <td class="tdUpload">
+                                    <td width="10">
                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
                                             <i class="fa fa-upload"></i>
                                         </button>
+
+                                        <div class="kpi-attachment-container-{{ $item->id }}">
+                                            @foreach ($item->attachments as $attachment)
+                                                {{-- @if($dptGoals->department_kpi_id == $attachment->department_kpi_id)
+                                                @endif --}}
+                                                <div class="attachment-kpi-{{ $attachment->id }}">
+                                                    <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+
+                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="{{ $attachment->id }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <button class="btn btn-sm btn-primary pull-right" type="submit" data-toggle="modal" data-target="#submitModal">Submit KPI</button>
+                    <button class="btn btn-sm btn-primary pull-right" type="submit">Submit KPI</button>
                 </form>
             </div>
         </div>
+        
     </div>
+</div>
 
-    @foreach ($departmentKpiData->departmentKpi as $item)
-        <div class="modal fade uploadModal" id="uploadModal-{{ $item->id }}">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">Add Attachments</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <label>File Upload</label>
-                                <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-                                    <div class="fallback">
-                                        <input name="file" type="file" multiple />
-                                    </div>
-                                </form> 
-                            </div>
+@foreach ($departmentKpiData->departmentKpi as $item)
+    <div class="modal fade" id="uploadModal-{{ $item->id }}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title">Add Attachments</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>File Upload</label>
+                            {{-- <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                <div class="fallback">
+                                    <input name="file" type="file" multiple />
+                                </div>
+                            </form>  --}}
+
+                            <form action="{{ url('uploadAttachments/'. $item->id) }}" method="post" class="uploadKpiAttachmentForm" enctype="multipart/form-data">
+                                @csrf
+
+                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+
+                                <div class="form-group">
+                                    <input type="file" name="file[]" id="file" class="form-control" multiple required>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-sm btn-primary btn-block" type="submit">Add Files</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    @endforeach
-</div>
+    </div>
+@endforeach
+
 @endif
-
-@push('scripts')
-    <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            $("[name='deleteAttachments']").on('click', function() {
-                var id = $(this).data('id')
-
-                swal({
-                    title: "Are you sure?",
-                    text: "You will not be able to recover your file!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                }, function () {
-                    
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ url('deleteKpiAttachments') }}",
-                        data: {
-                            id: id
-                        },
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(res) {
-                            swal("Deleted!", "Your file has been deleted.", "success");
-
-                            setTimeout(() => {
-                                location.reload()
-                            }, 1000);
-                        }
-                    })
-                });
-            })
-
-            $("[name='grade[]']").keypress(function(event) {
-                if ( event.keyCode == 46 || event.keyCode == 8) {
-                }
-                else {
-                    if (event.keyCode < 48 || event.keyCode > 57) {
-                        event.preventDefault(); 
-                    }   
-                }
-            });
-
-            $("#submitKpiForm").on('submit', function(e) {
-                console.log('asd');
-                e.preventDefault();
-
-                var files = $(this).data();
-
-                console.log(files);
-            })
-
-        })
-    </script>
-@endpush

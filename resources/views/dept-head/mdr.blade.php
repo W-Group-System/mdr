@@ -130,8 +130,6 @@
 @endsection
 
 @push('scripts')
-<!-- DROPZONE -->
-<script src="{{ asset('js/plugins/dropzone/dropzone.js') }}"></script>
 <!-- Jasny -->
 <script src="{{ asset('js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
 <!-- Sweet alert -->
@@ -158,6 +156,88 @@ $(document).ready(function() {
         dom: '<"html5buttons"B>lTfgitp',
         buttons: [],
     });
+
+    $(".uploadKpiAttachmentForm").on('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        $.ajax({
+            type: $(this).attr('method'),
+            url: $(this).attr('action'),
+            data: formData,
+            contentType: false,
+            processData:false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(res) {
+                console.log(res);
+                var appendHtml = ``;
+
+                $.each(res.filePath, function(key, path) {
+                    appendHtml += `
+                        <a href="${path}" target="_blank" class="btn btn-sm btn-info">
+                            <i class="fa fa-eye"></i>
+                        </a>
+
+                        <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${res.attachmentId}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    `
+                })
+
+                $(".kpi-attachment-container-"+res.id).append(appendHtml)
+
+                swal("SUCCESS", "Successfully Added.", "success");
+
+                $("#uploadModal-"+res.id).modal('hide');
+            }
+        })
+    })
+
+    $(document).on('click', "[name='deleteKpiAttachments']" ,function() {
+        var id = $(this).data('id');
+
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover your file!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, function () {
+            
+            $.ajax({
+                type: "POST",
+                url: "{{ url('deleteKpiAttachments') }}",
+                data: {
+                    id: id
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(res) {
+                    console.log(res);
+                    swal("Deleted!", "Successfully Deleted.", "success");
+
+                    $('.attachment-kpi-'+id).remove();
+                }
+            })
+        });
+    })
+
+    $("[name='grade[]']").keypress(function(event) {
+        if ( event.keyCode == 46 || event.keyCode == 8) {
+        }
+        else {
+            if (event.keyCode < 48 || event.keyCode > 57) {
+                event.preventDefault(); 
+            }   
+        }
+    });
+
 })
 
 </script>
