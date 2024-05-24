@@ -14,7 +14,12 @@ use App\DeptHead\MdrStatus;
 use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\ApprovedNotificationJob;
+use App\Jobs\ReturnNotificationJob;
+use App\Notifications\ApprovedNotification;
+use App\Notifications\ReturnNotification;
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -122,12 +127,17 @@ class ListOfMdr extends Controller
 
                     $mdrSummary = $mdrSummary->update(['status_level' => 0]);
 
+                    $user = User::where('id', $departmentData->dept_head_id)->first();
+
+                    $approver = auth()->user()->name;
+
+                    ReturnNotificationJob::dispatch($user, $approver, $request->monthOf)->delay(now()->addMinutes(1));
+
                     Alert::success('SUCCESS', 'Successfully Returned.');
                     return back();
                 }
                 else {
                     Alert::error('ERROR', 'error');
-                    
                     return back();
                 }
             }
@@ -272,6 +282,12 @@ class ListOfMdr extends Controller
                             'status_level' => $approver->status_level+1
                         ]);
                     }
+                    
+                    $user = User::where('id', $departmentData->dept_head_id)->first();
+
+                    $approver = auth()->user()->name;
+
+                    ApprovedNotificationJob::dispatch($user, $approver, $request->monthOf)->delay(now()->addMinutes(1));
 
                     Alert::success('SUCCESS', 'Successfully Approved.');
                     return back();

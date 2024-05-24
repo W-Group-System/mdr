@@ -73,7 +73,7 @@
                                         <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
                                         <td>{{ $item->timeliness }}</td>
                                         <td>{{ $item->total_rating }}</td>
-                                        <td>
+                                        <td width="10">
                                             <form action="{{ url('edit_mdr') }}" method="get" target="_blank">
                                                 
                                                 <input type="hidden" name="yearAndMonth" value="{{ $item->year.'-'.$item->month }}">

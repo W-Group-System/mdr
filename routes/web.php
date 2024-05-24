@@ -64,10 +64,9 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
         Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
         Route::post('/create', 'DeptHead\MdrController@create');
-        Route::post('/update_mdr', 'DeptHead\MdrController@update');
+        Route::post('/update_mdr', 'DeptHead\DepartmentalGoalsController@update');
 
         # Process Development
-        Route::get('/getProcessDevelopment', 'DeptHead\ProcessDevelopmentController@get');
         Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
         Route::post('/updateProcessDevelopment/{id}', 'DeptHead\ProcessDevelopmentController@update');
         Route::post('/deleteProcessDevelopment/{id}', 'DeptHead\ProcessDevelopmentController@delete');
@@ -104,8 +103,11 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
         Route::post('/add_pd_remarks', 'Approver\ListOfMdr@addPdRemarks');
 
-        # Pending of MDR
-        Route::get('/pending_mdr', 'Approver\PendingMdrController@index')->name('pendingMdr');
+        # For Approval MDR
+        Route::get('/for_approval', 'Approver\ForApprovalController@index')->name('forApproval');
+
+        # Pending MDR
+        Route::get('pending_mdr', 'Approver\PendingMdrController@index')->name('pendingMdr');
 
         # History of MDR
         Route::get('/history_mdr', 'Approver\HistoryMdrController@index')->name('historyMdr');

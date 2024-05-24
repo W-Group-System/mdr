@@ -156,86 +156,6 @@ class MdrController extends Controller
         }
     }
 
-    public function update(Request $request) {
-        // dd($request->all());
-        $checkIfHaveAttachments = DepartmentKPI::with('attachments')
-            ->where('department_id', auth()->user()->department_id)
-            ->get();
-
-        $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
-            return $value->attachments->isNotEmpty();
-        });
-
-        if (!$hasAttachments) {
-            
-            Alert::error("ERROR", "Please attach a file in every KPI.");
-            return back();
-        }
-        else {
-            $validator = Validator::make($request->all(), [
-                'actual[]' => 'array',
-                // 'remarks[]' => 'array',
-                'grade[]' => 'array',
-                'actual.*' => 'required',
-                // 'remarks.*' => 'required',
-                'grade.*' => 'required'
-            ], [
-                'actual.*' => 'The actual field is required.',
-                // 'remarks.*' => 'The remarks field is required.',
-                'grade.*' => 'The grades field is required.'
-            ]);
-    
-            if ($validator->fails()) {
-
-                return back()->with('kpiErrors', $validator->errors()->all());
-            } else {
-                $checkStatus = DepartmentalGoals::where('status_level', "<>", 0)
-                    ->where('department_id', auth()->user()->department_id)
-                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->get();
-                
-                if ($checkStatus->isNotEmpty()) {
-
-                    Alert::error("ERROR", "Failed. Because your MDR has been approved.");
-                    return back();
-                }
-                else {
-                    $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->get();
-                    
-                    $targetDate = 0;
-                    $deadlineDate = "0000-00-00";
-                    foreach($departmentalGoalsList as $dept) {
-                        $targetDate = $dept->departments->target_date;
-                        $deadlineDate = $dept->deadline;
-                    }
-    
-                    $actual = $request->input('actual');
-                    $remarks = $request->input('remarks');
-                    $grades = $request->input('grade');
-                    
-                    $departmentalGoalsList->each(function($item, $index) use($actual, $grades, $request, $remarks, $targetDate) {
-                        $item->update([
-                            'actual' => $actual[$index],
-                            'remarks' => $remarks[$index],
-                            'grade' => $grades[$index],
-                        ]);
-                    });
-
-                    $date = $request->yearAndMonth;
-                    
-                    $this->computeKpi($grades, $date, $deadlineDate);
-
-                    Alert::success('SUCCESS', 'Your KPI is submitted.');
-                    return back();
-                }
-            }
-        }
-    }
-
     public function edit(Request $request) {
         $departmentKpiGroup = DepartmentGroup::with([
             'departmentKpi' => function($q) {
@@ -256,6 +176,12 @@ class MdrController extends Controller
                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)));
             },
+            'departmentKpi.attachments' => function($q)use($request) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
+            },
+            
         ])
         ->get();
 

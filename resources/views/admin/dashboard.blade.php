@@ -46,8 +46,16 @@
                                 </div>
                             @endif
         
-                            <form action="" method="get" enctype="multipart/form-data">
+                            <form action="" method="get">
                                 <div class="row">
+                                    <div class="col-lg-3">
+                                        <select name="department" id="department" class="form-control">
+                                            <option value="">-Department-</option>
+                                            @foreach ($listOfDepartment as $departmentData)
+                                                <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="col-lg-3">
                                         <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
                                     </div>
@@ -62,7 +70,7 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <canvas id="lineChart" height="70"></canvas>
+                            <canvas id="barChart" height="70"></canvas>
                         </div>
                     </div>
                 </div>
@@ -165,31 +173,27 @@
         var dept = {!! json_encode(array_keys($dashboardData)) !!}
         var data = {!! json_encode(array_values($dashboardData)) !!}
 
-        var ctx = document.getElementById("lineChart").getContext("2d");
-        
-        var lineData = {
+        var barData = {
             labels: dept,
             datasets: [
                 {
-                    label: "Total Rating",
+                    label: "Total Rating in " + "{{ isset($yearAndMonth) ? date('F Y', strtotime($yearAndMonth)) : date('F Y') }}",
+                    backgroundColor: 'rgba(26,179,148,0.5)',
                     borderColor: "rgba(26,179,148,0.7)",
+                    pointBackgroundColor: "rgba(26,179,148,1)",
+                    pointBorderColor: "#fff",
                     data: data
-                },
+                }
             ]
         };
 
-        var lineOptions = {
+        var barOptions = {
             responsive: true
         };
 
-        new Chart(
-            ctx, 
-            {
-                type: 'line', 
-                data: lineData, 
-                options:lineOptions
-            }
-        );
+        var ctx2 = document.getElementById("barChart").getContext("2d");
+        new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
+
 
         $('#mdrSummaryTable').DataTable({
             pageLength: 10,

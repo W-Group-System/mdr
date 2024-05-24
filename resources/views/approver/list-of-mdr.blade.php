@@ -30,7 +30,6 @@
                                                 ->where('year', date('Y', strtotime($yearAndMonth)))
                                                 ->where('month', date('m', strtotime($yearAndMonth)))
                                                 ->get();
-                                            
                                         @endphp
                                         @if(count($kpiScores) > 0)
                                             @foreach ($kpiScores as $score)
@@ -80,7 +79,6 @@
                         ->where('month', date('m', strtotime($yearAndMonth)))
                         ->where('status_level', $approver->status_level)
                         ->get();
-                    
                 @endphp
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
@@ -118,11 +116,14 @@
     
                                                                 <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control">{{ $item->remarks }}</textarea>
                                                             </td>
-                                                            <td>
-                                                                @foreach ($item->departmentKpi->attachments as $attachment)
-                                                                <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
-                                                                    <i class="fa fa-eye"></i>
-                                                                </a>
+                                                            <td width="10">
+                                                                @foreach ($item->departmentKpi->attachments as $key => $attachment)
+                                                                <div>
+                                                                    <span><strong>{{ $key+1 }}</strong>.</span> 
+                                                                    <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </a>
+                                                                </div>
                                                                 @endforeach
                                                             </td>
                                                         </tr>

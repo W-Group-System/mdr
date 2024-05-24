@@ -46,10 +46,10 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($dptGroupData->departmentalGoals as $dptGoals)
-                                                <input type="hidden" name="department_kpi_id[]" value="{{ $dptGoals->department_kpi_id }}">
-                                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-
                                                 <tr>
+                                                    <input type="hidden" name="department_kpi_id[]" value="{{ $dptGoals->department_kpi_id }}">
+                                                    <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+
                                                     <td width="300">{!! nl2br($dptGoals->kpi_name) !!}</td>
                                                     <td width="300">{!! nl2br($dptGoals->target) !!}</td>
                                                     <td>
@@ -61,25 +61,29 @@
                                                     <td>
                                                         <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} required>{{ $dptGoals->remarks }}</textarea>
                                                     </td>
-                                                    <td>
+                                                    <td width="10">
                                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $dptGoals->department_kpi_id }}" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} >
                                                             <i class="fa fa-upload"></i>
                                                         </button>
-                                                        
+
                                                         @foreach ($dptGroupData->departmentKpi as $dptKpi)
-                                                            @foreach ($dptKpi->attachments as $attachment)
-                                                                @if($dptGoals->department_kpi_id == $attachment->department_kpi_id)
-                                                                    <div>
-                                                                        <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
-                                                                            <i class="fa fa-eye"></i>
-                                                                        </a>
+                                                            @if($dptKpi->id == $dptGoals->department_kpi_id)
+                                                                <div class="kpi-attachment-container-{{ $dptKpi->id }}">
+                                                                    @foreach ($dptKpi->attachments as $attachment)
+                                                                        @if($dptGoals->department_kpi_id == $attachment->department_kpi_id)
+                                                                            <div class="attachment-kpi-{{ $attachment->id }}">
+                                                                                <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
+                                                                                    <i class="fa fa-eye"></i>
+                                                                                </a>
     
-                                                                        <button type="button" class="btn btn-sm btn-danger" name="deleteAttachments" data-id="{{ $attachment->id }}" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} >
-                                                                            <i class="fa fa-trash"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                @endif
-                                                            @endforeach
+                                                                                <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="{{ $attachment->id }}" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} >
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </div>
+                                                            @endif
                                                         @endforeach
                                                     </td>
                                                 </tr>
@@ -103,13 +107,26 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <label>File Upload</label>
-                                            <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
+                                            {{-- <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
                                                 <div class="fallback">
                                                     <input name="file" type="file" multiple />
                                                 </div>
-                                            </form> 
+                                            </form>  --}}
+
+                                            <form action="{{ url('uploadAttachments/'. $item->id) }}" method="post" class="uploadKpiAttachmentForm" enctype="multipart/form-data">
+                                                @csrf
+
+                                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+
+                                                <div class="form-group">
+                                                    <input type="file" name="file[]" id="file" class="form-control" multiple required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button class="btn btn-sm btn-primary btn-block" type="submit">Add Files</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -149,7 +166,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($dptGroupData->innovation as $innovationData)
-                                            
                                             <tr>
                                                 <td>{{ $innovationData->projects }}</td>
                                                 <td>{{ $innovationData->project_summary }}</td>
@@ -158,18 +174,20 @@
                                                 <td>{{ date('F d, Y', strtotime($innovationData->target_date)) }}</td>
                                                 <td>{{ date('F d, Y', strtotime($innovationData->actual_date)) }}</td>
                                                 <td>{{ $innovationData->remarks }}</td>
-                                                <td width="100">
-                                                    @foreach ($innovationData->innovationAttachments as $file)
-                                                        <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
-                                                        
-                                                        <button class="btn btn-sm btn-danger" name="deleteAttachments[]" type="button" data-id="{{ $file->id }}" id="deleteAttachments" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
+                                                <td width="10">
+                                                    @foreach ($innovationData->innovationAttachments as $key=>$file)
+                                                        <div class="innovation-attachments-{{ $file->id }}">
+                                                            <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                            
+                                                            <button class="btn btn-sm btn-danger" name="deleteAttachments" type="button" data-id="{{ $file->id }}" id="deleteAttachments" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
                                                     @endforeach
                                                 </td>
-                                                <td>
+                                                <td width="10">
                                                     <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $innovationData->id }}" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
@@ -375,8 +393,8 @@
                                                 <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
                                                 <td>{{ $processDevelopmentData->remarks }}</td>
                                                 <td width="10">
-                                                    @foreach ($processDevelopmentData->pdAttachments as $pdFile)
-                                                        <div>
+                                                    @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
+                                                        <div class="pd-attachments-{{ $pdFile->id }}">
                                                             <a href="{{ $pdFile->filepath }}" class="btn btn-sm btn-info" target="_blank">
                                                                 <i class="fa fa-eye"></i>
                                                             </a>
@@ -570,7 +588,7 @@
                                                     <tr>
                                                         <td>{{ $item->users->name }}</td>
                                                         <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                        <td>{{ $item->start_date }}</td>
+                                                        <td>{{ !empty($item->start_date) ? date('F d, Y', strtotime($item->start_date)) : 'No Date' }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endforeach
@@ -602,39 +620,6 @@
 
 <script>
     $(document).ready(function() {
-        $("[name='deleteAttachments']").on('click', function() {
-            var id = $(this).data('id')
-            
-            swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover your file!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            }, function () {
-                
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('deleteKpiAttachments') }}",
-                    data: {
-                        id: id
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(res) {
-                        swal("Deleted!", "Your file has been deleted.", "success");
-
-                        setTimeout(() => {
-                            location.reload()
-                        }, 1000);
-                    }
-                })
-            });
-        })
-
         $("[name='grade[]']").keypress(function(event) {
             if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 37) {
             }
@@ -699,6 +684,75 @@
             startDate: dateToday,
         });
 
+        $(".uploadKpiAttachmentForm").on('submit', function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: $(this).attr('method'),
+                url: $(this).attr('action'),
+                data: formData,
+                contentType: false,
+                processData:false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(res) {
+                    var appendHtml = ``;
+
+                    $.each(res.filePath, function(key, path) {
+                        appendHtml += `
+                            <a href="${path}" target="_blank" class="btn btn-sm btn-info">
+                                <i class="fa fa-eye"></i>
+                            </a>
+
+                            <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${res.attachmentId}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        `
+                    })
+
+                    $(".kpi-attachment-container-"+res.id).append(appendHtml)
+
+                    swal("SUCCESS", "Successfully Added.", "success");
+
+                    $("#uploadModal-"+res.id).modal('hide');
+                }
+            })
+        })
+
+        $(document).on('click',"[name='deleteKpiAttachments']",function() {
+            var id = $(this).data('id')
+            
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover your file!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function () {
+                
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('deleteKpiAttachments') }}",
+                    data: {
+                        id: id
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(res) {
+                        swal("Deleted!", "Your file has been deleted.", "success");
+
+                        $('.attachment-kpi-'+id).remove()
+                    }
+                })
+            });
+        })
+
         $(".deletePdAttachments").on('click', function() {
 
             var id = $(this).data('id');
@@ -724,14 +778,41 @@
                     success: function(response) {
                         swal("Deleted!", response.message, "success");
 
-                        setTimeout(() => {
-                            location.reload()
-                        }, 1000);
+                        $('.pd-attachments-'+id).remove();
                     }
                 })
             });
         })
 
+        $("[name='deleteAttachments']").on('click', function() {
+            var id = $(this).data('id');
+            
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover your file!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('deleteAttachments') }}",
+                    data: {
+                        file_id: id
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        swal("Deleted!", response.message, "success");
+
+                        $(".innovation-attachments-" + id).remove();
+                    }
+                })
+            });
+        })
     })
 </script>
 @endpush

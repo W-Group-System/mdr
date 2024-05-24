@@ -194,8 +194,8 @@ class InnovationController extends Controller
 
     public function deleteAttachments(Request $request) {
         
-        $fileData = InnovationAttachments::where('id', $request->file_id)->first();
-
+        $fileData = InnovationAttachments::findOrFail($request->file_id);
+        
         if (!empty($fileData)) {
             $fileData->delete();
 

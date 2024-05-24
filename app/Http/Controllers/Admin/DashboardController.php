@@ -25,9 +25,17 @@ class DashboardController extends Controller
         } else if(auth()->user()->account_role == 1) {
             $departmentList = Department::with([
                 'mdrSummary' => function($q)use($request) {
-                    $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->orderBy('department_id', 'ASC');
+                    if (!empty($request->department) && !empty($request->yearAndMonth)) {
+                        $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                            ->where('month', date('m', strtotime($request->yearAndMonth)))
+                            ->where('department_id', $request->department)
+                            ->orderBy('department_id', 'ASC');
+                    }
+                    else {
+                        $q->where('year', date('Y'))
+                            ->where('month', date('m'))
+                            ->orderBy('department_id', 'ASC');
+                    }
                 },
             ])
             ->orderBy('id', 'ASC')
@@ -37,13 +45,15 @@ class DashboardController extends Controller
             $dashboardDataArray = array();
             $departmentArray = array();
             foreach($departmentList as $data) {
-                $mdrStatusArray[$data->id] = [
-                    'action' => 'Not Yet Submitted',
-                    'status' => '',
-                    'deadline' => date('Y-m', strtotime("+1month", strtotime($request->yearAndMonth))).'-'.$data->target_date,
-                    'department' => $data->dept_code.' - '.$data->dept_name,
-                    'rate' => 0.00
-                ];
+                if(empty($request->department) && empty($request->yearAndMonth)) {
+                    $mdrStatusArray[$data->id] = [
+                        'action' => 'Not Yet Submitted',
+                        'status' => '',
+                        'deadline' => date('Y-m', strtotime("+1month", strtotime($request->yearAndMonth))).'-'.$data->target_date,
+                        'department' => $data->dept_code.' - '.$data->dept_name,
+                        'rate' => 0.00
+                    ];
+                }
 
                 $dashboardDataArray[$data->dept_code] = 0.00;
 
@@ -62,10 +72,12 @@ class DashboardController extends Controller
             
             return view('admin.dashboard',
                 array(
+                    'listOfDepartment' => $departmentList,
                     'departmentList' => $departmentArray,
                     'yearAndMonth' => $request->yearAndMonth,
                     'dashboardData' => $dashboardDataArray,
-                    'mdrStatus' => $mdrStatusArray
+                    'mdrStatus' => $mdrStatusArray,
+                    'departmentValue' => $request->department
                 )
             );
         } else if (auth()->user()->account_role == 2) {

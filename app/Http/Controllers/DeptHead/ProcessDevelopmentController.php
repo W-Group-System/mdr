@@ -16,15 +16,13 @@ use Symfony\Component\Process\Process;
 
 class ProcessDevelopmentController extends Controller
 {
-    public function get() {
-        $processDevelopment = ProcessDevelopment::get();
-
-        return response()->json($processDevelopment);
-    }
-
     public function add(Request $request) {
-        // dd($request->all());
-        $departmentData = Department::with('kpi_scores')
+        $departmentData = Department::with([
+                'kpi_scores' => function($q)use($request) {
+                    $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)));
+                }
+            ])
             ->where('id',  auth()->user()->department_id)
             ->first();
 
@@ -76,11 +74,7 @@ class ProcessDevelopmentController extends Controller
                         $pdAttachments->save();
                     }
     
-                    $departmentData->kpi_scores()
-                        ->where('department_id', $departmentData->id)
-                        ->where('year', date('Y', strtotime($request->monthOf)))
-                        ->where('month', date('m', strtotime($request->monthOf)))
-                        ->update(['pd_scores' => 0.5]);
+                    $departmentData->kpi_scores()->update(['pd_scores' => 0.5]);
 
                     Alert::success('SUCCESS', 'Successfully Added.');
                     return back();
@@ -181,6 +175,8 @@ class ProcessDevelopmentController extends Controller
 
         if ($attachments) {
             $attachments->delete();
+
+            return array('message' => 'Successfully Deleted.');
         }
     }
 }

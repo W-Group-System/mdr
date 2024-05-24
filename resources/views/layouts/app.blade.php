@@ -55,7 +55,7 @@
                     <li class="{{ Route::currentRouteName() == "dashboard" ? 'active' : '' }}">
                         <a href="{{ route('dashboard') }}">
                             <i class="fa fa-th-large"></i>
-                            <span class="nav-label">Dashboards</span>
+                            <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
                     @if(Auth::user()->account_role == 0)
@@ -74,6 +74,12 @@
                         </li>
                     @endif
                     @if(Auth::user()->account_role == 1)
+                        <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
+                            <a href="{{ url('for_approval') }}">
+                                <i class="fa fa-pencil-square-o"></i>
+                                <span class="nav-label">For Approval MDR</span>
+                            </a>
+                        </li>
                         <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
                             <a href="{{ url('pending_mdr') }}">
                                 <i class="fa fa-clock-o"></i>
@@ -100,12 +106,6 @@
                                 <span class="nav-label">MDR</span>
                             </a>
                         </li>
-                        {{-- <li class="{{ Route::currentRouteName() == "manageApprover" ? 'active' : '' }}">
-                            <a href="{{ route('manageApprover') }}">
-                                <i class="fa fa-users"></i>
-                                <span class="nav-label">Manage Approver</span>
-                            </a>
-                        </li> --}}
                     @endif
                 </ul>
             </div>
