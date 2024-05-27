@@ -41,24 +41,24 @@ class SendEmailNotification extends Command
      */
     public function handle()
     {
-        $department = Department::with(['departmentalGoals', 'innovation', 'process_development'])->get();
+        // $department = Department::with(['departmentalGoals', 'innovation', 'process_development'])->get();
 
-        foreach($department as $dept) {
-            $deptGoals = $dept->departmentalGoals()->where('status_level', 0)->get();
-            $innovation = $dept->innovation()->where('status_level', 0)->get();
-            $processDevelopment = $dept->process_development()->where('status_level', 0)->get();
+        // foreach($department as $dept) {
+        //     $deptGoals = $dept->departmentalGoals()->where('status_level', 0)->get();
+        //     $innovation = $dept->innovation()->where('status_level', 0)->get();
+        //     $processDevelopment = $dept->process_development()->where('status_level', 0)->get();
 
-            $targetDate = date("Y-m").'-'.$dept->target_date;
-            $threeDaysBeforeTarget = Carbon::now()->subDays(3);
+        //     $targetDate = date("Y-m").'-'.$dept->target_date;
+        //     $threeDaysBeforeTarget = Carbon::now()->subDays(3);
 
-            if ($threeDaysBeforeTarget <= $targetDate) {
-                if ($deptGoals->isNotEmpty() && $innovation->isNotEmpty() && $processDevelopment->isNotEmpty()) {
+        //     if ($threeDaysBeforeTarget <= $targetDate) {
+        //         if ($deptGoals->isNotEmpty() && $innovation->isNotEmpty() && $processDevelopment->isNotEmpty()) {
                     
-                    $user = $dept->user;
-                    $user->notify(new EmailNotification($user->name));
-                };
+        //             $user = $dept->user;
+        //             $user->notify(new EmailNotification($user->name));
+        //         };
                 
-            }
-        }
+        //     }
+        // }
     }
 }

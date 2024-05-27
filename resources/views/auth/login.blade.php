@@ -9,31 +9,28 @@
     <title>Login</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-
-    <link href="css/animate.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{asset('login_design/css/util.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('login_design/css/main.css')}}">
     <link rel="shortcut icon" href="{{ asset('img/wgroup.png') }}" type="image/x-icon">
 
-    <!-- Gritter -->
-    <link href="js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+    <style>
+        .loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url("{{ asset('login_css/img/loader.gif') }}") 50% 50% no-repeat white;
+            opacity: .8;
+            background-size: 120px 120px;
+        }
+    </style>
+
 </head>
 
-<style>
-    #login-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .loginscreen {
-        padding: 0;
-        margin-bottom: 70px;
-    }
-</style>
-
 <body class="gray-bg">
-    <div class="container my-auto" id="login-container" style="height: 100vh">
+    {{-- <div class="container my-auto" id="login-container" style="height: 100vh">
         <div class="middle-box text-center loginscreen animated fadeInDown">
             <div>
                 <h2>Online MDR System</h2>
@@ -55,51 +52,77 @@
                 </form>
             </div>
         </div>
+    </div> --}}
+    <div id="loader" style="display:none;" class="loader"></div>
+    
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <form method="POST" action="{{ route('login') }}"  class="login100-form validate-form" onsubmit="show()">
+                    @csrf
+                
+                    <span class="login100-form-title p-b-43">
+                        {{ config('app.name', 'Laravel') }}
+                    </span>
+                    <span class="login100-form-title p-b-43">
+                        <h5>Login to continue</h5>
+                    </span>
+                    
+                    @if($errors->any())
+                        <div class="form-group alert alert-danger alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            <strong>{{$errors->first()}}</strong>
+                        </div>
+                    @endif
+
+                    <div class="wrap-input100" data-validate = "Valid email is required: ex@abc.xyz">
+                        <input  type="email" class="input100" name="email" value="" required >
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Email</span>
+                    </div>
+                    
+                    
+                    <div class="wrap-input100" data-validate="Password is required">
+                        <input  id="password" type="password" class="input100" name="password" required>
+                        <span class="focus-input100"></span>
+                        <span class="label-input100">Password</span>
+                    </div>
+    
+                    <div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type='submit'>
+                            Login
+                        </button>
+                    </div>
+                    <div class="flex-sb-m w-full p-t-3 p-b-32">
+    
+                        <div>
+                            <a href="{{ route('password.request') }}" class="txt1">
+                                Forgot Password?
+                            </a>
+                        </div>
+                    </div>
+                </form>
+    
+                <div class="login100-more" style="background-image: url('login_design/images/WGROUP.png');">
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    
+    <!--===============================================================================================-->
+	<script src="{{ asset('login_design/vendor/jquery/jquery-3.2.1.min.js')}}"></script>
+    <!--===============================================================================================-->
+        <script src="{{ asset('login_design/vendor/animsition/js/animsition.min.js')}}"></script>
+    <!--===============================================================================================-->
+        <script src="{{ asset('login_design/js/main.js')}}"></script>
 
-    <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Flot -->
-    <script src="js/plugins/flot/jquery.flot.js"></script>
-    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
-    <script src="js/plugins/flot/jquery.flot.spline.js"></script>
-    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
-    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
-
-    <!-- Peity -->
-    <script src="js/plugins/peity/jquery.peity.min.js"></script>
-    <script src="js/demo/peity-demo.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-
-    <!-- jQuery UI -->
-    <script src="js/plugins/jquery-ui/jquery-ui.min.js"></script>
-
-    <!-- GITTER -->
-    <script src="js/plugins/gritter/jquery.gritter.min.js"></script>
-
-    <!-- Sparkline -->
-    <script src="js/plugins/sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Sparkline demo data  -->
-    <script src="js/demo/sparkline-demo.js"></script>
-
-    <!-- ChartJS-->
-    <script src="js/plugins/chartJs/Chart.min.js"></script>
-
-    <!-- Toastr -->
-    <script src="js/plugins/toastr/toastr.min.js"></script>
-
+        <script>
+            function show() {
+                document.getElementById("loader").style.display = "block";
+            }
+        </script>
 </body>
 
 </html>

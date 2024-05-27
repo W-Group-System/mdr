@@ -277,8 +277,6 @@ class DepartmentalGoalsController extends Controller
     }
     
     public function uploadAttachments(Request $request, $id) {
-        // dd($request->all());
-
         $validator = Validator::make($request->all(), [
             'file[]' => 'max:2048|mimes:pdf,jpg,png,jpeg'
         ]);
@@ -317,7 +315,6 @@ class DepartmentalGoalsController extends Controller
                     'id' => $id,
                     'file' => count($request->file('file')),
                     'filePath' => $filePathArray,
-                    // 'attachmentId' => ,
                 ]);
             }
             else {
@@ -327,7 +324,6 @@ class DepartmentalGoalsController extends Controller
     }
 
     public function deleteAttachments(Request $request) {
-        // dd($request->all());
         $attachmentData = Attachments::findOrFail($request->id);
 
         if ($attachmentData) {

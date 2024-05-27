@@ -220,7 +220,6 @@ $(document).ready(function() {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(res) {
-                    console.log(res);
                     swal("Deleted!", "Successfully Deleted.", "success");
 
                     $('.attachment-kpi-'+id).remove();

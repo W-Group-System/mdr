@@ -99,33 +99,32 @@ class ListOfMdr extends Controller
                         
                     //     return back();
                     // }
-                    
                     $departmentalGoalsList->each(function($item, $key)use($approver) {
                         $item->update([
-                            'status_level' => 0
+                            'status_level' => $approver->status_level != 1 ? 1 : 0
                         ]);
                     });
 
                     $processDevelopmentList->each(function($item, $key)use($approver) {
                         $item->update([
-                            'status_level' => 0
+                            'status_level' => $approver->status_level != 1 ? 1 : 0
                         ]);
                     });
 
                     $innovation->each(function($item, $key)use($approver) {
                         $item->update([
-                            'status_level' => 0
+                            'status_level' => $approver->status_level != 1 ? 1 : 0
                         ]);
                     });
 
                     $kpiScore->update([
-                        'status_level' => 0
+                        'status_level' => $approver->status_level != 1 ? 1 : 0
                     ]);
 
                     MdrStatus::where('mdr_summary_id', $mdrSummary->id)
                         ->update(['status' => 0, 'start_date' => null]);
 
-                    $mdrSummary = $mdrSummary->update(['status_level' => 0]);
+                    $mdrSummary = $mdrSummary->update(['status_level' => $approver->status_level != 1 ? 1 : 0]);
 
                     $user = User::where('id', $departmentData->dept_head_id)->first();
 

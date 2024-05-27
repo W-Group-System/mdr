@@ -89,16 +89,19 @@
                                     @if(count($data->departmentalGoals) > 0)
                                         @foreach ($data->departmentalGoals as $departmentalGoals)
                                             <tr>
-                                                <td>{{ $departmentalGoals->kpi_name }}</td>
-                                                <td>{{ $departmentalGoals->target }}</td>
+                                                <td>{!! nl2br(e($departmentalGoals->kpi_name)) !!}</td>
+                                                <td>{!! nl2br(e($departmentalGoals->target)) !!}</td>
                                                 <td>{{ $departmentalGoals->grade }}</td>
                                                 <td>{{ $departmentalGoals->actual }}</td>
                                                 <td>{{ $departmentalGoals->remarks }}</td>
-                                                <td>
-                                                    @foreach ($departmentalGoals->departmentKpi->attachments as $attachment)
-                                                        <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
+                                                <td width="10">
+                                                    @foreach ($departmentalGoals->departmentKpi->attachments as $key=>$attachment)
+                                                        <div>
+                                                            <span><strong>{{ $key+1 }}</strong>. &nbsp;</span>
+                                                            <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        </div>
                                                     @endforeach
                                                 </td>
                                             </tr>
@@ -142,11 +145,15 @@
                                             <td>{{ date('F m, Y', strtotime($innovationData->target_date)) }}</td>
                                             <td>{{ date('F m, Y', strtotime($innovationData->actual_date)) }}</td>
                                             <td>{{ $innovationData->remarks }}</td>
-                                            <td>
-                                                @foreach ($innovationData->innovationAttachments as $file)
-                                                    <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
-                                                        <i class="fa fa-eye"></i>
-                                                    </a>
+                                            <td width="10">
+                                                @foreach ($innovationData->innovationAttachments as $key=>$file)
+                                                    <div>
+                                                        <span><strong>{{ $key+1 }}</strong>. &nbsp;</span>
+
+                                                        <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </div>
                                                 @endforeach
                                             </td>
                                         </tr>
@@ -178,11 +185,15 @@
                                             <td>{{ $item->description }}</td>
                                             <td>{{ date('F d, Y', strtotime($item->accomplished_date)) }}</td>
                                             <td>{{ $item->remarks }}</td>
-                                            <td>
-                                                @foreach ($item->pdAttachments as $file)
-                                                    <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
-                                                        <i class="fa fa-eye"></i>
-                                                    </a>
+                                            <td width="10">
+                                                @foreach ($item->pdAttachments as $key=>$file)
+                                                    <div>
+                                                        <span><strong>{{ $key+1 }}</strong>. &nbsp;</span>
+    
+                                                        <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </div>
                                                 @endforeach
                                             </td>
                                         </tr>

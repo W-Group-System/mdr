@@ -15,8 +15,8 @@
                                 <th>Department</th>
                                 <th>PIC</th>
                                 <th>Month</th>
-                                <th>Deadline</th>
                                 <th>Submission Date</th>
+                                <th>Deadline</th>
                                 <th>MDR Status</th>
                                 <th>Approver Status</th>
                             </tr>
@@ -27,8 +27,8 @@
                                     <td>{{ $data->departments->dept_name }}</td>
                                     <td>{{ $data->users->name }}</td>
                                     <td>{{ date('F Y', strtotime($data->year.'-'.$data->month)) }}</td>
-                                    <td>{{ date('F d, Y', strtotime($data->deadline)) }}</td>
                                     <td>{{ date('F d, Y', strtotime($data->submission_date)) }}</td>
+                                    <td>{{ date('F d, Y', strtotime($data->deadline)) }}</td>
                                     <td>
                                         <span class="{{ $data->final_approved == 1 ? 'label label-primary' : 'label label-warning'}}">
                                             {{ $data->final_approved == 1 ? 'Approved' : 'Waiting' }}
