@@ -53,16 +53,14 @@
 
                                         <div class="kpi-attachment-container-{{ $item->id }}">
                                             @foreach ($item->attachments as $attachment)
-                                                {{-- @if($dptGoals->department_kpi_id == $attachment->department_kpi_id)
-                                                @endif --}}
                                                 <div class="attachment-kpi-{{ $attachment->id }}">
-                                                    <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
+                                                    {{-- <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
-
+    
                                                     <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="{{ $attachment->id }}">
                                                         <i class="fa fa-trash"></i>
-                                                    </button>
+                                                    </button> --}}
                                                 </div>
                                             @endforeach
                                         </div>
@@ -90,14 +88,6 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <label>File Upload</label>
-                            {{-- <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-                                <div class="fallback">
-                                    <input name="file" type="file" multiple />
-                                </div>
-                            </form>  --}}
-
                             <form action="{{ url('uploadAttachments/'. $item->id) }}" method="post" class="uploadKpiAttachmentForm" enctype="multipart/form-data">
                                 @csrf
 

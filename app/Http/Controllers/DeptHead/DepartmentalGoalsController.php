@@ -310,14 +310,14 @@ class DepartmentalGoalsController extends Controller
                     $attachment->deadline = date('Y-m', strtotime("+1month", strtotime($attachment->year.'-'.$attachment->month))).'-'.$departmentData->target_date;
                     $attachment->save();
 
-                    $filePathArray[] = $attachment->file_path;
+                    $filePathArray[$attachment->id] = $attachment->file_path;
                 }
 
                 return response()->json([
                     'id' => $id,
                     'file' => count($request->file('file')),
                     'filePath' => $filePathArray,
-                    'attachmentId' => $attachment->id,
+                    // 'attachmentId' => ,
                 ]);
             }
             else {

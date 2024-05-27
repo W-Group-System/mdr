@@ -172,18 +172,19 @@ $(document).ready(function() {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(res) {
-                console.log(res);
                 var appendHtml = ``;
 
                 $.each(res.filePath, function(key, path) {
                     appendHtml += `
-                        <a href="${path}" target="_blank" class="btn btn-sm btn-info">
-                            <i class="fa fa-eye"></i>
-                        </a>
-
-                        <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${res.attachmentId}">
-                            <i class="fa fa-trash"></i>
-                        </button>
+                        <div class="attachment-kpi-${key}">
+                            <a href="${path}" target="_blank" class="btn btn-sm btn-info">
+                                <i class="fa fa-eye"></i>
+                            </a>
+    
+                            <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${key}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
                     `
                 })
 
