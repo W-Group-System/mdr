@@ -63,7 +63,9 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-primary block full-width m-b">Send new password</button>
-
+                                <a href="{{ url('/') }}">
+                                    <button type="button" class="btn btn-outline btn-block btn-primary">Back to Login</button>
+                                </a>
                             </form>
                         </div>
                     </div>
