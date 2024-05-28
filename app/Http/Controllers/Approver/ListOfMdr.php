@@ -249,41 +249,41 @@ class ListOfMdr extends Controller
                         }
                     }
                     else {
-                        $departmentalGoalsList->each(function($item, $key)use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
+                        // $departmentalGoalsList->each(function($item, $key)use($approver) {
+                        //     $item->update([
+                        //         'status_level' => $approver->status_level+1
+                        //     ]);
+                        // });
 
-                        $processDevelopmentList->each(function($item, $key)use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
+                        // $processDevelopmentList->each(function($item, $key)use($approver) {
+                        //     $item->update([
+                        //         'status_level' => $approver->status_level+1
+                        //     ]);
+                        // });
 
-                        $innovation->each(function($item, $key) use($approver) {
-                            $item->update([
-                                'status_level' => $approver->status_level+1
-                            ]);
-                        });
+                        // $innovation->each(function($item, $key) use($approver) {
+                        //     $item->update([
+                        //         'status_level' => $approver->status_level+1
+                        //     ]);
+                        // });
 
-                        $kpiScore->update([
-                            'status_level' => $approver->status_level+1
-                        ]);
+                        // $kpiScore->update([
+                        //     'status_level' => $approver->status_level+1
+                        // ]);
                     
-                        $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
-                        foreach($mdrStatus as $status) {
-                            if ($approver->user_id == $status->user_id) {
-                                $status->update([
-                                    'status' => 1,
-                                    'start_date' => date('Y-m-d')
-                                ]);
-                            }
-                        }
+                        // $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
+                        // foreach($mdrStatus as $status) {
+                        //     if ($approver->user_id == $status->user_id) {
+                        //         $status->update([
+                        //             'status' => 1,
+                        //             'start_date' => date('Y-m-d')
+                        //         ]);
+                        //     }
+                        // }
 
-                        $mdrSummary->update([
-                            'status_level' => $approver->status_level+1
-                        ]);
+                        // $mdrSummary->update([
+                        //     'status_level' => $approver->status_level+1
+                        // ]);
                     }
 
                     $approverData = Approve::select('user_id')
@@ -298,11 +298,11 @@ class ListOfMdr extends Controller
                         $userData->notify(new EmailNotificationForApprovers($userData->name, $deptName, $deptYearAndMonth));
                     }
 
-                    $user = User::where('id', $departmentData->dept_head_id)->first();
+                    // $user = User::where('id', $departmentData->dept_head_id)->first();
 
-                    $approver = auth()->user()->name;
+                    // $approver = auth()->user()->name;
 
-                    $user->notify(new ApprovedNotification($user->name, $approver, $request->monthOf));
+                    // $user->notify(new ApprovedNotification($user->name, $approver, $request->monthOf));
 
                     Alert::success('SUCCESS', 'Successfully Approved.');
                     return back();

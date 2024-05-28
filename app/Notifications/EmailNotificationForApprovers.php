@@ -48,8 +48,8 @@ class EmailNotificationForApprovers extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting('Hello Mr./Ms. ', $this->user)
-                    ->line('This is the request approval for the '. $this->dept. 'in the Month of ' . date('F Y', strtotime($this->yearAndMonth)))
+                    ->greeting('Hello Mr./Ms. ' . $this->user)
+                    ->line('This is the request approval for the '. $this->dept. ' in the Month of ' . date('F Y', strtotime($this->yearAndMonth)))
                     ->action('Pending Approval', url('for_approval'))
                     ->line('Thank you for using our application!');
     }
