@@ -15,12 +15,16 @@ use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Jobs\ApprovedNotificationJob;
+use App\Jobs\EmailNotificationForApproversJob;
 use App\Jobs\ReturnNotificationJob;
 use App\Notifications\ApprovedNotification;
+use App\Notifications\EmailNotification;
+use App\Notifications\EmailNotificationForApprovers;
 use App\Notifications\ReturnNotification;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -41,7 +45,7 @@ class ListOfMdr extends Controller
     }
 
     public function returnMdr(Request $request) {
-        $departmentData = Department::with(['departmentalGoals', 'process_development', 'kpi_scores', 'approver'])
+        $departmentData = Department::with(['departmentalGoals:id,department_id,year,month,status_level', 'process_development:id,department_id,year,month,status_level', 'kpi_scores:department_id,status_level', 'approver:department_id,user_id,status_level'])
             ->where('id', $request->department_id)
             ->first();
 
@@ -130,7 +134,7 @@ class ListOfMdr extends Controller
 
                     $approver = auth()->user()->name;
 
-                    ReturnNotificationJob::dispatch($user, $approver, $request->monthOf)->delay(now()->addMinutes(1));
+                    $user->notify(new ReturnNotification($user->name, $request->monthOf, $approver));
 
                     Alert::success('SUCCESS', 'Successfully Returned.');
                     return back();
@@ -281,12 +285,24 @@ class ListOfMdr extends Controller
                             'status_level' => $approver->status_level+1
                         ]);
                     }
-                    
+
+                    $approverData = Approve::select('user_id')
+                        ->where('status_level', $approver->status_level+1)
+                        ->first();
+
+                    if (!empty($approverData)) {
+                        $userData = User::where('id', $approverData->user_id)->first();
+                        $deptName = $mdrSummary->departments->dept_name;
+                        $deptYearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
+
+                        $userData->notify(new EmailNotificationForApprovers($userData->name, $deptName, $deptYearAndMonth));
+                    }
+
                     $user = User::where('id', $departmentData->dept_head_id)->first();
 
                     $approver = auth()->user()->name;
 
-                    ApprovedNotificationJob::dispatch($user, $approver, $request->monthOf)->delay(now()->addMinutes(1));
+                    $user->notify(new ApprovedNotification($user->name, $approver, $request->monthOf));
 
                     Alert::success('SUCCESS', 'Successfully Approved.');
                     return back();
@@ -308,7 +324,11 @@ class ListOfMdr extends Controller
             $kpiScoreData->pd_scores = $request->pdScores;
             $kpiScoreData->innovation_scores = $request->innovationScores;
             $kpiScoreData->timeliness = $request->timelinessScores;
-            $kpiScoreData->total_rating = $request->ratingScores;
+            $kpiScoreData->remarks = $request->remarks;
+
+            $totalScores = $kpiScoreData->score + $kpiScoreData->pd_scores + $kpiScoreData->innovation_scores + $kpiScoreData->timeliness;
+
+            $kpiScoreData->total_rating = $totalScores;
             $kpiScoreData->save();
 
             Alert::success('SUCCESS', 'Successfully Updated.');

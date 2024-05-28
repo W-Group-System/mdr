@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SendApprovalList;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
-        Commands\SendEmailNotification::class
+        // Commands\SendEmailNotification::class
+        Commands\SendApprovalList::class
     ];
 
     /**
@@ -25,8 +27,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('command:send_email_notification')
-        //     ->dailyAt('8:00');
+        // $schedule->command('command:send_email_notification')->daily();
+            // ->dailyAt('8:00');
+
+        $schedule->command('command:for_approval_list')
+            // ->dailyAt('8:00');
+            ->everyMinute();
     }
 
     /**

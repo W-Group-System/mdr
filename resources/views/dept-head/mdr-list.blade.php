@@ -60,6 +60,7 @@
                                     <th>Innovation</th>
                                     <th>Timeliness</th>
                                     <th>Rating</th>
+                                    <th>Remarks</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -73,6 +74,7 @@
                                         <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
                                         <td>{{ $item->timeliness }}</td>
                                         <td>{{ $item->total_rating }}</td>
+                                        <td>{{ $item->remarks }}</td>
                                         <td width="10">
                                             <form action="{{ url('edit_mdr') }}" method="get" target="_blank">
                                                 

@@ -41,7 +41,8 @@ class SendEmailNotification extends Command
      */
     public function handle()
     {
-        // $department = Department::with(['departmentalGoals', 'innovation', 'process_development'])->get();
+        $department = Department::with(['departmentalGoals', 'innovation', 'process_development'])->get();
+        dd($department);
 
         // foreach($department as $dept) {
         //     $deptGoals = $dept->departmentalGoals()->where('status_level', 0)->get();

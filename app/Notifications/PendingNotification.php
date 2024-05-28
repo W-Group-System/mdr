@@ -6,26 +6,21 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\HtmlString;
 
-class ApprovedNotification extends Notification implements ShouldQueue
+class PendingNotification extends Notification
 {
     use Queueable;
 
+    protected $table;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-
-    private $name;
-    private $approver;
-    private $monthOf;
-    
-    public function __construct($name, $approver, $monthOf)
+    public function __construct($table)
     {
-        $this->name = $name;
-        $this->approver = $approver;
-        $this->monthOf = $monthOf;
+        $this->table = $table;
     }
 
     /**
@@ -48,9 +43,11 @@ class ApprovedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting("Hello Mr./Ms. ".' '. $this->name)
-                    ->line('We would like to inform you that your MDR in ' . date('F Y', strtotime($this->monthOf)). ' is approved by ' . $this->approver)
-                    ->action('Click the button to see your MDR', url('edit_mdr?yearAndMonth='.$this->monthOf))
+                    ->greeting('Good Day!')
+                    ->subject('Pending Approvals')
+                    ->line("List of pending approvals")
+                    ->line(new HtmlString($this->table))
+                    ->action('Pending Approval', url('/'))
                     ->line('Thank you for using our application!');
     }
 

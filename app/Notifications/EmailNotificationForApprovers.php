@@ -3,11 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ApprovedNotification extends Notification implements ShouldQueue
+class EmailNotificationForApprovers extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,15 +17,15 @@ class ApprovedNotification extends Notification implements ShouldQueue
      * @return void
      */
 
-    private $name;
-    private $approver;
-    private $monthOf;
+    private $user;
+    private $dept;
+    private $yearAndMonth;
     
-    public function __construct($name, $approver, $monthOf)
+    public function __construct($user, $dept, $yearAndMonth)
     {
-        $this->name = $name;
-        $this->approver = $approver;
-        $this->monthOf = $monthOf;
+        $this->user = $user;
+        $this->dept = $dept;
+        $this->yearAndMonth = $yearAndMonth;
     }
 
     /**
@@ -48,9 +48,9 @@ class ApprovedNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting("Hello Mr./Ms. ".' '. $this->name)
-                    ->line('We would like to inform you that your MDR in ' . date('F Y', strtotime($this->monthOf)). ' is approved by ' . $this->approver)
-                    ->action('Click the button to see your MDR', url('edit_mdr?yearAndMonth='.$this->monthOf))
+                    ->greeting('Hello Mr./Ms. ', $this->user)
+                    ->line('This is the request approval for the '. $this->dept. 'in the Month of ' . date('F Y', strtotime($this->yearAndMonth)))
+                    ->action('Pending Approval', url('for_approval'))
                     ->line('Thank you for using our application!');
     }
 

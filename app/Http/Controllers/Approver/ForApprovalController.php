@@ -24,7 +24,7 @@ class ForApprovalController extends Controller
             ->where('final_approved', 0)
             ->get();
         }
-
+        
         return view('approver.for-approval-mdr', array('mdrSummary' => $mdrSummary));
     }
 }

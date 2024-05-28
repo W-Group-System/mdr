@@ -21,6 +21,7 @@
                                             <th>Innovation</th>
                                             <th>Timeliness</th>
                                             <th>Rating</th>
+                                            <th>Remarks</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -43,13 +44,16 @@
                                                         <td><input type="text" name="pdScores" class="form-control input-sm" value="{{ $score->pd_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                         <td><input type="text" name="innovationScores" class="form-control input-sm" value="{{ $score->innovation_scores }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
                                                         <td><input type="text" name="timelinessScores" class="form-control input-sm" value="{{ $score->timeliness }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
-                                                        <td><input type="text" name="ratingScores" class="form-control input-sm" value="{{ $score->total_rating }}" {{ $approver->status_level != 1 ? 'disabled' : '' }}></td>
+                                                        <td><input type="text" name="ratingScores" class="form-control input-sm" value="{{ $score->total_rating }}" disabled></td>
+                                                        <td>
+                                                            <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10" placeholder="Input a remarks">{{ $score->remarks }}</textarea>
+                                                        </td>
                                                     </tr>
                                                 </form>
                                             @endforeach
                                         @else
                                             <tr>
-                                                <td colspan="6" class="text-center">No data available.</td>
+                                                <td colspan="7" class="text-center">No data available.</td>
                                             </tr>
                                         @endif
                                     </tbody>
@@ -170,10 +174,13 @@
                                                 <td>{{ date('F m, Y', strtotime($innovationData->target_date)) }}</td>
                                                 <td>{{ date('F m, Y', strtotime($innovationData->actual_date)) }}</td>
                                                 <td width="10">
-                                                    @foreach ($innovationData->innovationAttachments as $file)
-                                                        <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
+                                                    @foreach ($innovationData->innovationAttachments as $key=>$file)
+                                                        <div>
+                                                            <span><strong>{{ $key+1 }}</strong>. &nbsp;</span>
+                                                            <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        </div>
                                                     @endforeach
                                                 </td>
                                                 <td width="10">
@@ -241,10 +248,13 @@
                                                 <td>{{ $item->description }}</td>
                                                 <td>{{ date('F d, Y', strtotime($item->accomplished_date)) }}</td>
                                                 <td width="10">
-                                                    @foreach ($item->pdAttachments as $file)
-                                                        <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
+                                                    @foreach ($item->pdAttachments as $key=>$file)
+                                                        <div>
+                                                            <span><strong>{{ $key+1 }}</strong>. &nbsp;</span>
+                                                            <a href="{{ $file->filepath }}" class="btn btn-sm btn-info" target="_blank">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        </div>
                                                     @endforeach
                                                 </td>
                                                 <td width="10">
