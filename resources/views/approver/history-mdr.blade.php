@@ -40,7 +40,7 @@
                                     <tr>
                                         <th>Month</th>
                                         <th>KPI</th>
-                                        <th>Process Development</th>
+                                        <th>Process Improvement</th>
                                         <th>Innovation</th>
                                         <th>Timeliness</th>
                                         <th>Rating</th>
@@ -168,7 +168,7 @@
                 <div class="ibox float-e-margins" style="margin-top: 10px;">
                     <div class="ibox-content">
                         <div class="table-responsive">
-                            <p><strong>III.</strong>Process Development</p>
+                            <p><strong>III.</strong>Process Improvement</p>
     
                             <table class="table table-bordered table-hover" id="processDevelopmentTable">
                                 <thead>

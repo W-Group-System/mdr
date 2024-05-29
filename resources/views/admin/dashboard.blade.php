@@ -90,7 +90,20 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            
+                            <form action="{{ url('print_pdf') }}" method="post" target="_blank">
+                                @csrf
+
+                                <input type="hidden" name="yearAndMonth" value="{{ $startYearAndMonth }}">
+
+                                <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
+                                <input type="hidden" name="endYearAndMonth" value="{{ $endYearAndMonth }}">
+
+                                <button type="submit" class="btn btn-sm btn-warning pull-right">
+                                    <i class="fa fa-print"></i>
+                                    &nbsp;
+                                    <span class="bold">Print PDF</span>
+                                </button>
+                            </form>
                             <table class="table table-striped table-bordered table-hover" id="mdrStatusTable">
                                 <thead>
                                     <tr>
@@ -98,6 +111,10 @@
                                         <th>Action</th>
                                         <th>Status</th>
                                         <th>Due Date</th>
+                                        <th>KPI</th>
+                                        <th>Innovation</th>
+                                        <th>Process Improvement</th>
+                                        <th>Timeliness</th>
                                         <th>Rate</th>
                                     </tr>
                                 </thead>
@@ -108,6 +125,10 @@
                                             <td>{{ $data['action'] }}</td>
                                             <td>{{ $data['status'] }}</td>
                                             <td>{{ $data['deadline'] }}</td>
+                                            <td>{{ $data['kpi'] }}</td>
+                                            <td>{{ $data['innovation_scores'] }}</td>
+                                            <td>{{ $data['pd_scores'] }}</td>
+                                            <td>{{ $data['timeliness'] }}</td>
                                             <td>{{ $data['rate'] }}</td>
                                         </tr>
                                     @endforeach
@@ -148,7 +169,7 @@
                 </div>
             </div>
         </div>
-    @elseif(Auth::user()->account_role == 2)
+    @elseif(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -160,7 +181,7 @@
                                         <input type="text" name="year" id="year" class="form-control input-sm" maxlength="4" value="{{ $years }}" placeholder="Enter a year">
                                     </div>
                                     <div class="col-lg-3">
-                                        <button class="btn btn-sm btn-primary">Filter</button>
+                                        <button type="button" class="btn btn-sm btn-primary">Filter</button>
                                     </div>
                                 </div>
                             </form>
@@ -280,28 +301,28 @@
                 // { extend: 'copy'},
                 // {extend: 'csv'},
                 // {extend: 'excel', title: 'ExampleFile'},
-                {
-                    extend: 'pdf',
-                    title: 'Summary of Compliance for Departmental Reports for the month of Year and Month (Lowest to Highest)'+' - '+yearAndMonth,
-                    pageSize: 'A4',
-                    customize: function (doc) {
-                        console.log(doc.styles);
-                        doc.pageMargins = [20, 20, 20, 20];
+                // {
+                //     extend: 'pdf',
+                //     title: 'Summary of Compliance for Departmental Reports for the month of Year and Month (Lowest to Highest)'+' - '+yearAndMonth,
+                //     pageSize: 'A4',
+                //     customize: function (doc) {
+                //         console.log(doc.styles);
+                //         doc.pageMargins = [20, 20, 20, 20];
 
-                        var layout = {};
-                        layout['hLineWidth'] = function(i) { return 2.0; };
-                        layout['vLineWidth'] = function(i) { return 2.0; };
-                        layout['hLineColor'] = function(i) { return '#aaa'; };
-                        layout['vLineColor'] = function(i) { return '#aaa'; };
-                        doc.content[1].layout = layout;
+                //         var layout = {};
+                //         layout['hLineWidth'] = function(i) { return 2.0; };
+                //         layout['vLineWidth'] = function(i) { return 2.0; };
+                //         layout['hLineColor'] = function(i) { return '#aaa'; };
+                //         layout['vLineColor'] = function(i) { return '#aaa'; };
+                //         doc.content[1].layout = layout;
 
-                        doc.styles.tableHeader.fontSize = 12;
-                        doc.styles.tableBodyOdd.fontSize = 10;
-                        doc.styles.tableBodyEven.fontSize = 10;
-                        doc.styles.tableHeader.fillColor = '#FFFFFF'
-                        doc.styles.tableHeader.color = '#000'
-                    }
-                },
+                //         doc.styles.tableHeader.fontSize = 12;
+                //         doc.styles.tableBodyOdd.fontSize = 10;
+                //         doc.styles.tableBodyEven.fontSize = 10;
+                //         doc.styles.tableHeader.fillColor = '#FFFFFF'
+                //         doc.styles.tableHeader.color = '#000'
+                //     }
+                // },
                 // {
                 //     extend: 'print',
                 //     title: 'Summary of Compliance for Departmental Reports for the month of Year and Month (Lowest to Highest)',
@@ -321,7 +342,7 @@
     })
 </script>
 @endif
-@if(Auth::user()->account_role == 2)
+@if(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
 <script>
     var month = {!! json_encode(array_keys($data)) !!}
 

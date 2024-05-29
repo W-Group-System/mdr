@@ -21,12 +21,12 @@
 <div class="row">
     @foreach ($departmentKpi as $departmentKpiData)
         @include('dept-head.departmental-goals', array('departmentKpi' => $departmentKpiData, 'yearAndMonth' => $yearAndMonth))
-        {{-- @include('dept-head.process-development', array('departmentKpi' => $departmentKpi)) --}}
-        {{-- @include('dept-head.innovation', array('departmentKpi' => $departmentKpi)) --}}
+        @include('dept-head.process-development', array('departmentKpi' => $departmentKpi))
+        @include('dept-head.innovation', array('departmentKpi' => $departmentKpi))
     @endforeach
 
-    {{-- @if(auth()->user()->account_role == 2)
-        <div class="col-lg-12">
+    @if(auth()->user()->account_role == 2)
+        {{-- <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -55,9 +55,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="modal fade" id="approveModal">
+        {{-- <div class="modal fade" id="approveModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="modal fade" id="mdrStatusModal">
             <div class="modal-dialog">
@@ -122,7 +122,7 @@
                 </div>
             </div>
         </div>
-    @endif --}}
+    @endif
 </div>
 
 @include('components.footer')

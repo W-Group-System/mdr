@@ -31,7 +31,7 @@
                                             <td>{{ date('F d, Y', strtotime($mdrSummaryData->deadline)) }}</td>
                                             <td>{{ date('F d, Y', strtotime($mdrSummaryData->submission_date)) }}</td>
                                             <td>
-                                                <form action="{{ url('list_of_mdr') }}" method="get" target="_blank">
+                                                <form action="{{ url('list_of_mdr') }}" method="get">
 
                                                     <input type="hidden" name="department_id" value="{{ $mdrSummaryData->department_id }}">
                                                     <input type="hidden" name="yearAndMonth" value="{{ $mdrSummaryData->year.'-'.$mdrSummaryData->month}}">

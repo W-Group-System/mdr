@@ -8,6 +8,8 @@ use App\DeptHead\Mdr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
@@ -76,18 +78,26 @@ class DashboardController extends Controller
                 if(empty($request->department) && empty($request->startYearAndMonth) && empty($request->endYearAndMonth)) {
                     $mdrStatusArray[$data->id] = [
                         'action' => 'Not Yet Submitted',
-                        'status' => '',
+                        'status' => 'No Status Yet',
                         'deadline' => "0000-00-00",
                         'department' => $data->dept_code.' - '.$data->dept_name,
-                        'rate' => number_format(0.00, 2)
+                        'rate' => number_format(0.00, 2),
+                        'kpi' => number_format(0.00, 2),
+                        'innovation_scores' => number_format(0.0, 1),
+                        'pd_scores' => number_format(0.0, 1),
+                        'timeliness' => number_format(0.0, 1)
                     ];
                 } elseif (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
                     $mdrStatusArray[$data->id] = [
                         'action' => 'Not Yet Submitted',
-                        'status' => '',
+                        'status' => 'No Status Yet',
                         'deadline' => "0000-00-00",
                         'department' => $data->dept_code.' - '.$data->dept_name,
-                        'rate' => number_format(0.00, 2)
+                        'rate' => number_format(0.00, 2),
+                        'kpi' => number_format(0.00, 2),
+                        'innovation_scores' => number_format(0.0, 1),
+                        'pd_scores' => number_format(0.0, 1),
+                        'timeliness' => number_format(0.0, 1)
                     ];
                 }
                 
@@ -100,7 +110,11 @@ class DashboardController extends Controller
                         'status' => $mdrSummaryData->status,
                         'deadline' => $mdrSummaryData->deadline,
                         'department' => $mdrSummaryData->departments->dept_code .' - '. $mdrSummaryData->departments->dept_name,
-                        'rate' => $mdrSummaryData->rate
+                        'rate' => $mdrSummaryData->rate,
+                        'kpi' => $mdrSummaryData->kpiScores->score,
+                        'innovation_scores' => $mdrSummaryData->kpiScores->innovation_scores,
+                        'pd_scores' => $mdrSummaryData->kpiScores->pd_scores,
+                        'timeliness' => $mdrSummaryData->kpiScores->timeliness
                     ];
 
                     $dashboardDataArray[$mdrSummaryData->departments->dept_code] = $mdrSummaryData->rate;
@@ -160,7 +174,7 @@ class DashboardController extends Controller
                     'date' =>  !empty($request->startYearAndMonth) ? date('F Y', strtotime($request->startYearAndMonth)) : date('F Y')
                 )
             );
-        } else if (auth()->user()->account_role == 2) {
+        } else if (auth()->user()->account_role == 2 || auth()->user()->account_role == 3) {
             $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id);
             
             if (!empty($request->year)) {
@@ -227,5 +241,82 @@ class DashboardController extends Controller
         }
         
         
+    }
+
+    public function printPdf(Request $request) {
+        $dataArray = array();
+        $dataArray['yearAndMonth'] = !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m');
+
+        $departmentList = Department::with([
+            'mdrSummary' => function($q)use($request) {
+                if (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth) && !empty($request->department)) {
+                    $q->whereBetween('year',[ date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
+                        ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))])
+                        ->where('department_id', $request->department);
+                }
+                else if (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
+                    $q->whereBetween('year',[ date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
+                        ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))]);
+                }
+                else {
+                    $q->whereBetween('year', [date('Y'), date('Y')])
+                        ->whereBetween('month',[ date('m'), date('m')]);
+                }
+            },
+        ])
+        ->get();
+
+        $mdrStatusArray = array();
+        foreach($departmentList as $data) {
+            if(empty($request->department) && empty($request->startYearAndMonth) && empty($request->endYearAndMonth)) {
+                $mdrStatusArray[$data->id] = [
+                    'action' => 'Not Yet Submitted',
+                    'status' => 'No Status Yet',
+                    'deadline' => "0000-00-00",
+                    'department' => $data->dept_code.' - '.$data->dept_name,
+                    'rate' => number_format(0.00, 2),
+                    'kpi' => number_format(0.00, 2),
+                    'innovation_scores' => number_format(0.0, 1),
+                    'pd_scores' => number_format(0.0, 1),
+                    'timeliness' => number_format(0.0, 1)
+                ];
+            } elseif (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
+                $mdrStatusArray[$data->id] = [
+                    'action' => 'Not Yet Submitted',
+                    'status' => 'No Status Yet',
+                    'deadline' => "0000-00-00",
+                    'department' => $data->dept_code.' - '.$data->dept_name,
+                    'rate' => number_format(0.00, 2),
+                    'kpi' => number_format(0.00, 2),
+                    'innovation_scores' => number_format(0.0, 1),
+                    'pd_scores' => number_format(0.0, 1),
+                    'timeliness' => number_format(0.0, 1)
+                ];
+            }
+            
+
+            foreach($data->mdrSummary as $mdrSummaryData) {
+                $mdrStatusArray[$mdrSummaryData->department_id] = [
+                    'action' => 'Submitted',
+                    'status' => $mdrSummaryData->status,
+                    'deadline' => $mdrSummaryData->deadline,
+                    'department' => $mdrSummaryData->departments->dept_code .' - '. $mdrSummaryData->departments->dept_name,
+                    'rate' => $mdrSummaryData->rate,
+                    'kpi' => $mdrSummaryData->kpiScores->score,
+                    'innovation_scores' => $mdrSummaryData->kpiScores->innovation_scores,
+                    'pd_scores' => $mdrSummaryData->kpiScores->pd_scores,
+                    'timeliness' => $mdrSummaryData->kpiScores->timeliness
+                ];
+            }
+        }
+
+        $dataArray['mdrSummary'] = collect($mdrStatusArray)->sortBy('rate');
+        
+        $pdf = App::make('dompdf.wrapper');
+
+        $pdf->loadView('pdf.mdr-summary', $dataArray)
+            ->setPaper('a3', 'landscape');
+
+        return $pdf->stream('MDR Summary.pdf');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Approver;
 
 use App\Admin\Department;
 use App\DeptHead\DepartmentalGoals;
+use App\DeptHead\KpiScore;
 use App\DeptHead\MdrStatus;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ class MdrSummary extends Model
 {
     protected $table = 'mdr_summary';
 
-    protected $fillable = ['approved_date', 'rate', 'status_level', 'final_approved'];
+    protected $fillable = ['approved_date', 'rate', 'status_level', 'final_approved', 'submission_date'];
 
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
@@ -26,7 +27,7 @@ class MdrSummary extends Model
         return $this->hasMany(MdrStatus::class);
     }
 
-    public function departmentalGoals() {
-        return $this->hasMany(DepartmentalGoals::class);
+    public function kpiScores() {
+        return $this->hasOne(KpiScore::class, 'mdr_summary_id');
     }
 }

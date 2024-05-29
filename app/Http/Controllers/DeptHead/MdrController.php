@@ -18,6 +18,8 @@ use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Notifications\EmailNotification;
+use App\Notifications\NotifyDeptHead;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -278,12 +280,14 @@ class MdrController extends Controller
             $kpiScore->update([
                 'status_level' => 1,
                 'total_rating' => $totalRating,
-                'timeliness' => $deadlineDate >= date('Y-m-d') ? 0.5 : 0.0
+                'timeliness' => $deadlineDate >= date('Y-m-d') ? 0.4 : 0.0
             ]);
 
-            if (!empty($mdrSummary)) {
-                $mdrSummary = $mdrSummary->update(['rate' => $kpiScore->total_rating, 'status_level' => 1]);
-            }
+            $mdrSummary = $mdrSummary->update([
+                'rate' => $kpiScore->total_rating, 
+                'status_level' => 1,
+                'submission_date' => date('Y-m-d')
+            ]);
 
             Alert::success('SUCCESS', 'Your MDR is been approved.');
             return back();
@@ -300,5 +304,17 @@ class MdrController extends Controller
             Alert::error("ERROR", "Cannot Approve. Please fill-up your KPI.");
             return back();
         }
+    }
+
+    public function submitMdr(Request $request) {
+        
+        $userData = User::where('department_id', auth()->user()->department_id)
+            ->where('account_role', 2)
+            ->first();
+
+        $userData->notify(new NotifyDeptHead($userData->name, $request->yearAndMonth));
+
+        Alert::success('SUCCESS', 'The MDR is successfully submit.');
+        return back();
     }
 }

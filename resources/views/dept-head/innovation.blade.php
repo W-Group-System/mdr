@@ -47,7 +47,6 @@
                                 <td>{{ date('F d, Y', strtotime($innovationData->actual_date)) }}</td>
                                 <td>{{ $innovationData->remarks }}</td>
                                 <td width="100">
-
                                     @foreach ($innovationData->innovationAttachments as $file)
                                         <a href="{{ asset('file/' . $file->filename) }}" class="btn btn-sm btn-info" target="_blank">
                                             <i class="fa fa-eye"></i>

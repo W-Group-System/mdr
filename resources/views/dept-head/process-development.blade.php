@@ -1,5 +1,5 @@
 
-@if($departmentKpiData->name == "Process Development")
+@if($departmentKpiData->name == "Process Improvement")
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-content">
@@ -12,7 +12,7 @@
                         @endforeach
                     </div>
                 @endif
-                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Development</button>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Improvement</button>
 
                 <table class="table table-bordered table-hover" id="processDevelopmentTable">
                     <thead>
@@ -38,9 +38,11 @@
                                 <td>{{ $processDevelopmentData->description }}</td>
                                 <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
                                 <td>
-                                    <a href="{{ asset('file/' . $processDevelopmentData->pd_attachments->filename) }}" class="btn btn-sm btn-info" target="_blank">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
+                                    @foreach ($processDevelopmentData->pdAttachments as $file)
+                                        <a href="{{ asset('file/' . $file->filepath) }}" class="btn btn-sm btn-info" target="_blank">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    @endforeach
                                 </td>
                                 <td>{{ $processDevelopmentData->remarks }}</td>
                                 <td>
@@ -71,7 +73,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title">Add Process Development</h1>
+                    <h1 class="modal-title">Add Process Improvement</h1>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -132,7 +134,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title">Edit Process Development</h1>
+                        <h1 class="modal-title">Edit Process Improvement</h1>
                     </div>
                     <div class="modal-body">
                         <div class="row">

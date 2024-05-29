@@ -26,9 +26,6 @@
                         <div class="ibox-content">
                             <div class="table-responsive">
                                 <p><strong>I.</strong>Departmental Goals</p>
-                                <div class="alert alert-info">
-                                    <strong>Note: </strong> Attach a file first before submitting a KPI
-                                </div>
 
                                 <form action="{{ url('update_mdr') }}" method="post">
                                     @csrf
@@ -50,8 +47,8 @@
                                                     <input type="hidden" name="department_kpi_id[]" value="{{ $dptGoals->department_kpi_id }}">
                                                     <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
-                                                    <td width="300">{!! nl2br($dptGoals->kpi_name) !!}</td>
-                                                    <td width="300">{!! nl2br($dptGoals->target) !!}</td>
+                                                    <td width="300">{!! nl2br(e($dptGoals->kpi_name)) !!}</td>
+                                                    <td width="300">{!! nl2br(e($dptGoals->target)) !!}</td>
                                                     <td>
                                                         <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} required>{{ $dptGoals->actual }}</textarea>
                                                     </td>
@@ -107,14 +104,6 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <label>File Upload</label>
-                                            {{-- <form action="/uploadAttachments/{{ $item->id }}" class="dropzone" id="dropzoneForm" method="POST" enctype="multipart/form-data">
-                                                @csrf
-                                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-                                                <div class="fallback">
-                                                    <input name="file" type="file" multiple />
-                                                </div>
-                                            </form>  --}}
-
                                             <form action="{{ url('uploadAttachments/'. $item->id) }}" method="post" class="uploadKpiAttachmentForm" enctype="multipart/form-data">
                                                 @csrf
 
@@ -361,7 +350,7 @@
                 @endforeach
             @endif
 
-            @if($dptGroupData->name == "Process Development")
+            @if($dptGroupData->name == "Process Improvement")
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
                         <div class="ibox-content">
@@ -374,7 +363,7 @@
                                         @endforeach
                                     </div>
                                 @endif
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Development</button>
+                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Improvement</button>
 
                                 <table class="table table-bordered table-hover" id="processDevelopmentTable">
                                     <thead>
@@ -434,7 +423,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h1 class="modal-title">Add Process Development</h1>
+                                    <h1 class="modal-title">Add Process Improvement</h1>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
@@ -481,7 +470,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title">Edit Process Development</h1>
+                                        <h1 class="modal-title">Edit Process Improvement</h1>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
@@ -527,80 +516,88 @@
             @endif
         @endforeach
 
-        @if(auth()->user()->account_role == 2)
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins" style="margin-top: 10px;">
-                    <div class="ibox-content">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="processDevelopmentTable">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>MDR Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td> {{ auth()->user()->name  }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mdrStatusModal">
-                                                <i class="fa fa-eye"></i>
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <form action="{{ url('approveMdr') }}" method="post">
-                                                @csrf
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins" style="margin-top: 10px;">
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="processDevelopmentTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>MDR Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td> {{ auth()->user()->name  }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mdrStatusModal">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        @if(auth()->user()->account_role == 2)
+                                        <form action="{{ url('approveMdr') }}" method="post">
+                                            @csrf
 
-                                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                            <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                            
+                                            <button class="btn btn-sm btn-primary" type="submit">Approve</button>
+                                        </form>
+                                        @else
+                                        <form action="{{ url('submitMdr') }}" method="post">
+                                            @csrf
 
-                                                <button class="btn btn-sm btn-primary" type="submit">Approve</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                            <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                            
+                                            <button class="btn btn-sm btn-primary" type="submit">Submit</button>
+                                        </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="modal fade" id="mdrStatusModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title">MDR Status</h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <table class="table table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>Approver</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($approver as $approverData)
-                                                @foreach ($approverData->mdrStatus as $item)
-                                                    <tr>
-                                                        <td>{{ $item->users->name }}</td>
-                                                        <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                        <td>{{ !empty($item->start_date) ? date('F d, Y', strtotime($item->start_date)) : 'No Date' }}</td>
-                                                    </tr>
-                                                @endforeach
+        <div class="modal fade" id="mdrStatusModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title">MDR Status</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Approver</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($approver as $approverData)
+                                            @foreach ($approverData->mdrStatus as $item)
+                                                <tr>
+                                                    <td>{{ $item->users->name }}</td>
+                                                    <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
+                                                    <td>{{ !empty($item->start_date) ? date('F d, Y', strtotime($item->start_date)) : 'No Date' }}</td>
+                                                </tr>
                                             @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 </div>
 @endsection

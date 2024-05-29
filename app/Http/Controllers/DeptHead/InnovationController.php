@@ -8,6 +8,7 @@ use App\Approver\MdrSummary;
 use App\DeptHead\Innovation;
 use App\DeptHead\InnovationAttachments;
 use App\DeptHead\KpiScore;
+use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,12 @@ use RealRashid\SweetAlert\Facades\Alert;
 class InnovationController extends Controller
 {
     public function add(Request $request) {
-        $department = Department::with('kpi_scores')
+        $department = Department::with([
+                'kpi_scores' => function($q)use($request) {
+                    $q->where('year',  date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month',  date('m', strtotime($request->yearAndMonth)));
+                }
+            ])
             ->where('id', auth()->user()->department_id)
             ->first();
 
@@ -86,13 +92,39 @@ class InnovationController extends Controller
                         $innovationAttachments->deadline = date('Y-m', strtotime("+1month")).'-'.$department->target_date;
                         $innovationAttachments->save();
                     }
-    
-                    $department->kpi_scores()
-                        ->where('department_id', $department->id)
-                        ->where('year',  date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month',  date('m', strtotime($request->yearAndMonth)))
-                        ->update(['innovation_scores' => 1.0]);
-    
+
+                    $innovationCount = Innovation::where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)))
+                        ->where('department_id',  $department->id)
+                        ->count();
+
+                    $processDevelopmentCount = ProcessDevelopment::where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)))
+                        ->where('department_id',  $department->id)
+                        ->count();
+
+                    if ($innovationCount > 0 && $processDevelopmentCount > 0) {
+                        $department->kpi_scores()
+                            ->update([
+                                'pd_scores' => 1.0,
+                                'innovation_scores' => 1.0
+                            ]);
+                    }
+                    else if ($innovationCount == 0 || $processDevelopmentCount > 0) {
+                        $department->kpi_scores()
+                            ->update([
+                                'pd_scores' => 0.5,
+                                'innovation_scores' => 0.5
+                            ]);
+                    }
+                    else if ($innovationCount > 0 || $processDevelopmentCount == 0) {
+                        $department->kpi_scores()
+                            ->update([
+                                'pd_scores' => 0.5,
+                                'innovation_scores' => 0.5
+                            ]);
+                    }
+
                     Alert::success('SUCCESS', 'Successfully Added.');
                     return back();
                 }
@@ -105,6 +137,7 @@ class InnovationController extends Controller
     }
 
     public function delete(Request $request, $id) {
+        // dd($request->all());
         $department = Department::with('kpi_scores')
             ->where('id', $request->department_id)
             ->first();
@@ -114,19 +147,40 @@ class InnovationController extends Controller
             $innovationData->delete();
         }
 
-        $innovationList = $department->innovation()
-            ->where('year', $request->year)
-            ->where('month', $request->month)
-            ->where('department_id', $request->department_id)
-            ->get();
+        // $innovationCount = Innovation::where('year', date('Y', strtotime($request->yearAndMonth)))
+        //     ->where('month', date('m', strtotime($request->yearAndMonth)))
+        //     ->where('department_id',  $department->id)
+        //     ->count();
+        // // dd($innovationCount);
 
-        if (count($innovationList) == 0) {
-            $department->kpi_scores()
-                ->where('department_id', $request->department_id)
-                ->where('year', $request->year)
-                ->where('month', $request->month)
-                ->update(['innovation_scores' => 0.0]);
-        }
+        // $processDevelopmentCount = ProcessDevelopment::where('year', date('Y', strtotime($request->yearAndMonth)))
+        //     ->where('month', date('m', strtotime($request->yearAndMonth)))
+        //     ->where('department_id',  $department->id)
+        //     ->count();
+
+        // if ($innovationCount >= 1 && $processDevelopmentCount >= 1) {
+        //     dd('asda');
+        //     $department->kpi_scores()
+        //         ->update([
+        //             'pd_scores' => 1.0,
+        //             'innovation_scores' => 1.0
+        //         ]);
+        // }
+        // else if ($innovationCount == 0 || $processDevelopmentCount > 0) {
+        //     dd('sadbjasgdjagdj');
+        //     $department->kpi_scores()
+        //         ->update([
+        //             'pd_scores' => 0.5,
+        //             'innovation_scores' => 0.5
+        //         ]);
+        // }
+        // else if ($innovationCount > 0 || $processDevelopmentCount == 0) {
+        //     $department->kpi_scores()
+        //         ->update([
+        //             'pd_scores' => 0.5,
+        //             'innovation_scores' => 0.5
+        //         ]);
+        // }
 
         Alert::success('SUCCESS', 'Successfully Deleted.');
         return back();

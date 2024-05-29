@@ -22,10 +22,9 @@ Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'auth'], function() {
     Route::group(['middleware' => 'deactivate'], function() {
-        Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
-
         # Dashboard
         Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
+        Route::post('/print_pdf', 'Admin\DashboardController@printPdf');
         
         Route::group(['middleware' => 'adminAccess'], function() {
             # Departments
@@ -80,6 +79,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         # Approve MDR
         Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
+        Route::post('/submitMdr', 'DeptHead\MdrController@submitMdr');
 
         // # Business Plan
         // Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');

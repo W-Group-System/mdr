@@ -30,29 +30,6 @@
 </head>
 
 <body class="gray-bg">
-    {{-- <div class="container my-auto" id="login-container" style="height: 100vh">
-        <div class="middle-box text-center loginscreen animated fadeInDown">
-            <div>
-                <h2>Online MDR System</h2>
-                <h3 class="text-center">Login</h3>
-                @if($errors->any())
-                    <div class="alert alert-danger">{{ $errors->first() }}</div>
-                @endif
-                <form class="m-t" role="form" action="{{ route('login') }}" method="POST">
-                    @csrf
-                    <div class="form-group mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Email" required="">
-                    </div>
-                    <div class="form-group mb-3">
-                        <input type="password" name="password" class="form-control" placeholder="Password" required="">
-                    </div>
-                    <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
-        
-                    <a href="{{ route('password.request') }}"><small>Forgot password?</small></a>
-                </form>
-            </div>
-        </div>
-    </div> --}}
     <div id="loader" style="display:none;" class="loader"></div>
     
     <div class="limiter">
@@ -103,7 +80,7 @@
                     </div>
                 </form>
     
-                <div class="login100-more" style="background-image: url('login_design/images/WGROUP.png');">
+                <div class="login100-more" style="background-image: url('img/wbuilding.jpg');">
                 </div>
             </div>
         </div>
