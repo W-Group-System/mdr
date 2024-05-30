@@ -185,8 +185,7 @@
                                                         @csrf
 
                                                         <input type="hidden" name="department_id" value="{{ $innovationData->department_id }}">
-                                                        <input type="hidden" name="year" value="{{ $innovationData->year }}">
-                                                        <input type="hidden" name="month" value="{{ $innovationData->month }}">
+                                                        <input type="hidden" name="yearAndMonth" value="{{ $innovationData->year.'-'.$innovationData->month }}">
 
                                                         <button type="submit" class="btn btn-sm btn-danger" {{ $innovationData->status_level != 0 ? 'disabled' : '' }}>
                                                             <i class="fa fa-trash"></i>
@@ -403,8 +402,8 @@
                                                         @csrf
 
                                                         <input type="hidden" name="department_id" value="{{ $processDevelopmentData->department_id }}">
-                                                        <input type="hidden" name="year" value="{{ $processDevelopmentData->year }}">
-                                                        <input type="hidden" name="month" value="{{ $processDevelopmentData->month }}">
+                                                        <input type="hidden" name="yearAndMonth" value="{{ $processDevelopmentData->year.'-'.$processDevelopmentData->month }}">
+                                                        {{-- <input type="hidden" name="month" value="{{ $processDevelopmentData->month }}"> --}}
 
                                                         <button type="submit" class="btn btn-sm btn-danger" {{ $processDevelopmentData->status_level != 0 ? 'disabled' : '' }}>
                                                             <i class="fa fa-trash"></i>

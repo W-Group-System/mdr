@@ -57,6 +57,7 @@
                                     <option value="1">Approver</option>
                                     <option value="2">Department Head</option>
                                     <option value="3">Users</option>
+                                    <option value="4">Human Resource</option>
                                 </select>
                             </div>
                             <div>
@@ -114,6 +115,9 @@
                                                 @break
                                             @case(3)
                                                 <td>Users</td>
+                                                @break
+                                            @case(4)
+                                                <td>Human Resource</td>
                                                 @break
                                             @default
                                                 
@@ -185,6 +189,7 @@
                                         <option value="1" {{ $userData->account_role == 1 ? 'selected' : '' }}>Approver</option>
                                         <option value="2" {{ $userData->account_role == 2 ? 'selected' : '' }}>Department Head</option>
                                         <option value="3" {{ $userData->account_role == 3 ? 'selected' : '' }}>User</option>
+                                        <option value="4" {{ $userData->account_role == 4 ? 'selected' : '' }}>Human Resource</option>
                                     </select>
                                 </div>
                                 <div>

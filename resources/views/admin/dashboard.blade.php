@@ -223,6 +223,66 @@
                 </div>
             </div>
         </div>
+    @elseif (Auth::user()->account_role == 4)
+        <div class="wrapper wrapper-content">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <form action="" method="get">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <label for="yearAndMonth">Year & Month</label>
+                                        <div class="form-group">
+                                            <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label for="">&nbsp;</label>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <canvas id="barChart" height="70"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="penaltiesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Department</th>
+                                            <th>Department Head</th>
+                                            <th>Total Rating</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($mdrSummary as $mdrSummaryData)
+                                            <tr>
+                                                <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                                <td>{{ $mdrSummaryData->departments->user->name }}</td>
+                                                <td>{{ $mdrSummaryData->rate }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
 
 @include('components.footer')
@@ -297,46 +357,7 @@
             responsive: true,
             ordering: false,
             dom: '<"html5buttons"B>lTfgitp',
-            buttons: [
-                // { extend: 'copy'},
-                // {extend: 'csv'},
-                // {extend: 'excel', title: 'ExampleFile'},
-                // {
-                //     extend: 'pdf',
-                //     title: 'Summary of Compliance for Departmental Reports for the month of Year and Month (Lowest to Highest)'+' - '+yearAndMonth,
-                //     pageSize: 'A4',
-                //     customize: function (doc) {
-                //         console.log(doc.styles);
-                //         doc.pageMargins = [20, 20, 20, 20];
-
-                //         var layout = {};
-                //         layout['hLineWidth'] = function(i) { return 2.0; };
-                //         layout['vLineWidth'] = function(i) { return 2.0; };
-                //         layout['hLineColor'] = function(i) { return '#aaa'; };
-                //         layout['vLineColor'] = function(i) { return '#aaa'; };
-                //         doc.content[1].layout = layout;
-
-                //         doc.styles.tableHeader.fontSize = 12;
-                //         doc.styles.tableBodyOdd.fontSize = 10;
-                //         doc.styles.tableBodyEven.fontSize = 10;
-                //         doc.styles.tableHeader.fillColor = '#FFFFFF'
-                //         doc.styles.tableHeader.color = '#000'
-                //     }
-                // },
-                // {
-                //     extend: 'print',
-                //     title: 'Summary of Compliance for Departmental Reports for the month of Year and Month (Lowest to Highest)',
-                //     messageTop: 'This is the MDR Status Report', // Add a custom message at the top
-                //     customize: function (win){
-                //         $(win.document.body).addClass('white-bg');
-                //         $(win.document.body).css('font-size', '10px');
-
-                //         $(win.document.body).find('table')
-                //                 .addClass('compact')
-                //                 .css('font-size', 'inherit');
-                //     }
-                // }
-            ]
+            buttons: []
         });
 
     })
@@ -368,6 +389,43 @@
 
     var ctx2 = document.getElementById("barChart").getContext("2d");
     new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
+</script>
+@endif
+
+@if(Auth::user()->account_role == 4)
+<script>
+
+    var department = {!! json_encode(array_keys($barData)) !!}
+    var values = {!! json_encode(array_values($barData)) !!}
+    
+    var barData = {
+        labels: department,
+        datasets: [
+            {
+                label: "Total Rating in " + "{{ isset($yearAndMonth) ? date('F Y', strtotime($yearAndMonth)) : date('F Y') }}",
+                backgroundColor: 'rgba(26,179,148,0.5)',
+                borderColor: "rgba(26,179,148,0.7)",
+                pointBackgroundColor: "rgba(26,179,148,1)",
+                pointBorderColor: "#fff",
+                data: values
+            }
+        ]
+    };
+
+    var barOptions = {
+        responsive: true
+    };
+
+    var ctx2 = document.getElementById("barChart").getContext("2d");
+    new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
+
+    $('#penaltiesTable').DataTable({
+        pageLength: 10,
+        ordering: false,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [],
+    });
 </script>
 @endif
 @endpush

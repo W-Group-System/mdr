@@ -25,7 +25,7 @@ class DepartmentalGoalsController extends Controller
             ])
             ->where('department_id', auth()->user()->department_id)
             ->get();
-
+        
         $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
             return $value->attachments->isNotEmpty();
         });
@@ -218,7 +218,7 @@ class DepartmentalGoalsController extends Controller
         //     ->where('month', date('m', strtotime($date)))
         //     ->first();
 
-        $mdrSummary = MdrSummary::with(['mdrStatus', 'kpiScores'])
+        $mdrSummary = MdrSummary::with(['mdrStatus', 'kpiScores', 'departments.approver'])
             ->where('department_id', auth()->user()->department_id)
             ->where('year', date('Y', strtotime($date)))
             ->where('month', date('m', strtotime($date)))
@@ -237,7 +237,7 @@ class DepartmentalGoalsController extends Controller
         }
 
         $kpiScoreData = $mdrSummary->kpiScores;
-
+        
         if (!empty($kpiScoreData)) {
             $kpiScoreData->grade = $value;
             $kpiScoreData->rating = $rating;
@@ -256,20 +256,20 @@ class DepartmentalGoalsController extends Controller
             $kpiScore->mdr_summary_id = $mdrSummary->id;
             $kpiScore->save();
         }
-        
-        // $mdrStatus = $mdrSummary->mdrStatus()
-        //     ->where('mdr_summary_id', $mdrSummary->id)
-        //     ->get();
 
-        // if ($mdrStatus->isEmpty()) {
-        //     foreach($departmentData->approver as $data) {
-        //         $mdrStatus = new MdrStatus;
-        //         $mdrStatus->user_id = $data->user_id;
-        //         $mdrStatus->mdr_summary_id = $mdrSummary->id;
-        //         $mdrStatus->status = 0;
-        //         $mdrStatus->save();
-        //     }
-        // }
+        $mdrStatus = $mdrSummary->mdrStatus()
+            ->where('mdr_summary_id', $mdrSummary->id)
+            ->get();
+
+        if ($mdrStatus->isEmpty()) {
+            foreach($mdrSummary->departments->approver as $data) {
+                $mdrStatus = new MdrStatus;
+                $mdrStatus->user_id = $data->user_id;
+                $mdrStatus->mdr_summary_id = $mdrSummary->id;
+                $mdrStatus->status = 0;
+                $mdrStatus->save();
+            }
+        }
         // else {
         //     foreach($mdrStatus as $status) {
         //         $status->delete();

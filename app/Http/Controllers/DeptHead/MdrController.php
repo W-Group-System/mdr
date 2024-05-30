@@ -60,17 +60,16 @@ class MdrController extends Controller
     public function mdrView() {
         $mdrScoreList = Department::with([
             'kpi_scores' => function($q) {
-                $q->orderBy('month', 'DESC');
+                $q->orderBy('year', 'DESC')
+                    ->orderBy('month', 'DESC');
             }
         ])
         ->where('id', auth()->user()->department_id)
         ->first();
 
         foreach($mdrScoreList->kpi_scores as $kpiScore) {
-            if($kpiScore->final_approved == 0)
+            if($kpiScore->final_approved == 0) {
                 $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
-            else {
-                $yearAndMonth = date('Y-m');
             }
         }
 
@@ -126,98 +125,6 @@ class MdrController extends Controller
             )
         );
     }
-
-    // public function computeKpi($grades, $date, $deadlineDate) {
-    //     $grade = collect($grades);
-
-    //     $kpiValue = $grade->map(function($item, $key) {
-    //         $value = $item / 100.00;
-
-    //         return $value;
-    //     });
-
-    //     $kpiScore = $grade->map(function($item, $key) {
-    //         $grades =  $item / 100.00 * 0.5;
-            
-    //         return $grades;
-    //     });
-
-    //     $value = number_format($kpiValue->sum(), 2);
-    //     $rating = 3.00;
-    //     $score = number_format($kpiScore->sum(), 2);
-        
-    //     $kpiScoreData = KpiScore::where('department_id', auth()->user()->department_id)
-    //         ->where('year', date('Y', strtotime($date)))
-    //         ->where('month', date('m', strtotime($date)))
-    //         ->first();
-
-    //     if (!empty($kpiScoreData)) {
-    //         $kpiScoreData->grade = $value;
-    //         $kpiScoreData->rating = $rating;
-    //         $kpiScoreData->score = $score;
-    //         $kpiScoreData->save();
-    //     }
-    //     else {
-    //         $kpiScore = new KpiScore;
-    //         $kpiScore->department_id = auth()->user()->department_id;
-    //         $kpiScore->grade = $value;
-    //         $kpiScore->rating = $rating;
-    //         $kpiScore->score = $score;
-    //         $kpiScore->year = date('Y', strtotime($date));
-    //         $kpiScore->month = date('m', strtotime($date));
-    //         $kpiScore->deadline = $deadlineDate;
-    //         $kpiScore->save();
-    //     }
-
-    //     $departmentData = Department::where('id', auth()->user()->department_id)->first();
-
-    //     $mdrSummary = MdrSummary::with(['mdrStatus'])
-    //         ->where('department_id', $departmentData->id)
-    //         ->where('year', date('Y', strtotime($date)))
-    //         ->where('month', date('m', strtotime($date)))
-    //         ->first();
-
-    //     if(empty($mdrSummary)) {
-    //         $mdrSummary = new MdrSummary;
-    //         $mdrSummary->department_id =$departmentData->id;
-    //         $mdrSummary->user_id = auth()->user()->id;
-    //         $mdrSummary->deadline = $deadlineDate;
-    //         $mdrSummary->submission_date = date('Y-m-d');
-    //         $mdrSummary->status = $deadlineDate >= date('Y-m-d') ? 'On-Time' : 'Delayed';
-    //         $mdrSummary->year = date('Y', strtotime($date));
-    //         $mdrSummary->month = date('m', strtotime($date));
-    //         // $mdrSummary->rate = $kpiScoreData->total_rating;
-    //         $mdrSummary->save();
-    //     }
-
-    //     $mdrStatus = $mdrSummary->mdrStatus()
-    //         ->where('mdr_summary_id', $mdrSummary->id)
-    //         ->get();
-
-    //     if ($mdrStatus->isEmpty()) {
-    //         foreach($departmentData->approver as $data) {
-    //             $mdrStatus = new MdrStatus;
-    //             $mdrStatus->user_id = $data->user_id;
-    //             $mdrStatus->mdr_summary_id = $mdrSummary->id;
-    //             $mdrStatus->status = 0;
-    //             $mdrStatus->save();
-    //         }
-    //     }
-    //     else {
-    //         foreach($mdrStatus as $status) {
-    //             $status->delete();
-    //         }
-            
-    //         foreach($departmentData->approver as $data) {
-    //             $mdrStatus = new MdrStatus;
-    //             $mdrStatus->user_id = $data->user_id;
-    //             $mdrStatus->mdr_summary_id = $mdrSummary->id;
-    //             $mdrStatus->status = 0;
-    //             $mdrStatus->save();
-    //         }
-    //     }
-        
-    // }
 
     public function approveMdr(Request $request) {
         $departmentData = Department::with([

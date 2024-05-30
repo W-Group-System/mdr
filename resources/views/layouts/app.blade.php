@@ -45,6 +45,9 @@
                                         @case(2)
                                             {{ 'Department Head' }}
                                             @break
+                                        @case(4)
+                                            {{ 'Human Resource' }}
+                                            @break
                                         @default
                                             
                                     @endswitch
@@ -104,6 +107,14 @@
                             <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>
                                 <span class="nav-label">MDR</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if(Auth::user()->account_role == 4)
+                        <li class="{{ Route::currentRouteName() == "penalties" ? 'active' : '' }}">
+                            <a href="{{ url('penalties') }}">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                <span class="nav-label">Penalties</span>
                             </a>
                         </li>
                     @endif

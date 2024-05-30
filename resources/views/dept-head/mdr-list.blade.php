@@ -35,8 +35,9 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <form action="{{ url('new-mdr') }}" method="get">
+                                                {{-- {{dd($yearAndMonth)}} --}}
                                                 <div class="form-group">
-                                                    <input type="month" name="yearAndMonth" min="{{ date('Y-m', strtotime($yearAndMonth)) }}" max="{{ date('Y-m') }}" class="form-control input-sm" required>
+                                                    <input type="month" name="yearAndMonth" min="{{ date("Y-m", strtotime("+1month", strtotime($yearAndMonth))) }}" max="{{ date('Y-m') }}" class="form-control input-sm" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <button class="btn btn-sm btn-primary btn-block" type="submit">Next</button>
@@ -56,7 +57,7 @@
                                     <th>Department</th>
                                     <th>Month</th>
                                     <th>KPI</th>
-                                    <th>Process Development</th>
+                                    <th>Process Improvement</th>
                                     <th>Innovation</th>
                                     <th>Timeliness</th>
                                     <th>Rating</th>

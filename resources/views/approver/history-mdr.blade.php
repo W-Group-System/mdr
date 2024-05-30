@@ -55,7 +55,7 @@
                                                 <td>{{ $score->pd_scores }}</td>
                                                 <td>{{ $score->innovation_scores }}</td>
                                                 <td>{{ $score->timeliness }}</td>
-                                                <td>{{ $score->rating }}</td>
+                                                <td>{{ $score->total_rating }}</td>
                                             </tr>
                                         @endforeach
                                     @else

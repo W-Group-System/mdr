@@ -112,5 +112,10 @@ Route::group(['middleware' => 'auth'], function() {
         # History of MDR
         Route::get('/history_mdr', 'Approver\HistoryMdrController@index')->name('historyMdr');
 
+        # Human Resources
+
+        # Penalties
+        Route::get('/penalties', 'HR\PenaltiesController@index')->name('penalties');
+        Route::post('/upload_nte/{id}', 'HR\PenaltiesController@uploadNte');
     });
 });
