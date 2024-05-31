@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
         Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
         Route::post('/create', 'DeptHead\DepartmentalGoalsController@create');
-        Route::post('/update_mdr', 'DeptHead\DepartmentalGoalsController@update');
+        // Route::post('/update_mdr', 'DeptHead\DepartmentalGoalsController@update');
 
         # Process Development
         Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');

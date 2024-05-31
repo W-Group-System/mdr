@@ -26,7 +26,7 @@
     @endforeach
 
     @if(auth()->user()->account_role == 2)
-        {{-- <div class="col-lg-12">
+        <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -47,7 +47,23 @@
                                         </button>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">Approve</button>
+                                        @if(auth()->user()->account_role == 2)
+                                        <form action="{{ url('approveMdr') }}" method="post" onsubmit="show()">
+                                            @csrf
+
+                                            <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                            
+                                            <button class="btn btn-sm btn-primary" type="submit">Approve</button>
+                                        </form>
+                                        @else
+                                        <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">
+                                            @csrf
+
+                                            <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                            
+                                            <button class="btn btn-sm btn-primary" type="submit">Submit</button>
+                                        </form>
+                                        @endif
                                     </td>
                                 </tr>
                             </tbody>
@@ -55,34 +71,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
-
-        {{-- <div class="modal fade" id="approveModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">Month of</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <form action="{{ url('approveMdr') }}" method="post">
-                                    @csrf
-
-                                    <div class="form-group">
-                                        <label for="monthOf">Month</label>
-                                        <input type="month" name="monthOf" id="monthOf" max="{{ date('Y-m') }}" class="form-control input-sm">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-sm btn-primary pull-right">Approve</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
+        </div>
 
         <div class="modal fade" id="mdrStatusModal">
             <div class="modal-dialog">

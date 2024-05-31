@@ -30,18 +30,32 @@ class MdrController extends Controller
 {
     public function index(Request $request) {
         $departmentKpi = DepartmentGroup::with([
-                'departmentKpi' => function($q) {
-                    $q->where('department_id', auth()->user()->department_id);
-                },
-                'departmentKpi.attachments' => function($q)use($request) {
-                    $q->where('department_id', auth()->user()->department_id)
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)));
-                },
-                'processDevelopment', 
-                'innovation'])
-            ->get();
-
+            'departmentKpi' => function($q) {
+                $q->where('department_id', auth()->user()->department_id);
+            },
+            'departmentKpi.departmentalGoals' => function($q)use($request) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
+            },
+            'departmentKpi.attachments' => function($q)use($request) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
+            },
+            'processDevelopment' => function($q) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y'))
+                    ->where('month', date('m'));
+            }, 
+            'innovation' => function($q) {
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('year', date('Y'))
+                    ->where('month', date('m'));
+            }
+        ])
+        ->get();
+            
         $approver = MdrSummary::with('mdrStatus')
             ->where('year', date('Y'))
             ->where('month', date('m'))

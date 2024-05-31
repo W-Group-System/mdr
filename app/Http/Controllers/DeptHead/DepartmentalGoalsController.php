@@ -65,34 +65,67 @@ class DepartmentalGoalsController extends Controller
                     return back();
                 }
                 else {
-                    $departmentKpi = DepartmentKPI::whereIn('id', $request->department_kpi_id)->get();
+                    $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
+                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)))
+                        ->get();
                     
-                    $targetDate = 0;
-                    foreach($departmentKpi as $dept) {
-                        $targetDate = $dept->departments->target_date;
-                    }
-                    
-                    foreach($departmentKpi as $key => $data) {
-                        $deptGoals = new  DepartmentalGoals;
-                        $deptGoals->department_id = $data->department_id;
-                        $deptGoals->department_group_id = $data->department_group_id;
-                        $deptGoals->department_kpi_id = $data->id;
-                        $deptGoals->kpi_name = $data->name;
-                        $deptGoals->target = $data->target;
-                        $deptGoals->actual = $request->actual[$key];
-                        $deptGoals->grade = $request->grade[$key];
-                        $deptGoals->remarks = $request->remarks[$key];
-                        $deptGoals->year = date('Y', strtotime($request->yearAndMonth));
-                        $deptGoals->month = date('m', strtotime($request->yearAndMonth));
-                        $deptGoals->deadline = date('Y-m', strtotime("+1month", strtotime($deptGoals->year.'-'.$deptGoals->month))).'-'.$targetDate;
-                        $deptGoals->status_level = 0;
-                        $deptGoals->save();
-                    }
+                    if (!empty($departmentalGoalsList)) {
+                        $targetDate = 0;
+                        $deadlineDate = "0000-00-00";
+                        foreach($departmentalGoalsList as $dept) {
+                            $targetDate = $dept->departments->target_date;
+                            $deadlineDate = $dept->deadline;
+                        }
+        
+                        $actual = $request->input('actual');
+                        $remarks = $request->input('remarks');
+                        $grades = $request->input('grade');
+                        
+                        $departmentalGoalsList->each(function($item, $index) use($actual, $grades, $request, $remarks, $targetDate) {
+                            $item->update([
+                                'actual' => $actual[$index],
+                                'remarks' => $remarks[$index],
+                                'grade' => $grades[$index],
+                            ]);
+                        });
 
-                    $date = $request->yearAndMonth;
-                    $deadlineDate = $deptGoals->deadline;
-
-                    $this->computeKpi($request->grade, $date, $deadlineDate);
+                        $date = $request->yearAndMonth;
+                        
+                        $this->computeKpi($grades, $date, $deadlineDate);
+                    }
+                    else {
+                        $departmentKpi = DepartmentKPI::with('departmentalGoals')
+                            ->whereIn('id', $request->department_kpi_id)
+                            ->get();
+    
+                        $targetDate = 0;
+                        foreach($departmentKpi as $dept) {
+                            $targetDate = $dept->departments->target_date;
+                        }
+                        
+                        foreach($departmentKpi as $key => $data) {
+                            $deptGoals = new  DepartmentalGoals;
+                            $deptGoals->department_id = $data->department_id;
+                            $deptGoals->department_group_id = $data->department_group_id;
+                            $deptGoals->department_kpi_id = $data->id;
+                            $deptGoals->kpi_name = $data->name;
+                            $deptGoals->target = $data->target;
+                            $deptGoals->actual = $request->actual[$key];
+                            $deptGoals->grade = $request->grade[$key];
+                            $deptGoals->remarks = $request->remarks[$key];
+                            $deptGoals->year = date('Y', strtotime($request->yearAndMonth));
+                            $deptGoals->month = date('m', strtotime($request->yearAndMonth));
+                            $deptGoals->deadline = date('Y-m', strtotime("+1month", strtotime($deptGoals->year.'-'.$deptGoals->month))).'-'.$targetDate;
+                            $deptGoals->status_level = 0;
+                            $deptGoals->save();
+                        }
+    
+                        $date = $request->yearAndMonth;
+                        $deadlineDate = $deptGoals->deadline;
+    
+                        $this->computeKpi($request->grade, $date, $deadlineDate);
+                    }
 
                     Alert::success('SUCCESS', 'Your KPI is submitted.');
                     return back();

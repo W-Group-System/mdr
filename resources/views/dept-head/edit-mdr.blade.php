@@ -27,7 +27,7 @@
                             <div class="table-responsive">
                                 <p><strong>I.</strong>Departmental Goals</p>
 
-                                <form action="{{ url('update_mdr') }}" method="post">
+                                <form action="{{ url('create') }}" method="post" onsubmit="show()">
                                     @csrf
                                     
                                     <table class="table table-bordered table-hover">
@@ -181,7 +181,7 @@
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
 
-                                                    <form action="{{ url('deleteInnovation/' . $innovationData->id) }}" method="post">
+                                                    <form action="{{ url('deleteInnovation/' . $innovationData->id) }}" method="post" onsubmit="show()">
                                                         @csrf
 
                                                         <input type="hidden" name="department_id" value="{{ $innovationData->department_id }}">
@@ -210,7 +210,7 @@
                             <div class="modal-body p-4" >
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data" autocomplete="off" id="innovationForm">
+                                        <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data" autocomplete="off" id="innovationForm" onsubmit="show()">
                                             @csrf
 
                                             <input type="hidden" name="department_group_id" value="{{ $dptGroupData->id }}">
@@ -284,7 +284,7 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <form action="/updateInnovation/{{ $innovationData->id }}" method="post" enctype="multipart/form-data">
+                                        <form action="/updateInnovation/{{ $innovationData->id }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                                             @csrf
                                             
                                             <input type="hidden" name="department_group_id" value="{{ $dptGroupData->id }}">
@@ -398,7 +398,7 @@
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
 
-                                                    <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post">
+                                                    <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post" onsubmit="show()">
                                                         @csrf
 
                                                         <input type="hidden" name="department_id" value="{{ $processDevelopmentData->department_id }}">
@@ -427,7 +427,7 @@
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <form action="{{ url('addProcessDevelopment') }}" method="post" enctype="multipart/form-data">
+                                            <form action="{{ url('addProcessDevelopment') }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                                                 @csrf
                     
                                                 <input type="hidden" name="dptGroup" value="{{ $dptGroupData->id }}">
@@ -474,7 +474,7 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <form action="{{ url('updateProcessDevelopment/' . $pd->id) }}" method="post" enctype="multipart/form-data">
+                                                <form action="{{ url('updateProcessDevelopment/' . $pd->id) }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                                                     @csrf
                                                     
                                                     <input type="hidden" name="pd_id" value="{{ $pd->id }}">

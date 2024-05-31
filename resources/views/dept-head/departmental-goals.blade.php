@@ -1,4 +1,4 @@
-@if($departmentKpiData->name == "Departmental Goals")
+@if($departmentKpiData->id == 1)
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-content">
@@ -15,7 +15,7 @@
                 <div class="alert alert-info">
                     <strong>Note: </strong> Attach a file first before submitting a KPI
                 </div>
-                <form action="{{ url('create') }}" method="post">
+                <form action="{{ url('create') }}" method="post" onsubmit="show()">
                     @csrf
 
                     <table class="table table-bordered table-hover">
@@ -35,32 +35,32 @@
                                     <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
                                     <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
-                                    <td width="300">{!! nl2br($item->name) !!}</td>
-                                    <td width="300">{!! nl2br($item->target) !!}</td>
+                                    <td width="300">{!! nl2br(e($item->name)) !!}</td>
+                                    <td width="300">{!! nl2br(e($item->target)) !!}</td>
                                     <td>
-                                        <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required></textarea>
+                                        <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>{{ $item->departmentalGoals->actual }}</textarea>
                                     </td>
                                     <td>
-                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" required>
+                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" value="{{ $item->departmentalGoals->grade }}" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
                                     </td>
                                     <td>
-                                        <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required></textarea>
+                                        <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>{{ $item->departmentalGoals->remarks }}</textarea>
                                     </td>
                                     <td width="10">
-                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
+                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
                                             <i class="fa fa-upload"></i>
                                         </button>
 
                                         <div class="kpi-attachment-container-{{ $item->id }}">
                                             @foreach ($item->attachments as $attachment)
                                                 <div class="attachment-kpi-{{ $attachment->id }}">
-                                                    {{-- <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
+                                                    <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
     
-                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="{{ $attachment->id }}">
+                                                    <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="{{ $attachment->id }}" {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
                                                         <i class="fa fa-trash"></i>
-                                                    </button> --}}
+                                                    </button>
                                                 </div>
                                             @endforeach
                                         </div>
