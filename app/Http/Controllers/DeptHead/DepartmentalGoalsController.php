@@ -70,14 +70,14 @@ class DepartmentalGoalsController extends Controller
                         ->where('month', date('m', strtotime($request->yearAndMonth)))
                         ->get();
                     
-                    if (!empty($departmentalGoalsList)) {
+                    if ($departmentalGoalsList->isNotEmpty()) {
                         $targetDate = 0;
                         $deadlineDate = "0000-00-00";
                         foreach($departmentalGoalsList as $dept) {
                             $targetDate = $dept->departments->target_date;
                             $deadlineDate = $dept->deadline;
                         }
-        
+                        
                         $actual = $request->input('actual');
                         $remarks = $request->input('remarks');
                         $grades = $request->input('grade');
@@ -134,89 +134,89 @@ class DepartmentalGoalsController extends Controller
         }
     }
 
-    public function update(Request $request) {
-        $checkIfHaveAttachments = DepartmentKPI::with([
-                'attachments' => function($q)use($request) {
-                    $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)));
-                }
-            ])
-            ->where('department_id', auth()->user()->department_id)
-            ->get();
+    // public function update(Request $request) {
+    //     $checkIfHaveAttachments = DepartmentKPI::with([
+    //             'attachments' => function($q)use($request) {
+    //                 $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+    //                     ->where('month', date('m', strtotime($request->yearAndMonth)));
+    //             }
+    //         ])
+    //         ->where('department_id', auth()->user()->department_id)
+    //         ->get();
             
-        $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
-            return $value->attachments->isNotEmpty();
-        });
+    //     $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
+    //         return $value->attachments->isNotEmpty();
+    //     });
 
-        if (!$hasAttachments) {
+    //     if (!$hasAttachments) {
             
-            Alert::error("ERROR", "Please attach a file in every KPI.");
-            return back();
-        }
-        else {
-            $validator = Validator::make($request->all(), [
-                'actual[]' => 'array',
-                // 'remarks[]' => 'array',
-                'grade[]' => 'array',
-                'actual.*' => 'required',
-                // 'remarks.*' => 'required',
-                'grade.*' => 'required'
-            ], [
-                'actual.*' => 'The actual field is required.',
-                // 'remarks.*' => 'The remarks field is required.',
-                'grade.*' => 'The grades field is required.'
-            ]);
+    //         Alert::error("ERROR", "Please attach a file in every KPI.");
+    //         return back();
+    //     }
+    //     else {
+    //         $validator = Validator::make($request->all(), [
+    //             'actual[]' => 'array',
+    //             // 'remarks[]' => 'array',
+    //             'grade[]' => 'array',
+    //             'actual.*' => 'required',
+    //             // 'remarks.*' => 'required',
+    //             'grade.*' => 'required'
+    //         ], [
+    //             'actual.*' => 'The actual field is required.',
+    //             // 'remarks.*' => 'The remarks field is required.',
+    //             'grade.*' => 'The grades field is required.'
+    //         ]);
     
-            if ($validator->fails()) {
+    //         if ($validator->fails()) {
 
-                return back()->with('kpiErrors', $validator->errors()->all());
-            } else {
-                $checkStatus = DepartmentalGoals::where('status_level', "<>", 0)
-                    ->where('department_id', auth()->user()->department_id)
-                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->get();
+    //             return back()->with('kpiErrors', $validator->errors()->all());
+    //         } else {
+    //             $checkStatus = DepartmentalGoals::where('status_level', "<>", 0)
+    //                 ->where('department_id', auth()->user()->department_id)
+    //                 ->where('year', date('Y', strtotime($request->yearAndMonth)))
+    //                 ->where('month', date('m', strtotime($request->yearAndMonth)))
+    //                 ->get();
                 
-                if ($checkStatus->isNotEmpty()) {
+    //             if ($checkStatus->isNotEmpty()) {
 
-                    Alert::error("ERROR", "Failed. Because your MDR has been approved.");
-                    return back();
-                }
-                else {
-                    $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->get();
+    //                 Alert::error("ERROR", "Failed. Because your MDR has been approved.");
+    //                 return back();
+    //             }
+    //             else {
+    //                 $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
+    //                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
+    //                     ->where('month', date('m', strtotime($request->yearAndMonth)))
+    //                     ->get();
                     
-                    $targetDate = 0;
-                    $deadlineDate = "0000-00-00";
-                    foreach($departmentalGoalsList as $dept) {
-                        $targetDate = $dept->departments->target_date;
-                        $deadlineDate = $dept->deadline;
-                    }
+    //                 $targetDate = 0;
+    //                 $deadlineDate = "0000-00-00";
+    //                 foreach($departmentalGoalsList as $dept) {
+    //                     $targetDate = $dept->departments->target_date;
+    //                     $deadlineDate = $dept->deadline;
+    //                 }
     
-                    $actual = $request->input('actual');
-                    $remarks = $request->input('remarks');
-                    $grades = $request->input('grade');
+    //                 $actual = $request->input('actual');
+    //                 $remarks = $request->input('remarks');
+    //                 $grades = $request->input('grade');
                     
-                    $departmentalGoalsList->each(function($item, $index) use($actual, $grades, $request, $remarks, $targetDate) {
-                        $item->update([
-                            'actual' => $actual[$index],
-                            'remarks' => $remarks[$index],
-                            'grade' => $grades[$index],
-                        ]);
-                    });
+    //                 $departmentalGoalsList->each(function($item, $index) use($actual, $grades, $request, $remarks, $targetDate) {
+    //                     $item->update([
+    //                         'actual' => $actual[$index],
+    //                         'remarks' => $remarks[$index],
+    //                         'grade' => $grades[$index],
+    //                     ]);
+    //                 });
 
-                    $date = $request->yearAndMonth;
+    //                 $date = $request->yearAndMonth;
                     
-                    $this->computeKpi($grades, $date, $deadlineDate);
+    //                 $this->computeKpi($grades, $date, $deadlineDate);
 
-                    Alert::success('SUCCESS', 'Your KPI is submitted.');
-                    return back();
-                }
-            }
-        }
-    }
+    //                 Alert::success('SUCCESS', 'Your KPI is submitted.');
+    //                 return back();
+    //             }
+    //         }
+    //     }
+    // }
 
     public function computeKpi($grades, $date, $deadlineDate) {
         $grade = collect($grades);

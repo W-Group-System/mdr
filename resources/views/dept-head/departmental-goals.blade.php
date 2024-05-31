@@ -37,19 +37,37 @@
 
                                     <td width="300">{!! nl2br(e($item->name)) !!}</td>
                                     <td width="300">{!! nl2br(e($item->target)) !!}</td>
-                                    <td>
-                                        <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>{{ $item->departmentalGoals->actual }}</textarea>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" value="{{ $item->departmentalGoals->grade }}" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
-                                    </td>
-                                    <td>
-                                        <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>{{ $item->departmentalGoals->remarks }}</textarea>
-                                    </td>
+                                    @if(!empty($item->departmentalGoals))
+                                        <td>
+                                            <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>{{ $item->departmentalGoals->actual }}</textarea>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" value="{{ $item->departmentalGoals->grade }}" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
+                                        </td>
+                                        <td>
+                                            <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>{{ $item->departmentalGoals->remarks }}</textarea>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required></textarea>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" required>
+                                        </td>
+                                        <td>
+                                            <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required></textarea>
+                                        </td>
+                                    @endif
                                     <td width="10">
-                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
-                                            <i class="fa fa-upload"></i>
-                                        </button>
+                                        @if(!empty($item->departmentalGoals))
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}" {{ $item->departmentalGoals->status_level != 0 ? 'disabled' : '' }}>
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @else
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $item->id }}">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                        @endif
 
                                         <div class="kpi-attachment-container-{{ $item->id }}">
                                             @foreach ($item->attachments as $attachment)
