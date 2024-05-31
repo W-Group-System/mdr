@@ -23,6 +23,12 @@ class InnovationController extends Controller
             ->where('id', auth()->user()->department_id)
             ->first();
 
+        $kpiScore = $department->kpi_scores()
+            ->where('year', date('Y', strtotime($request->yearAndMonth)))
+            ->where('month', date('m', strtotime($request->yearAndMonth)))
+            ->where('department_id', $department->id)
+            ->first();
+
         $validator = Validator::make($request->all(), [
             'innovationProjects' => 'required',
             'projectSummary' => 'required',
@@ -55,6 +61,12 @@ class InnovationController extends Controller
             }
             else {
                 if ($request->hasFile('file')) {
+                    if (empty($kpiScore)) {
+
+                        Alert::error('ERROR', 'Please submit KPI first');
+                        return back();
+                    }
+
                     $innovation = new Innovation;
                     $innovation->department_group_id = $request->department_group_id;
                     $innovation->department_id = $department->id;
@@ -88,12 +100,6 @@ class InnovationController extends Controller
                         $innovationAttachments->save();
                     }
 
-                    $kpiScore = $department->kpi_scores()
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->where('department_id', $department->id)
-                        ->first();
-                    
                     $innovationCount = $department->innovation()
                         ->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)))

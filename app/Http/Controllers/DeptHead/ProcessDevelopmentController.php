@@ -22,6 +22,12 @@ class ProcessDevelopmentController extends Controller
             ->where('id',  auth()->user()->department_id)
             ->first();
 
+        $kpiScore = $departmentData->kpi_scores()
+            ->where('year', date('Y', strtotime($request->yearAndMonth)))
+            ->where('month', date('m', strtotime($request->yearAndMonth)))
+            ->where('department_id', $departmentData->id)
+            ->first();
+
         $validator = Validator::make($request->all(), [
             'description' => 'required',
             'accomplishedDate' => 'required',
@@ -46,6 +52,12 @@ class ProcessDevelopmentController extends Controller
             }
             else {
                 if($request->hasFile('file')) {
+                    if(empty($kpiScore)) {
+
+                        Alert::error('ERROR', 'Please submit KPI first');
+                        return back();
+                    }
+
                     $processDevelopment = new ProcessDevelopment;
                     $processDevelopment->department_id = $departmentData->id;
                     $processDevelopment->department_group_id = $request->dptGroup;
@@ -70,12 +82,6 @@ class ProcessDevelopmentController extends Controller
                         $pdAttachments->save();  
                     }
                     
-                    $kpiScore = $departmentData->kpi_scores()
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->where('department_id', $departmentData->id)
-                        ->first();
-
                     $innovationCount = $departmentData->innovation()
                         ->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)))
