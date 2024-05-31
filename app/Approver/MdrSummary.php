@@ -6,6 +6,7 @@ use App\Admin\Department;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\KpiScore;
 use App\DeptHead\MdrStatus;
+use App\HR\NteAttachments;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,5 +30,9 @@ class MdrSummary extends Model
 
     public function kpiScores() {
         return $this->hasOne(KpiScore::class, 'mdr_summary_id');
+    }
+
+    public function nteAttachments() {
+        return $this->hasOne(NteAttachments::class);
     }
 }

@@ -58,26 +58,37 @@ class MdrController extends Controller
     }
 
     public function mdrView() {
-        $mdrScoreList = Department::with([
-            'kpi_scores' => function($q) {
-                $q->orderBy('year', 'DESC')
-                    ->orderBy('month', 'DESC');
-            }
-        ])
-        ->where('id', auth()->user()->department_id)
-        ->first();
+        // $mdrScoreList = Department::with([
+        //     'kpi_scores' => function($q) {
+        //         $q->orderBy('year', 'DESC')
+        //             ->orderBy('month', 'DESC');
+        //     }
+        // ])
+        // ->where('id', auth()->user()->department_id)
+        // ->first();
 
-        foreach($mdrScoreList->kpi_scores as $kpiScore) {
-            if($kpiScore->final_approved == 0) {
-                $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
-            }
+        // foreach($mdrScoreList->kpi_scores as $kpiScore) {
+        //     // if($kpiScore->final_approved == 0) {
+        //     // }
+        //     $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
+        // }
+
+        $kpiScore = KpiScore::where('department_id', auth()->user()->department_id)
+            ->orderBy('year', 'DESC')
+            ->orderBy('month', 'DESC')
+            ->get();
+        
+        $yearAndMonth = "0000-00";
+        foreach($kpiScore as $kpiScoreData) {
+            $yearAndMonth = $kpiScoreData->year.'-'.$kpiScoreData->month;
+            break;
         }
 
         return view('dept-head.mdr-list', 
             array(
-                'mdrScoreList' => $mdrScoreList,
-                'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : '',
-                // 'kpiScore' => $kpiScore
+                // 'mdrScoreList' => $mdrScoreList,
+                'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : date('Y-m'),
+                'kpiScore' => $kpiScore
             )
         );
     }

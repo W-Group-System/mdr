@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -50,6 +49,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($mdrSummary as $mdrSummaryData)
+                                    @if(!empty($mdrSummaryData->nteAttachments))
                                     <tr>
                                         <td>{{ $mdrSummaryData->departments->dept_name }}</td>
                                         <td>{{ $mdrSummaryData->departments->user->name }}</td>
@@ -57,13 +57,10 @@
                                         <td>{{ $mdrSummaryData->rate }}</td>
                                         <td>{{ !empty($mdrSummaryData->nteAttachments->users->name) ? $mdrSummaryData->nteAttachments->users->name : '' }}</td>
                                         <td width="100">
-                                            @if(Auth::user()->account_role == 4)
                                             <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
                                                 <i class="fa fa-upload"></i>
                                             </button>
-                                            @endif
                                             
-                                            @if(!empty($mdrSummaryData->nteAttachments))
                                             <form action="{{ url('delete_nte/'.$mdrSummaryData->nteAttachments->id) }}" method="post" id="deleteNteForm">
                                                 @csrf
                                             </form>
@@ -79,10 +76,10 @@
                                                 </button>
                                                 @endif
                                             </div>
-                                            @endif
 
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>

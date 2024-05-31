@@ -537,7 +537,7 @@
                                     </td>
                                     <td>
                                         @if(auth()->user()->account_role == 2)
-                                        <form action="{{ url('approveMdr') }}" method="post">
+                                        <form action="{{ url('approveMdr') }}" method="post" onsubmit="show()">
                                             @csrf
 
                                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
@@ -545,7 +545,7 @@
                                             <button class="btn btn-sm btn-primary" type="submit">Approve</button>
                                         </form>
                                         @else
-                                        <form action="{{ url('submitMdr') }}" method="post">
+                                        <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">
                                             @csrf
 
                                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">

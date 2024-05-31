@@ -66,7 +66,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($mdrScoreList->kpi_scores as $item)
+                                {{-- @foreach ($mdrScoreList->kpi_scores as $item)
                                     <tr>
                                         <td>{{ $mdrScoreList->dept_name }} </td>
                                         <td>{{ date("F Y", strtotime($item->year . '-' . $item->month))}}</td>
@@ -80,6 +80,28 @@
                                             <form action="{{ url('edit_mdr') }}" method="get">
                                                 
                                                 <input type="hidden" name="yearAndMonth" value="{{ $item->year.'-'.$item->month }}">
+
+                                                <button type="submit" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach --}}
+                                @foreach ($kpiScore as $data)
+                                    <tr>
+                                        <td>{{ $data->departments->dept_name }} </td>
+                                        <td>{{ date("F Y", strtotime($data->year . '-' . $data->month))}}</td>
+                                        <td>{{ $data->score }}</td>
+                                        <td>{{ !empty($data->pd_scores) ? number_format($data->pd_scores, 1) : '0.0' }}</td>
+                                        <td>{{ !empty($data->innovation_scores) ? number_format($data->innovation_scores, 1) : '0.0' }}</td>
+                                        <td>{{ $data->timeliness }}</td>
+                                        <td>{{ $data->total_rating }}</td>
+                                        <td>{{ $data->remarks }}</td>
+                                        <td width="10">
+                                            <form action="{{ url('edit_mdr') }}" method="get">
+                                                
+                                                <input type="hidden" name="yearAndMonth" value="{{ $data->year.'-'.$data->month }}">
 
                                                 <button type="submit" class="btn btn-sm btn-info">
                                                     <i class="fa fa-eye"></i>

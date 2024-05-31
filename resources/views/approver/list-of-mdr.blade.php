@@ -316,7 +316,7 @@
                                         <tr>
                                             <td> {{ auth()->user()->name  }}</td>
                                             <td>
-                                                <form action="{{ url('approver_mdr') }}" method="post">
+                                                <form action="{{ url('approver_mdr') }}" method="post" onsubmit="show()">
                                                     @csrf
 
                                                     <input type="hidden" name="monthOf" value="{{ $yearAndMonth }}">
@@ -325,7 +325,7 @@
                                                     <button type="submit" class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">Approve</button>
                                                 </form>
     
-                                                <form action="{{ url('return_mdr') }}" method="post">
+                                                <form action="{{ url('return_mdr') }}" method="post" onsubmit="show()">
                                                     @csrf
 
                                                     <input type="hidden" name="monthOf" value="{{ $yearAndMonth }}">

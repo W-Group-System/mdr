@@ -13,16 +13,30 @@
     <link href="{{ asset('css/animate.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('img/wgroup.png') }}" type="image/x-icon">
-
-    @yield('css')
-
     <!-- Gritter -->
     <link href="js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
 
+    <style>
+        .loader {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: url("{{ asset('login_css/img/loader.gif') }}") 50% 50% no-repeat white;
+            opacity: .8;
+            background-size: 120px 120px;
+        }
+    </style>
+
+    @yield('css')
     
 </head>
 <body>
     <div id="wrapper">
+        <div id="loader" style="display:none;" class="loader"></div>
+
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
@@ -46,7 +60,7 @@
                                             {{ 'Department Head' }}
                                             @break
                                         @case(4)
-                                            {{ 'Human Resource' }}
+                                            {{ 'Human Resources' }}
                                             @break
                                         @default
                                             
@@ -95,18 +109,24 @@
                                 <span class="nav-label">History of MDR</span>
                             </a>
                         </li>
-                        {{-- <li class="{{ Route::currentRouteName() == "departmentDeadline" ? 'active' : '' }}">
-                            <a href="{{ url('department_deadline') }}">
-                                <i class="fa fa-calendar"></i>
-                                <span class="nav-label">Department Deadlines</span>
+                        <li class="{{ Route::currentRouteName() == "penalties" ? 'active' : '' }}">
+                            <a href="{{ url('penalties') }}">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                <span class="nav-label">Penalties</span>
                             </a>
-                        </li> --}}
+                        </li>
                     @endif
                     @if(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>
                                 <span class="nav-label">MDR</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == "departmentPenalties" ? 'active' : '' }}">
+                            <a href="{{ url('department_penalties') }}">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                                <span class="nav-label">Penalties</span>
                             </a>
                         </li>
                     @endif
@@ -193,5 +213,10 @@
 
     <!-- Sparkline demo data  -->
     {{-- <script src="js/demo/sparkline-demo.js"></script> --}}
+    <script>
+        function show() {
+            document.getElementById("loader").style.display = "block";
+        }
+    </script>
 </body>
 </html>

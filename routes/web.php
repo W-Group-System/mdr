@@ -81,6 +81,9 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
         Route::post('/submitMdr', 'DeptHead\MdrController@submitMdr');
 
+        # Department Penalties
+        Route::get('/department_penalties', 'DeptHead\DepartmentPenaltiesController@index')->name('departmentPenalties');
+
         // # Business Plan
         // Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');
         // Route::post('/updateBusinessPlan/{id}', 'DeptHead\BusinessPlanController@update');
@@ -117,5 +120,6 @@ Route::group(['middleware' => 'auth'], function() {
         # Penalties
         Route::get('/penalties', 'HR\PenaltiesController@index')->name('penalties');
         Route::post('/upload_nte/{id}', 'HR\PenaltiesController@uploadNte');
+        Route::post('/delete_nte/{id}', 'HR\PenaltiesController@deleteNte');
     });
 });
