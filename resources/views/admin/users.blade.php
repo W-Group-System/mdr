@@ -22,7 +22,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <form role="form" method="post" id="addForm" action="{{ route('addUserAccounts') }}">
+                        <form role="form" method="post" id="addForm" action="{{ route('addUserAccounts') }}" onsubmit="show()">
                             @csrf
                             <div class="form-group">
                                 <label>Department</label>
@@ -35,19 +35,19 @@
                             </div>
                             <div class="form-group">
                                 <label>Name</label>
-                                <input type="text" name="name" placeholder="Enter name" class="form-control input-sm">
+                                <input type="text" name="name" placeholder="Enter name" class="form-control input-sm" required>
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" name="email" placeholder="Enter email" class="form-control input-sm">
+                                <input type="email" name="email" placeholder="Enter email" class="form-control input-sm" required>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
-                                <input type="password" name="password" placeholder="Enter password" class="form-control input-sm">
+                                <input type="password" name="password" placeholder="Enter password" class="form-control input-sm" required>
                             </div>
                             <div class="form-group">
                                 <label>Confirm Password</label>
-                                <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control input-sm">
+                                <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control input-sm" required>
                             </div>
                             <div class="form-group">
                                 <label>Account Role</label>
@@ -162,7 +162,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <form role="form" method="post" action="/updateUserAccounts/{{ $userData->id }}">
+                            <form role="form" method="post" action="/updateUserAccounts/{{ $userData->id }}" onsubmit="show()">
                                 @csrf
                                 <div class="form-group">
                                     <label>Department</label>
@@ -179,11 +179,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="email" name="email" placeholder="Enter email" class="form-control input-sm" value="{{ $userData->email }}">
+                                    <input type="email" name="email" placeholder="Enter email" class="form-control input-sm" value="{{ $userData->email }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Account Role</label>
-                                    <select name="accountRole" id="accountRole" class="form-control">
+                                    <select name="accountRole" id="accountRole" class="form-control" required>
                                         <option value="">-Account Role-</option>
                                         <option value="0" {{ $userData->account_role == 0 ? 'selected' : '' }}>Admin</option>
                                         <option value="1" {{ $userData->account_role == 1 ? 'selected' : '' }}>Approver</option>
@@ -212,15 +212,15 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <form role="form" method="post" action="/changePassword/{{ $userData->id }}">
+                            <form role="form" method="post" action="/changePassword/{{ $userData->id }}" onsubmit="show()">
                                 @csrf
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input type="password" name="password" placeholder="Enter password" class="form-control input-sm">
+                                    <input type="password" name="password" placeholder="Enter password" class="form-control input-sm" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Confirm Password</label>
-                                    <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control input-sm">
+                                    <input type="password" name="password_confirmation" placeholder="Enter password" class="form-control input-sm" required>
                                 </div>
                                 <div>
                                     <button class="btn btn-sm btn-primary btn-rounded btn-block">Change</button>

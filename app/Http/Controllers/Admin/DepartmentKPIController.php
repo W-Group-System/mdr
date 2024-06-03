@@ -83,4 +83,23 @@ class DepartmentKPIController extends Controller
             
         }
     }
+
+    public function deleteDepartmentKpi(Request $request, $id) {
+        
+        $checkIfExist = DepartmentalGoals::select('department_kpi_id')->where('department_kpi_id', $id)->get();
+
+        if ($checkIfExist->isNotEmpty()) {
+
+            Alert::error('ERROR', "Can't Delete KPI because it's already used.");
+        }
+        else {
+            
+            $departmentKpi = DepartmentKPI::findOrFail($id);
+            if($departmentKpi) {
+                $departmentKpi->delete();
+            }
+        }
+
+        return back();
+    }
 }

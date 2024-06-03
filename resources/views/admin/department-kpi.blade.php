@@ -64,6 +64,14 @@
                                                     <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentKpiData->id }}">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
+
+                                                    <form action="{{ url('deleteDepartmentKpi/'.$departmentKpiData->id) }}" method="post" onsubmit="show()">
+                                                        @csrf
+
+                                                        <button class="btn btn-sm btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -87,7 +95,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <form role="form" method="post" id="addForm" action="/addDepartmentKpi">
+                        <form role="form" method="post" id="addForm" action="/addDepartmentKpi" onsubmit="show()">
                             @csrf
                             <div class="form-group">
                                 <label>Departments</label>
@@ -109,11 +117,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Department KPI</label>
-                                <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" placeholder="Enter KPI"></textarea>
+                                <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" placeholder="Enter KPI" required></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Target</label>
-                                <textarea name="target" id="" class="form-control" cols="30" rows="10" placeholder="Enter Target"></textarea>
+                                <textarea name="target" id="" class="form-control" cols="30" rows="10" placeholder="Enter Target" required></textarea>
                             </div>
                             <div>
                                 <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
@@ -137,7 +145,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <form method="post" action="/updateDepartmentsKpi/{{ $departmentKpiData->id }}" role="form">
+                            <form method="post" action="/updateDepartmentsKpi/{{ $departmentKpiData->id }}" role="form" onsubmit="show()">
                                 @csrf
                                 <div class="form-group">
                                     <label>Departments</label>

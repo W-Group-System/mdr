@@ -28,9 +28,9 @@ class UserController extends Controller
     public function addUserAccounts(Request $request) {
         $validator = Validator::make($request->all(), [
             // 'department' => 'required',
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
+            // 'name' => 'required',
+            'email' => 'email|unique:users,email',
+            'password' => 'confirmed|min:6',
             'accountRole' => 'required',
         ]);
 
@@ -55,8 +55,8 @@ class UserController extends Controller
 
     public function updateUserAccounts(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'department' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
+            // 'department' => 'required',
+            'email' => 'email|unique:users,email,' . $id,
             'accountRole' => 'required',
         ]);
 
@@ -97,7 +97,7 @@ class UserController extends Controller
 
     public function changePassword(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'password' => 'required|min:6|confirmed'
+            'password' => 'min:6|confirmed'
         ]);
 
         if ($validator->fails()) {

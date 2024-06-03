@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/department-kpi', 'Admin\DepartmentKPIController@index')->name('departmentKpi');
             Route::post('/addDepartmentKpi', 'Admin\DepartmentKPIController@addDepartmentKpi');
             Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKPIController@updateDepartmentKpi');
+            Route::post('/deleteDepartmentKpi/{id}', 'Admin\DepartmentKPIController@deleteDepartmentKpi');
     
             # Department Group
             Route::get('/department-groups', 'Admin\DepartmentGroupController@index')->name('departmentGroup');

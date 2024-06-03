@@ -21,15 +21,15 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <form role="form" method="post" id="addForm" action="{{ route('addDepartments') }}">
+                        <form role="form" method="post" id="addForm" action="{{ route('addDepartments') }}" onsubmit="show()">
                             @csrf
                             <div class="form-group">
                                 <label>Department Code</label>
-                                <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm">
+                                <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm" required>
                             </div>
                             <div class="form-group">
                                 <label>Department Name</label>
-                                <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm">
+                                <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm" required> 
                             </div>
                             <div class="form-group">
                                 <label>Department Head</label>
@@ -44,9 +44,12 @@
                                 <label>Target Date</label>
                                 <select name="targetDate" id="targetDate" name="targetDate" class="form-control input-sm">
                                     <option value="">- Target Date -</option>
-                                    @for ($i = 1; $i <= 31; $i++)
+                                    {{-- @for ($i = 1; $i <= 31; $i++)
                                         <option value={{ $i }}>{{ $i }}</option>
-                                    @endfor
+                                    @endfor --}}
+                                    @foreach (range(1, 31) as $item)
+                                        <option value="{{ sprintf("%02d", $item) }}">{{ $item }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div>
@@ -103,7 +106,7 @@
                                                 <i class="fa fa-pencil"></i>
                                             </button>
 
-                                            <form action="/deleteDepartments/{{ $departmentData->id }}" method="post" role="form">
+                                            <form action="/deleteDepartments/{{ $departmentData->id }}" method="post" role="form" onsubmit="show()">
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $departmentData->id }}">
 
@@ -133,15 +136,15 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            <form role="form" method="post" id="updateForm" action="/updateDepartments/{{ $departmentData->id }}">
+                            <form role="form" method="post" id="updateForm" action="/updateDepartments/{{ $departmentData->id }}" onsubmit="show()">
                                 @csrf
                                 <div class="form-group">
                                     <label>Department Code</label>
-                                    <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm" value="{{ $departmentData->dept_code }}">
+                                    <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm" value="{{ $departmentData->dept_code }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Department Name</label>
-                                    <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm" value="{{ $departmentData->dept_name }}">
+                                    <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm" value="{{ $departmentData->dept_name }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Department Head</label>

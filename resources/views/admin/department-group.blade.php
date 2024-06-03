@@ -32,7 +32,7 @@
                                                 <i class="fa fa-pencil"></i>
                                             </button>
 
-                                            <form action="/deleteDepartmentGroups/{{ $departmentGroupData->id }}" method="post" role="form">
+                                            <form action="/deleteDepartmentGroups/{{ $departmentGroupData->id }}" method="post" role="form" onsubmit="show()">
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $departmentGroupData->id }}">
 
@@ -61,11 +61,11 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <form role="form" method="post" action="/addDepartmentGroups">
+                        <form role="form" method="post" action="/addDepartmentGroups" onsubmit="show()">
                             @csrf
                             <div class="form-group">
                                 <label>Department KPI Groups</label>
-                                <input type="text" name="departmentGroupName" placeholder="Enter department kpi groups" class="form-control input-sm">
+                                <input type="text" name="departmentGroupName" placeholder="Enter department kpi groups" class="form-control input-sm" required>
                             </div>
                             <div>
                                 <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
@@ -88,7 +88,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-12">
-                        <form role="form" method="post" action="/updateDepartmentGroups/{{ $departmentGroupData->id }}">
+                        <form role="form" method="post" action="/updateDepartmentGroups/{{ $departmentGroupData->id }}" onsubmit="show()">
                             @csrf
                             <div class="form-group">
                                 <label>Department KPI Groups</label>
