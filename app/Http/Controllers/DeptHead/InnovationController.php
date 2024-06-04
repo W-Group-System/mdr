@@ -19,7 +19,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class InnovationController extends Controller
 {
     public function add(Request $request) {
-        $department = Department::with('kpi_scores', 'innovation', 'process_development')
+        $department = Department::with('kpi_scores', 'innovation')
             ->where('id', auth()->user()->department_id)
             ->first();
 
@@ -106,28 +106,33 @@ class InnovationController extends Controller
                         ->where('department_id',  $department->id)
                         ->count();
 
-                    $processDevelopmentCount = $department->process_development()
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->where('department_id',  $department->id)
-                        ->count();
-                    
-                    if ($innovationCount > 0 && $processDevelopmentCount > 0) {
+                    // if ($innovationCount > 0 && $processDevelopmentCount > 0) {
+                    //     $kpiScore->update([
+                    //         'pd_scores' => 1.0,
+                    //         'innovation_scores' => 1.0
+                    //     ]);
+                    // }
+                    // else if ($innovationCount > 0 || $processDevelopmentCount == 0) {
+                    //     $kpiScore->update([
+                    //         'pd_scores' => 0.5,
+                    //         'innovation_scores' => 0.5
+                    //     ]);
+                    // }
+                    // else if ($innovationCount == 0 || $processDevelopmentCount > 0) {
+                    //     $kpiScore->update([
+                    //         'pd_scores' => 0.5,
+                    //         'innovation_scores' => 0.5
+                    //     ]);
+                    // }
+
+                    if ($innovationCount == 1) {
                         $kpiScore->update([
-                            'pd_scores' => 1.0,
-                            'innovation_scores' => 1.0
+                            'innovation_scores' => 0.5,
                         ]);
                     }
-                    else if ($innovationCount > 0 || $processDevelopmentCount == 0) {
+                    else {
                         $kpiScore->update([
-                            'pd_scores' => 0.5,
-                            'innovation_scores' => 0.5
-                        ]);
-                    }
-                    else if ($innovationCount == 0 || $processDevelopmentCount > 0) {
-                        $kpiScore->update([
-                            'pd_scores' => 0.5,
-                            'innovation_scores' => 0.5
+                            'innovation_scores' => 1.0,
                         ]);
                     }
 
@@ -152,11 +157,7 @@ class InnovationController extends Controller
         $department = Department::withCount([
             'innovation' => function($q)use($request) {
                 $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', '05');
-            },
-            'process_development' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', '05');
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
             },
             'kpi_scores'
         ])
@@ -169,23 +170,34 @@ class InnovationController extends Controller
             ->where('department_id', $department->id)
             ->first();
 
-        if ($department->innovation_count == 0 && $department->process_development_count == 0) {
+        if ($department->innovation_count == 1) {
             $kpiScore->update([
-                'pd_scores' => 0.0,
+                'innovation_scores' => 0.5
+            ]);
+        }
+        else if ($department->innovation_count == 0) {
+            $kpiScore->update([
                 'innovation_scores' => 0.0
             ]);
         }
-        else if ($department->innovation_count > 0 && $department->process_development_count == 0) {
-            $kpiScore->update([
-                'pd_scores' => 0.5,
-                'innovation_scores' => 0.5
-            ]);
-        } else if ($department->innovation_count == 0 && $department->process_development_count > 0) {
-            $kpiScore->update([
-                'pd_scores' => 0.5,
-                'innovation_scores' => 0.5
-            ]);
-        }
+
+        // if ($department->innovation_count == 0 && $department->process_development_count == 0) {
+        //     $kpiScore->update([
+        //         'pd_scores' => 0.0,
+        //         'innovation_scores' => 0.0
+        //     ]);
+        // }
+        // else if ($department->innovation_count > 0 && $department->process_development_count == 0) {
+        //     $kpiScore->update([
+        //         'pd_scores' => 0.5,
+        //         'innovation_scores' => 0.5
+        //     ]);
+        // } else if ($department->innovation_count == 0 && $department->process_development_count > 0) {
+        //     $kpiScore->update([
+        //         'pd_scores' => 0.5,
+        //         'innovation_scores' => 0.5
+        //     ]);
+        // }
 
         Alert::success('SUCCESS', 'Successfully Deleted.');
         return back();

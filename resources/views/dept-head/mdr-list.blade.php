@@ -35,7 +35,6 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <form action="{{ url('new-mdr') }}" method="get">
-                                                {{-- {{dd($yearAndMonth)}} --}}
                                                 <div class="form-group">
                                                     <input type="month" name="yearAndMonth" min="{{ date("Y-m", strtotime("+1month", strtotime($yearAndMonth))) }}" max="{{ date('Y-m') }}" class="form-control input-sm" required>
                                                 </div>
@@ -97,7 +96,7 @@
                                         <td>{{ !empty($data->innovation_scores) ? number_format($data->innovation_scores, 1) : '0.0' }}</td>
                                         <td>{{ $data->timeliness }}</td>
                                         <td>{{ $data->total_rating }}</td>
-                                        <td>{{ $data->remarks }}</td>
+                                        <td>{{ !empty($data->remarks) ? $data->remarks : 'No Remarks' }}</td>
                                         <td width="10">
                                             <form action="{{ url('edit_mdr') }}" method="get">
                                                 

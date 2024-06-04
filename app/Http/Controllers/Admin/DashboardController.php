@@ -28,29 +28,18 @@ class DashboardController extends Controller
         } else if(auth()->user()->account_role == 1) {
             $departmentList = Department::with([
                 'mdrSummary' => function($q)use($request) {
-                    // if (!empty($request->department) && !empty($request->yearAndMonth)) {
-                    //     $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    //         ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    //         ->where('department_id', $request->department)
-                    //         ->orderBy('rate', 'DESC');
-                    // }
-                    // else {
-                    //     $q->where('year', date('Y'))
-                    //         ->where('month', date('m'))
-                    //         ->orderBy('rate', 'DESC');
-                    // }
-                    if (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth) && !empty($request->department)) {
-                        $q->whereBetween('year',[ date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
-                            ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))])
-                            ->where('department_id', $request->department);
+                    if (!empty($request->department) && !empty($request->yearAndMonth)) {
+                        $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                            ->where('month', date('m', strtotime($request->yearAndMonth)))
+                            ->where('department_id', !empty($request->department) ?  $request->department : '');
                     }
-                    else if (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
-                        $q->whereBetween('year',[ date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
-                            ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))]);
+                    else if (!empty($request->yearAndMonth)) {
+                        $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                            ->where('month', date('m', strtotime($request->yearAndMonth)));
                     }
                     else {
-                        $q->whereBetween('year', [date('Y'), date('Y')])
-                            ->whereBetween('month',[ date('m'), date('m')]);
+                        $q->where('year', date('Y'))
+                            ->where('month', date('m'));
                     }
                 },
             ])
@@ -75,19 +64,7 @@ class DashboardController extends Controller
             $dashboardDataArray = array();
             $departmentArray = array();
             foreach($departmentList as $data) {
-                if(empty($request->department) && empty($request->startYearAndMonth) && empty($request->endYearAndMonth)) {
-                    $mdrStatusArray[$data->id] = [
-                        'action' => 'Not Yet Submitted',
-                        'status' => 'No Status Yet',
-                        'deadline' => "0000-00-00",
-                        'department' => $data->dept_code.' - '.$data->dept_name,
-                        'rate' => number_format(0.00, 2),
-                        'kpi' => number_format(0.00, 2),
-                        'innovation_scores' => number_format(0.0, 1),
-                        'pd_scores' => number_format(0.0, 1),
-                        'timeliness' => number_format(0.0, 1)
-                    ];
-                } elseif (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
+                if (empty($request->department)) {
                     $mdrStatusArray[$data->id] = [
                         'action' => 'Not Yet Submitted',
                         'status' => 'No Status Yet',
@@ -101,7 +78,6 @@ class DashboardController extends Controller
                     ];
                 }
                 
-
                 $dashboardDataArray[$data->dept_code] = 0.00;
 
                 foreach($data->mdrSummary as $mdrSummaryData) {
@@ -120,11 +96,15 @@ class DashboardController extends Controller
                     $dashboardDataArray[$mdrSummaryData->departments->dept_code] = $mdrSummaryData->rate;
                 }
             }
-            
-            $mdrSummaryData = MdrSummary::where('department_id', $request->department)
-                ->whereBetween('year', [date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
-                ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))])
-                ->get();
+
+            $mdrSummaryData = MdrSummary::where('department_id', $request->departmentValue);
+
+            if(!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
+                $mdrSummaryData = $mdrSummaryData->whereBetween('year', [date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
+                    ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))]);
+            }
+
+            $mdrSummaryData = $mdrSummaryData->get();
 
             $barChartPerDeptArray = array();
             foreach($monthArray as $key=>$month) {
@@ -160,13 +140,14 @@ class DashboardController extends Controller
 
             return view('admin.dashboard',
                 array(
-                    'departmentValue' => $request->department,
+                    'departmentValue' => $request->departmentValue,
                     'startYearAndMonth' => $request->startYearAndMonth,
                     'endYearAndMonth' => $request->endYearAndMonth,
+                    'department'=> $request->department,
                     
                     'listOfDepartment' => $departmentList,
                     'departmentList' => $departmentArray,
-                    // 'yearAndMonth' => $request->yearAndMonth,
+                    'yearAndMonth' => !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m'),
                     'dashboardData' => $dashboardDataArray,
                     'mdrStatus' => collect($mdrStatusArray)->sortBy('rate'),
                     'monthAndData' => $monthAndDataArray,
@@ -277,38 +258,21 @@ class DashboardController extends Controller
 
         $departmentList = Department::with([
             'mdrSummary' => function($q)use($request) {
-                if (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth) && !empty($request->department)) {
-                    $q->whereBetween('year',[ date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
-                        ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))])
-                        ->where('department_id', $request->department);
-                }
-                else if (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
-                    $q->whereBetween('year',[ date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
-                        ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))]);
+                if (!empty($request->yearAndMonth)) {
+                    $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                        ->where('month', date('m', strtotime($request->yearAndMonth)));
                 }
                 else {
-                    $q->whereBetween('year', [date('Y'), date('Y')])
-                        ->whereBetween('month',[ date('m'), date('m')]);
+                    $q->where('year', date('Y'))
+                        ->where('month', date('m'));
                 }
             },
         ])
         ->get();
-
+        
         $mdrStatusArray = array();
         foreach($departmentList as $data) {
-            if(empty($request->department) && empty($request->startYearAndMonth) && empty($request->endYearAndMonth)) {
-                $mdrStatusArray[$data->id] = [
-                    'action' => 'Not Yet Submitted',
-                    'status' => 'No Status Yet',
-                    'deadline' => "0000-00-00",
-                    'department' => $data->dept_code.' - '.$data->dept_name,
-                    'rate' => number_format(0.00, 2),
-                    'kpi' => number_format(0.00, 2),
-                    'innovation_scores' => number_format(0.0, 1),
-                    'pd_scores' => number_format(0.0, 1),
-                    'timeliness' => number_format(0.0, 1)
-                ];
-            } elseif (!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
+            if(empty($request->department)) {
                 $mdrStatusArray[$data->id] = [
                     'action' => 'Not Yet Submitted',
                     'status' => 'No Status Yet',
@@ -321,7 +285,6 @@ class DashboardController extends Controller
                     'timeliness' => number_format(0.0, 1)
                 ];
             }
-            
 
             foreach($data->mdrSummary as $mdrSummaryData) {
                 $mdrStatusArray[$mdrSummaryData->department_id] = [

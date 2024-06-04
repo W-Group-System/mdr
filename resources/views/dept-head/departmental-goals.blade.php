@@ -49,10 +49,10 @@
                                         </td>
                                     @else
                                         <td>
-                                            <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" required></textarea>
+                                            <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" maxlength="3" required></textarea>
                                         </td>
                                         <td>
-                                            <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" required>
+                                            <input type="text" name="grade[]" id="grade" class="form-control input-sm" placeholder="Input grade (use percentage)" maxlength="3" required>
                                         </td>
                                         <td>
                                             <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" required></textarea>

@@ -168,25 +168,24 @@ class MdrController extends Controller
                     ->where('month', date('m', strtotime($request->yearAndMonth)))
                     ->where('status_level', 0);
             },
-            'mdrSummary',
-            'kpi_scores'
+            'mdrSummary' => function($q)use($request) {
+                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
+                    ->where('status_level', 0);
+            },
+            'kpi_scores' => function($q)use($request) {
+                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+                    ->where('month', date('m', strtotime($request->yearAndMonth)))
+                    ->where('status_level', 0);
+            }
         ])
             ->where('id', auth()->user()->department_id)
             ->first();
 
-        $kpiScore = $departmentData->kpi_scores()
-            ->where('year', date('Y', strtotime($request->yearAndMonth)))
-            ->where('month', date('m', strtotime($request->yearAndMonth)))
-            ->where('status_level', 0)
-            ->first();
-    
-        $mdrSummary = $departmentData->mdrSummary()
-            ->where('department_id', $departmentData->id)
-            ->where('year', date('Y', strtotime($request->yearAndMonth)))
-            ->where('month', date('m', strtotime($request->yearAndMonth)))
-            ->first();
-
         if ($departmentData->departmentalGoals->isNotEmpty()) {
+            
+            $kpiScore = $departmentData->kpi_scores->first();
+            $mdrSummary = $departmentData->mdrSummary->first();
 
             $departmentData->departmentalGoals->each(function($item, $key)use($mdrSummary) {
                 $item->update([
@@ -206,13 +205,26 @@ class MdrController extends Controller
                 ]);
             });
 
-            $totalRating = $kpiScore->score + $kpiScore->pd_scores + $kpiScore->innovation_scores + $kpiScore->timeliness;
+            $totalInnovationAndPIScores = 0.0;
+            if ($kpiScore->innovation_scores == 0.0 && $kpiScore->pd_scores == 0.0) {
+                $totalInnovationAndPIScores = 0.0;
+            }
+            else if (($kpiScore->innovation_scores == 0.5 && $kpiScore->pd_scores == 0.5) || ($kpiScore->innovation_scores == 0.5 || $kpiScore->innovation_scores == 0.0) && ($kpiScore->pd_scores == 0.5 || $kpiScore->pd_scores == 0.0)) {
+                $totalInnovationAndPIScores = 0.5;
+            }
+            else if (($kpiScore->innovation_scores == 1.0 && $kpiScore->pd_scores == 1.0) || ($kpiScore->innovation_scores == 0.5 || $kpiScore->innovation_scores == 1.0) && ($kpiScore->pd_scores == 0.5 || $kpiScore->pd_scores == 1.0) || ($kpiScore->innovation_scores == 1.0 || $kpiScore->innovation_scores == 0.0) && ($kpiScore->pd_scores == 1.0 || $kpiScore->pd_scores == 0.0)) {
+
+                $totalInnovationAndPIScores = 1.0;
+            }
+        
             $deadlineDate = $kpiScore->deadline;
+            $timeliness =  $deadlineDate >= date('Y-m-d') ? 0.4 : 0.0;
+            $totalRating = $kpiScore->score + $totalInnovationAndPIScores + $timeliness;
 
             $kpiScore->update([
                 'status_level' => 1,
                 'total_rating' => $totalRating,
-                'timeliness' => $deadlineDate >= date('Y-m-d') ? 0.4 : 0.0
+                'timeliness' => $timeliness
             ]);
 
             $mdrSummary = $mdrSummary->update([

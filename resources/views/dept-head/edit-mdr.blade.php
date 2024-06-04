@@ -19,6 +19,7 @@
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
+        <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
         @foreach ($departmentKpiGroup as $dptGroupData)
             @if($dptGroupData->name == "Departmental Goals")
                 <div class="col-lg-12">
@@ -53,7 +54,7 @@
                                                         <textarea name="actual[]" id="actual" cols="30" rows="10" class="form-control" placeholder="Input an actual" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} required>{{ $dptGoals->actual }}</textarea>
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $dptGoals->grade }}" placeholder="Input grade (use percentage)" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }}  required>
+                                                        <input type="text" name="grade[]" id="grade" class="form-control input-sm" value="{{ $dptGoals->grade }}" placeholder="Input grade (use percentage)" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} maxlength="3"  required>
                                                     </td>
                                                     <td>
                                                         <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} required>{{ $dptGoals->remarks }}</textarea>
@@ -617,13 +618,13 @@
 <script>
     $(document).ready(function() {
         $("[name='grade[]']").keypress(function(event) {
-            if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 37) {
+            if (event.keyCode == 8) {
+                return
             }
-            else {
-                if (event.keyCode < 48 || event.keyCode > 57) {
-                    event.preventDefault(); 
-                }   
-            }
+
+            if (event.keyCode < 48 || event.keyCode > 57) {
+                event.preventDefault(); 
+            }   
         });
 
         $('#innovationTable').DataTable({

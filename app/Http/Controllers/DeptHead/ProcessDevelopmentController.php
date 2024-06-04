@@ -18,7 +18,7 @@ use Symfony\Component\Process\Process;
 class ProcessDevelopmentController extends Controller
 {
     public function add(Request $request) {
-        $departmentData = Department::with('kpi_scores', 'innovation', 'process_development')
+        $departmentData = Department::with('kpi_scores', 'process_development')
             ->where('id',  auth()->user()->department_id)
             ->first();
 
@@ -82,34 +82,39 @@ class ProcessDevelopmentController extends Controller
                         $pdAttachments->save();  
                     }
                     
-                    $innovationCount = $departmentData->innovation()
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->where('department_id',  $departmentData->id)
-                        ->count();
-
                     $processDevelopmentCount = $departmentData->process_development()
                         ->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)))
                         ->where('department_id',  $departmentData->id)
                         ->count();
 
-                    if ($innovationCount > 0 && $processDevelopmentCount > 0) {
+                    // if ($innovationCount > 0 && $processDevelopmentCount > 0) {
+                    //     $kpiScore->update([
+                    //         'pd_scores' => 1.0,
+                    //         // 'innovation_scores' => 1.0
+                    //     ]);
+                    // }
+                    // else if ($innovationCount == 0 || $processDevelopmentCount > 0) {
+                    //     $kpiScore->update([
+                    //         'pd_scores' => 0.5,
+                    //         // 'innovation_scores' => 0.5
+                    //     ]);
+                    // }
+                    // else if ($innovationCount > 0 || $processDevelopmentCount == 0) {
+                    //     $kpiScore->update([
+                    //         'pd_scores' => 0.5,
+                    //         // 'innovation_scores' => 0.5
+                    //     ]);
+                    // }
+
+                    if ($processDevelopmentCount == 1) {
+                        $kpiScore->update([
+                            'pd_scores' => 0.5,
+                        ]);
+                    }
+                    else {
                         $kpiScore->update([
                             'pd_scores' => 1.0,
-                            'innovation_scores' => 1.0
-                        ]);
-                    }
-                    else if ($innovationCount == 0 || $processDevelopmentCount > 0) {
-                        $kpiScore->update([
-                            'pd_scores' => 0.5,
-                            'innovation_scores' => 0.5
-                        ]);
-                    }
-                    else if ($innovationCount > 0 || $processDevelopmentCount == 0) {
-                        $kpiScore->update([
-                            'pd_scores' => 0.5,
-                            'innovation_scores' => 0.5
                         ]);
                     }
 
@@ -184,15 +189,11 @@ class ProcessDevelopmentController extends Controller
         if ($processDevelopmentData) {
             $processDevelopmentData->delete();
         }
-
+        
         $department = Department::withCount([
-            'innovation' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', '05');
-            },
             'process_development' => function($q)use($request) {
                 $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', '05');
+                    ->where('month', date('m', strtotime($request->yearAndMonth)));
             },
             'kpi_scores'
         ])
@@ -202,26 +203,37 @@ class ProcessDevelopmentController extends Controller
         $kpiScore = $department->kpi_scores()
             ->where('year', date('Y', strtotime($request->yearAndMonth)))
             ->where('month', date('m', strtotime($request->yearAndMonth)))
-            ->where('department_id', $department->id)
+            ->where('department_id', auth()->user()->department_id)
             ->first();
+        
+        if ($department->process_development_count == 1) {
+            $kpiScore->update([
+                'pd_scores' => 0.5
+            ]);
+        }
+        else if ($department->process_development_count == 0) {
+            $kpiScore->update([
+                'pd_scores' => 0.0
+            ]);
+        }
 
-        if ($department->innovation_count == 0 && $department->process_development_count == 0) {
-            $kpiScore->update([
-                'pd_scores' => 0.0,
-                'innovation_scores' => 0.0
-            ]);
-        }
-        else if ($department->innovation_count > 0 && $department->process_development_count == 0) {
-            $kpiScore->update([
-                'pd_scores' => 0.5,
-                'innovation_scores' => 0.5
-            ]);
-        } else if ($department->innovation_count == 0 && $department->process_development_count > 0) {
-            $kpiScore->update([
-                'pd_scores' => 0.5,
-                'innovation_scores' => 0.5
-            ]);
-        }
+        // if ($department->innovation_count == 0 && $department->process_development_count == 0) {
+        //     $kpiScore->update([
+        //         'pd_scores' => 0.0,
+        //         'innovation_scores' => 0.0
+        //     ]);
+        // }
+        // else if ($department->innovation_count > 0 && $department->process_development_count == 0) {
+        //     $kpiScore->update([
+        //         'pd_scores' => 0.5,
+        //         'innovation_scores' => 0.5
+        //     ]);
+        // } else if ($department->innovation_count == 0 && $department->process_development_count > 0) {
+        //     $kpiScore->update([
+        //         'pd_scores' => 0.5,
+        //         'innovation_scores' => 0.5
+        //     ]);
+        // }
 
         Alert::success('SUCCESS', 'Successfully Deleted.');
         return back();

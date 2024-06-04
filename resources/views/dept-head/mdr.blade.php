@@ -19,13 +19,14 @@
 
 @section('content')
 <div class="row">
+        <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
     @foreach ($departmentKpi as $departmentKpiData)
         @include('dept-head.departmental-goals', array('departmentKpi' => $departmentKpiData, 'yearAndMonth' => $yearAndMonth))
         @include('dept-head.process-development', array('departmentKpi' => $departmentKpi))
         @include('dept-head.innovation', array('departmentKpi' => $departmentKpi))
     @endforeach
 
-    @if(auth()->user()->account_role == 2)
+    @if(auth()->user()->account_role == 2 || auth()->user()->account_role == 3)
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
@@ -218,13 +219,13 @@ $(document).ready(function() {
     })
 
     $("[name='grade[]']").keypress(function(event) {
-        if ( event.keyCode == 46 || event.keyCode == 8) {
+        if (event.keyCode == 8) {
+            return
         }
-        else {
-            if (event.keyCode < 48 || event.keyCode > 57) {
-                event.preventDefault(); 
-            }   
-        }
+
+        if (event.keyCode < 48 || event.keyCode > 57) {
+            event.preventDefault(); 
+        } 
     });
 
 })

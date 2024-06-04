@@ -100,7 +100,7 @@ Route::group(['middleware' => 'auth'], function() {
         # List Of MDR
         Route::get('/list_of_mdr', 'Approver\ListOfMdr@index')->name('listOfMdr');
         Route::post('/return_mdr', 'Approver\ListOfMdr@returnMdr');
-        Route::post('/add_remarks', 'Approver\ListOfMdr@addRemarks');
+        Route::post('/addGradeAndRemarks', 'Approver\ListOfMdr@addGradeAndRemarks');
         Route::post('/approver_mdr', 'Approver\ListOfMdr@approveMdr');
         Route::post('/submit_scores', 'Approver\ListOfMdr@submitScores');
 

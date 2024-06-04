@@ -42,19 +42,25 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($mdrSummary as $data)
-                <tr>
-                    <td class="tdData">{{ $data['department'] }}</td>
-                    <td class="tdData">{{ $data['action'] }}</td>
-                    <td class="tdData">{{ $data['status'] }}</td>
-                    <td class="tdData">{{ $data['deadline'] }}</td>
-                    <td class="tdData">{{ $data['kpi'] }}</td>
-                    <td class="tdData">{{ $data['innovation_scores'] }}</td>
-                    <td class="tdData">{{ $data['pd_scores'] }}</td>
-                    <td class="tdData">{{ $data['timeliness'] }}</td>
-                    <td class="tdData">{{ $data['rate'] }}</td>
-                </tr>
-            @endforeach
+            @if(count($mdrSummary) > 0)
+                @foreach ($mdrSummary as $data)
+                    <tr>
+                        <td class="tdData">{{ $data['department'] }}</td>
+                        <td class="tdData">{{ $data['action'] }}</td>
+                        <td class="tdData">{{ $data['status'] }}</td>
+                        <td class="tdData">{{ $data['deadline'] }}</td>
+                        <td class="tdData">{{ $data['kpi'] }}</td>
+                        <td class="tdData">{{ $data['innovation_scores'] }}</td>
+                        <td class="tdData">{{ $data['pd_scores'] }}</td>
+                        <td class="tdData">{{ $data['timeliness'] }}</td>
+                        <td class="tdData">{{ $data['rate'] }}</td>
+                    </tr>
+                @endforeach
+            @else
+            <tr>
+                <td class="tdData" colspan="9">No data available.</td>
+            </tr>
+            @endif
         </tbody>
     </table>
     {{-- <div class="page-break"></div>

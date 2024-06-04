@@ -46,27 +46,15 @@
                                             <select name="department" id="department" class="form-control">
                                                 <option value="">-Department-</option>
                                                 @foreach ($listOfDepartment as $departmentData)
-                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $department ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    {{-- <div class="col-lg-3">
+                                    <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="yearAndMonth">Year & Month</label>
                                             <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
-                                        </div>
-                                    </div> --}}
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label for="startYearAndMonth">Start Year & Month</label>
-                                            <input type="month" name="startYearAndMonth" id="startYearAndMonth" class="form-control input-sm" value="{{ $startYearAndMonth }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label for="endYearAndMonth">End Year & Month</label>
-                                            <input type="month" name="endYearAndMonth" id="endYearAndMonth" class="form-control input-sm" value="{{ $endYearAndMonth }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
@@ -93,10 +81,10 @@
                             <form action="{{ url('print_pdf') }}" method="post" target="_blank">
                                 @csrf
 
-                                <input type="hidden" name="yearAndMonth" value="{{ $startYearAndMonth }}">
+                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
-                                <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
-                                <input type="hidden" name="endYearAndMonth" value="{{ $endYearAndMonth }}">
+                                {{-- <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
+                                <input type="hidden" name="endYearAndMonth" value="{{ $endYearAndMonth }}"> --}}
 
                                 <button type="submit" class="btn btn-sm btn-warning pull-right">
                                     <i class="fa fa-print"></i>
@@ -137,17 +125,55 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <canvas id="barChartDepartment" height="70"></canvas>
+                            <form action="" method="get">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label for="department">Department</label>
+                                            <select name="departmentValue" id="department" class="form-control">
+                                                <option value="">-Department-</option>
+                                                @foreach ($listOfDepartment as $departmentData)
+                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label for="startYearAndMonth">Start Year & Month</label>
+                                            <input type="month" name="startYearAndMonth" id="startYearAndMonth" class="form-control input-sm" value="{{ $startYearAndMonth }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <label for="endYearAndMonth">End Year & Month</label>
+                                            <input type="month" name="endYearAndMonth" id="endYearAndMonth" class="form-control input-sm" min="{{ date('Y-m', strtotime("+1month", strtotime($startYearAndMonth))) }}" value="{{ $endYearAndMonth }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label for="">&nbsp;</label>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary">Filter</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            {{-- <h3>Status in year {{ isset($years) ? $years : date('Y') }}</h3> --}}
+                            <canvas id="barChartDepartment" height="190"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
                             <table class="table table-striped table-bordered table-hover" id="">
                                 <thead>
                                     <tr>
@@ -300,6 +326,7 @@
 <script>
     $(document).ready(function() {
         $("[name='department']").chosen({width: "100%"});
+        $("[name='departmentValue']").chosen({width: "100%"});
 
         var dept = {!! json_encode(array_keys($dashboardData)) !!}
         var data = {!! json_encode(array_values($dashboardData)) !!}
@@ -324,8 +351,7 @@
 
         var ctx2 = document.getElementById("barChart").getContext("2d");
         new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
-
-
+        
         var month = {!! json_encode(array_keys($monthAndData)) !!}
         var data = {!! json_encode(array_values($monthAndData)) !!}
         
@@ -357,7 +383,10 @@
             responsive: true,
             ordering: false,
             dom: '<"html5buttons"B>lTfgitp',
-            buttons: []
+            buttons: [
+                // {extend: 'csv'},
+                {extend: 'excel', title: "MDR Summary for the month of {{ date('F Y', strtotime($yearAndMonth)) }}"},
+            ]
         });
 
     })
