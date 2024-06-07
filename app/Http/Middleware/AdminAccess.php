@@ -15,7 +15,7 @@ class AdminAccess
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->account_role !== 0) {
+        if (auth()->check() && auth()->user()->role !== "Administrator") {
             return back();
         }
         return $next($request);

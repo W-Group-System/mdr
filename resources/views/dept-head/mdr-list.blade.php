@@ -14,6 +14,13 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">
+                        <span><i class="fa fa-plus"></i></span>&nbsp;
+                        New MDR
+                    </button>
+                </div>
+
                 <div class="ibox-content">
                     @if (Session::has('errors'))
                         <div class="alert alert-danger">
@@ -23,10 +30,8 @@
                         </div>
                     @endif
 
-                    <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">New MDR</button>
-
-                    <div class="modal fade" id="monthModal">
-                        <div class="modal-dialog">
+                    <div class="modal" id="monthModal">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h1 class="modal-title">Select a Month</h1>
@@ -65,28 +70,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @foreach ($mdrScoreList->kpi_scores as $item)
-                                    <tr>
-                                        <td>{{ $mdrScoreList->dept_name }} </td>
-                                        <td>{{ date("F Y", strtotime($item->year . '-' . $item->month))}}</td>
-                                        <td>{{ $item->score }}</td>
-                                        <td>{{ !empty($item->pd_scores) ? number_format($item->pd_scores, 1) : '0.0' }}</td>
-                                        <td>{{ !empty($item->innovation_scores) ? number_format($item->innovation_scores, 1) : '0.0' }}</td>
-                                        <td>{{ $item->timeliness }}</td>
-                                        <td>{{ $item->total_rating }}</td>
-                                        <td>{{ $item->remarks }}</td>
-                                        <td width="10">
-                                            <form action="{{ url('edit_mdr') }}" method="get">
-                                                
-                                                <input type="hidden" name="yearAndMonth" value="{{ $item->year.'-'.$item->month }}">
-
-                                                <button type="submit" class="btn btn-sm btn-info">
-                                                    <i class="fa fa-eye"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach --}}
                                 @foreach ($kpiScore as $data)
                                     <tr>
                                         <td>{{ $data->departments->dept_name }} </td>

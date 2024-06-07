@@ -10,7 +10,7 @@ class KpiScore extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = 'kpi_scores';
+    protected $table = 'mdr_scores';
 
     protected $fillable = ['department_id', 'grade', 'rating', 'score', 'date', 'pd_scores', 'status_level', 'innovation_scores', 'final_approved', 'total_rating', 'timeliness', 'mdr_summary_id'];
 

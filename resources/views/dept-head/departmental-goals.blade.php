@@ -21,7 +21,7 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>KPI</th>
+                                <th>Key Performance Indicator</th>
                                 <th>Target</th>
                                 <th>Actual</th>
                                 <th>Grade</th>
@@ -32,7 +32,7 @@
                         <tbody>
                             @foreach ($departmentKpiData->departmentKpi as $item)
                                 <tr>
-                                    <input type="hidden" name="department_kpi_id[]" value="{{ $item->id }}">
+                                    <input type="hidden" name="mdr_setup_id[]" value="{{ $item->id }}">
                                     <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
                                     <td width="300">{!! nl2br(e($item->name)) !!}</td>
@@ -96,8 +96,8 @@
 </div>
 
 @foreach ($departmentKpiData->departmentKpi as $item)
-    <div class="modal fade" id="uploadModal-{{ $item->id }}">
-        <div class="modal-dialog">
+    <div class="modal" id="uploadModal-{{ $item->id }}">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title">Add Attachments</h1>

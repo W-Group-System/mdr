@@ -13,16 +13,16 @@ class DepartmentKPI extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = "department_kpi";
+    protected $table = "mdr_setups";
 
-    protected $fillable = ['department_id', 'name', 'target', 'department_group_id', 'date'];
+    protected $fillable = ['department_id', 'name', 'target', 'mdr_group_id', 'date'];
 
     // public function department() {
     //     return $this->hasOne(Department::class);
     // }
 
     public function departmentGroup() {
-        return $this->belongsTo(DepartmentGroup::class);
+        return $this->belongsTo(DepartmentGroup::class, 'mdr_group_id');
     }
 
     public function departments() {
@@ -30,10 +30,10 @@ class DepartmentKPI extends Model implements Auditable
     }
 
     public function departmentalGoals() {
-        return $this->hasOne(DepartmentalGoals::class, 'department_kpi_id');
+        return $this->hasOne(DepartmentalGoals::class, 'mdr_setup_id');
     }
 
     public function attachments() {
-        return $this->hasMany(Attachments::class, 'department_kpi_id');
+        return $this->hasMany(Attachments::class, 'mdr_setup_id');
     }
 }

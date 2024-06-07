@@ -45,6 +45,8 @@
                                     <th>Month</th>
                                     <th>Total Rating</th>
                                     <th>Uploaded By</th>
+                                    <th>Status</th>
+                                    <th>Acknowledged By</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -56,31 +58,75 @@
                                         <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
                                         <td>{{ $mdrSummaryData->rate }}</td>
                                         <td>{{ !empty($mdrSummaryData->nteAttachments->users->name) ? $mdrSummaryData->nteAttachments->users->name : '' }}</td>
+                                        <td>
+                                            @if(!empty($mdrSummaryData->nteAttachments))
+                                                @if($mdrSummaryData->nteAttachments->status == 1)
+                                                    Waived
+                                                @elseif($mdrSummaryData->nteAttachments->status == 2)
+                                                    For NOD
+                                                @else
+                                                    {{ '' }}
+                                                @endif
+                                            @endif
+                                        </td>
+                                        <td>{{ isset($mdrSummaryData->nteAttachments->acknowledge->name) ?  $mdrSummaryData->nteAttachments->acknowledge->name  : '' }}</td>
                                         <td width="100">
-                                            @if(Auth::user()->account_role == 4)
                                             <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
                                                 <i class="fa fa-upload"></i>
                                             </button>
-                                            @endif
                                             
                                             @if(!empty($mdrSummaryData->nteAttachments))
-                                            <form action="{{ url('delete_nte/'.$mdrSummaryData->nteAttachments->id) }}" method="post" id="deleteNteForm">
-                                                @csrf
-                                            </form>
+                                                @if(Auth::user()->id != $mdrSummaryData->nteAttachments->user_id)
+                                                    <form action="{{ url('acknowledge_by') }}" method="post" id="acknowledgeForm">
+                                                        @csrf
 
-                                            <div>
-                                                <a href="{{ $mdrSummaryData->nteAttachments->filepath }}" class="btn btn-sm btn-info" type="button" target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
+                                                        <input type="hidden" name="nteAttachmentId" value="{{ $mdrSummaryData->nteAttachments->id }}">
+                                                    </form>
 
-                                                @if(Auth::user()->account_role == 4)
-                                                <button class="btn btn-sm btn-danger" type="submit" form="deleteNteForm">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                    <div>
+                                                        <a href="{{ $mdrSummaryData->nteAttachments->filepath }}" class="btn btn-sm btn-info" type="button" target="_blank" title="View">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                        
+                                                        @if(empty($mdrSummaryData->nteAttachments->acknowledge_by))
+                                                        <button class="btn btn-sm btn-outline btn-info" title="Acknowledge" form="acknowledgeForm" name="acknowledgeBy" value="{{ auth()->user()->id }}">
+                                                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                                                        </button>
+                                                        @endif
+                                                    </div>
+
+                                                    @if(!empty($mdrSummaryData->nteAttachments->acknowledge_by))
+                                                    <div>
+                                                        <form action="{{ url('nte_status') }}" method="POST">
+                                                            @csrf
+                                                            
+                                                            <input type="hidden" name="mdr_summary_id" value="{{ $mdrSummaryData->id }}">
+        
+                                                            <button type="submit" class="btn btn-outline btn-sm btn-success" title="Waived" name="waivedValue" value="1">
+                                                                <i class="fa fa-hand-paper-o"></i>
+                                                            </button>
+        
+                                                            <button type="submit" class="btn btn-outline btn-sm btn-danger" title="For NOD" name="forNodValue" value="2">
+                                                                <i class="fa fa-ban"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    @endif
+                                                @else 
+                                                    <form action="{{ url('delete_nte/'.$mdrSummaryData->nteAttachments->id) }}" method="post" id="deleteNteForm">
+                                                        @csrf
+                                                    </form>
+                                                    <div>
+                                                        <a href="{{ $mdrSummaryData->nteAttachments->filepath }}" class="btn btn-sm btn-info" type="button" target="_blank" title="View">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+        
+                                                        <button class="btn btn-sm btn-danger" type="submit" form="deleteNteForm">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
                                                 @endif
-                                            </div>
                                             @endif
-
                                         </td>
                                     </tr>
                                 @endforeach
@@ -98,7 +144,7 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <form action="{{ url('upload_nte/'.$mdrSummaryData->id) }}" method="post" enctype="multipart/form-data">
+                                                <form action="{{ url('upload_nte/'.$mdrSummaryData->id) }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                                                     @csrf
                                                     
                                                     <input type="hidden" name="yearAndMonth" value="{{ $mdrSummaryData->year.'-'.$mdrSummaryData->month }}">

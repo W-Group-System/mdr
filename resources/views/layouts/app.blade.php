@@ -49,22 +49,7 @@
                                 <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">{{ Auth::user()->name }}</strong></span>
                                 {{-- <span class="text-muted text-xs block">Art Director <b class="caret"></b></span> --}}
                                 <span class="text-muted text-xs block">
-                                    @switch(Auth::user()->account_role)
-                                        @case(0)
-                                            {{ 'Admin' }}
-                                            @break
-                                        @case(1)
-                                            {{ 'Approver' }}
-                                            @break
-                                        @case(2)
-                                            {{ 'Department Head' }}
-                                            @break
-                                        @case(4)
-                                            {{ 'Human Resources' }}
-                                            @break
-                                        @default
-                                            
-                                    @endswitch
+                                    {{auth()->user()->role}}
                                 </span>
                             </a>
                         </div>
@@ -75,22 +60,22 @@
                             <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
-                    @if(Auth::user()->account_role == 0)
-                        <li class="{{ Route::currentRouteName() == 'departments' || Route::currentRouteName() == 'userAccounts' || Route::currentRouteName() == 'departmentKpi' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
+                    @if(auth()->user()->role == "Administrator")
+                        <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-cog"></i>
                                 <span class="nav-label">Settings</span> 
                                 <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level">
-                                <li class="{{ Route::currentRouteName() == "departments" ? 'active' : '' }}"><a href="{{ route('departments') }}">Departments</a></li>
-                                <li class="{{ Route::currentRouteName() == "departmentKpi" ? 'active' : '' }}"><a href="{{ route('departmentKpi') }}">Department KPI</a></li>
-                                <li class="{{ Route::currentRouteName() == "departmentGroup" ? 'active' : '' }}"><a href="{{ route('departmentGroup') }}">Department KPI Group</a></li>
-                                <li class="{{ Route::currentRouteName() == "userAccounts" ? 'active' : '' }}"><a href="{{ route('userAccounts') }}">User Accounts</a></li>
+                                <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
+                                <li class=""><a href="{{ url('mdr_setup') }}">MDR Setup</a></li>
+                                <li class=""><a href="{{ url('departments') }}">Departments</a></li>
+                                <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
                             </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->account_role == 1)
+                    @if(Auth::user()->role == "Approver")
                         <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
                             <a href="{{ url('for_approval') }}">
                                 <i class="fa fa-pencil-square-o"></i>
@@ -116,26 +101,38 @@
                             </a>
                         </li>
                     @endif
-                    @if(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
+                    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "User")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>
                                 <span class="nav-label">MDR</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() == "departmentPenalties" ? 'active' : '' }}">
-                            <a href="{{ url('department_penalties') }}">
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                <span class="nav-label">Penalties</span>
+                        <li class="{{ Route::currentRouteName() == 'departmentPenalties' || Route::currentRouteName() == 'departmentNod' || Route::currentRouteName() == 'performanceImprovementPlan' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-ban"></i>
+                                <span class="nav-label">Penalties</span> 
+                                <span class="fa arrow"></span>
                             </a>
+                            <ul class="nav nav-second-level">
+                                <li class="{{ Route::currentRouteName() == "departmentPenalties" ? 'active' : '' }}"><a href="{{ route('departmentPenalties') }}">Notice of Explanation</a></li>
+                                <li class="{{ Route::currentRouteName() == "departmentNod" ? 'active' : '' }}"><a href="{{ route('departmentNod') }}">Notice of Disciplinary</a></li>
+                                {{-- <li class="{{ Route::currentRouteName() == "performanceImprovementPlan" ? 'active' : '' }}"><a href="{{ route('performanceImprovementPlan') }}">Performance Improvement Plan</a></li> --}}
+                            </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->account_role == 4)
-                        <li class="{{ Route::currentRouteName() == "penalties" ? 'active' : '' }}">
-                            <a href="{{ url('penalties') }}">
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                <span class="nav-label">Penalties</span>
+                    @if(auth()->user()->role == "Human Resources")
+                        <li class="{{ Route::currentRouteName() == 'ntePenalties' || Route::currentRouteName() == 'noticeOfDisciplinary' || Route::currentRouteName() == 'performanceImprovementPlan' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-ban"></i>
+                                <span class="nav-label">Penalties</span> 
+                                <span class="fa arrow"></span>
                             </a>
+                            <ul class="nav nav-second-level">
+                                <li class="{{ Route::currentRouteName() == "ntePenalties" ? 'active' : '' }}"><a href="{{ route('ntePenalties') }}">Notice of Explanation</a></li>
+                                <li class="{{ Route::currentRouteName() == "noticeOfDisciplinary" ? 'active' : '' }}"><a href="{{ route('noticeOfDisciplinary') }}">Notice of Disciplinary</a></li>
+                                <li class="{{ Route::currentRouteName() == "performanceImprovementPlan" ? 'active' : '' }}"><a href="{{ route('performanceImprovementPlan') }}">Performance Improvement Plan</a></li>
+                            </ul>
                         </li>
                     @endif
                 </ul>
@@ -152,10 +149,7 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            {{-- <a href="{{ route('logout') }}">
-                                <i class="fa fa-sign-out"></i> Log out
-                            </a> --}}
-                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">
                                 <i class="fa fa-sign-out"></i> Log out
                             </a>
                             

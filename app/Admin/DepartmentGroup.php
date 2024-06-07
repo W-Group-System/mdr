@@ -16,25 +16,25 @@ class DepartmentGroup extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = 'department_kpi_groups';
+    protected $table = 'mdr_groups';
 
     protected $primaryKey = 'id';
 
     protected $fillable = ['name'];
 
     public function departmentalGoals() {
-        return $this->hasMany(DepartmentalGoals::class);
+        return $this->hasMany(DepartmentalGoals::class, 'mdr_group_id');
     }
 
     public function departmentKpi() {
-        return $this->hasMany(DepartmentKPI::class, 'department_group_id');
+        return $this->hasMany(DepartmentKPI::class, 'mdr_group_id');
     }
 
     public function processDevelopment() {
-        return $this->hasMany(ProcessDevelopment::class);
+        return $this->hasMany(ProcessDevelopment::class, 'mdr_group_id');
     }
 
     public function innovation() {
-        return $this->hasMany(Innovation::class);
+        return $this->hasMany(Innovation::class, 'mdr_group_id');
     }
 }

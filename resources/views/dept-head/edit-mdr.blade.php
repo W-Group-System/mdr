@@ -17,17 +17,18 @@
 </style>
 @endsection
 
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content">
     <div class="row">
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
         @foreach ($departmentKpiGroup as $dptGroupData)
             @if($dptGroupData->name == "Departmental Goals")
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-title">
+                            <p><strong>I.</strong>{{ $dptGroupData->name }}</p>
+                        </div>
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <p><strong>I.</strong>Departmental Goals</p>
-
                                 <form action="{{ url('create') }}" method="post" onsubmit="show()">
                                     @csrf
                                     
@@ -45,7 +46,7 @@
                                         <tbody>
                                             @foreach ($dptGroupData->departmentalGoals as $dptGoals)
                                                 <tr>
-                                                    <input type="hidden" name="department_kpi_id[]" value="{{ $dptGoals->department_kpi_id }}">
+                                                    <input type="hidden" name="mdr_setup_id[]" value="{{ $dptGoals->mdr_setup_id }}">
                                                     <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
                                                     <td width="300">{!! nl2br(e($dptGoals->kpi_name)) !!}</td>
@@ -60,15 +61,15 @@
                                                         <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" placeholder="Input a remarks" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} required>{{ $dptGoals->remarks }}</textarea>
                                                     </td>
                                                     <td width="10">
-                                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $dptGoals->department_kpi_id }}" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} >
+                                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#uploadModal-{{ $dptGoals->mdr_setup_id }}" {{ $dptGoals->status_level != 0 ? 'disabled' : '' }} >
                                                             <i class="fa fa-upload"></i>
                                                         </button>
 
                                                         @foreach ($dptGroupData->departmentKpi as $dptKpi)
-                                                            @if($dptKpi->id == $dptGoals->department_kpi_id)
+                                                            @if($dptKpi->id == $dptGoals->mdr_setup_id)
                                                                 <div class="kpi-attachment-container-{{ $dptKpi->id }}">
                                                                     @foreach ($dptKpi->attachments as $attachment)
-                                                                        @if($dptGoals->department_kpi_id == $attachment->department_kpi_id)
+                                                                        @if($dptGoals->mdr_setup_id == $attachment->mdr_setup_id)
                                                                             <div class="attachment-kpi-{{ $attachment->id }}">
                                                                                 <a href="{{ url($attachment->file_path) }}" target="_blank" class="btn btn-sm btn-info">
                                                                                     <i class="fa fa-eye"></i>
@@ -95,8 +96,8 @@
                     </div>
                 </div>
                 @foreach ($dptGroupData->departmentKpi as $item)
-                    <div class="modal fade uploadModal" id="uploadModal-{{ $item->id }}">
-                        <div class="modal-dialog">
+                    <div class="modal uploadModal" id="uploadModal-{{ $item->id }}">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h1 class="modal-title">Add Attachments</h1>
@@ -129,6 +130,13 @@
             @if($dptGroupData->name == "Innovations (Accomplished)")
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-title">
+                            <p><b>II:</b> <span class="period">{{ $dptGroupData->name }}</span></p>
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
+                                <span><i class="fa fa-plus"></i></span>&nbsp;
+                                Add Innovation
+                            </button>
+                        </div>
                         <div class="ibox-content">
                             @if (Session::has('errors'))
                                 <div class="alert alert-danger">
@@ -138,8 +146,6 @@
                                 </div>
                             @endif
                             <div class="table-responsive">
-                                <p><b>II:</b> <span class="period">{{ $dptGroupData->name }}</span></p>
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">Add Innovation</button>
                                 <table class="table table-bordered table-hover" id="innovationTable">
                                     <thead>
                                         <tr>
@@ -202,8 +208,8 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="addModal">
-                    <div class="modal-dialog">
+                <div class="modal" id="addModal">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title">Add Innovation</h1>
@@ -214,7 +220,7 @@
                                         <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data" autocomplete="off" id="innovationForm" onsubmit="show()">
                                             @csrf
 
-                                            <input type="hidden" name="department_group_id" value="{{ $dptGroupData->id }}">
+                                            <input type="hidden" name="mdr_group_id" value="{{ $dptGroupData->id }}">
                                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
                                             <div class="form-group">
@@ -231,30 +237,15 @@
                                             </div>
                                             <div class="form-group" id="startDate">
                                                 <label for="startDate">Start Date</label>
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="startDate" required>
-                                                </div>
+                                                <input type="date" class="form-control input-sm" name="startDate" required>
                                             </div>
                                             <div class="form-group" id="targetDate">
                                                 <label for="targetDate">Target Date</label>
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="targetDate" required>
-                                                </div>
+                                                <input type="date" class="form-control input-sm" name="targetDate" required>
                                             </div>
                                             <div class="form-group" id="actualDate">
                                                 <label for="actualDate">Actual Date</label>
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="actualDate" required>
-                                                </div>
+                                                <input type="date" class="form-control input-sm" name="actualDate" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="file">Supporting Documents</label>
@@ -276,8 +267,8 @@
                 </div>
 
                 @foreach ($dptGroupData->innovation as $innovationData)
-                <div class="modal fade" id="editModal-{{ $innovationData->id }}">
-                    <div class="modal-dialog">
+                <div class="modal" id="editModal-{{ $innovationData->id }}">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title">Edit Innovations</h1>
@@ -288,7 +279,7 @@
                                         <form action="/updateInnovation/{{ $innovationData->id }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                                             @csrf
                                             
-                                            <input type="hidden" name="department_group_id" value="{{ $dptGroupData->id }}">
+                                            <input type="hidden" name="mdr_group_id" value="{{ $dptGroupData->id }}">
 
                                             <div class="form-group">
                                                 <label for="innovationProjects">Innovation Projects</label>
@@ -304,30 +295,15 @@
                                             </div>
                                             <div class="form-group" id="startDate">
                                                 <label for="startDate">Start Date</label>
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="startDate" value="{{ $innovationData->start_date }}" required>
-                                                </div>
+                                                <input type="date" class="form-control input-sm" name="startDate" value="{{ $innovationData->start_date }}" required>
                                             </div>
                                             <div class="form-group" id="targetDate">
                                                 <label for="targetDate">Target Date</label>
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="targetDate" value="{{ $innovationData->target_date }}" required>
-                                                </div>
+                                                <input type="date" class="form-control input-sm" name="targetDate" value="{{ $innovationData->target_date }}" required>
                                             </div>
                                             <div class="form-group" id="actualDate">
                                                 <label for="actualDate">Actual Date</label>
-                                                <div class="input-group date">
-                                                    <span class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </span>
-                                                    <input type="text" class="form-control input-sm" name="actualDate" value="{{ $innovationData->actual_date }}" required>
-                                                </div>
+                                                <input type="date" class="form-control input-sm" name="actualDate" value="{{ $innovationData->actual_date }}" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="file">Supporting Documents</label>
@@ -353,9 +329,15 @@
             @if($dptGroupData->name == "Process Improvement")
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-title">
+                            <p><b>III:</b> <span class="period">{{ $dptGroupData->name }}</span></p>
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">
+                                <span><i class="fa fa-plus"></i></span>&nbsp;
+                                Add Process Improvement
+                            </button>
+                        </div>
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <p><b>III:</b> <span class="period">{{ $dptGroupData->name }}</span></p>
                                 @if (Session::has('pdError'))
                                     <div class="alert alert-danger">
                                         @foreach (Session::get('pdError') as $errors)
@@ -363,7 +345,6 @@
                                         @endforeach
                                     </div>
                                 @endif
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Improvement</button>
 
                                 <table class="table table-bordered table-hover" id="processDevelopmentTable">
                                     <thead>
@@ -404,7 +385,6 @@
 
                                                         <input type="hidden" name="department_id" value="{{ $processDevelopmentData->department_id }}">
                                                         <input type="hidden" name="yearAndMonth" value="{{ $processDevelopmentData->year.'-'.$processDevelopmentData->month }}">
-                                                        {{-- <input type="hidden" name="month" value="{{ $processDevelopmentData->month }}"> --}}
 
                                                         <button type="submit" class="btn btn-sm btn-danger" {{ $processDevelopmentData->status_level != 0 ? 'disabled' : '' }}>
                                                             <i class="fa fa-trash"></i>
@@ -419,8 +399,8 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="addProcessDevelopment">
-                        <div class="modal-dialog">
+                    <div class="modal" id="addProcessDevelopment">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h1 class="modal-title">Add Process Improvement</h1>
@@ -440,12 +420,7 @@
                                                 </div>
                                                 <div class="form-group" id="accomplishedDate">
                                                     <label for="accomplishedDate">Accomplished Date</label>
-                                                    <div class="input-group date">
-                                                        <span class="input-group-addon">
-                                                            <i class="fa fa-calendar"></i>
-                                                        </span>
-                                                        <input type="text" class="form-control input-sm" name="accomplishedDate" autocomplete="off" required>
-                                                    </div>
+                                                    <input type="date" class="form-control input-sm" name="accomplishedDate" autocomplete="off" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="file">Upload an Attachments</label>
@@ -466,8 +441,8 @@
                         </div>
                     </div>
                     @foreach ($dptGroupData->processDevelopment as $pd)
-                        <div class="modal fade" id="editPdModal-{{ $pd->id }}">
-                            <div class="modal-dialog">
+                        <div class="modal" id="editPdModal-{{ $pd->id }}">
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title">Edit Process Improvement</h1>
@@ -486,12 +461,7 @@
                                                     </div>
                                                     <div class="form-group" id="accomplishedDate">
                                                         <label for="accomplishedDate">Accomplished Date</label>
-                                                        <div class="input-group date">
-                                                            <span class="input-group-addon">
-                                                                <i class="fa fa-calendar"></i>
-                                                            </span>
-                                                            <input type="text" class="form-control input-sm" name="accomplishedDate" autocomplete="off" value="{{ $pd->accomplished_date }}" required>
-                                                        </div>
+                                                        <input type="date" class="form-control input-sm" name="accomplishedDate" autocomplete="off" value="{{ $pd->accomplished_date }}" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="file">Upload an Attachments</label>
@@ -537,7 +507,7 @@
                                         </button>
                                     </td>
                                     <td>
-                                        @if(auth()->user()->account_role == 2)
+                                        @if(auth()->user()->role == "Department Head")
                                         <form action="{{ url('approveMdr') }}" method="post" onsubmit="show()">
                                             @csrf
 
@@ -563,8 +533,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="mdrStatusModal">
-            <div class="modal-dialog">
+        <div class="modal" id="mdrStatusModal">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title">MDR Status</h1>
@@ -572,26 +542,32 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>Approver</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($approver as $approverData)
-                                            @foreach ($approverData->mdrStatus as $item)
-                                                <tr>
-                                                    <td>{{ $item->users->name }}</td>
-                                                    <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                    <td>{{ !empty($item->start_date) ? date('F d, Y', strtotime($item->start_date)) : 'No Date' }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Approver</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($approver as $approverData)
+                                                    @foreach ($approverData->mdrStatus as $item)
+                                                        <tr>
+                                                            <td>{{ $item->users->name }}</td>
+                                                            <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
+                                                            <td>{{ !empty($item->start_date) ? date('F d, Y', strtotime($item->start_date)) : 'No Date' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -627,14 +603,6 @@
             }   
         });
 
-        $('#innovationTable').DataTable({
-            pageLength: 10,
-            ordering: false,
-            responsive: true,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: [],
-        });
-
         $('#processDevelopmentTable').DataTable({
             pageLength: 10,
             ordering: false,
@@ -643,42 +611,12 @@
             buttons: [],
         });
 
-        var dateToday = new Date();
-
-        $('#startDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            // startDate: dateToday,
-        });
-
-        $('#targetDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            // startDate: dateToday
-        });
-
-        $('#actualDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            // startDate: dateToday
-        });
-
-        $('#accomplishedDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            startDate: dateToday,
+        $('#innovationTable').DataTable({
+            pageLength: 10,
+            ordering: false,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [],
         });
 
         $(".uploadKpiAttachmentForm").on('submit', function(e) {

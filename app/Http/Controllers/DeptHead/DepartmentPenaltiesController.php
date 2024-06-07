@@ -35,4 +35,5 @@ class DepartmentPenaltiesController extends Controller
             )
         );
     }
+
 }

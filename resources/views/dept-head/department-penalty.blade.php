@@ -57,7 +57,7 @@
                                         <td>{{ $mdrSummaryData->rate }}</td>
                                         <td>{{ !empty($mdrSummaryData->nteAttachments->users->name) ? $mdrSummaryData->nteAttachments->users->name : '' }}</td>
                                         <td width="100">
-                                            <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
+                                            <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}" {{ $mdrSummaryData->nteAttachments->status == 1 || $mdrSummaryData->nteAttachments->status == 2 ? 'disabled' : '' }}>
                                                 <i class="fa fa-upload"></i>
                                             </button>
                                             
@@ -95,7 +95,7 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <form action="{{ url('upload_nte/'.$mdrSummaryData->id) }}" method="post" enctype="multipart/form-data">
+                                                <form action="{{ url('upload_nte/'.$mdrSummaryData->id) }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                                                     @csrf
                                                     
                                                     <input type="hidden" name="yearAndMonth" value="{{ $mdrSummaryData->year.'-'.$mdrSummaryData->month }}">

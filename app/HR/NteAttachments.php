@@ -12,7 +12,13 @@ class NteAttachments extends Model implements Auditable
 
     protected $table = 'nte_attachments';
 
+    protected $fillable = ['status'];
+
     public function users() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function acknowledge() {
+        return $this->belongsTo(User::class, 'acknowledge_by');
     }
 }

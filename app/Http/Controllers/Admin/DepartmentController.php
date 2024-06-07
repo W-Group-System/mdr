@@ -14,22 +14,17 @@ class DepartmentController extends Controller
 {
     public function index() {
         $departmentList = Department::with('approver')
-            ->select('id', 'dept_code', 'dept_name', 'dept_head_id', 'target_date')
+            ->select('id', 'dept_code', 'dept_name', 'user_id', 'target_date', 'status')
             ->get();
 
-        $departmentHead = User::select('name', 'id')
-            ->where('account_role', 2)
-            ->get();
-
-        $approverList = User::select('name', 'id')
-            ->where('account_role', 1)
-            ->get();
+        $user =  User::where('status', 1)->get();
 
         return view('admin.department',
             array(
                 'departmentList' => $departmentList,
-                'departmentHead' => $departmentHead,
-                'approverList' => $approverList
+                'user' => $user
+                // 'departmentHead' => $departmentHead,
+                // 'approverList' => $approverList
             )
         );
     }
@@ -37,10 +32,7 @@ class DepartmentController extends Controller
     public function addDepartments(Request $request) {
         
         $validator = Validator::make($request->all(), [
-            'departmentCode' => 'required|unique:departments,dept_code',
-            'departmentName' => 'required',
-            'departmentHead' => 'required',
-            'targetDate' => 'required'
+            'departmentCode' => 'unique:departments,dept_code',
         ]);
 
         if($validator->fails()) {
@@ -51,8 +43,9 @@ class DepartmentController extends Controller
             $dept = new Department;
             $dept->dept_code = $request->departmentCode;
             $dept->dept_name = $request->departmentName;
-            $dept->dept_head_id = $request->departmentHead;
+            $dept->user_id = $request->departmentHead;
             $dept->target_date = $request->targetDate;
+            $dept->status = 1;
             $dept->save();
 
             Alert::success('SUCCESS', 'Successfully Added.');
@@ -61,13 +54,8 @@ class DepartmentController extends Controller
     }
 
     public function updateDepartments(Request $request, $id) {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'departmentCode' => 'required|unique:departments,dept_code, ' . $id,
-            'departmentName' => 'required',
-            // 'departmentHead' => 'required',
-            'targetDate' => 'required',
-            'approver' => 'required'
+            'departmentCode' => 'unique:departments,dept_code, ' . $id,
         ]);
 
         if($validator->fails()) {
@@ -79,18 +67,19 @@ class DepartmentController extends Controller
             if ($dept) {
                 $dept->dept_code = $request->departmentCode;
                 $dept->dept_name = $request->departmentName;
-                $dept->dept_head_id = $request->departmentHead;
+                $dept->user_id = $request->departmentHead;
                 $dept->target_date = $request->targetDate;
                 $dept->save();
 
                 $approver = Approve::where('department_id', $id)->delete();
-                
-                foreach($request->approver as $key => $value) {
-                    $approver = new Approve;
-                    $approver->department_id = $id;
-                    $approver->user_id = $value;
-                    $approver->status_level = $key+1;
-                    $approver->save();
+                if(!empty($request->approver)) {
+                    foreach($request->approver as $key => $value) {
+                        $approver = new Approve;
+                        $approver->department_id = $id;
+                        $approver->user_id = $value;
+                        $approver->status_level = $key+1;
+                        $approver->save();
+                    }
                 }
             }
 
@@ -101,15 +90,23 @@ class DepartmentController extends Controller
         
     }
 
-    public function deleteDepartments(Request $request, $id) {
+    public function deactivate(Request $request, $id) {
         $departmentData = Department::findOrFail($id);
+        $departmentData->status = $request->status;
+        $departmentData->save();
+        
+        Alert::success('SUCCESS', 'Successfully Deactivated.');
+        return back();
+    }
 
-        if ($departmentData) {
-            $departmentData->delete();
+    public function activate(Request $request, $id) {
+        $departmentData = Department::findOrFail($id);
+        $departmentData->status = $request->status;
+        $departmentData->save();
 
-            Alert::success('SUCCESS', 'Successfully Deleted.');
-            return back();
-        }
+        Alert::success('SUCCESS', 'Successfully Activated.');
+
+        return back();
     }
 
     

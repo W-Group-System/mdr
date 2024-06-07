@@ -13,7 +13,7 @@ class BusinessPlan extends Model implements Auditable
 
     protected $fillable = array(
         'department_id',
-        'department_group_id',
+        'mdr_group_id',
         'activities',
         'isBasedOnPlanned',
         'proof_of_completion',

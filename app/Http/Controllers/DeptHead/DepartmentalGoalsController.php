@@ -17,16 +17,17 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
-        $checkIfHaveAttachments = DepartmentKPI::with([
+        $departmentKpi = DepartmentKPI::with([
                 'attachments' => function($q)use($request) {
                     $q->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)));
                 }
             ])
             ->where('department_id', auth()->user()->department_id)
+            ->whereIn('id', $request->mdr_setup_id)
             ->get();
         
-        $hasAttachments = $checkIfHaveAttachments->every(function($value, $key) {
+        $hasAttachments = $departmentKpi->every(function($value, $key) {
             return $value->attachments->isNotEmpty();
         });
 
@@ -65,7 +66,7 @@ class DepartmentalGoalsController extends Controller
                     return back();
                 }
                 else {
-                    $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
+                    $departmentalGoalsList = DepartmentalGoals::whereIn('mdr_setup_id', $request->mdr_setup_id)
                         ->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)))
                         ->get();
@@ -95,10 +96,6 @@ class DepartmentalGoalsController extends Controller
                         $this->computeKpi($grades, $date, $deadlineDate);
                     }
                     else {
-                        $departmentKpi = DepartmentKPI::with('departmentalGoals')
-                            ->whereIn('id', $request->department_kpi_id)
-                            ->get();
-    
                         $targetDate = 0;
                         foreach($departmentKpi as $dept) {
                             $targetDate = $dept->departments->target_date;
@@ -107,8 +104,8 @@ class DepartmentalGoalsController extends Controller
                         foreach($departmentKpi as $key => $data) {
                             $deptGoals = new  DepartmentalGoals;
                             $deptGoals->department_id = $data->department_id;
-                            $deptGoals->department_group_id = $data->department_group_id;
-                            $deptGoals->department_kpi_id = $data->id;
+                            $deptGoals->mdr_group_id = $data->mdr_group_id;
+                            $deptGoals->mdr_setup_id = $data->id;
                             $deptGoals->kpi_name = $data->name;
                             $deptGoals->target = $data->target;
                             $deptGoals->actual = $request->actual[$key];
@@ -183,7 +180,7 @@ class DepartmentalGoalsController extends Controller
     //                 return back();
     //             }
     //             else {
-    //                 $departmentalGoalsList = DepartmentalGoals::whereIn('department_kpi_id', $request->department_kpi_id)
+    //                 $departmentalGoalsList = DepartmentalGoals::whereIn('mdr_setup_id', $request->mdr_setup_id)
     //                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
     //                     ->where('month', date('m', strtotime($request->yearAndMonth)))
     //                     ->get();
@@ -343,7 +340,7 @@ class DepartmentalGoalsController extends Controller
 
                     $attachment = new Attachments;
                     $attachment->department_id = $departmentData->id;
-                    $attachment->department_kpi_id = $id;
+                    $attachment->mdr_setup_id = $id;
                     $attachment->file_path = 'file/' . $fileName;
                     $attachment->file_name = $fileName;
                     $attachment->year = date('Y', strtotime($request->yearAndMonth));

@@ -60,7 +60,7 @@ class ProcessDevelopmentController extends Controller
 
                     $processDevelopment = new ProcessDevelopment;
                     $processDevelopment->department_id = $departmentData->id;
-                    $processDevelopment->department_group_id = $request->dptGroup;
+                    $processDevelopment->mdr_group_id = $request->dptGroup;
                     $processDevelopment->description = $request->description;
                     $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
                     $processDevelopment->status_level = 0;

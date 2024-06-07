@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Admin\Approve;
+use App\Admin\Company;
 use App\Admin\Department;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -52,5 +53,9 @@ class User extends Authenticatable implements Auditable
 
     public function dept_name() {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function company() {
+        return $this->belongsTo(Company::class, 'company_id');
     }
 }

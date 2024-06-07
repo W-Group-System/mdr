@@ -17,10 +17,10 @@ class Department extends Model implements Auditable
 
     protected $table = 'departments';
 
-    protected $fillable = ['dept_code', 'dept_name', 'dept_head_id', 'target_date'];
+    protected $fillable = ['dept_code', 'dept_name', 'user_id', 'target_date', 'status'];
 
     public function user() {
-        return $this->belongsTo(User::class, 'dept_head_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function kpi_scores() {

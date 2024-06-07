@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\App;
 class DashboardController extends Controller
 {
     public function index(Request $request) {
-        if (auth()->user()->account_role == 0) {
+        if (auth()->user()->role == "Administrator") {
             $totalUsers = User::count();
     
             $totalDepartments = Department::count();
@@ -25,7 +25,7 @@ class DashboardController extends Controller
                     'totalDepartments' => $totalDepartments,
                 )
             );
-        } else if(auth()->user()->account_role == 1) {
+        } else if(auth()->user()->role == "Approver") {
             $departmentList = Department::with([
                 'mdrSummary' => function($q)use($request) {
                     if (!empty($request->department) && !empty($request->yearAndMonth)) {
@@ -155,7 +155,7 @@ class DashboardController extends Controller
                     'date' =>  !empty($request->startYearAndMonth) ? date('F Y', strtotime($request->startYearAndMonth)) : date('F Y')
                 )
             );
-        } else if (auth()->user()->account_role == 2 || auth()->user()->account_role == 3) {
+        } else if (auth()->user()->role == "Department Head" || auth()->user()->role == "Users") {
             $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id);
             
             if (!empty($request->year)) {
@@ -219,7 +219,7 @@ class DashboardController extends Controller
                     'years' => $request->year
                 )
             );
-        } else if(auth()->user()->account_role == 4) {
+        } else if(auth()->user()->role == "Human Resources") {
             $mdrSummary = MdrSummary::with(['departments.user'])
                 ->where('rate', '<', 2.99)
                 ->where('final_approved', 1);

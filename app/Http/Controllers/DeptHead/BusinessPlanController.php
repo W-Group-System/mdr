@@ -27,7 +27,7 @@ class BusinessPlanController extends Controller
         else {
             $businessPlan = new BusinessPlan;
             $businessPlan->department_id = auth()->user()->department_id;
-            $businessPlan->department_group_id = $departmentGroupKpi->id;
+            $businessPlan->mdr_group_id = $departmentGroupKpi->id;
             $businessPlan->activities = $request->activities;
             $businessPlan->isBasedOnPlanned = $request->baseOnPlanned;
             $businessPlan->proof_of_completion = $request->proofOfCompletion;

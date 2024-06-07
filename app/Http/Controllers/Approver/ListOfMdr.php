@@ -198,8 +198,8 @@ class ListOfMdr extends Controller
                         });
                     }
 
-                    $user = User::where('id', $departmentData->dept_head_id)->first();
-
+                    $user = User::where('id', $departmentData->user_id)->first();
+                    
                     $approver = auth()->user()->name;
 
                     $user->notify(new ReturnNotification($user->name, $request->monthOf, $approver));
@@ -497,7 +497,7 @@ class ListOfMdr extends Controller
                             }
                         }
                         
-                        $user = User::where('account_role', 4)->get();
+                        $user = User::where('role', "Human Resources")->get();
                         $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
                         $department = $mdrSummary->departments->dept_name;
                         $rate = $mdrSummary->rate;
@@ -505,6 +505,10 @@ class ListOfMdr extends Controller
                         foreach($user as $u) {
                             $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
                         }
+
+                        Alert::success('SUCCESS', 'Successfully Approved.');
+                        return back();
+                    
                     }
                     else {
                         $departmentalGoalsList->each(function($item, $key)use($approver) {
@@ -542,7 +546,7 @@ class ListOfMdr extends Controller
                             }
                         }
 
-                        $user = User::where('id', $departmentData->dept_head_id)->first();
+                        $user = User::where('id', $departmentData->user_id)->first();
                         $approver = auth()->user()->name;
                         $user->notify(new ApprovedNotification($user->name, $approver, $request->monthOf));
 
@@ -591,27 +595,42 @@ class ListOfMdr extends Controller
 
     public function addInnovationRemarks(Request $request) {
         $innovationData = Innovation::findMany($request->innovation_id);
+        
+        if ($innovationData->isNotEmpty()) {
+            foreach($innovationData as $key=>$i) {
+                $i->remarks = $request->remarks[$key];
+                $i->save();
+            }
 
-        $innovationData->each(function($item, $key)use($request) {
-            $item->update([
-                'remarks' => $request->remarks[$key]
-            ]);
-        });
+            Alert::success('SUCCESS', 'Successfully Updated.');
+        }
+        else {
+            Alert::error('ERROR', 'The innovation is empty.');
+        }
+        // $innovationData->each(function($item, $key)use($request) {
+        //     $item->update([
+        //         'remarks' => $request->remarks[$key]
+        //     ]);
+        // });
 
-        Alert::success('SUCCESS', 'Successfully Updated.');
         return back();
     }
 
     public function addPdRemarks(Request $request) {
-        $pdData = ProcessDevelopment::findMany($request->pi_id);
+        $piData = ProcessDevelopment::findMany($request->pi_id);
         
-        $pdData->each(function($item, $key)use($request) {
-            $item->update([
-                'remarks' => $request->remarks[$key]
-            ]);
-        });
+        if ($piData->isNotEmpty()) {
+            foreach($piData as $key=>$pi) {
+                $pi->remarks = $request->remarks[$key];
+                $pi->save();
+            }
 
-        Alert::success('SUCCESS', 'Successfully Updated.');
+            Alert::success('SUCCESS', 'Successfully Updated.');
+        }
+        else {
+            Alert::error('ERROR', 'The process improvement is empty.');
+        }
+
         return back();
     }
 }

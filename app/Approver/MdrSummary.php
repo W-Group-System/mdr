@@ -6,6 +6,8 @@ use App\Admin\Department;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\KpiScore;
 use App\DeptHead\MdrStatus;
+use App\HR\ForNod;
+use App\HR\NodAttachments;
 use App\HR\NteAttachments;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +16,7 @@ class MdrSummary extends Model
 {
     protected $table = 'mdr_summary';
 
-    protected $fillable = ['approved_date', 'rate', 'status_level', 'final_approved', 'submission_date'];
+    protected $fillable = ['approved_date', 'rate', 'status_level', 'final_approved', 'submission_date', 'penalty_status'];
 
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
@@ -34,5 +36,9 @@ class MdrSummary extends Model
 
     public function nteAttachments() {
         return $this->hasOne(NteAttachments::class);
+    }
+
+    public function nodAttachments() {
+        return $this->hasOne(NodAttachments::class);
     }
 }

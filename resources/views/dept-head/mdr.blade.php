@@ -26,7 +26,7 @@
         @include('dept-head.innovation', array('departmentKpi' => $departmentKpi))
     @endforeach
 
-    @if(auth()->user()->account_role == 2 || auth()->user()->account_role == 3)
+    @if(auth()->user()->role == "Department Head" || auth()->user()->account_role == "User")
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
@@ -48,7 +48,7 @@
                                         </button>
                                     </td>
                                     <td>
-                                        @if(auth()->user()->account_role == 2)
+                                        @if(auth()->user()->role == "Department Head")
                                         <form action="{{ url('approveMdr') }}" method="post" onsubmit="show()">
                                             @csrf
 
@@ -74,8 +74,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="mdrStatusModal">
-            <div class="modal-dialog">
+        <div class="modal" id="mdrStatusModal">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title">MDR Status</h1>
@@ -83,29 +83,32 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>Approver</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($approver as $approverData)
-                                            @php
-                                                $mdrStatus = $approverData->mdrStatus()->get();
-                                            @endphp
-                                            @foreach ($mdrStatus as $item)
-                                                <tr>
-                                                    <td>{{ $item->users->name }}</td>
-                                                    <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                    <td>{{ $item->start_date }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>Approver</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if(!empty($approver))
+                                                    @foreach ($approver->mdrStatus as $approverData)
+                                                        <tr>
+                                                            <td>{{ $approverData->users->name }}</td>
+                                                            <td>{{ $approverData->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
+                                                            <td>{{ !empty($approverData->start_date) ? $approverData->start_date : 'NO DATE' }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -14,17 +14,18 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentKPIController extends Controller
 {
     public function index(Request $request) {
-        $departmentList = Department::with('departmentKpi')
-            ->select('id', 'dept_name')
-            ->get();
-        
-        $departmentGroupKpiList = DepartmentGroup::get();
+        $departmentKpi = DepartmentKPI::where('department_id', $request->department)->get();
+
+        $departmentList = Department::select('id', 'dept_name')->get();
+
+        $departmentGroupKpiList = DepartmentGroup::select('id', 'name')->get();
 
         return view('admin.department-kpi',
             array(
                 'departmentList' => $departmentList,
                 'departmentGroupKpiList' => $departmentGroupKpiList,
-                'department' => $request->department
+                'department' => $request->department,
+                'departmentKpi' => $departmentKpi
             )
         );
     }
@@ -45,7 +46,7 @@ class DepartmentKPIController extends Controller
         else {
             $departmentKpi = new DepartmentKPI;
             $departmentKpi->department_id = $request->department;
-            $departmentKpi->department_group_id = $request->departmentGroupKpi;
+            $departmentKpi->mdr_group_id = $request->departmentGroupKpi;
             $departmentKpi->name = $request->kpiName;
             $departmentKpi->target = $request->target;
             $departmentKpi->save();
@@ -72,7 +73,7 @@ class DepartmentKPIController extends Controller
             $departmentKpi = DepartmentKPI::findOrFail($id);
             if ($departmentKpi) {
                 $departmentKpi->department_id = $request->department;
-                $departmentKpi->department_group_id = $request->departmentGroupKpi;
+                $departmentKpi->mdr_group_id = $request->departmentGroupKpi;
                 $departmentKpi->name = $request->kpiName;
                 $departmentKpi->target = $request->target;
                 $departmentKpi->save();
@@ -86,7 +87,7 @@ class DepartmentKPIController extends Controller
 
     public function deleteDepartmentKpi(Request $request, $id) {
         
-        $checkIfExist = DepartmentalGoals::select('department_kpi_id')->where('department_kpi_id', $id)->get();
+        $checkIfExist = DepartmentalGoals::select('mdr_group_id')->where('mdr_group_id', $id)->get();
 
         if ($checkIfExist->isNotEmpty()) {
 
@@ -98,6 +99,8 @@ class DepartmentKPIController extends Controller
             if($departmentKpi) {
                 $departmentKpi->delete();
             }
+
+            Alert::success('SUCCESS', "Successfully Deleted.");
         }
 
         return back();

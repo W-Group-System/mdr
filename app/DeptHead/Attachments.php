@@ -13,5 +13,5 @@ class Attachments extends Model implements Auditable
 
     protected $primaryKey = 'id';
 
-    // protected $fillable = ['department_id', 'department_kpi_id', 'file_path', 'file_name', 'year', 'month', 'deadline'];
+    // protected $fillable = ['department_id', 'mdr_setup_id', 'file_path', 'file_name', 'year', 'month', 'deadline'];
 }

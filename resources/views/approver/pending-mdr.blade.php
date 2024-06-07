@@ -6,6 +6,28 @@
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    Pending
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{count($mdrSummary->where('final_approved', 0))}}</h1>
+                    <small>Total Pending</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    Approved
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{count($mdrSummary->where('final_approved', 1))}}</h1>
+                    <small>Total Approved</small>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">

@@ -30,7 +30,7 @@ class OnGoingInnovationController extends Controller
         else {
             $ongoingInnovation = new OnGoingInnovation;
             $ongoingInnovation->department_id = auth()->user()->department_id;
-            $ongoingInnovation->department_group_id = $departmentKpiGroupData->id;
+            $ongoingInnovation->mdr_group_id = $departmentKpiGroupData->id;
             $ongoingInnovation->innovation_projects = $request->innovationProjects;
             $ongoingInnovation->current_status = $request->currentStatus;
             $ongoingInnovation->work_number = $request->jobWorkNumber;

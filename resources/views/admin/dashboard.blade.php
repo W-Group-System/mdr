@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-    @if (Auth::user()->account_role == 0)
+    @if (auth()->user()->role == "Administrator")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-3">
@@ -32,7 +32,7 @@
             </div>
         </div>
 
-    @elseif(Auth::user()->account_role == 1)
+    @elseif(auth()->user()->role == "Approver")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -195,19 +195,19 @@
                 </div>
             </div>
         </div>
-    @elseif(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
+    @elseif(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <form action="" method="get" enctype="multipart/form-data">
+                            <form action="" method="get">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <input type="text" name="year" id="year" class="form-control input-sm" maxlength="4" value="{{ $years }}" placeholder="Enter a year">
                                     </div>
                                     <div class="col-lg-3">
-                                        <button type="button" class="btn btn-sm btn-primary">Filter</button>
+                                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
                                     </div>
                                 </div>
                             </form>
@@ -249,7 +249,7 @@
                 </div>
             </div>
         </div>
-    @elseif (Auth::user()->account_role == 4)
+    @elseif (auth()->user()->role == "Human Resources")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -322,7 +322,7 @@
 <script src="{{ asset('js/plugins/chartJs/Chart.min.js') }}"></script>
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
-@if(Auth::user()->account_role == 1)
+@if(auth()->user()->role == "Approver")
 <script>
     $(document).ready(function() {
         $("[name='department']").chosen({width: "100%"});
@@ -392,7 +392,7 @@
     })
 </script>
 @endif
-@if(Auth::user()->account_role == 2 || Auth::user()->account_role == 3)
+@if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
 <script>
     var month = {!! json_encode(array_keys($data)) !!}
 
@@ -421,7 +421,7 @@
 </script>
 @endif
 
-@if(Auth::user()->account_role == 4)
+@if(auth()->user()->role == "Human Resources")
 <script>
 
     var department = {!! json_encode(array_keys($barData)) !!}

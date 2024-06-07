@@ -68,7 +68,7 @@ class InnovationController extends Controller
                     }
 
                     $innovation = new Innovation;
-                    $innovation->department_group_id = $request->department_group_id;
+                    $innovation->mdr_group_id = $request->mdr_group_id;
                     $innovation->department_id = $department->id;
                     $innovation->projects = $request->innovationProjects;
                     $innovation->project_summary = $request->projectSummary;
@@ -90,7 +90,7 @@ class InnovationController extends Controller
     
                         $innovationAttachments = new InnovationAttachments;
                         $innovationAttachments->department_id = $department->id;
-                        $innovationAttachments->department_group_id = $request->department_group_id;
+                        $innovationAttachments->mdr_group_id = $request->mdr_group_id;
                         $innovationAttachments->innovation_id = $innovation->id;
                         $innovationAttachments->filepath = 'file/' . $fileName;
                         $innovationAttachments->filename = $fileName;
@@ -245,7 +245,7 @@ class InnovationController extends Controller
 
                     $innovationAttachments = new InnovationAttachments;
                     $innovationAttachments->department_id = $department->id;
-                    $innovationAttachments->department_group_id = $request->department_group_id;
+                    $innovationAttachments->mdr_group_id = $request->mdr_group_id;
                     $innovationAttachments->innovation_id = $innovation->id;
                     $innovationAttachments->filepath = 'file/' .$fileName;
                     $innovationAttachments->filename = $fileName;

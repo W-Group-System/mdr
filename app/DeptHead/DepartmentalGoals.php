@@ -15,8 +15,8 @@ class DepartmentalGoals extends Model implements Auditable
 
     protected $fillable = [
         'department_id', 
-        'department_group_id', 
-        'department_kpi_id', 
+        'mdr_group_id', 
+        'mdr_setup_id', 
         'kpi_name', 
         'target', 
         'grade', 
@@ -35,6 +35,6 @@ class DepartmentalGoals extends Model implements Auditable
     }
 
     public function departmentKpi() {
-        return $this->belongsTo(DepartmentKPI::class, 'department_kpi_id');
+        return $this->belongsTo(DepartmentKPI::class, 'mdr_setup_id');
     }
 }

@@ -18,7 +18,7 @@ class PendingMdrController extends Controller
             ->orderBy('year', 'DESC')
             ->orderBy('month', 'DESC')
             ->get();
-
+        
         return view('approver.pending-mdr',
             array(
                 'mdrSummary' => $mdrSummary

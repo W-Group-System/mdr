@@ -28,26 +28,27 @@ Route::group(['middleware' => 'auth'], function() {
         
         Route::group(['middleware' => 'adminAccess'], function() {
             # Departments
-            Route::get('/departments', 'Admin\DepartmentController@index')->name('departments');
-            Route::post('/addDepartments', 'Admin\DepartmentController@addDepartments')->name('addDepartments');
-            Route::post('/updateDepartments/{id}', 'Admin\DepartmentController@updateDepartments')->name('updateDepartments');
-            Route::post('/deleteDepartments/{id}', 'Admin\DepartmentController@deleteDepartments')->name('deleteDepartments');
+            Route::get('/departments', 'Admin\DepartmentController@index')->name('settings');
+            Route::post('/addDepartments', 'Admin\DepartmentController@addDepartments');
+            Route::post('/updateDepartments/{id}', 'Admin\DepartmentController@updateDepartments');
+            Route::post('/deactivate/{id}', 'Admin\DepartmentController@deactivate');
+            Route::post('/activate/{id}', 'Admin\DepartmentController@activate');
     
             # Department KPI
-            Route::get('/department-kpi', 'Admin\DepartmentKPIController@index')->name('departmentKpi');
+            Route::get('/mdr_setup', 'Admin\DepartmentKPIController@index')->name('settings');
             Route::post('/addDepartmentKpi', 'Admin\DepartmentKPIController@addDepartmentKpi');
             Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKPIController@updateDepartmentKpi');
             Route::post('/deleteDepartmentKpi/{id}', 'Admin\DepartmentKPIController@deleteDepartmentKpi');
     
             # Department Group
-            Route::get('/department-groups', 'Admin\DepartmentGroupController@index')->name('departmentGroup');
+            Route::get('/mdr_group', 'Admin\DepartmentGroupController@index')->name('settings');
             Route::post('/addDepartmentGroups', 'Admin\DepartmentGroupController@addDepartmentGroups');
             Route::post('/updateDepartmentGroups/{id}', 'Admin\DepartmentGroupController@updateDepartmentGroups');
             Route::post('/deleteDepartmentGroups/{id}', 'Admin\DepartmentGroupController@deleteDepartmentGroups');
     
             # User Accounts
-            Route::get('/user-accounts', 'Admin\UserController@index')->name('userAccounts');
-            Route::post('/addUserAccounts', 'Admin\UserController@addUserAccounts')->name('addUserAccounts');
+            Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');
+            Route::post('/addUserAccounts', 'Admin\UserController@addUserAccounts');
             Route::post('/updateUserAccounts/{id}', 'Admin\UserController@updateUserAccounts');
             Route::post('/changePassword/{id}', 'Admin\UserController@changePassword');
             Route::post('/changeAccountStatus', 'Admin\UserController@changeAccountStatus')->name('changeAccountStatus');
@@ -84,16 +85,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         # Department Penalties
         Route::get('/department_penalties', 'DeptHead\DepartmentPenaltiesController@index')->name('departmentPenalties');
-
-        // # Business Plan
-        // Route::post('/addBusinessPlan', 'DeptHead\BusinessPlanController@add');
-        // Route::post('/updateBusinessPlan/{id}', 'DeptHead\BusinessPlanController@update');
-        // Route::post('/deleteBusinessPlan/{id}', 'DeptHead\BusinessPlanController@delete');
-
-        // # Ongoing Innovation
-        // Route::post('/addOngoingInnovation', 'DeptHead\OngoingInnovationController@add');
-        // Route::post('/updateOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@update');
-        // Route::post('/deleteOngoingInnovation/{id}', 'DeptHead\OngoingInnovationController@delete');
+        Route::get('/department_nod', 'DeptHead\DepartmentNodController@index')->name('departmentNod');
 
         # Approver
         
@@ -119,8 +111,20 @@ Route::group(['middleware' => 'auth'], function() {
         # Human Resources
 
         # Penalties
-        Route::get('/penalties', 'HR\PenaltiesController@index')->name('penalties');
+        Route::get('/notice_of_explanation', 'HR\PenaltiesController@index')->name('ntePenalties');
         Route::post('/upload_nte/{id}', 'HR\PenaltiesController@uploadNte');
         Route::post('/delete_nte/{id}', 'HR\PenaltiesController@deleteNte');
+        Route::post('/acknowledge_by', 'HR\PenaltiesController@acknowledgeBy');
+        Route::post('/nte_status', 'HR\PenaltiesController@nteStatus');
+
+        Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('noticeOfDisciplinary');
+        Route::post('/upload_nod/{id}', 'HR\ForNodController@uploadNod');
+        Route::post('/delete_nod/{id}', 'HR\ForNodController@deleteNod');
+        Route::post('/nod_acknowledge', 'HR\ForNodController@acknowledgeBy');
+        Route::post('/nod_status', 'HR\ForNodController@nodStatus');
+
+
+        Route::get('/performance_improvement_plan')->name('performanceImprovementPlan');
+
     });
 });

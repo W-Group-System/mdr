@@ -15,7 +15,7 @@ class DeactivateUsers
      */
     public function handle($request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->account_status == 0) {
+        if (auth()->check() && auth()->user()->status == 0) {
 
             auth()->logout();
             

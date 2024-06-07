@@ -6,6 +6,28 @@
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>For Approval</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{count($mdrSummary)}}</h1>
+                    <small>Total For Approval</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Approved</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{$totalApproveCount}}</h1>
+                    <small>Total Approved</small>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">

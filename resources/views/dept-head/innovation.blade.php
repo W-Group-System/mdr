@@ -89,7 +89,7 @@
                         <form action="{{ url('addInnovation') }}" method="post" enctype="multipart/form-data" autocomplete="off" onsubmit="show()">
                             @csrf
 
-                            <input type="hidden" name="department_group_id" value="{{ $departmentKpiData->id }}">
+                            <input type="hidden" name="mdr_group_id" value="{{ $departmentKpiData->id }}">
                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
                             <div class="form-group">
@@ -163,7 +163,7 @@
                         <form action="/updateInnovation/{{ $innovationData->id }}" method="post" enctype="multipart/form-data" onsubmit="show()">
                             @csrf
 
-                            <input type="hidden" name="department_group_id" value="{{ $departmentKpiData->id }}">
+                            <input type="hidden" name="mdr_group_id" value="{{ $departmentKpiData->id }}">
 
                             <div class="form-group">
                                 <label for="innovationProjects">Innovation Projects</label>

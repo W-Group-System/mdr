@@ -13,7 +13,7 @@ class OnGoingInnovation extends Model
 
     protected $fillable = [
         'department_id',
-        'department_group_id',
+        'mdr_group_id',
         'innovation_projects',
         'current_status',
         'work_number',

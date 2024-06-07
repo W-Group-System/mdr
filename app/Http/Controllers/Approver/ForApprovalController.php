@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Approver;
 
 use App\Admin\Approve;
 use App\Approver\MdrSummary;
+use App\DeptHead\MdrStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -25,6 +26,8 @@ class ForApprovalController extends Controller
             ->get();
         }
         
-        return view('approver.for-approval-mdr', array('mdrSummary' => $mdrSummary));
+        $totalApproveCount = MdrStatus::where('status', 1)->where('user_id', auth()->user()->id)->count();
+
+        return view('approver.for-approval-mdr', array('mdrSummary' => $mdrSummary, 'totalApproveCount' => $totalApproveCount));
     }
 }
