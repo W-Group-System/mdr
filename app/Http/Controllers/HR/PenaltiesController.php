@@ -12,25 +12,41 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class PenaltiesController extends Controller
 {
-    public function index(Request $request) {
-        $mdrSummary = MdrSummary::with([
-                'departments.user',
-                'nteAttachments.users',
-            ])
-            ->where('rate', '<', 2.99)
-            ->where('final_approved', 1)
-            ->whereNull('penalty_status')
-            ->get();
+    public function index() {
+        if (auth()->user()->role == "Human Resources") {
+            $mdrSummary = MdrSummary::with([
+                    'departments',
+                    'nteAttachments',
+                ])
+                ->where('rate', '<', 2.99)
+                ->where('final_approved', 1)
+                ->where('penalty_status', 'For NTE')
+                ->get();
+        }
+        if(auth()->user()->role == "Department Head") {
+            $mdrSummary = MdrSummary::with([
+                    'departments',
+                    'nteAttachments',
+                ])
+                ->where('rate', '<', 2.99)
+                ->where('final_approved', 1)
+                ->where('penalty_status', 'For NTE')
+                ->where('department_id', auth()->user()->department_id)
+                ->get();
+        }
 
         return view('hr.penalties', 
             array(
-                'yearAndMonth' => !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m'),
-                'mdrSummary' => $mdrSummary
+                'mdrSummary' => $mdrSummary,
             )
         );
     }
 
     public function uploadNte(Request $request, $id) {
+        $request->validate([
+            'files' => 'max:2048'
+        ]);
+
         if ($request->hasFile('files')) {
             $mdrSummary = MdrSummary::with('nteAttachments')->findOrFail($id);
 

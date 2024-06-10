@@ -10,19 +10,32 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ForNodController extends Controller
 {
-    public function index(Request $request) {
-        $mdrSummary = MdrSummary::with([
-            'departments.user',
-            'nodAttachments.users'
-        ])
-        ->where('rate', '<', 2.99)
-        ->where('final_approved', 1)
-        ->where('penalty_status', "For NOD")
-        ->get();
+    public function index() {
+        if(auth()->user()->role == "Human Resources") {
+            $mdrSummary = MdrSummary::with([
+                'departments.user',
+                'nodAttachments.users'
+            ])
+            ->where('rate', '<', 2.99)
+            ->where('final_approved', 1)
+            ->where('penalty_status', "For NOD")
+            ->get();
+        }
+
+        if(auth()->user()->role == "Department Head") {
+            $mdrSummary = MdrSummary::with([
+                'departments.user',
+                'nodAttachments.users'
+            ])
+            ->where('rate', '<', 2.99)
+            ->where('final_approved', 1)
+            ->where('penalty_status', "For NOD")
+            ->where('department_id', auth()->user()->department_id)
+            ->get();
+        }
 
         return view('hr.for-nod',
             array(
-                'yearAndMonth' => !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m'),
                 'mdrSummary' => $mdrSummary
             )
         );

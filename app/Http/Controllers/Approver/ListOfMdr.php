@@ -486,7 +486,8 @@ class ListOfMdr extends Controller
                         
                         $mdrSummary->update([
                             'approved_date' => date('Y-m-d'), 
-                            'final_approved' => 1
+                            'final_approved' => 1,
+                            'penalty_status' => $mdrSummary->rate < 2.99 ? 'For NTE' : null
                         ]);
 
                         foreach($status->mdrStatus as $ms) {

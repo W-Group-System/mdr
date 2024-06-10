@@ -108,20 +108,8 @@
                                 <span class="nav-label">MDR</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() == 'departmentPenalties' ? 'active' : ''}}">
-                            <a href="#">
-                                <i class="fa fa-ban"></i>
-                                <span class="nav-label">Penalties</span> 
-                                <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level">
-                                <li class=""><a href="{{ url('department_penalties') }}">Notice of Explanation</a></li>
-                                <li class=""><a href="{{ url('department_nod') }}">Notice of Disciplinary</a></li>
-                                {{-- <li class="{{ Route::currentRouteName() == "performanceImprovementPlan" ? 'active' : '' }}"><a href="{{ route('performanceImprovementPlan') }}">Performance Improvement Plan</a></li> --}}
-                            </ul>
-                        </li>
                     @endif
-                    @if(auth()->user()->role == "Human Resources")
+                    @if(auth()->user()->role == "Human Resources" || auth()->user()->role == "Department Head")
                         <li class="{{ Route::currentRouteName() == 'ntePenalties' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-ban"></i>
@@ -131,7 +119,7 @@
                             <ul class="nav nav-second-level">
                                 <li class=""><a href="{{ url('notice_of_explanation') }}">Notice of Explanation</a></li>
                                 <li class=""><a href="{{ url('notice_of_disciplinary') }}">Notice of Disciplinary</a></li>
-                                {{-- <li class=""><a href="{{ url('performanceImprovementPlan') }}">Performance Improvement Plan</a></li> --}}
+                                <li class=""><a href="{{ url('performance_improvement_plan') }}">Performance Improvement Plan</a></li>
                             </ul>
                         </li>
                     @endif

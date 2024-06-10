@@ -9,6 +9,7 @@ use App\DeptHead\MdrStatus;
 use App\HR\ForNod;
 use App\HR\NodAttachments;
 use App\HR\NteAttachments;
+use App\HR\PipAttachments;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,5 +41,9 @@ class MdrSummary extends Model
 
     public function nodAttachments() {
         return $this->hasOne(NodAttachments::class);
+    }
+
+    public function pipAttachments() {
+        return $this->hasOne(PipAttachments::class);
     }
 }

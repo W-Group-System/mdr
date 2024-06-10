@@ -67,8 +67,8 @@
                     </table>
 
                     @foreach ($mdrSummary as $data)
-                        <div class="modal fade" id="approverStatusModal-{{ $data->id }}">
-                            <div class="modal-dialog">
+                        <div class="modal" id="approverStatusModal-{{ $data->id }}">
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title">Approver Status</h1>
@@ -76,24 +76,29 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <table class="table table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Approver</th>
-                                                            <th>Status</th>
-                                                            <th>Date Approved</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($data->mdrStatus as $approverData)
-                                                            <tr>
-                                                                <td>{{ $approverData->users->name }}</td>
-                                                                <td>{{ $approverData->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                                <td>{{ !empty($approverData->start_date) ? date('F d, Y', strtotime($approverData->start_date )) : 'No Date' }}</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
+                                                <div class="panel panel-primary">
+                                                    <div class="panel-heading"></div>
+                                                    <div class="panel-body">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Approver</th>
+                                                                    <th>Status</th>
+                                                                    <th>Date Approved</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($data->mdrStatus as $approverData)
+                                                                    <tr>
+                                                                        <td>{{ $approverData->users->name }}</td>
+                                                                        <td>{{ $approverData->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
+                                                                        <td>{{ !empty($approverData->start_date) ? date('F d, Y', strtotime($approverData->start_date )) : 'No Date' }}</td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

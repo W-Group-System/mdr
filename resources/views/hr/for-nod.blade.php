@@ -6,6 +6,7 @@
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
+        @if(auth()->user()->role=="Human Resources")
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -17,6 +18,7 @@
                 </div>
             </div>
         </div>
+        @endif
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
@@ -42,6 +44,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($mdrSummary as $mdrSummaryData)
+                                    @if(auth()->user()->role=="Human Resources")
                                     <tr>
                                         <td>{{ $mdrSummaryData->departments->dept_name }}</td>
                                         <td>{{ $mdrSummaryData->departments->user->name }}</td>
@@ -52,7 +55,7 @@
                                             <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
                                                 <i class="fa fa-upload"></i>
                                             </button>
-                                            
+
                                             @if(!empty($mdrSummaryData->nodAttachments))
                                                 <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#viewModal-{{$mdrSummaryData->id}}" type="button" title="View">
                                                     <i class="fa fa-eye"></i>
@@ -60,6 +63,30 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
+
+                                    @if(auth()->user()->role == "Department Head")
+                                        @if(!empty($mdrSummaryData->nodAttachments))
+                                        <tr>
+                                            <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                            <td>{{ $mdrSummaryData->departments->user->name }}</td>
+                                            <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
+                                            <td>{{ $mdrSummaryData->rate }}</td>
+                                            <td>{{ !empty($mdrSummaryData->nodAttachments->users->name) ? $mdrSummaryData->nodAttachments->users->name : '' }}</td>
+                                            <td width="100">
+                                                <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+
+                                                @if(!empty($mdrSummaryData->nodAttachments))
+                                                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#viewModal-{{$mdrSummaryData->id}}" type="button" title="View">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endif
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -98,6 +125,7 @@
                         </div>
 
                         @if(!empty($mdrSummaryData->nodAttachments))
+                            @if(auth()->user()->role == "Human Resources")
                             <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
@@ -144,13 +172,51 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            @if($mdrSummaryData->nodAttachments->user_id != auth()->user()->id)
                                             <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                            @endif
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
+                            @if(auth()->user()->role == "Department Head")
+                            <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title">View Status</h1>
+                                        </div>
+                                        <form action="{{url('nod_status/'.$mdrSummaryData->nodAttachments->id)}}" method="post" onsubmit="show()">
+                                            @csrf
+                                            <input type="hidden" name="mdr_summary_id" value="{{$mdrSummaryData->id}}">
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        View Files :
+                                                        <span>
+                                                            <a href="{{$mdrSummaryData->nodAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nodAttachments->filename}}</a>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Acknowledge by :
+                                                        <span>{{isset($mdrSummaryData->nodAttachments->acknowledge->name)?$mdrSummaryData->nodAttachments->acknowledge->name:''}}</span>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Status :
+                                                        <span>{{$mdrSummaryData->nodAttachments->status}}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         @endif
                     @endforeach
                 </div>

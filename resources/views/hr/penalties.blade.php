@@ -6,6 +6,7 @@
 @section('content')
 <div class="wrapper wrapper-content">
     <div class="row">
+        @if(auth()->user()->role == "Human Resources")
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
@@ -17,17 +18,12 @@
                 </div>
             </div>
         </div>
+        @endif
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <div class="table-responsive">
-                        @if (Session::has('errors'))
-                            <div class="alert alert-danger">
-                                @foreach (Session::get('errors') as $errors)
-                                    {{ $errors }}<br>
-                                @endforeach
-                            </div>
-                        @endif
+                        @include('components.error')
 
                         <table class="table table-striped table-bordered table-hover" id="penaltiesTable">
                             <thead>
@@ -42,6 +38,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($mdrSummary as $mdrSummaryData)
+                                    @if(auth()->user()->role == "Human Resources")
                                     <tr>
                                         <td>{{ $mdrSummaryData->departments->dept_name }}</td>
                                         <td>{{ $mdrSummaryData->departments->user->name }}</td>
@@ -60,6 +57,29 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
+                                    @if(auth()->user()->role == "Department Head")
+                                        @if(!empty($mdrSummaryData->nteAttachments))
+                                        <tr>
+                                            <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                            <td>{{ $mdrSummaryData->departments->user->name }}</td>
+                                            <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
+                                            <td>{{ $mdrSummaryData->rate }}</td>
+                                            <td>{{ !empty($mdrSummaryData->nteAttachments->users->name) ? $mdrSummaryData->nteAttachments->users->name : '' }}</td>
+                                            <td width="100">
+                                                <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
+                                                    <i class="fa fa-upload"></i>
+                                                </button>
+
+                                                @if(!empty($mdrSummaryData->nteAttachments))
+                                                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#viewModal-{{$mdrSummaryData->id}}" type="button" title="View">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endif
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -98,6 +118,7 @@
                         </div>
 
                         @if(!empty($mdrSummaryData->nteAttachments))
+                            @if(auth()->user()->role=="Human Resources")
                             <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
@@ -144,13 +165,52 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            @if($mdrSummaryData->nteAttachments->user_id != auth()->user()->id)
                                             <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                 <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
+                                            @endif
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                            @endif
+
+                            @if(auth()->user()->role=="Department Head")
+                            <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title">View Status</h1>
+                                            </div>
+                                            <form action="{{url('nte_status/'.$mdrSummaryData->nteAttachments->id)}}" method="post" onsubmit="show()">
+                                                @csrf
+                                                <input type="hidden" name="mdr_summary_id" value="{{$mdrSummaryData->id}}">
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            View Files :
+                                                            <span>
+                                                                <a href="{{$mdrSummaryData->nteAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nteAttachments->filename}}</a>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            Acknowledge by :
+                                                            <span>{{isset($mdrSummaryData->nteAttachments->acknowledge->name)?$mdrSummaryData->nteAttachments->acknowledge->name:''}}</span>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            Status :
+                                                            <span>{{$mdrSummaryData->nteAttachments->status}}</span>
+                                                        </div>
+                                                        &nbsp;
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
+                            @endif
                         @endif
                     @endforeach
                 </div>
