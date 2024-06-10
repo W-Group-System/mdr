@@ -41,10 +41,10 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/deleteDepartmentKpi/{id}', 'Admin\MdrSetupController@deleteDepartmentKpi');
     
             # Department Group
-            Route::get('/mdr_group', 'Admin\DepartmentGroupController@index')->name('mdr');
-            Route::post('/addDepartmentGroups', 'Admin\DepartmentGroupController@addDepartmentGroups');
-            Route::post('/updateDepartmentGroups/{id}', 'Admin\DepartmentGroupController@updateDepartmentGroups');
-            Route::post('/deleteDepartmentGroups/{id}', 'Admin\DepartmentGroupController@deleteDepartmentGroups');
+            Route::get('/mdr_group', 'Admin\MdrGroupController@index')->name('mdr');
+            Route::post('/addDepartmentGroups', 'Admin\MdrGroupController@addDepartmentGroups');
+            Route::post('/updateDepartmentGroups/{id}', 'Admin\MdrGroupController@updateDepartmentGroups');
+            Route::post('/deleteDepartmentGroups/{id}', 'Admin\MdrGroupController@deleteDepartmentGroups');
     
             # User Accounts
             Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');
@@ -114,9 +114,9 @@ Route::group(['middleware' => 'auth'], function() {
         # Human Resources
 
         # Penalties
-        Route::get('/notice_of_explanation', 'HR\PenaltiesController@index')->name('ntePenalties');
-        Route::post('/upload_nte/{id}', 'HR\PenaltiesController@uploadNte');
-        Route::post('/nte_status/{id}', 'HR\PenaltiesController@nteStatus');
+        Route::get('/notice_of_explanation', 'HR\ForNteController@index')->name('ntePenalties');
+        Route::post('/upload_nte/{id}', 'HR\ForNteController@uploadNte');
+        Route::post('/nte_status/{id}', 'HR\ForNteController@nteStatus');
 
         Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('ntePenalties');
         Route::post('/upload_nod/{id}', 'HR\ForNodController@uploadNod');

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Admin\Department;
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
@@ -14,18 +14,18 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrSetupController extends Controller
 {
     public function index(Request $request) {
-        $departmentKpi = MdrSetup::where('department_id', $request->department)->get();
+        $mdrSetup = MdrSetup::where('department_id', $request->department)->get();
         
         $departmentList = Department::select('id', 'name')->get();
 
-        $departmentGroupKpiList = DepartmentGroup::select('id', 'name')->get();
+        $departmentGroupKpiList = MdrGroup::select('id', 'name')->get();
 
-        return view('admin.department-kpi',
+        return view('admin.mdr-setup',
             array(
                 'departmentList' => $departmentList,
                 'departmentGroupKpiList' => $departmentGroupKpiList,
                 'department' => $request->department,
-                'departmentKpi' => $departmentKpi
+                'mdrSetup' => $mdrSetup
             )
         );
     }
@@ -44,12 +44,12 @@ class MdrSetupController extends Controller
             return back()->with('errors', $validator->errors()->all());
         }
         else {
-            $departmentKpi = new MdrSetup;
-            $departmentKpi->department_id = $request->department;
-            $departmentKpi->mdr_group_id = $request->departmentGroupKpi;
-            $departmentKpi->name = $request->kpiName;
-            $departmentKpi->target = $request->target;
-            $departmentKpi->save();
+            $mdrSetup = new MdrSetup;
+            $mdrSetup->department_id = $request->department;
+            $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
+            $mdrSetup->name = $request->kpiName;
+            $mdrSetup->target = $request->target;
+            $mdrSetup->save();
 
             Alert::success('SUCCESS', 'Successfully Added.');
             return back();
@@ -70,13 +70,13 @@ class MdrSetupController extends Controller
             return back()->with('errors', $validator->errors()->all());
         }
         else {
-            $departmentKpi = MdrSetup::findOrFail($id);
-            if ($departmentKpi) {
-                $departmentKpi->department_id = $request->department;
-                $departmentKpi->mdr_group_id = $request->departmentGroupKpi;
-                $departmentKpi->name = $request->kpiName;
-                $departmentKpi->target = $request->target;
-                $departmentKpi->save();
+            $mdrSetup = MdrSetup::findOrFail($id);
+            if ($mdrSetup) {
+                $mdrSetup->department_id = $request->department;
+                $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
+                $mdrSetup->name = $request->kpiName;
+                $mdrSetup->target = $request->target;
+                $mdrSetup->save();
 
                 Alert::success('SUCCESS', 'Successfully Updated.');
                 return back();
@@ -95,9 +95,9 @@ class MdrSetupController extends Controller
         }
         else {
             
-            $departmentKpi = MdrSetup::findOrFail($id);
-            if($departmentKpi) {
-                $departmentKpi->delete();
+            $mdrSetup = MdrSetup::findOrFail($id);
+            if($mdrSetup) {
+                $mdrSetup->delete();
             }
 
             Alert::success('SUCCESS', "Successfully Deleted.");

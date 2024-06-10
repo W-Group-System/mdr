@@ -2,7 +2,7 @@
 
 namespace App\DeptHead;
 
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use Illuminate\Database\Eloquent\Model;
 
 class OnGoingInnovation extends Model

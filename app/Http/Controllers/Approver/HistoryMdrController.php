@@ -14,7 +14,7 @@ class HistoryMdrController extends Controller
         $departmentList = Department::get();
 
         $departmentData = Department::with([
-            'departmentKpi',
+            'mdrSetup',
             'kpi_scores' => function($q)use($request) {
                 $q->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)))

@@ -15,8 +15,8 @@ class MdrSetup extends Model implements Auditable
 
     protected $fillable = ['department_id', 'name', 'target', 'mdr_group_id', 'date'];
 
-    public function departmentGroup() {
-        return $this->belongsTo(DepartmentGroup::class, 'mdr_group_id');
+    public function mdrGroup() {
+        return $this->belongsTo(MdrGroup::class, 'mdr_group_id');
     }
 
     public function departments() {
@@ -24,10 +24,10 @@ class MdrSetup extends Model implements Auditable
     }
 
     public function departmentalGoals() {
-        return $this->hasOne(DepartmentalGoals::class, 'mdr_setup_id');
+        return $this->hasOne(DepartmentalGoals::class);
     }
 
     public function attachments() {
-        return $this->hasMany(Attachments::class, 'mdr_setup_id');
+        return $this->hasMany(Attachments::class);
     }
 }

@@ -12,10 +12,10 @@
 @section('content')
 <div class="row">
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
-    @foreach ($departmentKpi as $departmentKpiData)
-        @include('dept-head.departmental-goals', array('departmentKpi' => $departmentKpiData, 'yearAndMonth' => $yearAndMonth))
-        @include('dept-head.process-development', array('departmentKpi' => $departmentKpi))
-        @include('dept-head.innovation', array('departmentKpi' => $departmentKpi))
+    @foreach ($mdrSetup as $departmentKpiData)
+        @include('dept-head.departmental-goals', array('mdrSetup' => $departmentKpiData, 'yearAndMonth' => $yearAndMonth))
+        @include('dept-head.process-development', array('mdrSetup' => $mdrSetup))
+        @include('dept-head.innovation', array('mdrSetup' => $mdrSetup))
     @endforeach
 
     @if(auth()->user()->role == "Department Head" || auth()->user()->account_role == "User")
@@ -46,7 +46,7 @@
 
                                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
                                             
-                                            <button class="btn btn-sm btn-primary" type="submit">DepartmentApprovers</button>
+                                            <button class="btn btn-sm btn-primary" type="submit">Approve</button>
                                         </form>
                                         @else
                                         <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">

@@ -143,7 +143,7 @@
                                         <td>{{ $userData->name }}</td>
                                         <td>{{ $userData->email }}</td>
                                         <td>{{isset($userData->company->name) ? $userData->company->name : ''}}</td>
-                                        <td>{{ isset($userData->name->name) ? $userData->name->name : '' }}</td>
+                                        <td>{{ isset($userData->department->name) ? $userData->department->name : '' }}</td>
                                         <td>{{$userData->role}}</td>
                                         <td>
                                             <input type="hidden" name="id" id="id" value="{{ $userData->id }}">

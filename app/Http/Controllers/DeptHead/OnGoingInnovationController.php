@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\DeptHead;
 
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use App\DeptHead\OnGoingInnovation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class OnGoingInnovationController extends Controller
 {
     public function add(Request $request) {
-        $departmentKpiGroupData = DepartmentGroup::select('id', 'name')
+        $departmentKpiGroupData = MdrGroup::select('id', 'name')
             ->where('id', 7)
             ->first();
 

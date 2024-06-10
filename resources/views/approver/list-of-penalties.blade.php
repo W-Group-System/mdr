@@ -104,6 +104,7 @@
                                         <h1 class="modal-title">View Status</h1>
                                     </div>
                                     <div class="modal-body">
+                                        @if(!empty($mdrSummaryData->nteAttachments))
                                         <div class="row">
                                             <div class="col-md-4">
                                                 NTE Files :
@@ -120,6 +121,8 @@
                                                 <span>{{$mdrSummaryData->nteAttachments->status}}</span>
                                             </div>
                                         </div>
+                                        @endif
+                                        @if(!empty($mdrSummaryData->nodAttachments))
                                         <div class="row">
                                             <div class="col-md-4">
                                                 NOD Files :
@@ -136,6 +139,8 @@
                                                 <span>{{$mdrSummaryData->nodAttachments->status}}</span>
                                             </div>
                                         </div>
+                                        @endif
+                                        @if(!empty($mdrSummaryData->pipAttachments))
                                         <div class="row">
                                             <div class="col-md-4">
                                                 PIP Files :
@@ -148,6 +153,7 @@
                                                 <span>{{isset($mdrSummaryData->nteAttachments->acknowledge->name)?$mdrSummaryData->nteAttachments->acknowledge->name:''}}</span>
                                             </div>
                                         </div>
+                                        @endif
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -12,29 +12,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class DepartmentGroup extends Model implements Auditable
+class MdrGroup extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = 'mdr_groups';
-
-    protected $primaryKey = 'id';
-
-    protected $fillable = ['name'];
-
     public function departmentalGoals() {
-        return $this->hasMany(DepartmentalGoals::class, 'mdr_group_id');
+        return $this->hasMany(DepartmentalGoals::class);
     }
 
-    public function departmentKpi() {
-        return $this->hasMany(MdrSetup::class, 'mdr_group_id');
+    public function mdrSetup() {
+        return $this->hasMany(MdrSetup::class);
     }
 
     public function processDevelopment() {
-        return $this->hasMany(ProcessDevelopment::class, 'mdr_group_id');
+        return $this->hasMany(ProcessDevelopment::class);
     }
 
     public function innovation() {
-        return $this->hasMany(Innovation::class, 'mdr_group_id');
+        return $this->hasMany(Innovation::class);
     }
 }

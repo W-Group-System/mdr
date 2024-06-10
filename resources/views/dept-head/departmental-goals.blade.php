@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($departmentKpiData->departmentKpi as $item)
+                            @foreach ($departmentKpiData->mdrSetup as $item)
                                 <tr>
                                     <input type="hidden" name="mdr_setup_id[]" value="{{ $item->id }}">
                                     <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
@@ -95,7 +95,7 @@
     </div>
 </div>
 
-@foreach ($departmentKpiData->departmentKpi as $item)
+@foreach ($departmentKpiData->mdrSetup as $item)
     <div class="modal" id="uploadModal-{{ $item->id }}">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">

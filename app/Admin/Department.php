@@ -5,7 +5,7 @@ namespace App\Admin;
 use App\Approver\MdrSummary;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
-use App\DeptHead\KpiScore;
+use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +15,6 @@ class Department extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = 'departments';
-
     protected $fillable = ['code', 'name', 'user_id', 'target_date', 'status'];
 
     public function user() {
@@ -24,15 +22,15 @@ class Department extends Model implements Auditable
     }
 
     public function kpi_scores() {
-        return $this->hasMany(KpiScore::class);
+        return $this->hasMany(MdrScore::class);
     }
 
     public function process_development() {
         return $this->hasMany(ProcessDevelopment::class);
     }
 
-    public function departmentKpi() {
-        return $this->hasMany(departmentKpi::class);
+    public function mdrSetup() {
+        return $this->hasMany(mdrSetup::class);
     }
 
     public function departmentalGoals() {

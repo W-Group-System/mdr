@@ -59,10 +59,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($departmentKpi as $departmentKpiData)
+                                @foreach ($mdrSetup as $departmentKpiData)
                                     <tr>
                                         <td>{{ $departmentKpiData->departments->name }}</td>
-                                        <td>{{ $departmentKpiData->departmentGroup->name}}</td>
+                                        <td>{{ $departmentKpiData->mdrGroup->name}}</td>
                                         <td>{!! nl2br($departmentKpiData->name) !!}</td>
                                         <td>{!! nl2br($departmentKpiData->target) !!}</td>
                                         <td>
@@ -138,7 +138,7 @@
     </div>
 </div>
 
-@foreach ($departmentKpi as $departmentKpiData)
+@foreach ($mdrSetup as $departmentKpiData)
 <div class="modal" id="editModal-{{ $departmentKpiData->id }}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

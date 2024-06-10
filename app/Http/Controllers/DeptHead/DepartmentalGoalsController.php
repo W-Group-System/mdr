@@ -7,7 +7,7 @@ use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\Attachments;
 use App\DeptHead\DepartmentalGoals;
-use App\DeptHead\KpiScore;
+use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,7 +17,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
-        $departmentKpi = MdrSetup::with([
+        $mdrSetup = MdrSetup::with([
                 'attachments' => function($q)use($request) {
                     $q->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)));
@@ -27,7 +27,7 @@ class DepartmentalGoalsController extends Controller
             ->whereIn('id', $request->mdr_setup_id)
             ->get();
         
-        $hasAttachments = $departmentKpi->every(function($value, $key) {
+        $hasAttachments = $mdrSetup->every(function($value, $key) {
             return $value->attachments->isNotEmpty();
         });
 
@@ -97,11 +97,11 @@ class DepartmentalGoalsController extends Controller
                     }
                     else {
                         $targetDate = 0;
-                        foreach($departmentKpi as $dept) {
+                        foreach($mdrSetup as $dept) {
                             $targetDate = $dept->departments->target_date;
                         }
                         
-                        foreach($departmentKpi as $key => $data) {
+                        foreach($mdrSetup as $key => $data) {
                             $deptGoals = new  DepartmentalGoals;
                             $deptGoals->department_id = $data->department_id;
                             $deptGoals->mdr_group_id = $data->mdr_group_id;
@@ -243,7 +243,7 @@ class DepartmentalGoalsController extends Controller
         $rating = 3.00;
         $score = number_format($kpiScore->sum(), 2);
         
-        // $kpiScoreData = KpiScore::where('department_id', auth()->user()->department_id)
+        // $kpiScoreData = MdrScore::where('department_id', auth()->user()->department_id)
         //     ->where('year', date('Y', strtotime($date)))
         //     ->where('month', date('m', strtotime($date)))
         //     ->first();
@@ -275,7 +275,7 @@ class DepartmentalGoalsController extends Controller
             $kpiScoreData->save();
         }
         else {
-            $kpiScore = new KpiScore;
+            $kpiScore = new MdrScore;
             $kpiScore->department_id = auth()->user()->department_id;
             $kpiScore->grade = $value;
             $kpiScore->rating = $rating;
@@ -330,7 +330,7 @@ class DepartmentalGoalsController extends Controller
                 $departmentData = Department::select('id', 'target_date')
                     ->where('id', auth()->user()->department_id)
                     ->first();
-
+                
                 $files = $request->file('file');
 
                 $filePathArray = array();

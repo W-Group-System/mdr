@@ -119,6 +119,12 @@
                         </li>
                     @endif
                     @if(auth()->user()->role == "Human Resources" || auth()->user()->role == "Department Head")
+                        <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">
+                            <a href="{{ url('list_of_penalties') }}">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                                <span class="nav-label">List of Penalties</span>
+                            </a>
+                        </li>
                         <li class="{{ Route::currentRouteName() == 'ntePenalties' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-ban"></i>

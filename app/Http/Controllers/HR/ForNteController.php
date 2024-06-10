@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\HR;
 
+use App\Admin\Department;
+use App\Admin\DepartmentApprovers;
 use App\Approver\MdrSummary;
 use App\HR\NteAttachments;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\ApproverNotification;
 use App\Notifications\NteNotificationForDeptHead;
 use App\User;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class PenaltiesController extends Controller
+class ForNteController extends Controller
 {
     public function index() {
         if (auth()->user()->role == "Human Resources") {
@@ -35,7 +38,7 @@ class PenaltiesController extends Controller
                 ->get();
         }
 
-        return view('hr.penalties', 
+        return view('hr.for-nte', 
             array(
                 'mdrSummary' => $mdrSummary,
             )
@@ -75,12 +78,19 @@ class PenaltiesController extends Controller
                 $nteFile->save();
             }
 
-            $user = User::where('department_id', $request->departmentId)
-                ->where('role', "Department Head")
-                ->first();
+            if (auth()->user()->role == "Human Resources") {
+                $user = User::where('department_id', $request->departmentId)
+                    ->where('role', "Department Head")
+                    ->first();
+                $user->notify(new NteNotificationForDeptHead($nteFile->filepath, $user->name, $request->yearAndMonth));
+                    
+                $departmentApprovers = DepartmentApprovers::where('department_id', $request->departmentId)->where('status_level', 1)->first();
+                $approver = User::where('id', $departmentApprovers->user_id)->first();
+                $hr = User::where('id', $nteFile->user_id)->first();
+                $typeOfPenalties = "NTE File";
+                $approver->notify(new ApproverNotification($approver->name, $request->yearAndMonth, $hr->name, $departmentApprovers->department->name, $typeOfPenalties));
+            }
 
-            $user->notify(new NteNotificationForDeptHead($nteFile->filepath, $user->name, $request->yearAndMonth));
-    
             Alert::success('SUCCESS', 'Uploaded successfully.');
             return back();
         }
@@ -109,11 +119,9 @@ class PenaltiesController extends Controller
         $nteAttachments->acknowledge_by = $request->acknowledge_by;
         $nteAttachments->save();
 
-        if ($request->status == "For NOD") {
-            $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
-            $mdrSummary->penalty_status = "For NOD";
-            $mdrSummary->save();
-        }
+        $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
+        $mdrSummary->penalty_status = $request->status;
+        $mdrSummary->save();
         
         Alert::success('SUCCESS', 'Successfully Submitted.');
         return back();

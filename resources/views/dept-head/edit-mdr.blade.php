@@ -65,7 +65,7 @@
                                                             <i class="fa fa-upload"></i>
                                                         </button>
 
-                                                        @foreach ($dptGroupData->departmentKpi as $dptKpi)
+                                                        @foreach ($dptGroupData->mdrSetup as $dptKpi)
                                                             @if($dptKpi->id == $dptGoals->mdr_setup_id)
                                                                 <div class="kpi-attachment-container-{{ $dptKpi->id }}">
                                                                     @foreach ($dptKpi->attachments as $attachment)
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                @foreach ($dptGroupData->departmentKpi as $item)
+                @foreach ($dptGroupData->mdrSetup as $item)
                     <div class="modal uploadModal" id="uploadModal-{{ $item->id }}">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
@@ -513,7 +513,7 @@
 
                                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
                                             
-                                            <button class="btn btn-sm btn-primary" type="submit">DepartmentApprovers</button>
+                                            <button class="btn btn-sm btn-primary" type="submit">Approve</button>
                                         </form>
                                         @else
                                         <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">

@@ -125,7 +125,7 @@
                                                                 <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" required>{{ $item->remarks }}</textarea>
                                                             </td>
                                                             <td width="10">
-                                                                @foreach ($item->departmentKpi->attachments as $key => $attachment)
+                                                                @foreach ($item->mdrSetup->attachments as $key => $attachment)
                                                                 <div>
                                                                     <span><strong>{{ $key+1 }}</strong>.</span> 
                                                                     <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
@@ -311,7 +311,7 @@
                                                     <input type="hidden" name="monthOf" value="{{ $yearAndMonth }}">
                                                     <input type="hidden" name="department_id" value="{{ $department }}">
 
-                                                    <button type="submit" class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">DepartmentApprovers</button>
+                                                    <button type="submit" class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">Approve</button>
                                                 </form>
     
                                                 <form action="{{ url('return_mdr') }}" method="post" onsubmit="show()">

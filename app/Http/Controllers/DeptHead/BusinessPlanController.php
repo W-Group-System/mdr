@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\DeptHead;
 
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use App\DeptHead\BusinessPlan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class BusinessPlanController extends Controller
 {
     public function add(Request $request) {
-        $departmentGroupKpi = DepartmentGroup::where('id', 6)->first();
+        $departmentGroupKpi = MdrGroup::where('id', 6)->first();
         
         $validator = Validator::make($request->all(), [
             'activities' => 'required',

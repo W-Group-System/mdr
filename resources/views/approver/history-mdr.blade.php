@@ -95,7 +95,7 @@
                                                 <td>{{ $departmentalGoals->actual }}</td>
                                                 <td>{{ $departmentalGoals->remarks }}</td>
                                                 <td width="10">
-                                                    @foreach ($departmentalGoals->departmentKpi->attachments as $key=>$attachment)
+                                                    @foreach ($departmentalGoals->mdrSetup->attachments as $key=>$attachment)
                                                         <div>
                                                             <span><strong>{{ $key+1 }}</strong>. &nbsp;</span>
                                                             <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">

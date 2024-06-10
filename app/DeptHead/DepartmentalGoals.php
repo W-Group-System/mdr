@@ -34,7 +34,7 @@ class DepartmentalGoals extends Model implements Auditable
         return $this->belongsTo(Department::class, 'department_id');
     }
 
-    public function departmentKpi() {
+    public function mdrSetup() {
         return $this->belongsTo(MdrSetup::class, 'mdr_setup_id');
     }
 }

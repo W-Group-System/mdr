@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class DepartmentGroupController extends Controller
+class MdrGroupController extends Controller
 {
     public function index() {
 
-        $departmentGroupList = DepartmentGroup::all();
+        $departmentGroupList = MdrGroup::all();
 
-        return view('admin.department-group',
+        return view('admin.mdr-group',
             array(
                 'departmentGroupList' => $departmentGroupList
             )
@@ -33,9 +33,9 @@ class DepartmentGroupController extends Controller
         }
         else {
 
-            $departmentGroup = new DepartmentGroup;
-            $departmentGroup->name =  $request->departmentGroupName;
-            $departmentGroup->save();
+            $mdrGroup = new MdrGroup;
+            $mdrGroup->name =  $request->departmentGroupName;
+            $mdrGroup->save();
 
             Alert::success('SUCCESS', 'Successfully Added.');
             return back();
@@ -54,10 +54,10 @@ class DepartmentGroupController extends Controller
         }
         else {
 
-            $departmentGroup = DepartmentGroup::findOrFail($id);
-            if ($departmentGroup) {
-                $departmentGroup->name =  $request->departmentGroupName;
-                $departmentGroup->save();
+            $mdrGroup = MdrGroup::findOrFail($id);
+            if ($mdrGroup) {
+                $mdrGroup->name =  $request->departmentGroupName;
+                $mdrGroup->save();
             }
 
             Alert::success('SUCCESS', 'Successfully Updated.');
@@ -67,7 +67,7 @@ class DepartmentGroupController extends Controller
 
     public function deleteDepartmentGroups($id) {
         
-        $departmentGroupData = DepartmentGroup::findOrFail($id);
+        $departmentGroupData = MdrGroup::findOrFail($id);
 
         if ($departmentGroupData) {
             $departmentGroupData->delete();

@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Approver;
 
 use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
-use App\DeptHead\KpiScore;
+use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
 use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ListOfMdr extends Controller
 {
     public function index(Request $request) {
-        $departmentData = Department::with('kpi_scores', 'departmentKpi', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver')
+        $departmentData = Department::with('kpi_scores', 'mdrSetup', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver')
             ->where('id', $request->department_id)
             ->first();
 
@@ -241,7 +241,7 @@ class ListOfMdr extends Controller
         
             $score = number_format($kpiScore->sum(), 2);
 
-            $kpiScore = KpiScore::where('year', date('Y', strtotime($request->yearAndMonth)))
+            $kpiScore = MdrScore::where('year', date('Y', strtotime($request->yearAndMonth)))
                 ->where('month', date('m', strtotime($request->yearAndMonth)))
                 ->where('department_id', $request->department_id)
                 ->first();
@@ -566,7 +566,7 @@ class ListOfMdr extends Controller
     }
 
     public function submitScores(Request $request) {
-        $kpiScoreData = KpiScore::findOrFail($request->id);
+        $kpiScoreData = MdrScore::findOrFail($request->id);
 
         if ($kpiScoreData) {
             $kpiScoreData->pd_scores = $request->pdScores;

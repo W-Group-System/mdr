@@ -5,7 +5,7 @@ namespace App\Http\Controllers\DeptHead;
 use App\Admin\Department;
 use App\Approver\MdrSummary;
 use App\DeptHead\Innovation;
-use App\DeptHead\KpiScore;
+use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
 use App\DeptHead\ProcessDevelopmentAttachments;
 use Illuminate\Http\Request;

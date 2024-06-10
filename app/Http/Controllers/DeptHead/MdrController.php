@@ -4,14 +4,14 @@ namespace App\Http\Controllers\DeptHead;
 
 use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
-use App\Admin\DepartmentGroup;
+use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\Attachments;
 use App\DeptHead\BusinessPlan;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
-use App\DeptHead\KpiScore;
+use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
 use App\DeptHead\OnGoingInnovation;
 use App\DeptHead\ProcessDevelopment;
@@ -29,16 +29,16 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrController extends Controller
 {
     public function index(Request $request) {
-        $departmentKpi = DepartmentGroup::with([
-            'departmentKpi' => function($q) {
+        $mdrSetup = MdrGroup::with([
+            'mdrSetup' => function($q) {
                 $q->where('department_id', auth()->user()->department_id);
             },
-            'departmentKpi.departmentalGoals' => function($q)use($request) {
+            'mdrSetup.departmentalGoals' => function($q)use($request) {
                 $q->where('department_id', auth()->user()->department_id)
                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)));
             },
-            'departmentKpi.attachments' => function($q)use($request) {
+            'mdrSetup.attachments' => function($q)use($request) {
                 $q->where('department_id', auth()->user()->department_id)
                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)));
@@ -64,7 +64,7 @@ class MdrController extends Controller
         
         return view('dept-head.mdr',
             array(
-                'departmentKpi' => $departmentKpi,
+                'mdrSetup' => $mdrSetup,
                 'approver' => $approver,
                 'yearAndMonth' => $request->yearAndMonth
             )
@@ -87,7 +87,7 @@ class MdrController extends Controller
         //     $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
         // }
 
-        $kpiScore = KpiScore::where('department_id', auth()->user()->department_id)
+        $kpiScore = MdrScore::where('department_id', auth()->user()->department_id)
             ->orderBy('year', 'DESC')
             ->orderBy('month', 'DESC')
             ->get();
@@ -108,8 +108,8 @@ class MdrController extends Controller
     }
 
     public function edit(Request $request) {
-        $departmentKpiGroup = DepartmentGroup::with([
-            'departmentKpi' => function($q) {
+        $departmentKpiGroup = MdrGroup::with([
+            'mdrSetup' => function($q) {
                 $q->where('department_id', auth()->user()->department_id);
             },
             'departmentalGoals' => function($q)use($request) {
@@ -127,7 +127,7 @@ class MdrController extends Controller
                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)));
             },
-            'departmentKpi.attachments' => function($q)use($request) {
+            'mdrSetup.attachments' => function($q)use($request) {
                 $q->where('department_id', auth()->user()->department_id)
                     ->where('year', date('Y', strtotime($request->yearAndMonth)))
                     ->where('month', date('m', strtotime($request->yearAndMonth)));
@@ -219,7 +219,7 @@ class MdrController extends Controller
             $deadlineDate = $kpiScore->deadline;
             $timeliness =  $deadlineDate >= date('Y-m-d') ? 0.4 : 0.0;
             $totalRating = $kpiScore->score + $totalInnovationAndPIScores + $timeliness;
-
+            
             $kpiScore->update([
                 'status_level' => 1,
                 'total_rating' => $totalRating,

@@ -4,7 +4,7 @@ namespace App\Approver;
 
 use App\Admin\Department;
 use App\DeptHead\DepartmentalGoals;
-use App\DeptHead\KpiScore;
+use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
 use App\HR\ForNod;
 use App\HR\NodAttachments;
@@ -32,7 +32,7 @@ class MdrSummary extends Model
     }
 
     public function kpiScores() {
-        return $this->hasOne(KpiScore::class, 'mdr_summary_id');
+        return $this->hasOne(MdrScore::class, 'mdr_summary_id');
     }
 
     public function nteAttachments() {

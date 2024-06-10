@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\HR;
 
+use App\Admin\DepartmentApprovers;
 use App\Approver\MdrSummary;
 use App\HR\NodAttachments;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\ApproverNotification;
+use App\Notifications\NteNotificationForDeptHead;
+use App\User;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ForNodController extends Controller
@@ -50,24 +54,32 @@ class ForNodController extends Controller
             $files->move(public_path('nod_attachments'), $fileName);
 
             if (empty($mdrSummary->nodAttachments)) {
-                $nteFile = new NodAttachments;
-                $nteFile->department_id = $request->departmentId;
-                $nteFile->mdr_summary_id = $request->mdrSummaryId;
-                $nteFile->user_id = auth()->user()->id;
-                $nteFile->year = date('Y', strtotime($request->yearAndMonth));
-                $nteFile->month = date('m', strtotime($request->yearAndMonth));
-                $nteFile->filepath = 'nod_attachments/'.$fileName;
-                $nteFile->filename = $fileName;
-                $nteFile->save();
+                $nodFile = new NodAttachments;
+                $nodFile->department_id = $request->departmentId;
+                $nodFile->mdr_summary_id = $request->mdrSummaryId;
+                $nodFile->user_id = auth()->user()->id;
+                $nodFile->year = date('Y', strtotime($request->yearAndMonth));
+                $nodFile->month = date('m', strtotime($request->yearAndMonth));
+                $nodFile->filepath = 'nod_attachments/'.$fileName;
+                $nodFile->filename = $fileName;
+                $nodFile->save();
             }
             else {
-                $nteFile = NodAttachments::findOrFail($mdrSummary->nodAttachments->id);
-                $nteFile->user_id = auth()->user()->id;
-                $nteFile->year = date('Y', strtotime($request->yearAndMonth));
-                $nteFile->month = date('m', strtotime($request->yearAndMonth));
-                $nteFile->filepath = 'nod_attachments/'.$fileName;
-                $nteFile->filename = $fileName;
-                $nteFile->save();
+                $nodFile = NodAttachments::findOrFail($mdrSummary->nodAttachments->id);
+                $nodFile->user_id = auth()->user()->id;
+                $nodFile->year = date('Y', strtotime($request->yearAndMonth));
+                $nodFile->month = date('m', strtotime($request->yearAndMonth));
+                $nodFile->filepath = 'nod_attachments/'.$fileName;
+                $nodFile->filename = $fileName;
+                $nodFile->save();
+            }
+
+            if (auth()->user()->role == "Human Resources") {
+                $departmentApprovers = DepartmentApprovers::where('department_id', $request->departmentId)->where('status_level', 1)->first();
+                $approver = User::where('id', $departmentApprovers->user_id)->first();
+                $hr = User::where('id', $nodFile->user_id)->first();
+                $typeOfPenalties = "NOD File";
+                $approver->notify(new ApproverNotification($approver->name, $request->yearAndMonth, $hr->name, $departmentApprovers->department->name, $typeOfPenalties));
             }
 
             Alert::success('SUCCESS', 'Successfully Uploaded.');
@@ -86,11 +98,9 @@ class ForNodController extends Controller
         $nteAttachments->acknowledge_by = $request->acknowledge_by;
         $nteAttachments->save();
 
-        if ($request->status == "For PIP") {
-            $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
-            $mdrSummary->penalty_status = "For PIP";
-            $mdrSummary->save();
-        }
+        $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
+        $mdrSummary->penalty_status = $request->status;
+        $mdrSummary->save();
         
         Alert::success('SUCCESS', 'Successfully Submitted.');
         return back();

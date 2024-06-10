@@ -9,13 +9,30 @@ use App\Http\Controllers\Controller;
 class ListOfPenaltiesController extends Controller
 {
     public function index() {
-        $mdrSummary = MdrSummary::with([
-            'departments.user',
-            'nodAttachments.users'
-        ])
-        ->where('rate', '<', 2.99)
-        ->where('final_approved', 1)
-        ->get();
+        if (auth()->user()->role == "Approver" || auth()->user()->role == "Human Resources") {
+            $mdrSummary = MdrSummary::with([
+                'departments',
+                'nteAttachments',
+                'nodAttachments',
+                'pipAttachments'
+            ])
+            ->where('rate', '<', 2.99)
+            ->where('final_approved', 1)
+            ->get();
+        }
+
+        if (auth()->user()->role == "Department Head") {
+            $mdrSummary = MdrSummary::with([
+                'departments',
+                'nteAttachments',
+                'nodAttachments',
+                'pipAttachments'
+            ])
+            ->where('rate', '<', 2.99)
+            ->where('final_approved', 1)
+            ->where('department_id', auth()->user()->department_id)
+            ->get();
+        }
         
         return view('approver.list-of-penalties',
             array(

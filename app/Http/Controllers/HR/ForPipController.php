@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\HR;
 
+use App\Admin\DepartmentApprovers;
 use App\Approver\MdrSummary;
 use App\HR\PipAttachments;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\ApproverNotification;
+use App\User;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class ForPIPController extends Controller
@@ -64,6 +67,14 @@ class ForPIPController extends Controller
                 $pipFile->save();
             }
 
+            if (auth()->user()->role == "Human Resources") {
+                $departmentApprovers = DepartmentApprovers::where('department_id', $request->departmentId)->where('status_level', 1)->first();
+                $approver = User::where('id', $departmentApprovers->user_id)->first();
+                $hr = User::where('id', $pipFile->user_id)->first();
+                $typeOfPenalties = "PIP File";
+                $approver->notify(new ApproverNotification($approver->name, $request->yearAndMonth, $hr->name, $departmentApprovers->department->name, $typeOfPenalties));
+            }
+
             Alert::success('SUCCESS', 'Successfully Uploaded.');
             return back();
         }
@@ -75,15 +86,8 @@ class ForPIPController extends Controller
 
     public function pipStatus(Request $request, $id) {
         $nteAttachments = PipAttachments::findOrFail($id);
-        // $nteAttachments->status = $request->status;
         $nteAttachments->acknowledge_by = $request->acknowledge_by;
         $nteAttachments->save();
-
-        // if ($request->status == "For PIP") {
-        //     $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
-        //     $mdrSummary->penalty_status = "For PIP";
-        //     $mdrSummary->save();
-        // }
         
         Alert::success('SUCCESS', 'Successfully Submitted.');
         return back();
