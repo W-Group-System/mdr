@@ -85,7 +85,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         # Department Penalties
         Route::get('/department_penalties', 'DeptHead\DepartmentPenaltiesController@index')->name('departmentPenalties');
-        Route::get('/department_nod', 'DeptHead\DepartmentNodController@index')->name('departmentNod');
+        Route::get('/department_nod', 'DeptHead\DepartmentNodController@index')->name('departmentPenalties');
 
         # Approver
         
@@ -113,15 +113,14 @@ Route::group(['middleware' => 'auth'], function() {
         # Penalties
         Route::get('/notice_of_explanation', 'HR\PenaltiesController@index')->name('ntePenalties');
         Route::post('/upload_nte/{id}', 'HR\PenaltiesController@uploadNte');
-        Route::post('/delete_nte/{id}', 'HR\PenaltiesController@deleteNte');
-        Route::post('/acknowledge_by', 'HR\PenaltiesController@acknowledgeBy');
-        Route::post('/nte_status', 'HR\PenaltiesController@nteStatus');
+        // Route::post('/delete_nte/{id}', 'HR\PenaltiesController@deleteNte');
+        Route::post('/nte_status/{id}', 'HR\PenaltiesController@nteStatus');
 
-        Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('noticeOfDisciplinary');
+        Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('ntePenalties');
         Route::post('/upload_nod/{id}', 'HR\ForNodController@uploadNod');
-        Route::post('/delete_nod/{id}', 'HR\ForNodController@deleteNod');
-        Route::post('/nod_acknowledge', 'HR\ForNodController@acknowledgeBy');
-        Route::post('/nod_status', 'HR\ForNodController@nodStatus');
+        // Route::post('/delete_nod/{id}', 'HR\ForNodController@deleteNod');
+        // Route::post('/nod_acknowledge', 'HR\ForNodController@acknowledgeBy');
+        Route::post('/nod_status/{id}', 'HR\ForNodController@nodStatus');
 
 
         Route::get('/performance_improvement_plan')->name('performanceImprovementPlan');

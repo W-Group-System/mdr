@@ -200,7 +200,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
-                        <div class="ibox-content">
+                        <div class="ibox-title">
                             <form action="" method="get">
                                 <div class="row">
                                     <div class="col-lg-3">
@@ -226,8 +226,10 @@
             
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
-                        <div class="ibox-content">
+                        <div class="ibox-title">
                             <h3>Status in year {{ isset($years) ? $years : date('Y') }}</h3>
+                        </div>
+                        <div class="ibox-content">
                             <table class="table table-striped table-bordered table-hover" id="">
                                 <thead>
                                     <tr>

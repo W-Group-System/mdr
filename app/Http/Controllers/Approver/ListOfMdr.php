@@ -218,10 +218,13 @@ class ListOfMdr extends Controller
     }
 
     public function addGradeAndRemarks(Request $request) {
-        $departmentalGoalsList =  DepartmentalGoals::where('department_id', $request->department_id)
-            ->where('year', date('Y', strtotime($request->yearAndMonth)))
-            ->where('month', date('m', strtotime($request->yearAndMonth)))
-            ->get();
+        // dd($request->all());
+        // $departmentalGoalsList =  DepartmentalGoals::where('department_id', $request->department_id)
+        //     ->where('year', date('Y', strtotime($request->yearAndMonth)))
+        //     ->where('month', date('m', strtotime($request->yearAndMonth)))
+        //     ->get();
+
+        $departmentalGoalsList = DepartmentalGoals::findMany($request->departmentalGoalsId);
             
         if ($departmentalGoalsList->isNotEmpty()) {
             $grade = collect($request->grade);
@@ -263,13 +266,11 @@ class ListOfMdr extends Controller
                 'total_rating' => $totalRating
             ]);
 
-
-            $departmentalGoalsList->each(function($item, $key)use($request) {
-                $item->update([
-                    'remarks' => $request->remarks[$key],
-                    'grade' => $request->grade[$key]
-                ]);
-            });
+            foreach($departmentalGoalsList as $key=>$dg) {
+                $dg->remarks = $request->remarks[$key];
+                $dg->grade = $request->grade[$key];
+                $dg->save();
+            }
 
             Alert::success('SUCCESS', 'Successfully Added.');
             return back();

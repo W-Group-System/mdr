@@ -1,26 +1,15 @@
 @extends('layouts.app')
 @section('content')
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-3">
             <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Notice of Disciplinary</h5>
+                </div>
                 <div class="ibox-content">
-                    <form action="" method="get">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <label for="yearAndMonth">Year & Month</label>
-                                <div class="form-group">
-                                    <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <label for="">&nbsp;</label>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    <h1 class="no-margins">{{count($mdrSummary)}}</h1>
+                    <small>Total NOD</small>
                 </div>
             </div>
         </div>
@@ -57,26 +46,12 @@
                                         <td>{{ $mdrSummaryData->rate }}</td>
                                         <td>{{ !empty($mdrSummaryData->nodAttachments->users->name) ? $mdrSummaryData->nodAttachments->users->name : '' }}</td>
                                         <td width="100">
-                                            <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNodModal-{{ $mdrSummaryData->id }}" {{ $mdrSummaryData->nodAttachments->status == 1 || $mdrSummaryData->nodAttachments->status == 2 ? 'disabled' : '' }}>
+                                            <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNodModal-{{ $mdrSummaryData->id }}">
                                                 <i class="fa fa-upload"></i>
                                             </button>
-                                            
-                                            <form action="{{ url('delete_nod/'.$mdrSummaryData->nodAttachments->id) }}" method="post" id="deleteNteForm">
-                                                @csrf
-                                            </form>
-
-                                            <div>
-                                                <a href="{{ $mdrSummaryData->nodAttachments->filepath }}" class="btn btn-sm btn-info" type="button" target="_blank">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-
-                                                @if(Auth::user()->account_role == 4)
-                                                <button class="btn btn-sm btn-danger" type="submit" form="deleteNteForm">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                                @endif
-                                            </div>
-
+                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#viewModal-{{$mdrSummaryData->id}}">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                     @endif
@@ -86,8 +61,8 @@
                     </div>
 
                     @foreach ($mdrSummary as $mdrSummaryData)
-                        <div class="modal fade" id="uploadNodModal-{{ $mdrSummaryData->id }}">
-                            <div class="modal-dialog">
+                        <div class="modal" id="uploadNodModal-{{ $mdrSummaryData->id }}">
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title">Upload NOD Attachments</h1>
@@ -116,6 +91,40 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        @if(!empty($mdrSummaryData->nodAttachments))
+                            <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title">View Status</h1>
+                                        </div>
+                                        <form action="{{url('nte_status/'.$mdrSummaryData->nodAttachments->id)}}" method="post" onsubmit="show()">
+                                            @csrf
+
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        View Files :
+                                                        <span>
+                                                            <a href="{{$mdrSummaryData->nodAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nodAttachments->filename}}</a>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Acknowledge by :
+                                                        <span>{{isset($mdrSummaryData->nodAttachments->acknowledge->name)?$mdrSummaryData->nodAttachments->acknowledge->name:''}}</span>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Status :
+                                                        <span>{{$mdrSummaryData->nodAttachments->status}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @endforeach
                 </div>
             </div>

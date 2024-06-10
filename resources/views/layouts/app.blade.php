@@ -94,12 +94,12 @@
                                 <span class="nav-label">History of MDR</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() == "penalties" ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::currentRouteName() == "penalties" ? 'active' : '' }}">
                             <a href="{{ url('penalties') }}">
                                 <i class="fa fa-ban" aria-hidden="true"></i>
                                 <span class="nav-label">Penalties</span>
                             </a>
-                        </li>
+                        </li> --}}
                     @endif
                     @if(auth()->user()->role == "Department Head" || auth()->user()->role == "User")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
@@ -108,30 +108,30 @@
                                 <span class="nav-label">MDR</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() == 'departmentPenalties' || Route::currentRouteName() == 'departmentNod' || Route::currentRouteName() == 'performanceImprovementPlan' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
+                        <li class="{{ Route::currentRouteName() == 'departmentPenalties' ? 'active' : ''}}">
                             <a href="#">
                                 <i class="fa fa-ban"></i>
                                 <span class="nav-label">Penalties</span> 
                                 <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level">
-                                <li class="{{ Route::currentRouteName() == "departmentPenalties" ? 'active' : '' }}"><a href="{{ route('departmentPenalties') }}">Notice of Explanation</a></li>
-                                <li class="{{ Route::currentRouteName() == "departmentNod" ? 'active' : '' }}"><a href="{{ route('departmentNod') }}">Notice of Disciplinary</a></li>
+                                <li class=""><a href="{{ url('department_penalties') }}">Notice of Explanation</a></li>
+                                <li class=""><a href="{{ url('department_nod') }}">Notice of Disciplinary</a></li>
                                 {{-- <li class="{{ Route::currentRouteName() == "performanceImprovementPlan" ? 'active' : '' }}"><a href="{{ route('performanceImprovementPlan') }}">Performance Improvement Plan</a></li> --}}
                             </ul>
                         </li>
                     @endif
                     @if(auth()->user()->role == "Human Resources")
-                        <li class="{{ Route::currentRouteName() == 'ntePenalties' || Route::currentRouteName() == 'noticeOfDisciplinary' || Route::currentRouteName() == 'performanceImprovementPlan' || Route::currentRouteName() == 'departmentGroup' ? 'active' : '' }}">
+                        <li class="{{ Route::currentRouteName() == 'ntePenalties' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-ban"></i>
                                 <span class="nav-label">Penalties</span> 
                                 <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level">
-                                <li class="{{ Route::currentRouteName() == "ntePenalties" ? 'active' : '' }}"><a href="{{ route('ntePenalties') }}">Notice of Explanation</a></li>
-                                <li class="{{ Route::currentRouteName() == "noticeOfDisciplinary" ? 'active' : '' }}"><a href="{{ route('noticeOfDisciplinary') }}">Notice of Disciplinary</a></li>
-                                <li class="{{ Route::currentRouteName() == "performanceImprovementPlan" ? 'active' : '' }}"><a href="{{ route('performanceImprovementPlan') }}">Performance Improvement Plan</a></li>
+                                <li class=""><a href="{{ url('notice_of_explanation') }}">Notice of Explanation</a></li>
+                                <li class=""><a href="{{ url('notice_of_disciplinary') }}">Notice of Disciplinary</a></li>
+                                {{-- <li class=""><a href="{{ url('performanceImprovementPlan') }}">Performance Improvement Plan</a></li> --}}
                             </ul>
                         </li>
                     @endif

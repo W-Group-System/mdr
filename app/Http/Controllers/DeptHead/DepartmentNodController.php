@@ -11,22 +11,13 @@ class DepartmentNodController extends Controller
     public function index(Request $request) {
         $mdrSummary = MdrSummary::with([
             'departments.user',
-            'nteAttachments.users',
+            'nodAttachments.users',
         ])
         ->where('rate', '<', 2.99)
         ->where('department_id', auth()->user()->department_id)
-        ->where('final_approved', 1);
-
-        if (!empty($request->yearAndMonth)) {
-            $mdrSummary = $mdrSummary->where('year', date('Y', strtotime($request->yearAndMonth)))
-                                    ->where('month', date('m', strtotime($request->yearAndMonth)));
-        }
-        else {
-            $mdrSummary = $mdrSummary->where('year', date('Y'))
-                                    ->where('month', date('m'));
-        }
-
-        $mdrSummary = $mdrSummary->get();
+        ->where('final_approved', 1)
+        ->where('penalty_status', 'For NOD')
+        ->get();
         
         return view('dept-head.department-for-nod',
             array(

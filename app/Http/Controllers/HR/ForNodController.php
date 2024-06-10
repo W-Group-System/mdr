@@ -17,18 +17,8 @@ class ForNodController extends Controller
         ])
         ->where('rate', '<', 2.99)
         ->where('final_approved', 1)
-        ->where('penalty_status', 1);
-
-        if (!empty($request->yearAndMonth)) {
-            $mdrSummary = $mdrSummary->where('year', date('Y', strtotime($request->yearAndMonth)))
-                                    ->where('month', date('m', strtotime($request->yearAndMonth)));
-        }
-        else {
-            $mdrSummary = $mdrSummary->where('year', date('Y'))
-                                    ->where('month', date('m'));
-        }
-
-        $mdrSummary = $mdrSummary->get();
+        ->where('penalty_status', "For NOD")
+        ->get();
 
         return view('hr.for-nod',
             array(
@@ -38,50 +28,37 @@ class ForNodController extends Controller
         );
     }
 
-    public function uploadNod(Request $request) {
+    public function uploadNod(Request $request, $id) {
         if ($request->hasFile('files')) {
-            $nodFile = NodAttachments::where('department_id', $request->departmentId)
-                ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                ->where('month', date('m', strtotime($request->yearAndMonth)))
-                ->first();
-
-            if (!empty($nodFile->acknowledge_by)) {
-                Alert::error('ERROR', "Can't upload NOD File");
-
-                return back();
-            }
-
+            $mdrSummary = MdrSummary::with('nodAttachments')->findOrFail($id);
+            
             $files = $request->file('files');
             $fileName = time().'-'.$files->getClientOriginalName();
             $files->move(public_path('nod_attachments'), $fileName);
 
-            if (!empty($nodFile)) {
-                $nodFile->user_id = auth()->user()->id;
-                $nodFile->filepath = 'nod_attachments/'.$fileName;
-                $nodFile->save();
-
-                Alert::success('SUCCESS', 'Uploaded successfully.');
-                return back();
+            if (empty($mdrSummary->nodAttachments)) {
+                $nteFile = new NodAttachments;
+                $nteFile->department_id = $request->departmentId;
+                $nteFile->mdr_summary_id = $request->mdrSummaryId;
+                $nteFile->user_id = auth()->user()->id;
+                $nteFile->year = date('Y', strtotime($request->yearAndMonth));
+                $nteFile->month = date('m', strtotime($request->yearAndMonth));
+                $nteFile->filepath = 'nod_attachments/'.$fileName;
+                $nteFile->filename = $fileName;
+                $nteFile->save();
             }
             else {
-                $nodFile = new NodAttachments;
-                $nodFile->department_id = $request->departmentId;
-                $nodFile->mdr_summary_id = $request->mdrSummaryId;
-                $nodFile->user_id = auth()->user()->id;
-                $nodFile->year = date('Y', strtotime($request->yearAndMonth));
-                $nodFile->month = date('m', strtotime($request->yearAndMonth));
-                $nodFile->filepath = 'nod_attachments/'.$fileName;
-                $nodFile->save();
-
-                // $user = User::where('department_id', $request->departmentId)
-                //     ->where('account_role', 2)
-                //     ->first();
-
-                // $user->notify(new NteNotificationForDeptHead($nteFile->filepath, $user->name, $request->yearAndMonth));
-    
-                Alert::success('SUCCESS', 'Uploaded successfully.');
-                return back();
+                $nteFile = NodAttachments::findOrFail($mdrSummary->nodAttachments->id);
+                $nteFile->user_id = auth()->user()->id;
+                $nteFile->year = date('Y', strtotime($request->yearAndMonth));
+                $nteFile->month = date('m', strtotime($request->yearAndMonth));
+                $nteFile->filepath = 'nod_attachments/'.$fileName;
+                $nteFile->filename = $fileName;
+                $nteFile->save();
             }
+
+            Alert::success('SUCCESS', 'Successfully Uploaded.');
+            return back();
         }
         else {
             Alert::success('ERROR', 'You are not selecting a file.');
@@ -90,60 +67,19 @@ class ForNodController extends Controller
         
     }
 
-    public function deleteNod($id) {
-        $nodAttachment = NodAttachments::findOrFail($id);
+    public function nodStatus(Request $request, $id) {
+        $nteAttachments = NodAttachments::findOrFail($id);
+        $nteAttachments->status = $request->status;
+        $nteAttachments->acknowledge_by = $request->acknowledge_by;
+        $nteAttachments->save();
 
-        if ($nodAttachment) {
-            $nodAttachment->delete();
-
-            Alert::success('SUCCESS', 'Successfully Deleted.');
-            return back();
-        }
-    }
-
-    public function acknowledgeBy(Request $request) {
-        $nodAttachments = NodAttachments::findOrFail($request->nodAttachmentId);
-        $nodAttachments->acknowledge_by = $request->acknowledgeBy;
-        $nodAttachments->save();
-
-        Alert::success('SUCCESS', 'Successfully Acknowledge.');
-        return back();
-    }
-
-    public function nodStatus(Request $request) {
-        $mdrSummary = MdrSummary::with([
-                'nodAttachments'
-            ])
-            ->where('id', $request->mdr_summary_id)
-            ->first();
-        
-        $nodAttachment = $mdrSummary->nodAttachments;
-        
-        if (!empty($nodAttachment->status)) {
-            
-            Alert::error('ERROR', 'Error! The MDR Status is For NOD.');
-        }
-        else {
-            if (isset($request->waivedValue)) {
-                $nodAttachment->update([
-                    'status' => $request->waivedValue
-                ]);
-    
-                Alert::success('SUCCESS', 'Successfully Waived.');
-            }
-            else {
-                $nodAttachment->update([
-                    'status' => $request->forNodValue
-                ]);
-
-                $mdrSummary->update([
-                    'penalty_status' => $mdrSummary->penalty_status+1
-                ]);
-    
-                Alert::success('SUCCESS', 'Successfully For PIP.');
-            }
+        if ($request->status == "For PIP") {
+            $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
+            $mdrSummary->penalty_status = "For PIP";
+            $mdrSummary->save();
         }
         
+        Alert::success('SUCCESS', 'Successfully Submitted.');
         return back();
     }
 }

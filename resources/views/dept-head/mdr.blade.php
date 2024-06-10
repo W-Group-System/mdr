@@ -1,15 +1,7 @@
 @extends('layouts.app')
 @section('css')
-<link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-<link href="css/plugins/dropzone/basic.css" rel="stylesheet">
-<link href="css/plugins/dropzone/dropzone.css" rel="stylesheet">
-<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-
-<!-- Sweet Alert -->
 <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-{{-- Chosen --}}
 <link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
-
 <style>
     .period {
         margin-left: 5px;
@@ -123,15 +115,9 @@
 @endsection
 
 @push('scripts')
-<!-- Jasny -->
-<script src="{{ asset('js/plugins/jasny/jasny-bootstrap.min.js') }}"></script>
-<!-- Sweet alert -->
 <script src="{{ asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
-{{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
-
 <script src="js/plugins/dataTables/datatables.min.js"></script>
-
 <script>
 $(document).ready(function() {
     $('#processDevelopmentTable').DataTable({

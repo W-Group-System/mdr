@@ -1,27 +1,19 @@
 @extends('layouts.app')
+@section('css')
+    <link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
+@endsection
 
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-3">
             <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Notice of Disciplinary</h5>
+                </div>
                 <div class="ibox-content">
-                    <form action="" method="get">
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <label for="yearAndMonth">Year & Month</label>
-                                <div class="form-group">
-                                    <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <label for="">&nbsp;</label>
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    <h1 class="no-margins">{{count($mdrSummary)}}</h1>
+                    <small>Total NOD</small>
                 </div>
             </div>
         </div>
@@ -45,8 +37,6 @@
                                     <th>Month</th>
                                     <th>Total Rating</th>
                                     <th>Uploaded By</th>
-                                    <th>Status</th>
-                                    <th>Acknowledged By</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -58,74 +48,15 @@
                                         <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
                                         <td>{{ $mdrSummaryData->rate }}</td>
                                         <td>{{ !empty($mdrSummaryData->nodAttachments->users->name) ? $mdrSummaryData->nodAttachments->users->name : '' }}</td>
-                                        <td>
-                                            @if(!empty($mdrSummaryData->nodAttachments))
-                                                @if($mdrSummaryData->nodAttachments->status == 1)
-                                                    Waived
-                                                @elseif($mdrSummaryData->nodAttachments->status == 2)
-                                                    For NOD
-                                                @else
-                                                    {{ '' }}
-                                                @endif
-                                            @endif
-                                        </td>
-                                        <td>{{ isset( $mdrSummaryData->nodAttachments->acknowledge->name) ?  $mdrSummaryData->nodAttachments->acknowledge->name  : '' }}</td>
                                         <td width="100">
                                             <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#uploadNTEModal-{{ $mdrSummaryData->id }}">
                                                 <i class="fa fa-upload"></i>
                                             </button>
                                             
                                             @if(!empty($mdrSummaryData->nodAttachments))
-                                                @if(Auth::user()->id != $mdrSummaryData->nodAttachments->user_id)
-                                                    <form action="{{ url('nod_acknowledge') }}" method="post" id="acknowledgeForm">
-                                                        @csrf
-
-                                                        <input type="hidden" name="nodAttachmentId" value="{{ $mdrSummaryData->nodAttachments->id }}">
-                                                    </form>
-
-                                                    <div>
-                                                        <a href="{{ $mdrSummaryData->nodAttachments->filepath }}" class="btn btn-sm btn-info" type="button" target="_blank" title="View">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
-                                                        
-                                                        @if(empty($mdrSummaryData->nodAttachments->acknowledge_by))
-                                                            <button class="btn btn-sm btn-outline btn-info" title="Acknowledge" form="acknowledgeForm" name="acknowledgeBy" value="{{ auth()->user()->id }}">
-                                                                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                                                            </button>
-                                                        @endif
-                                                    </div>
-
-                                                    @if(!empty($mdrSummaryData->nodAttachments->acknowledge_by))
-                                                        <div>
-                                                            <form action="{{ url('nod_status') }}" method="POST">
-                                                                @csrf
-                                                                
-                                                                <input type="hidden" name="mdr_summary_id" value="{{ $mdrSummaryData->id }}">
-            
-                                                                <button type="submit" class="btn btn-outline btn-sm btn-success" title="Waived" name="waivedValue" value="1">
-                                                                    <i class="fa fa-hand-paper-o"></i>
-                                                                </button>
-            
-                                                                <button type="submit" class="btn btn-outline btn-sm btn-danger" title="For PIP" name="forNodValue" value="2">
-                                                                    <i class="fa fa-ban"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                    @endif
-                                                @else 
-                                                    <form action="{{ url('delete_nod/'.$mdrSummaryData->nodAttachments->id) }}" method="post" id="deleteNodForm">
-                                                        @csrf
-                                                    </form>
-                                                    <div>
-                                                        <a href="{{ $mdrSummaryData->nodAttachments->filepath }}" class="btn btn-sm btn-info" type="button" target="_blank" title="View">
-                                                            <i class="fa fa-eye"></i>
-                                                        </a>
-        
-                                                        <button class="btn btn-sm btn-danger" type="submit" form="deleteNodForm">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                @endif
+                                                <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#viewModal-{{$mdrSummaryData->id}}" type="button" title="View">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
                                             @endif
                                         </td>
                                     </tr>
@@ -135,8 +66,8 @@
                     </div>
 
                     @foreach ($mdrSummary as $mdrSummaryData)
-                        <div class="modal fade" id="uploadNTEModal-{{ $mdrSummaryData->id }}">
-                            <div class="modal-dialog">
+                        <div class="modal" id="uploadNTEModal-{{ $mdrSummaryData->id }}">
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h1 class="modal-title">Upload NOD Attachments</h1>
@@ -165,6 +96,62 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if(!empty($mdrSummaryData->nodAttachments))
+                            <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title">View Status</h1>
+                                        </div>
+                                        <form action="{{url('nod_status/'.$mdrSummaryData->nodAttachments->id)}}" method="post" onsubmit="show()">
+                                            @csrf
+                                            <input type="hidden" name="mdr_summary_id" value="{{$mdrSummaryData->id}}">
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        View Files :
+                                                        <span>
+                                                            <a href="{{$mdrSummaryData->nodAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nodAttachments->filename}}</a>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Acknowledge by :
+                                                        <span>{{isset($mdrSummaryData->nodAttachments->acknowledge->name)?$mdrSummaryData->nodAttachments->acknowledge->name:''}}</span>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        Status :
+                                                        <span>{{$mdrSummaryData->nodAttachments->status}}</span>
+                                                    </div>
+                                                    &nbsp;
+                                                    @if($mdrSummaryData->nodAttachments->user_id != auth()->user()->id)
+                                                        <hr>
+                                                        <div class="col-md-4">
+                                                            Acknowledge By :
+                                                            <select name="acknowledge_by" id="acknowledgeBy" class="form-control cat" required>
+                                                                <option value="">-Acknowledge-</option>
+                                                                <option value="{{auth()->user()->id}}"{{auth()->user()->id==$mdrSummaryData->nodAttachments->acknowledge_by ? 'selected' : ''}}>{{auth()->user()->name}}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            Status :
+                                                            <select name="status" id="status" class="form-control cat" required>
+                                                                <option value="">-Status-</option>
+                                                                <option value="Waived" {{$mdrSummaryData->nodAttachments->status == 'Waived' ? 'selected' : ''}}>Waived</option>
+                                                                <option value="For PIP" {{$mdrSummaryData->nodAttachments->status == 'For PIP' ? 'selected' : ''}}>For PIP</option>
+                                                            </select>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @endforeach
                 </div>
             </div>
@@ -175,9 +162,12 @@
 
 @push('scripts')
     <script src="js/plugins/dataTables/datatables.min.js"></script>
+    <script src="js/plugins/chosen/chosen.jquery.js"></script>
 
     <script>
         $(document).ready(function() {
+            $(".cat").chosen({width: "100%"})
+
             $('#penaltiesTable').DataTable({
                 pageLength: 10,
                 ordering: false,

@@ -108,11 +108,13 @@
                                             @if(count($departmentalGoals) > 0)
                                                 @foreach ($departmentalGoals as $item)
                                                         <tr>
+                                                            <input type="hidden" name="departmentalGoalsId[]" value="{{$item->id}}">
+                                                            
                                                             <td width="300">{!! nl2br($item->kpi_name) !!}</td>
                                                             <td width="300">{!! nl2br($item->target) !!}</td>
                                                             <td>{{ $item->actual }}</td>
                                                             <td>
-                                                                <input type="text" name="grade[]" class="form-control" value="{{ $item->grade }}" id="" placeholder="Input a grade (whole number only)" maxlength="3"{{ $item->status_level != 1 ? 'disabled' : '' }} required>
+                                                                <input type="text" name="grade[]" class="form-control" value="{{ $item->grade }}" id="" placeholder="Input a grade (whole number only)" maxlength="3"{{ $item->status_level != 1 ? 'readonly' : '' }} required>
                                                             </td>
                                                             <td>
                                                                 @csrf
