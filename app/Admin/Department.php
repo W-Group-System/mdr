@@ -17,7 +17,7 @@ class Department extends Model implements Auditable
 
     protected $table = 'departments';
 
-    protected $fillable = ['dept_code', 'dept_name', 'user_id', 'target_date', 'status'];
+    protected $fillable = ['code', 'name', 'user_id', 'target_date', 'status'];
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
@@ -44,7 +44,7 @@ class Department extends Model implements Auditable
     }
 
     public function approver() {
-        return $this->hasMany(Approve::class);
+        return $this->hasMany(DepartmentApprovers::class);
     }
 
     public function mdrSummary() {

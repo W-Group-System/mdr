@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ class DepartmentController extends Controller
 {
     public function index() {
         $departmentList = Department::with('approver')
-            ->select('id', 'dept_code', 'dept_name', 'user_id', 'target_date', 'status')
+            ->select('id', 'code', 'name', 'user_id', 'target_date', 'status')
             ->get();
 
         $user =  User::where('status', 1)->get();
@@ -31,63 +31,49 @@ class DepartmentController extends Controller
 
     public function addDepartments(Request $request) {
         
-        $validator = Validator::make($request->all(), [
-            'departmentCode' => 'unique:departments,dept_code',
+        $request->validate([
+            'departmentCode' => 'unique:departments,code',
         ]);
 
-        if($validator->fails()) {
-            
-            return back()->with('errors', $validator->errors()->all());
-        }
-        else {
-            $dept = new Department;
-            $dept->dept_code = $request->departmentCode;
-            $dept->dept_name = $request->departmentName;
-            $dept->user_id = $request->departmentHead;
-            $dept->target_date = $request->targetDate;
-            $dept->status = 1;
-            $dept->save();
+        $dept = new Department;
+        $dept->code = $request->departmentCode;
+        $dept->name = $request->departmentName;
+        $dept->user_id = $request->departmentHead;
+        $dept->target_date = $request->targetDate;
+        $dept->status = 1;
+        $dept->save();
 
-            Alert::success('SUCCESS', 'Successfully Added.');
-            return back();
-        }
+        Alert::success('SUCCESS', 'Successfully Added.');
+        return back();
     }
 
     public function updateDepartments(Request $request, $id) {
-        $validator = Validator::make($request->all(), [
-            'departmentCode' => 'unique:departments,dept_code, ' . $id,
+        $request->validate([
+            'departmentCode' => 'unique:departments,code, ' . $id,
+            'approver' => 'required',
+            'targetDate' => 'required'
         ]);
 
-        if($validator->fails()) {
-            return back()->with('errors', $validator->errors()->all());
-        }
-        else {
-            $dept = Department::findOrFail($id);
+        $dept = Department::findOrFail($id);
+        $dept->code = $request->departmentCode;
+        $dept->name = $request->departmentName;
+        $dept->user_id = $request->departmentHead;
+        $dept->target_date = $request->targetDate;
+        $dept->save();
 
-            if ($dept) {
-                $dept->dept_code = $request->departmentCode;
-                $dept->dept_name = $request->departmentName;
-                $dept->user_id = $request->departmentHead;
-                $dept->target_date = $request->targetDate;
-                $dept->save();
-
-                $approver = Approve::where('department_id', $id)->delete();
-                if(!empty($request->approver)) {
-                    foreach($request->approver as $key => $value) {
-                        $approver = new Approve;
-                        $approver->department_id = $id;
-                        $approver->user_id = $value;
-                        $approver->status_level = $key+1;
-                        $approver->save();
-                    }
-                }
+        $approver = DepartmentApprovers::where('department_id', $id)->delete();
+        if(!empty($request->approver)) {
+            foreach($request->approver as $key => $value) {
+                $approver = new DepartmentApprovers;
+                $approver->department_id = $id;
+                $approver->user_id = $value;
+                $approver->status_level = $key+1;
+                $approver->save();
             }
-
-            Alert::success('SUCCESS', 'Successfully Updated.');
-            return back();
         }
 
-        
+        Alert::success('SUCCESS', 'Successfully Updated.');
+        return back();
     }
 
     public function deactivate(Request $request, $id) {

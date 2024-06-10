@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\DeptHead;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
-use App\Admin\DepartmentKPI;
+use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\Attachments;
 use App\DeptHead\BusinessPlan;
@@ -246,7 +246,7 @@ class MdrController extends Controller
                 };
             }
 
-            Alert::error("ERROR", "Cannot Approve. Please fill-up your KPI.");
+            Alert::error("ERROR", "Cannot DepartmentApprovers. Please fill-up your KPI.");
             return back();
         }
     }

@@ -61,6 +61,17 @@
                         </a>
                     </li>
                     @if(auth()->user()->role == "Administrator")
+                        <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-file"></i>
+                                <span class="nav-label">MDR</span> 
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
+                                <li class=""><a href="{{ url('mdr_setup') }}">MDR Setup</a></li>
+                            </ul>
+                        </li>
                         <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-cog"></i>
@@ -68,8 +79,6 @@
                                 <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level">
-                                <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
-                                <li class=""><a href="{{ url('mdr_setup') }}">MDR Setup</a></li>
                                 <li class=""><a href="{{ url('departments') }}">Departments</a></li>
                                 <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
                             </ul>
@@ -94,12 +103,12 @@
                                 <span class="nav-label">History of MDR</span>
                             </a>
                         </li>
-                        {{-- <li class="{{ Route::currentRouteName() == "penalties" ? 'active' : '' }}">
-                            <a href="{{ url('penalties') }}">
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                                <span class="nav-label">Penalties</span>
+                        <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">
+                            <a href="{{ url('list_of_penalties') }}">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                                <span class="nav-label">List of Penalties</span>
                             </a>
-                        </li> --}}
+                        </li>
                     @endif
                     @if(auth()->user()->role == "Department Head" || auth()->user()->role == "User")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">

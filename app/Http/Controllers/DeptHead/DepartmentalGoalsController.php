@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\DeptHead;
 
 use App\Admin\Department;
-use App\Admin\DepartmentKPI;
+use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\Attachments;
 use App\DeptHead\DepartmentalGoals;
@@ -17,7 +17,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
-        $departmentKpi = DepartmentKPI::with([
+        $departmentKpi = MdrSetup::with([
                 'attachments' => function($q)use($request) {
                     $q->where('year', date('Y', strtotime($request->yearAndMonth)))
                         ->where('month', date('m', strtotime($request->yearAndMonth)));
@@ -132,7 +132,7 @@ class DepartmentalGoalsController extends Controller
     }
 
     // public function update(Request $request) {
-    //     $checkIfHaveAttachments = DepartmentKPI::with([
+    //     $checkIfHaveAttachments = MdrSetup::with([
     //             'attachments' => function($q)use($request) {
     //                 $q->where('year', date('Y', strtotime($request->yearAndMonth)))
     //                     ->where('month', date('m', strtotime($request->yearAndMonth)));

@@ -89,7 +89,7 @@
                                                     <select name="department" id="department" class="form-control cat">
                                                         <option value="">-Department-</option>
                                                         @foreach ($department as $deptData)
-                                                            <option value="{{ $deptData->id }}">{{ $deptData->dept_name }}</option>
+                                                            <option value="{{ $deptData->id }}">{{ $deptData->name }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -143,7 +143,7 @@
                                         <td>{{ $userData->name }}</td>
                                         <td>{{ $userData->email }}</td>
                                         <td>{{isset($userData->company->name) ? $userData->company->name : ''}}</td>
-                                        <td>{{ isset($userData->dept_name->dept_name) ? $userData->dept_name->dept_name : '' }}</td>
+                                        <td>{{ isset($userData->name->name) ? $userData->name->name : '' }}</td>
                                         <td>{{$userData->role}}</td>
                                         <td>
                                             <input type="hidden" name="id" id="id" value="{{ $userData->id }}">
@@ -204,7 +204,7 @@
                                     <select name="department" id="department" class="form-control cat">
                                         <option value="">-Department-</option>
                                         @foreach ($department as $deptData)
-                                            <option value="{{ $deptData->id }}" {{ $userData->department_id == $deptData->id ? 'selected' : '' }}>{{ $deptData->dept_name }}</option>
+                                            <option value="{{ $deptData->id }}" {{ $userData->department_id == $deptData->id ? 'selected' : '' }}>{{ $deptData->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

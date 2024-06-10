@@ -47,7 +47,7 @@
                                 @foreach ($mdrSummaryData->mdrStatus as $key => $status)
                                     @if(auth()->user()->id == $status->user_id)
                                         <tr>
-                                            <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                            <td>{{ $mdrSummaryData->departments->name }}</td>
                                             <td>{{ $mdrSummaryData->users->name }}</td>
                                             <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
                                             <td>{{ date('F d, Y', strtotime($mdrSummaryData->deadline)) }}</td>

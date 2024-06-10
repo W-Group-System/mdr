@@ -106,13 +106,7 @@
                 </div>
 
                 <div class="ibox-content">
-                    @if (Session::has('errors'))
-                        <div class="alert alert-danger">
-                            @foreach (Session::get('errors') as $errors)
-                                {{ $errors }}<br>
-                            @endforeach
-                        </div>
-                    @endif
+                    @include('components.error')
 
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="departmentTable">
@@ -130,8 +124,8 @@
                             <tbody>
                                 @foreach ($departmentList as $departmentData)
                                     <tr>
-                                        <td>{{ $departmentData->dept_code }}</td>
-                                        <td>{{ $departmentData->dept_name }}</td>
+                                        <td>{{ $departmentData->code }}</td>
+                                        <td>{{ $departmentData->name }}</td>
                                         <td>{{ isset($departmentData->user->name) ? $departmentData->user->name : '' }}</td>
                                         <td>{{ $departmentData->target_date }}</td>
                                         <td>
@@ -194,11 +188,11 @@
                                 @csrf
                                 <div class="form-group">
                                     <label>Department Code</label>
-                                    <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm" value="{{ $departmentData->dept_code }}" required>
+                                    <input type="text" name="departmentCode" placeholder="Enter department code" class="form-control input-sm" value="{{ $departmentData->code }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Department Name</label>
-                                    <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm" value="{{ $departmentData->dept_name }}" required>
+                                    <input type="text" name="departmentName" placeholder="Enter department name" class="form-control input-sm" value="{{ $departmentData->name }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Department Head</label>
@@ -229,7 +223,7 @@
 
                                     <div class="approverFormGroup">
                                         @foreach ($departmentData->approver as $approver)
-                                            <select name="approver[]" id="" class="form-control cat approver" required="">
+                                            <select name="approver[]" id="" class="form-control cat approver">
                                                 <option value=""></option>
                                                 @foreach($user->where('role', 'Approver') as $approverData)
                                                     <option value="{{ $approverData->id }}" {{ $approverData->id == $approver->user_id ? 'selected' : '' }}>{{ $approverData->name }}</option>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Approver;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use App\Approver\MdrSummary;
 use Illuminate\Http\Request;

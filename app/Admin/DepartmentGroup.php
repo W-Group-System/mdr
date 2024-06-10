@@ -27,7 +27,7 @@ class DepartmentGroup extends Model implements Auditable
     }
 
     public function departmentKpi() {
-        return $this->hasMany(DepartmentKPI::class, 'mdr_group_id');
+        return $this->hasMany(MdrSetup::class, 'mdr_group_id');
     }
 
     public function processDevelopment() {

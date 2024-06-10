@@ -29,7 +29,7 @@
                             <tbody>
                                 @foreach ($departmentList as $departmentData)
                                     <tr>
-                                        <td>{{ $departmentData->dept_name }}</td>
+                                        <td>{{ $departmentData->name }}</td>
                                         <td>{{ isset($departmentData->user->name) ? $departmentData->user->name : '' }}</td>
                                         <td>{{ $departmentData->target_date }}</td>
                                         <td>

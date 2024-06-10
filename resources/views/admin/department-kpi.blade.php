@@ -16,7 +16,7 @@
                                 <select name="department" id="departmentFilter" class="form-control">
                                     <option value="">- Departments -</option>
                                     @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -61,7 +61,7 @@
                             <tbody>
                                 @foreach ($departmentKpi as $departmentKpiData)
                                     <tr>
-                                        <td>{{ $departmentKpiData->departments->dept_name }}</td>
+                                        <td>{{ $departmentKpiData->departments->name }}</td>
                                         <td>{{ $departmentKpiData->departmentGroup->name}}</td>
                                         <td>{!! nl2br($departmentKpiData->name) !!}</td>
                                         <td>{!! nl2br($departmentKpiData->target) !!}</td>
@@ -106,7 +106,7 @@
                                 <select name="department" id="department" class="form-control">
                                     <option value="">-Departments-</option>
                                     @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}">{{ $departmentData->dept_name }}</option>
+                                        <option value="{{ $departmentData->id }}">{{ $departmentData->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -155,7 +155,7 @@
                                 <select name="department" id="department" class="form-control">
                                     <option value="">-Departments-</option>
                                     @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentKpiData->department_id ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                        <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentKpiData->department_id ? 'selected' : '' }}>{{ $departmentData->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

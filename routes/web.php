@@ -35,13 +35,13 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/activate/{id}', 'Admin\DepartmentController@activate');
     
             # Department KPI
-            Route::get('/mdr_setup', 'Admin\DepartmentKPIController@index')->name('settings');
-            Route::post('/addDepartmentKpi', 'Admin\DepartmentKPIController@addDepartmentKpi');
-            Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKPIController@updateDepartmentKpi');
-            Route::post('/deleteDepartmentKpi/{id}', 'Admin\DepartmentKPIController@deleteDepartmentKpi');
+            Route::get('/mdr_setup', 'Admin\MdrSetupController@index')->name('mdr');
+            Route::post('/addDepartmentKpi', 'Admin\MdrSetupController@addDepartmentKpi');
+            Route::post('/updateDepartmentsKpi/{id}', 'Admin\MdrSetupController@updateDepartmentKpi');
+            Route::post('/deleteDepartmentKpi/{id}', 'Admin\MdrSetupController@deleteDepartmentKpi');
     
             # Department Group
-            Route::get('/mdr_group', 'Admin\DepartmentGroupController@index')->name('settings');
+            Route::get('/mdr_group', 'Admin\DepartmentGroupController@index')->name('mdr');
             Route::post('/addDepartmentGroups', 'Admin\DepartmentGroupController@addDepartmentGroups');
             Route::post('/updateDepartmentGroups/{id}', 'Admin\DepartmentGroupController@updateDepartmentGroups');
             Route::post('/deleteDepartmentGroups/{id}', 'Admin\DepartmentGroupController@deleteDepartmentGroups');
@@ -79,7 +79,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
         Route::post('/deleteAttachments', 'DeptHead\InnovationController@deleteAttachments');
 
-        # Approve MDR
+        # DepartmentApprovers MDR
         Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
         Route::post('/submitMdr', 'DeptHead\MdrController@submitMdr');
 
@@ -108,18 +108,18 @@ Route::group(['middleware' => 'auth'], function() {
         # History of MDR
         Route::get('/history_mdr', 'Approver\HistoryMdrController@index')->name('historyMdr');
 
+        # List of Penalties
+        Route::get('/list_of_penalties', 'Approver\ListOfPenaltiesController@index')->name('listOfPenalties');
+
         # Human Resources
 
         # Penalties
         Route::get('/notice_of_explanation', 'HR\PenaltiesController@index')->name('ntePenalties');
         Route::post('/upload_nte/{id}', 'HR\PenaltiesController@uploadNte');
-        // Route::post('/delete_nte/{id}', 'HR\PenaltiesController@deleteNte');
         Route::post('/nte_status/{id}', 'HR\PenaltiesController@nteStatus');
 
         Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('ntePenalties');
         Route::post('/upload_nod/{id}', 'HR\ForNodController@uploadNod');
-        // Route::post('/delete_nod/{id}', 'HR\ForNodController@deleteNod');
-        // Route::post('/nod_acknowledge', 'HR\ForNodController@acknowledgeBy');
         Route::post('/nod_status/{id}', 'HR\ForNodController@nodStatus');
 
         Route::get('/performance_improvement_plan', 'HR\ForPipController@index')->name('ntePenalties');

@@ -43,7 +43,7 @@
                                     @endphp
                                     @foreach ($scoreList as $item)
                                         <tr>
-                                            <td>{{ $mdrScoreData->dept_name }}</td>
+                                            <td>{{ $mdrScoreData->name }}</td>
                                             <td>{{ date('F', strtotime($item->date)) }}</td>
                                             <td>{{ $item->score }}</td>
                                             <td></td>

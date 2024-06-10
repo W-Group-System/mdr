@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Approver\MdrSummary;
 use App\DeptHead\Mdr;
 use App\Notifications\PendingNotification;
@@ -45,7 +45,7 @@ class SendApprovalList extends Command
         $userList = User::where('account_role', 1)->get();
 
         foreach($userList as $userData) {
-            $approvers = Approve::where('user_id', $userData->id)->get();
+            $approvers = DepartmentApprovers::where('user_id', $userData->id)->get();
 
             foreach($approvers as $approver) {
                 $mdrSummaries = MdrSummary::where('final_approved', 0)->where('status_level', $approver->status_level)->get();
@@ -54,7 +54,7 @@ class SendApprovalList extends Command
     
                 if ($mdrSummaries->isNotEmpty()) {
                     foreach($mdrSummaries as $mdrSummary) {
-                        $table .= "<tr><td>".date('Y-m-d', strtotime($mdrSummary->submission_date))."</td><td>".$mdrSummary->departments->dept_name."</td><td>".$mdrSummary->rate."</td></tr>";
+                        $table .= "<tr><td>".date('Y-m-d', strtotime($mdrSummary->submission_date))."</td><td>".$mdrSummary->departments->name."</td><td>".$mdrSummary->rate."</td></tr>";
                     }
                 }
                 else {

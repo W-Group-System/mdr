@@ -9,17 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class DepartmentKPI extends Model implements Auditable
+class MdrSetup extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $table = "mdr_setups";
-
     protected $fillable = ['department_id', 'name', 'target', 'mdr_group_id', 'date'];
-
-    // public function department() {
-    //     return $this->hasOne(Department::class);
-    // }
 
     public function departmentGroup() {
         return $this->belongsTo(DepartmentGroup::class, 'mdr_group_id');

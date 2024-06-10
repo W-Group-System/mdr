@@ -16,7 +16,7 @@ class UserController extends Controller
 
         $userList = User::get();
         $company = Company::get();
-        $departmentList = Department::select('id', 'dept_code', 'dept_name')->get();
+        $departmentList = Department::select('id', 'code', 'name')->get();
 
         return view('admin.users', 
             array(

@@ -46,7 +46,7 @@
                         <tbody>
                             @foreach ($mdrSummary as $data)
                                 <tr>
-                                    <td>{{ $data->departments->dept_name }}</td>
+                                    <td>{{ $data->departments->name }}</td>
                                     <td>{{ $data->users->name }}</td>
                                     <td>{{ date('F Y', strtotime($data->year.'-'.$data->month)) }}</td>
                                     <td>{{ date('F d, Y', strtotime($data->submission_date)) }}</td>

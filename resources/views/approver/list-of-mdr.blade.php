@@ -6,7 +6,7 @@
 @section('content')
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
-        <h1 class="text-center">{{ $data->dept_name }}</h1>
+        <h1 class="text-center">{{ $data->name }}</h1>
         @foreach ($data->approver as $approver)
             @if (auth()->user()->id == $approver->user_id)
                 <div class="col-lg-12">
@@ -311,7 +311,7 @@
                                                     <input type="hidden" name="monthOf" value="{{ $yearAndMonth }}">
                                                     <input type="hidden" name="department_id" value="{{ $department }}">
 
-                                                    <button type="submit" class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">Approve</button>
+                                                    <button type="submit" class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#approveModal">DepartmentApprovers</button>
                                                 </form>
     
                                                 <form action="{{ url('return_mdr') }}" method="post" onsubmit="show()">

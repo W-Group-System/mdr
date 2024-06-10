@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Approver;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Approver\MdrSummary;
 use App\DeptHead\MdrStatus;
 use App\Http\Controllers\Controller;
@@ -12,7 +12,7 @@ class ForApprovalController extends Controller
 {
     public function index() {
 
-        $approverList = Approve::where('user_id', auth()->user()->id)->get();
+        $approverList = DepartmentApprovers::where('user_id', auth()->user()->id)->get();
 
         foreach($approverList as $approve) {
 

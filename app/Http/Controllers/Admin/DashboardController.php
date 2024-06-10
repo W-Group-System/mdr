@@ -69,7 +69,7 @@ class DashboardController extends Controller
                         'action' => 'Not Yet Submitted',
                         'status' => 'No Status Yet',
                         'deadline' => "0000-00-00",
-                        'department' => $data->dept_code.' - '.$data->dept_name,
+                        'department' => $data->code.' - '.$data->name,
                         'rate' => number_format(0.00, 2),
                         'kpi' => number_format(0.00, 2),
                         'innovation_scores' => number_format(0.0, 1),
@@ -78,14 +78,14 @@ class DashboardController extends Controller
                     ];
                 }
                 
-                $dashboardDataArray[$data->dept_code] = 0.00;
+                $dashboardDataArray[$data->code] = 0.00;
 
                 foreach($data->mdrSummary as $mdrSummaryData) {
                     $mdrStatusArray[$mdrSummaryData->department_id] = [
                         'action' => 'Submitted',
                         'status' => $mdrSummaryData->status,
                         'deadline' => $mdrSummaryData->deadline,
-                        'department' => $mdrSummaryData->departments->dept_code .' - '. $mdrSummaryData->departments->dept_name,
+                        'department' => $mdrSummaryData->departments->code .' - '. $mdrSummaryData->departments->name,
                         'rate' => $mdrSummaryData->rate,
                         'kpi' => $mdrSummaryData->kpiScores->score,
                         'innovation_scores' => $mdrSummaryData->kpiScores->innovation_scores,
@@ -93,7 +93,7 @@ class DashboardController extends Controller
                         'timeliness' => $mdrSummaryData->kpiScores->timeliness
                     ];
 
-                    $dashboardDataArray[$mdrSummaryData->departments->dept_code] = $mdrSummaryData->rate;
+                    $dashboardDataArray[$mdrSummaryData->departments->code] = $mdrSummaryData->rate;
                 }
             }
 
@@ -237,7 +237,7 @@ class DashboardController extends Controller
             
             $barDataArray = array();
             foreach($mdrSummary as $data) {
-                $barDataArray[$data->departments->dept_code] = $data->rate;
+                $barDataArray[$data->departments->code] = $data->rate;
             }
 
             return view('admin.dashboard',
@@ -277,7 +277,7 @@ class DashboardController extends Controller
                     'action' => 'Not Yet Submitted',
                     'status' => 'No Status Yet',
                     'deadline' => "0000-00-00",
-                    'department' => $data->dept_code.' - '.$data->dept_name,
+                    'department' => $data->code.' - '.$data->name,
                     'rate' => number_format(0.00, 2),
                     'kpi' => number_format(0.00, 2),
                     'innovation_scores' => number_format(0.0, 1),
@@ -291,7 +291,7 @@ class DashboardController extends Controller
                     'action' => 'Submitted',
                     'status' => $mdrSummaryData->status,
                     'deadline' => $mdrSummaryData->deadline,
-                    'department' => $mdrSummaryData->departments->dept_code .' - '. $mdrSummaryData->departments->dept_name,
+                    'department' => $mdrSummaryData->departments->code .' - '. $mdrSummaryData->departments->name,
                     'rate' => $mdrSummaryData->rate,
                     'kpi' => $mdrSummaryData->kpiScores->score,
                     'innovation_scores' => $mdrSummaryData->kpiScores->innovation_scores,

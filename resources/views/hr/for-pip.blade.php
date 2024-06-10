@@ -46,7 +46,7 @@
                                 @foreach ($mdrSummary as $mdrSummaryData)
                                 @if(auth()->user()->role == "Human Resources")
                                 <tr>
-                                    <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                    <td>{{ $mdrSummaryData->departments->name }}</td>
                                     <td>{{ $mdrSummaryData->departments->user->name }}</td>
                                     <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
                                     <td>{{ $mdrSummaryData->rate }}</td>
@@ -66,7 +66,7 @@
                                 @elseif(auth()->user()->role == "Department Head")
                                     @if(!empty($mdrSummaryData->pipAttachments))
                                     <tr>
-                                        <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                        <td>{{ $mdrSummaryData->departments->name }}</td>
                                         <td>{{ $mdrSummaryData->departments->user->name }}</td>
                                         <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
                                         <td>{{ $mdrSummaryData->rate }}</td>

@@ -46,7 +46,7 @@
 
                                             <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
                                             
-                                            <button class="btn btn-sm btn-primary" type="submit">Approve</button>
+                                            <button class="btn btn-sm btn-primary" type="submit">DepartmentApprovers</button>
                                         </form>
                                         @else
                                         <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">

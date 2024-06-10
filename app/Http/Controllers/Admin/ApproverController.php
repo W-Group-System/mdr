@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -38,10 +38,10 @@ class ApproverController extends Controller
 
             if ($userData) {
 
-                $approverData = Approve::where('approver_id', $userData->id)->first();
+                $approverData = DepartmentApprovers::where('approver_id', $userData->id)->first();
                 
                 if (empty($approverData)) {
-                    $approverData = new Approve;
+                    $approverData = new DepartmentApprovers;
                     $approverData->approver_id = $userData->id;
                     $approverData->no_approver = $request->noApprover;
                     $approverData->save();

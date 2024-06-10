@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Admin\Company;
 use App\Admin\Department;
 use Illuminate\Notifications\Notifiable;
@@ -48,10 +48,10 @@ class User extends Authenticatable implements Auditable
     // }
 
     public function approver() {
-        return $this->hasOne(Approve::class, 'approver_id');
+        return $this->hasOne(DepartmentApprovers::class, 'approver_id');
     }
 
-    public function dept_name() {
+    public function name() {
         return $this->belongsTo(Department::class, 'department_id');
     }
 

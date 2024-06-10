@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Approver;
 
-use App\Admin\Approve;
+use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
-use App\Admin\DepartmentKPI;
+use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
@@ -380,7 +380,7 @@ class ListOfMdr extends Controller
                         
                 //         $user = User::where('account_role', 4)->get();
                 //         $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
-                //         $department = $mdrSummary->departments->dept_name;
+                //         $department = $mdrSummary->departments->name;
                 //         $rate = $mdrSummary->rate;
 
                 //         foreach($user as $u) {
@@ -426,13 +426,13 @@ class ListOfMdr extends Controller
                 //         ]);
                 //     }
 
-                //     $approverData = Approve::select('user_id')
+                //     $approverData = DepartmentApprovers::select('user_id')
                 //         ->where('status_level', $approver->status_level+1)
                 //         ->first();
 
                 //     if (!empty($approverData)) {
                 //         $userData = User::where('id', $approverData->user_id)->first();
-                //         $deptName = $mdrSummary->departments->dept_name;
+                //         $deptName = $mdrSummary->departments->name;
                 //         $deptYearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
 
                 //         $userData->notify(new EmailNotificationForApprovers($userData->name, $deptName, $deptYearAndMonth));
@@ -501,7 +501,7 @@ class ListOfMdr extends Controller
                         
                         $user = User::where('role', "Human Resources")->get();
                         $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
-                        $department = $mdrSummary->departments->dept_name;
+                        $department = $mdrSummary->departments->name;
                         $rate = $mdrSummary->rate;
 
                         foreach($user as $u) {

@@ -15,7 +15,7 @@
                                 <select name="department" id="department" class="form-control">
                                     <option value="">- Department -</option>
                                     @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

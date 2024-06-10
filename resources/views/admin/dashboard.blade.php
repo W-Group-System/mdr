@@ -46,7 +46,7 @@
                                             <select name="department" id="department" class="form-control">
                                                 <option value="">-Department-</option>
                                                 @foreach ($listOfDepartment as $departmentData)
-                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $department ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $department ? 'selected' : '' }}>{{ $departmentData->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -136,7 +136,7 @@
                                             <select name="departmentValue" id="department" class="form-control">
                                                 <option value="">-Department-</option>
                                                 @foreach ($listOfDepartment as $departmentData)
-                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->dept_name }}</option>
+                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -298,7 +298,7 @@
                                     <tbody>
                                         @foreach ($mdrSummary as $mdrSummaryData)
                                             <tr>
-                                                <td>{{ $mdrSummaryData->departments->dept_name }}</td>
+                                                <td>{{ $mdrSummaryData->departments->name }}</td>
                                                 <td>{{ $mdrSummaryData->departments->user->name }}</td>
                                                 <td>{{ $mdrSummaryData->rate }}</td>
                                             </tr>

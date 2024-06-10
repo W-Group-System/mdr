@@ -3,7 +3,7 @@
 namespace App\DeptHead;
 
 use App\Admin\Department;
-use App\Admin\DepartmentKPI;
+use App\Admin\MdrSetup;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -35,6 +35,6 @@ class DepartmentalGoals extends Model implements Auditable
     }
 
     public function departmentKpi() {
-        return $this->belongsTo(DepartmentKPI::class, 'mdr_setup_id');
+        return $this->belongsTo(MdrSetup::class, 'mdr_setup_id');
     }
 }

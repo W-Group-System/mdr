@@ -72,7 +72,7 @@
                             <tbody>
                                 @foreach ($kpiScore as $data)
                                     <tr>
-                                        <td>{{ $data->departments->dept_name }} </td>
+                                        <td>{{ $data->departments->name }} </td>
                                         <td>{{ date("F Y", strtotime($data->year . '-' . $data->month))}}</td>
                                         <td>{{ $data->score }}</td>
                                         <td>{{ !empty($data->pd_scores) ? number_format($data->pd_scores, 1) : '0.0' }}</td>

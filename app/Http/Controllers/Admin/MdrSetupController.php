@@ -4,19 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Admin\Department;
 use App\Admin\DepartmentGroup;
-use App\Admin\DepartmentKPI;
+use App\Admin\MdrSetup;
 use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class DepartmentKPIController extends Controller
+class MdrSetupController extends Controller
 {
     public function index(Request $request) {
-        $departmentKpi = DepartmentKPI::where('department_id', $request->department)->get();
-
-        $departmentList = Department::select('id', 'dept_name')->get();
+        $departmentKpi = MdrSetup::where('department_id', $request->department)->get();
+        
+        $departmentList = Department::select('id', 'name')->get();
 
         $departmentGroupKpiList = DepartmentGroup::select('id', 'name')->get();
 
@@ -44,7 +44,7 @@ class DepartmentKPIController extends Controller
             return back()->with('errors', $validator->errors()->all());
         }
         else {
-            $departmentKpi = new DepartmentKPI;
+            $departmentKpi = new MdrSetup;
             $departmentKpi->department_id = $request->department;
             $departmentKpi->mdr_group_id = $request->departmentGroupKpi;
             $departmentKpi->name = $request->kpiName;
@@ -70,7 +70,7 @@ class DepartmentKPIController extends Controller
             return back()->with('errors', $validator->errors()->all());
         }
         else {
-            $departmentKpi = DepartmentKPI::findOrFail($id);
+            $departmentKpi = MdrSetup::findOrFail($id);
             if ($departmentKpi) {
                 $departmentKpi->department_id = $request->department;
                 $departmentKpi->mdr_group_id = $request->departmentGroupKpi;
@@ -95,7 +95,7 @@ class DepartmentKPIController extends Controller
         }
         else {
             
-            $departmentKpi = DepartmentKPI::findOrFail($id);
+            $departmentKpi = MdrSetup::findOrFail($id);
             if($departmentKpi) {
                 $departmentKpi->delete();
             }
