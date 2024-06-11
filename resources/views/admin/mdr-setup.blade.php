@@ -28,24 +28,38 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    Active
+                </div>
+                <div class="ibox-content">
+                    <h1>{{count($mdrSetup->where('status',1))}}</h1>
+                    <small>Total Active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    Deactivate
+                </div>
+                <div class="ibox-content">
+                    <h1>{{count($mdrSetup->where('status',0))}}</h1>
+                    <small>Total Deactivate</small>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    
-
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         Add MDR Setup
                     </button>
                 </div>
                 <div class="ibox-content">
-                    @if (Session::has('errors'))
-                        <div class="alert alert-danger">
-                            @foreach (Session::get('errors') as $errors)
-                                {{ $errors }}<br>
-                            @endforeach
-                        </div>
-                    @endif
+                    @include('components.error')
                     
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
@@ -55,6 +69,7 @@
                                     <th>MDR Groups</th>
                                     <th>Department KPI</th>
                                     <th>Target</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -66,17 +81,30 @@
                                         <td>{!! nl2br($departmentKpiData->name) !!}</td>
                                         <td>{!! nl2br($departmentKpiData->target) !!}</td>
                                         <td>
+                                            <div class="label label-{{$departmentKpiData->status == 0 ? 'danger' : 'primary'}}">{{$departmentKpiData->status == 0 ? 'Inactive' : 'Active'}}</div>
+                                        </td>
+                                        <td>
+                                            @if($departmentKpiData->status != 0)
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentKpiData->id }}">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
 
-                                            <form action="{{ url('deleteDepartmentKpi/'.$departmentKpiData->id) }}" method="post" onsubmit="show()">
+                                            <form action="{{url('deactivate_mdr_setup/'.$departmentKpiData->id)}}" method="post" onsubmit="show()">
                                                 @csrf
 
-                                                <button class="btn btn-sm btn-danger">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Deactivate">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @else
+                                            <form action="{{ url('activate_mdr_setup/'.$departmentKpiData->id) }}" method="post" onsubmit="show()">
+                                                @csrf
+
+                                                <button class="btn btn-sm btn-success" type="submit" title="Activate">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                            </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

@@ -88,8 +88,11 @@
                                                     <label>Target Date</label>
                                                     <select name="targetDate" id="targetDate" name="targetDate" class="form-control cat">
                                                         <option value="">- Target Date -</option>
-                                                        @foreach (range(1, 31) as $item)
+                                                        {{-- @foreach (range(1, 31) as $item)
                                                             <option value="{{ sprintf("%02d", $item) }}">{{ $item }}</option>
+                                                        @endforeach --}}
+                                                        @foreach ($targetDate as $key=>$td)
+                                                            <option value="{{$key}}">{{$td}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -127,7 +130,7 @@
                                         <td>{{ $departmentData->code }}</td>
                                         <td>{{ $departmentData->name }}</td>
                                         <td>{{ isset($departmentData->user->name) ? $departmentData->user->name : '' }}</td>
-                                        <td>{{ $departmentData->target_date }}</td>
+                                        <td>{{ isset($departmentData->target_date) ? $targetDate[$departmentData->target_date] : '' }}</td>
                                         <td>
                                             @foreach ($departmentData->approver as $approver)
                                                 <p>{{ $approver->status_level .'. ' . $approver->user->name }}</p>
@@ -142,7 +145,7 @@
                                                 <i class="fa fa-pencil"></i>
                                             </button>
                                             
-                                            <form action="{{url('deactivate/'.$departmentData->id)}}" method="post" onsubmit="show()">
+                                            <form action="{{url('deactivate_department/'.$departmentData->id)}}" method="post" onsubmit="show()">
                                                 @csrf
 
                                                 <input type="hidden" name="status" value="0">
@@ -152,7 +155,7 @@
                                                 </button>
                                             </form>
                                             @else
-                                            <form action="{{url('activate/'.$departmentData->id)}}" method="post" role="form" onsubmit="show()">
+                                            <form action="{{url('activate_department/'.$departmentData->id)}}" method="post" role="form" onsubmit="show()">
                                                 @csrf
 
                                                 <input type="hidden" name="status" value="1">
@@ -207,8 +210,11 @@
                                     <label>Target Date</label>
                                     <select name="targetDate" id="targetDate" name="targetDate" class="form-control cat">
                                         <option value="">- Target Date -</option>
-                                        @foreach (range(1, 31) as $item)
+                                        {{-- @foreach (range(1, 31) as $item)
                                             <option value="{{ sprintf("%02d", $item) }}" {{ $item == $departmentData->target_date ? 'selected' : '' }}>{{ $item }}</option>
+                                        @endforeach --}}
+                                        @foreach ($targetDate as $key=>$td)
+                                            <option value="{{$key}}"  {{$departmentData->target_date == $key ? 'selected' : ''}}>{{$td}}</option>
                                         @endforeach
                                     </select>
                                 </div>

@@ -79,6 +79,7 @@
                                 <span class="fa arrow"></span>
                             </a>
                             <ul class="nav nav-second-level">
+                                <li class=""><a href="{{ url('companies') }}">Companies</a></li>
                                 <li class=""><a href="{{ url('departments') }}">Departments</a></li>
                                 <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
                             </ul>

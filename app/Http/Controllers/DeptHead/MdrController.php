@@ -31,7 +31,8 @@ class MdrController extends Controller
     public function index(Request $request) {
         $mdrSetup = MdrGroup::with([
             'mdrSetup' => function($q) {
-                $q->where('department_id', auth()->user()->department_id);
+                $q->where('department_id', auth()->user()->department_id)
+                    ->where('status',1);
             },
             'mdrSetup.departmentalGoals' => function($q)use($request) {
                 $q->where('department_id', auth()->user()->department_id)

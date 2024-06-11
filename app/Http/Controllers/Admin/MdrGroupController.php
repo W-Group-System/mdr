@@ -22,58 +22,41 @@ class MdrGroupController extends Controller
     }
 
     public function addDepartmentGroups(Request $request) {
-        
-        $validator = Validator::make($request->all(), [
-            'departmentGroupName' => 'required'
-        ]);
+        $mdrGroup = new MdrGroup;
+        $mdrGroup->name =  $request->departmentGroupName;
+        $mdrGroup->status = 1;
+        $mdrGroup->save();
 
-        if ($validator->fails()) {
-
-            return back()->with('errors', $validator->errors()->all());
-        }
-        else {
-
-            $mdrGroup = new MdrGroup;
-            $mdrGroup->name =  $request->departmentGroupName;
-            $mdrGroup->save();
-
-            Alert::success('SUCCESS', 'Successfully Added.');
-            return back();
-        }
+        Alert::success('SUCCESS', 'Successfully Added.');
+        return back();
     }
 
     public function updateDepartmentGroups(Request $request, $id) {
-        
-        $validator = Validator::make($request->all(), [
-            'departmentGroupName' => 'required'
-        ]);
+        $mdrGroup = MdrGroup::findOrFail($id);
+        $mdrGroup->name =  $request->departmentGroupName;
+        $mdrGroup->save();
 
-        if ($validator->fails()) {
-
-            return back()->with('errors', $validator->errors()->all());
-        }
-        else {
-
-            $mdrGroup = MdrGroup::findOrFail($id);
-            if ($mdrGroup) {
-                $mdrGroup->name =  $request->departmentGroupName;
-                $mdrGroup->save();
-            }
-
-            Alert::success('SUCCESS', 'Successfully Updated.');
-            return back();
-        }
+        Alert::success('SUCCESS', 'Successfully Updated.');
+        return back();
     }
 
-    public function deleteDepartmentGroups($id) {
+    public function deactivate($id) {
         
-        $departmentGroupData = MdrGroup::findOrFail($id);
+        $mdrGroupData = MdrGroup::findOrFail($id);
+        $mdrGroupData->status = 0;
+        $mdrGroupData->save();
 
-        if ($departmentGroupData) {
-            $departmentGroupData->delete();
+        Alert::success('SUCCESS', 'Successfully Deactivated.');
+        return back();
+    }
 
-            Alert::success('SUCCESS', 'Successfully Deleted.');
-            return back();
-        } 
+    public function activate($id) {
+        
+        $mdrGroupData = MdrGroup::findOrFail($id);
+        $mdrGroupData->status = 1;
+        $mdrGroupData->save();
+
+        Alert::success('SUCCESS', 'Successfully Activated.');
+        return back();
     }
 }

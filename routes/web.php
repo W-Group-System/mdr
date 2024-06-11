@@ -31,20 +31,29 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/departments', 'Admin\DepartmentController@index')->name('settings');
             Route::post('/addDepartments', 'Admin\DepartmentController@addDepartments');
             Route::post('/updateDepartments/{id}', 'Admin\DepartmentController@updateDepartments');
-            Route::post('/deactivate/{id}', 'Admin\DepartmentController@deactivate');
-            Route::post('/activate/{id}', 'Admin\DepartmentController@activate');
+            Route::post('/deactivate_department/{id}', 'Admin\DepartmentController@deactivate');
+            Route::post('/activate_department/{id}', 'Admin\DepartmentController@activate');
     
-            # Department KPI
+            # MDR Setups
             Route::get('/mdr_setup', 'Admin\MdrSetupController@index')->name('mdr');
             Route::post('/addDepartmentKpi', 'Admin\MdrSetupController@addDepartmentKpi');
             Route::post('/updateDepartmentsKpi/{id}', 'Admin\MdrSetupController@updateDepartmentKpi');
-            Route::post('/deleteDepartmentKpi/{id}', 'Admin\MdrSetupController@deleteDepartmentKpi');
+            Route::post('/deactivate_mdr_setup/{id}', 'Admin\MdrSetupController@deactivate');
+            Route::post('/activate_mdr_setup/{id}', 'Admin\MdrSetupController@activate');
+            
+            # Companies
+            Route::get('/companies', 'Admin\CompanyController@index');
+            Route::post('/add_company', 'Admin\CompanyController@store');
+            Route::post('/update_company/{id}', 'Admin\CompanyController@update');
+            Route::post('/deactivate_company/{id}', 'Admin\CompanyController@deactivate');
+            Route::post('/activate_company/{id}', 'Admin\CompanyController@activate');
     
-            # Department Group
+            # MDR Groups
             Route::get('/mdr_group', 'Admin\MdrGroupController@index')->name('mdr');
             Route::post('/addDepartmentGroups', 'Admin\MdrGroupController@addDepartmentGroups');
             Route::post('/updateDepartmentGroups/{id}', 'Admin\MdrGroupController@updateDepartmentGroups');
-            Route::post('/deleteDepartmentGroups/{id}', 'Admin\MdrGroupController@deleteDepartmentGroups');
+            Route::post('/deactivate_mdr_group/{id}', 'Admin\MdrGroupController@deactivate');
+            Route::post('/activate_mdr_group/{id}', 'Admin\MdrGroupController@activate');
     
             # User Accounts
             Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');

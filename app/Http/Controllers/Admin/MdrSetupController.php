@@ -14,11 +14,16 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrSetupController extends Controller
 {
     public function index(Request $request) {
-        $mdrSetup = MdrSetup::where('department_id', $request->department)->get();
+        if (!empty($request->department)) {
+            $mdrSetup = MdrSetup::where('department_id',$request->department)->get()->sortBy('department_id');
+        }
+        else {
+            $mdrSetup = MdrSetup::get()->sortBy('department_id')->sortByDesc('department_id');
+        }
         
-        $departmentList = Department::select('id', 'name')->get();
+        $departmentList = Department::select('id', 'name')->where('status',1)->get();
 
-        $departmentGroupKpiList = MdrGroup::select('id', 'name')->get();
+        $departmentGroupKpiList = MdrGroup::select('id', 'name')->where('status',1)->get();
 
         return view('admin.mdr-setup',
             array(
@@ -32,77 +37,56 @@ class MdrSetupController extends Controller
 
     public function addDepartmentKpi(Request $request) {
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'department' => 'required',
             'departmentGroupKpi' => 'required',
-            'kpiName' => 'required',
-            'target' => 'required'
         ]);
 
-        if($validator->fails()) {
+        $mdrSetup = new MdrSetup;
+        $mdrSetup->department_id = $request->department;
+        $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
+        $mdrSetup->name = $request->kpiName;
+        $mdrSetup->target = $request->target;
+        $mdrSetup->status = 1;
+        $mdrSetup->save();
 
-            return back()->with('errors', $validator->errors()->all());
-        }
-        else {
-            $mdrSetup = new MdrSetup;
-            $mdrSetup->department_id = $request->department;
-            $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
-            $mdrSetup->name = $request->kpiName;
-            $mdrSetup->target = $request->target;
-            $mdrSetup->save();
-
-            Alert::success('SUCCESS', 'Successfully Added.');
-            return back();
-        }
+        Alert::success('SUCCESS', 'Successfully Added.');
+        return back();
     }
 
     public function updateDepartmentKpi(Request $request, $id) {
     
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'department' => 'required',
             'departmentGroupKpi' => 'required',
-            'kpiName' => 'required',
-            'target' => 'required'
         ]);
 
-        if($validator->fails()) {
+        $mdrSetup = MdrSetup::findOrFail($id);
+        $mdrSetup->department_id = $request->department;
+        $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
+        $mdrSetup->name = $request->kpiName;
+        $mdrSetup->target = $request->target;
+        $mdrSetup->save();
 
-            return back()->with('errors', $validator->errors()->all());
-        }
-        else {
-            $mdrSetup = MdrSetup::findOrFail($id);
-            if ($mdrSetup) {
-                $mdrSetup->department_id = $request->department;
-                $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
-                $mdrSetup->name = $request->kpiName;
-                $mdrSetup->target = $request->target;
-                $mdrSetup->save();
-
-                Alert::success('SUCCESS', 'Successfully Updated.');
-                return back();
-            }
-            
-        }
+        Alert::success('SUCCESS', 'Successfully Updated.');
+        return back();
     }
 
-    public function deleteDepartmentKpi(Request $request, $id) {
+    public function deactivate($id) {
+        $mdrSetup = MdrSetup::findOrFail($id);
+        $mdrSetup->status = 0;
+        $mdrSetup->save();
         
-        $checkIfExist = DepartmentalGoals::select('mdr_group_id')->where('mdr_group_id', $id)->get();
+        Alert::success('SUCCESS', "Successfully Deactivated.");
+        return back();
+    }
 
-        if ($checkIfExist->isNotEmpty()) {
-
-            Alert::error('ERROR', "Can't Delete KPI because it's already used.");
-        }
-        else {
-            
-            $mdrSetup = MdrSetup::findOrFail($id);
-            if($mdrSetup) {
-                $mdrSetup->delete();
-            }
-
-            Alert::success('SUCCESS', "Successfully Deleted.");
-        }
-
+    public function activate($id) {
+        $mdrSetup = MdrSetup::findOrFail($id);
+        $mdrSetup->status = 1;
+        $mdrSetup->save();
+        
+        Alert::success('SUCCESS', "Successfully Activated.");
         return back();
     }
 }
