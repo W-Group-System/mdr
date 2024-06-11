@@ -66,8 +66,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addProcessDevelopment">
-        <div class="modal-dialog">
+    <div class="modal" id="addProcessDevelopment">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title">Add Process Improvement</h1>
@@ -87,12 +87,7 @@
                                 </div>
                                 <div class="form-group" id="accomplishedDate">
                                     <label for="accomplishedDate">Accomplished Date</label>
-                                    <div class="input-group date">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </span>
-                                        <input type="text" class="form-control input-sm" name="accomplishedDate" autocomplete="off" required>
-                                    </div>
+                                    <input type="date" class="form-control input-sm" name="accomplishedDate" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="file">Upload an Attachments</label>
@@ -114,8 +109,8 @@
     </div>
 
     @foreach ($departmentKpiData->processDevelopment as $pd)
-        <div class="modal fade" id="editPdModal-{{ $pd->id }}">
-            <div class="modal-dialog">
+        <div class="modal" id="editPdModal-{{ $pd->id }}">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title">Edit Process Improvement</h1>
@@ -169,16 +164,6 @@
 <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script>
     $(document).ready(function() {
-        var dateToday = new Date();
-
-        $('#accomplishedDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            startDate: dateToday,
-        });
 
         $(".deletePdAttachments").on('click', function() {
 

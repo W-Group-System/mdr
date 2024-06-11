@@ -77,8 +77,8 @@
     </div>
 </div>
 
-<div class="modal fade" id="addModal">
-    <div class="modal-dialog">
+<div class="modal" id="addModal">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title">Add Innovation</h1>
@@ -106,30 +106,15 @@
                             </div>
                             <div class="form-group" id="startDate">
                                 <label for="startDate">Start Date</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <input type="text" class="form-control input-sm" name="startDate" required>
-                                </div>
+                                <input type="date" class="form-control input-sm" name="startDate" required>
                             </div>
                             <div class="form-group" id="targetDate">
                                 <label for="targetDate">Target Date</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <input type="text" class="form-control input-sm" name="targetDate" required>
-                                </div>
+                                <input type="date" class="form-control input-sm" name="targetDate" required>
                             </div>
                             <div class="form-group" id="actualDate">
                                 <label for="actualDate">Actual Date</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <input type="text" class="form-control input-sm" name="actualDate" required>
-                                </div>
+                                <input type="date" class="form-control input-sm" name="actualDate" required>
                             </div>
                             <div class="form-group">
                                 <label for="file">File</label>
@@ -151,8 +136,8 @@
 </div>
 
 @foreach ($departmentKpiData->innovation as $innovationData)
-<div class="modal fade" id="editModal-{{ $innovationData->id }}">
-    <div class="modal-dialog">
+<div class="modal" id="editModal-{{ $innovationData->id }}">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title">Edit Innovations</h1>
@@ -179,30 +164,15 @@
                             </div>
                             <div class="form-group" id="startDate">
                                 <label for="startDate">Start Date</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <input type="text" class="form-control input-sm" name="startDate" value="{{ $innovationData->start_date }}" required>
-                                </div>
+                                <input type="date" class="form-control input-sm" name="startDate" value="{{ $innovationData->start_date }}" required>
                             </div>
                             <div class="form-group" id="targetDate">
                                 <label for="targetDate">Target Date</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <input type="text" class="form-control input-sm" name="targetDate" value="{{ $innovationData->target_date }}" required>
-                                </div>
+                                <input type="date" class="form-control input-sm" name="targetDate" value="{{ $innovationData->target_date }}" required>
                             </div>
                             <div class="form-group" id="actualDate">
                                 <label for="actualDate">Actual Date</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
-                                    </span>
-                                    <input type="text" class="form-control input-sm" name="actualDate" value="{{ $innovationData->actual_date }}" required>
-                                </div>
+                                <input type="date" class="form-control input-sm" name="actualDate" value="{{ $innovationData->actual_date }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="file">File</label>
@@ -226,39 +196,8 @@
 @endif
 
 @push('scripts')
-<script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
-
 <script>
     $(document).ready(function() {
-        var dateToday = new Date();
-
-        $('#startDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            startDate: dateToday,
-        });
-
-        $('#targetDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            startDate: dateToday
-        });
-
-        $('#actualDate .input-group.date').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true,
-            startDate: dateToday
-        });
-
         $("[name='deleteAttachments']").on('click', function() {
             var id = $(this).data('id');
             

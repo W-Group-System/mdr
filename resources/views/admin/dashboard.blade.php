@@ -150,7 +150,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="endYearAndMonth">End Year & Month</label>
-                                            <input type="month" name="endYearAndMonth" id="endYearAndMonth" class="form-control input-sm" min="{{ date('Y-m', strtotime("+1month", strtotime($startYearAndMonth))) }}" value="{{ $endYearAndMonth }}">
+                                            <input type="month" name="endYearAndMonth" id="endYearAndMonth" class="form-control input-sm" min="" value="{{ $endYearAndMonth }}">
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
@@ -329,6 +329,18 @@
     $(document).ready(function() {
         $("[name='department']").chosen({width: "100%"});
         $("[name='departmentValue']").chosen({width: "100%"});
+
+        $('#startYearAndMonth').on('change', function() {
+            var startYearAndMonth = $(this).val();
+            var startDate = new Date(startYearAndMonth);
+            startDate.setMonth(startDate.getMonth() + 1);
+
+            var year = startDate.getFullYear();
+            var month = ('0' + (startDate.getMonth() + 1)).slice(-2);
+            var minEndDate = year + '-' + month;
+            
+            $('#endYearAndMonth').attr('min', minEndDate);
+        })
 
         var dept = {!! json_encode(array_keys($dashboardData)) !!}
         var data = {!! json_encode(array_values($dashboardData)) !!}
