@@ -111,7 +111,7 @@
                             </a>
                         </li>
                     @endif
-                    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "User")
+                    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>
@@ -153,7 +153,10 @@
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit()">
+                            <span class="m-r-sm text-muted welcome-message">Welcome to Online MDR System</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('logout') }}" onclick="logout(); show();">
                                 <i class="fa fa-sign-out"></i> Log out
                             </a>
                             
@@ -214,6 +217,12 @@
     <script>
         function show() {
             document.getElementById("loader").style.display = "block";
+        }
+
+        function logout() {
+            event.preventDefault(); 
+            
+            document.getElementById('logout-form').submit()
         }
     </script>
 </body>

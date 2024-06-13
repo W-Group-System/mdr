@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated">
     <div class="row">
         <div class="col-lg-3">
             <div class="ibox float-e-margins">

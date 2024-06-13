@@ -18,7 +18,7 @@
         @include('dept-head.innovation', array('mdrSetup' => $mdrSetup))
     @endforeach
 
-    @if(auth()->user()->role == "Department Head" || auth()->user()->account_role == "User")
+    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">

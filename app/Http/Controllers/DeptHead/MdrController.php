@@ -258,7 +258,7 @@ class MdrController extends Controller
     public function submitMdr(Request $request) {
         
         $userData = User::where('department_id', auth()->user()->department_id)
-            ->where('account_role', 2)
+            ->where('role', "Department Head")
             ->first();
 
         $userData->notify(new NotifyDeptHead($userData->name, $request->yearAndMonth));

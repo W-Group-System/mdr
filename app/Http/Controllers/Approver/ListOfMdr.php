@@ -7,6 +7,7 @@ use App\Admin\Department;
 use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
+use App\Approver\Warnings;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\MdrScore;
@@ -74,83 +75,6 @@ class ListOfMdr extends Controller
         
         foreach($departmentData->approver as $approver) {
             if (auth()->user()->id == $approver->user_id) {
-                // $departmentalGoalsList = $departmentData->departmentalGoals()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->get();
-
-                // $processDevelopmentList = $departmentData->process_development()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->get();
-
-                // $innovation = $departmentData->innovation()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->get();
-
-                // $kpiScore = $departmentData->kpi_scores()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->first();
-
-                // $mdrSummary = $departmentData->mdrSummary()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('department_id', $departmentData->id)
-                //     ->first();
-
-                // if ($departmentalGoalsList->isNotEmpty()) {
-                //     $departmentalGoalsList->each(function($item, $key)use($approver) {
-                //         $item->update([
-                //             'status_level' => $approver->status_level != 1 ? 1 : 0
-                //         ]);
-                //     });
-
-                //     $processDevelopmentList->each(function($item, $key)use($approver) {
-                //         $item->update([
-                //             'status_level' => $approver->status_level != 1 ? 1 : 0
-                //         ]);
-                //     });
-
-                //     $innovation->each(function($item, $key)use($approver) {
-                //         $item->update([
-                //             'status_level' => $approver->status_level != 1 ? 1 : 0
-                //         ]);
-                //     });
-
-                //     $kpiScore->update([
-                //         'status_level' => $approver->status_level != 1 ? 1 : 0,
-                //         'timeliness' => 0.0,
-                //         'total_rating' => 0.00
-                //     ]);
-
-                //     MdrStatus::where('mdr_summary_id', $mdrSummary->id)
-                //         ->update([
-                //             'status' => 0, 
-                //             'start_date' => null
-                //         ]);
-
-                //     $mdrSummary = $mdrSummary->update(['status_level' => $approver->status_level != 1 ? 1 : 0]);
-
-                //     $user = User::where('id', $departmentData->dept_head_id)->first();
-
-                //     $approver = auth()->user()->name;
-
-                //     $user->notify(new ReturnNotification($user->name, $request->monthOf, $approver));
-
-                //     Alert::success('SUCCESS', 'Successfully Returned.');
-                //     return back();
-                // }
-                // else {
-                //     Alert::error('ERROR', 'error');
-                //     return back();
-                // }
-
                 $departmentalGoalsList = $departmentData->departmentalGoals->where('status_level', $approver->status_level);
                 $innovation = $departmentData->innovation->where('status_level', $approver->status_level);
                 $processDevelopmentList = $departmentData->process_development->where('status_level', $approver->status_level);
@@ -218,12 +142,6 @@ class ListOfMdr extends Controller
     }
 
     public function addGradeAndRemarks(Request $request) {
-        // dd($request->all());
-        // $departmentalGoalsList =  DepartmentalGoals::where('department_id', $request->department_id)
-        //     ->where('year', date('Y', strtotime($request->yearAndMonth)))
-        //     ->where('month', date('m', strtotime($request->yearAndMonth)))
-        //     ->get();
-
         $departmentalGoalsList = DepartmentalGoals::findMany($request->departmentalGoalsId);
             
         if ($departmentalGoalsList->isNotEmpty()) {
@@ -299,166 +217,21 @@ class ListOfMdr extends Controller
                 $q->where('year', date('Y', strtotime($request->monthOf)))
                     ->where('month', date('m', strtotime($request->monthOf)));
             },
-            'approver'
+            'approver',
+            'warnings'
             ])
             ->where('id', $request->department_id)
-            ->first();
-
+            ->first();  
+        
         foreach($departmentData->approver as $approver) {
-            
             if (auth()->user()->id == $approver->user_id) {
-
-                // $departmentalGoalsList = $departmentData->departmentalGoals()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->get();
-
-                // $processDevelopmentList = $departmentData->process_development()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->get();
-
-                // $innovation = $departmentData->innovation()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->get();
-
-                // $kpiScore = $departmentData->kpi_scores()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('status_level', $approver->status_level)
-                //     ->first();
-
-                // $mdrSummary = $departmentData->mdrSummary()
-                //     ->where('year', date('Y', strtotime($request->monthOf)))
-                //     ->where('month', date('m', strtotime($request->monthOf)))
-                //     ->where('department_id', $departmentData->id)
-                //     ->first();
-
-                // if ($departmentalGoalsList->isNotEmpty()) {
-                    
-                //     if($departmentData->approver->last() == $approver) {
-                //         $departmentalGoalsList->each(function($item, $key)use($approver) {
-                //             $item->update([
-                //                 'final_approved' => 1
-                //             ]);
-                //         });
-
-                //         $processDevelopmentList->each(function($item, $key)use($approver) {
-                //             $item->update([
-                //                 'final_approved' => 1
-                //             ]);
-                //         });
-                        
-                //         $innovation->each(function($item, $key) use($approver) {
-                //             $item->update([
-                //                 'final_approved' => 1
-                //             ]);
-                //         });
-
-                //         $kpiScore->update([
-                //             'final_approved' => 1
-                //         ]);
-                        
-                //         $mdrSummary->update([
-                //             'approved_date' => date('Y-m-d'), 
-                //             'final_approved' => 1
-                //         ]);
-
-                //         $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
-                //         foreach($mdrStatus as $status) {
-                //             if ($approver->user_id == $status->user_id) {
-                //                 $status->update([
-                //                     'status' => 1,
-                //                     'start_date' => date('Y-m-d')
-                //                 ]);
-                //             }
-                //         }
-                        
-                //         $user = User::where('account_role', 4)->get();
-                //         $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
-                //         $department = $mdrSummary->departments->name;
-                //         $rate = $mdrSummary->rate;
-
-                //         foreach($user as $u) {
-                //             $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
-                //         }
-                        
-                //     }
-                //     else {
-                //         $departmentalGoalsList->each(function($item, $key)use($approver) {
-                //             $item->update([
-                //                 'status_level' => $approver->status_level+1
-                //             ]);
-                //         });
-
-                //         $processDevelopmentList->each(function($item, $key)use($approver) {
-                //             $item->update([
-                //                 'status_level' => $approver->status_level+1
-                //             ]);
-                //         });
-
-                //         $innovation->each(function($item, $key) use($approver) {
-                //             $item->update([
-                //                 'status_level' => $approver->status_level+1
-                //             ]);
-                //         });
-
-                //         $kpiScore->update([
-                //             'status_level' => $approver->status_level+1
-                //         ]);
-                    
-                //         $mdrStatus = MdrStatus::where('mdr_summary_id', $mdrSummary->id)->get();
-                //         foreach($mdrStatus as $status) {
-                //             if ($approver->user_id == $status->user_id) {
-                //                 $status->update([
-                //                     'status' => 1,
-                //                     'start_date' => date('Y-m-d')
-                //                 ]);
-                //             }
-                //         }
-
-                //         $mdrSummary->update([
-                //             'status_level' => $approver->status_level+1
-                //         ]);
-                //     }
-
-                //     $approverData = DepartmentApprovers::select('user_id')
-                //         ->where('status_level', $approver->status_level+1)
-                //         ->first();
-
-                //     if (!empty($approverData)) {
-                //         $userData = User::where('id', $approverData->user_id)->first();
-                //         $deptName = $mdrSummary->departments->name;
-                //         $deptYearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
-
-                //         $userData->notify(new EmailNotificationForApprovers($userData->name, $deptName, $deptYearAndMonth));
-                //     }
-
-                //     $user = User::where('id', $departmentData->dept_head_id)->first();
-
-                //     $approver = auth()->user()->name;
-
-                //     $user->notify(new ApprovedNotification($user->name, $approver, $request->monthOf));
-
-                //     Alert::success('SUCCESS', 'Successfully Approved.');
-                //     return back();
-                // }
-                // else {
-                //     Alert::error('ERROR', 'Cannot approved the MDR.');
-
-                //     return back();
-                // }
-
                 $departmentalGoalsList = $departmentData->departmentalGoals->where('status_level', $approver->status_level);
                 $innovation = $departmentData->innovation->where('status_level', $approver->status_level);
                 $processDevelopmentList = $departmentData->process_development->where('status_level', $approver->status_level);
                 $kpiScore = $departmentData->kpi_scores->first();
                 $mdrSummary = $departmentData->mdrSummary->first();
                 $status = $departmentData->mdrSummary->first();
+                $departmentWarning = $departmentData->warnings->first();
                 
                 if ($departmentalGoalsList->isNotEmpty()) {
                     if ($departmentData->approver->last() == $approver) {
@@ -484,11 +257,11 @@ class ListOfMdr extends Controller
                             'final_approved' => 1
                         ]);
                         
-                        $mdrSummary->update([
-                            'approved_date' => date('Y-m-d'), 
-                            'final_approved' => 1,
-                            'penalty_status' => $mdrSummary->rate < 2.99 ? 'For NTE' : null
-                        ]);
+                        // $mdrSummary->update([
+                        //     'approved_date' => date('Y-m-d'), 
+                        //     'final_approved' => 1,
+                        //     'penalty_status' => $mdrSummary->rate < 2.99 ? 'For NTE' : null
+                        // ]);
 
                         foreach($status->mdrStatus as $ms) {
                             if ($approver->user_id == $ms->user_id) {
@@ -498,14 +271,52 @@ class ListOfMdr extends Controller
                                 ]);
                             }
                         }
-                        
-                        $user = User::where('role', "Human Resources")->get();
-                        $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
-                        $department = $mdrSummary->departments->name;
-                        $rate = $mdrSummary->rate;
 
-                        foreach($user as $u) {
-                            $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
+                        if ($mdrSummary->rate < 2.99) {
+                            if (empty($departmentWarning)) {
+                                $warnings = new Warnings;
+                                $warnings->department_id = $departmentData->id;
+                                $warnings->warning_level = 1;
+                                $warnings->mdr_summary_id = $mdrSummary->id;
+                                $warnings->save();
+
+                                $mdrSummary->update([
+                                    'approved_date' => date('Y-m-d'), 
+                                    'final_approved' => 1,
+                                ]);
+                            }
+                            else {
+                                $warnings = $departmentWarning->findOrFail($departmentWarning->id);
+                                $warnings->warning_level = $warnings->warning_level+1;
+                                $warnings->save();
+
+                                $mdrSummary->update([
+                                    'approved_date' => date('Y-m-d'), 
+                                    'final_approved' => 1,
+                                    'penalty_status' => 'For NTE'
+                                ]);
+
+                                $user = User::where('role', "Human Resources")->get();
+                                $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
+                                $department = $mdrSummary->departments->name;
+                                $rate = $mdrSummary->rate;
+
+                                foreach($user as $u) {
+                                    $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
+                                }
+                            }
+                        }
+                        else {
+                            if(!empty($departmentWarning)) {
+                                $warnings = $departmentWarning->findOrFail($departmentWarning->id);
+                                $warnings->warning_level = 0;
+                                $warnings->save();
+                            }   
+
+                            $mdrSummary->update([
+                                'approved_date' => date('Y-m-d'), 
+                                'final_approved' => 1,
+                            ]);
                         }
 
                         Alert::success('SUCCESS', 'Successfully Approved.');
