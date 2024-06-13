@@ -5,9 +5,12 @@ namespace App\DeptHead;
 use App\Admin\Department;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class MdrStatus extends Model
+class MdrStatus extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $table = 'mdr_status';
 
     // protected $fillable = ['department_id', 'department_head_id', 'deadline', 'submission_date', 'status', 'approved_date', 'rate', 'remarks'];

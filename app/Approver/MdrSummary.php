@@ -12,9 +12,12 @@ use App\HR\NteAttachments;
 use App\HR\PipAttachments;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class MdrSummary extends Model
+class MdrSummary extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    
     protected $table = 'mdr_summary';
 
     protected $fillable = ['approved_date', 'rate', 'status_level', 'final_approved', 'submission_date', 'penalty_status'];

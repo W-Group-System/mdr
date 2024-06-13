@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/activate_mdr_setup/{id}', 'Admin\MdrSetupController@activate');
             
             # Companies
-            Route::get('/companies', 'Admin\CompanyController@index');
+            Route::get('/companies', 'Admin\CompanyController@index')->name('settings');
             Route::post('/add_company', 'Admin\CompanyController@store');
             Route::post('/update_company/{id}', 'Admin\CompanyController@update');
             Route::post('/deactivate_company/{id}', 'Admin\CompanyController@deactivate');

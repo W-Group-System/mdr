@@ -62,7 +62,7 @@ class MdrController extends Controller
             ->where('month', date('m', strtotime($request->yearAndMonth)))
             ->where('department_id', auth()->user()->department_id)
             ->first();
-        
+
         return view('dept-head.mdr',
             array(
                 'mdrSetup' => $mdrSetup,
@@ -99,11 +99,14 @@ class MdrController extends Controller
             break;
         }
 
+        $department = Department::select('name')->where('id', auth()->user()->department_id)->first();
+
         return view('dept-head.mdr-list', 
             array(
                 // 'mdrScoreList' => $mdrScoreList,
                 'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : date('Y-m'),
-                'kpiScore' => $kpiScore
+                'kpiScore' => $kpiScore,
+                'department' => $department
             )
         );
     }
