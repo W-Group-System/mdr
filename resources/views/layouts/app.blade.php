@@ -100,8 +100,8 @@
                         </li>
                         <li class="{{ Route::currentRouteName() == "historyMdr" ? 'active' : '' }}">
                             <a href="{{ url('history_mdr') }}">
-                                <i class="fa fa-history"></i>
-                                <span class="nav-label">History of MDR</span>
+                                <i class="fa fa-calendar"></i>
+                                <span class="nav-label">Monthly MDR Data</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">

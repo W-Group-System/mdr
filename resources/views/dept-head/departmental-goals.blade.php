@@ -11,7 +11,7 @@
             @endif
             
             <div class="table-responsive">
-                <p><b>I:</b> <span class="period">{{ $departmentKpiData->name }}</span></p>
+                <p><span class="period">{{ $departmentKpiData->name }}</span></p>
                 <div class="alert alert-info">
                     <strong>Note: </strong> Attach a file first before submitting a KPI
                 </div>

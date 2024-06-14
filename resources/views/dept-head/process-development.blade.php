@@ -4,14 +4,10 @@
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-content">
             <div class="table-responsive">
-                <p><b>III:</b> <span class="period">{{ $departmentKpiData->name }}</span></p>
-                @if (Session::has('pdError'))
-                    <div class="alert alert-danger">
-                        @foreach (Session::get('pdError') as $errors)
-                            {{ $errors }}<br>
-                        @endforeach
-                    </div>
-                @endif
+                <p><span class="period">{{ $departmentKpiData->name }}</span></p>
+                
+                @include('components.error')
+
                 <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Improvement</button>
 
                 <table class="table table-bordered table-hover" id="processDevelopmentTable">

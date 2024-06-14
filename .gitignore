@@ -9,3 +9,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+/public/file
+/public/nod_attachments
+/public/nte_attachments
+/public/pip_attachments

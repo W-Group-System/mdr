@@ -26,6 +26,7 @@ class DashboardController extends Controller
                 )
             );
         } else if(auth()->user()->role == "Approver") {
+            // dd($request->all());
             $departmentList = Department::with([
                 'mdrSummary' => function($q)use($request) {
                     if (!empty($request->department) && !empty($request->yearAndMonth)) {
@@ -97,46 +98,79 @@ class DashboardController extends Controller
                 }
             }
 
-            $mdrSummaryData = MdrSummary::where('department_id', $request->departmentValue);
-
-            if(!empty($request->startYearAndMonth) && !empty($request->endYearAndMonth)) {
-                $mdrSummaryData = $mdrSummaryData->whereBetween('year', [date('Y', strtotime($request->startYearAndMonth)), date('Y', strtotime($request->endYearAndMonth))])
-                    ->whereBetween('month', [date('m', strtotime($request->startYearAndMonth)), date('m', strtotime($request->endYearAndMonth))]);
-            }
-
-            $mdrSummaryData = $mdrSummaryData->get();
-
-            $barChartPerDeptArray = array();
+            $years = array_combine(range(date("Y"), 1910), range(date("Y"), 1910));
+            
+            $mdrSummaryData = MdrSummary::where('department_id', $request->departmentValue)->get();
+            
+            $years1 = $mdrSummaryData->where('year', $request->years1);
+            $years2 = $mdrSummaryData->where('year', $request->years2);
+            
+            $year1Array = array(); 
+            $year2Array = array();
             foreach($monthArray as $key=>$month) {
                 $yearNow = date('Y');
 
-                $barChartPerDeptArray[$key] = [
+                $year1Array[$key] = [
                     'month' => date('M', strtotime($yearNow.'-'.$key)),
                     'rate' => 0.0,
                     'status' => 'No MDR Submitted'
                 ];
 
-                foreach($mdrSummaryData as $data) {
-                    $barChartPerDeptArray[$data->month] = [
-                        'month' => date('M', strtotime($data->year.'-'.$data->month)),
-                        'rate' => $data->rate,
-                        'status' => $data->status
+                $year2Array[$key] = [
+                    'month' => date('M', strtotime($yearNow.'-'.$key)),
+                    'rate' => 0.0,
+                    'status' => 'No MDR Submitted'
+                ];
+
+                foreach($years1 as $y1) {
+                    $year1Array[$y1->month] = [
+                        'month' => date('M', strtotime($y1->year.'-'.$y1->month)),
+                        'rate' => $y1->rate,
+                        'status' => $y1->status
                     ];
                 }
 
-                ksort($barChartPerDeptArray);
+                foreach($years2 as $y2) {
+                    $year2Array[$y2->month] = [
+                        'month' => date('M', strtotime($y2->year.'-'.$y2->month)),
+                        'rate' => $y2->rate,
+                        'status' => $y2->status
+                    ];
+                }
+
+                ksort($year1Array);
+                ksort($year2Array);
             }
 
-            $monthAndDataArray = array();
-            $statusArray = array();
-            foreach($barChartPerDeptArray as $data) {
-                $monthAndDataArray[$data['month']] = $data['rate'];
-                
-                $statusArray[] = [
-                    'month' => $data['month'],
-                    'status' => $data['status']
+            $yearOneArray = array();
+            $mdrStatusOne = array();
+            foreach($year1Array as $ya1) {
+                $yearOneArray[$ya1['month']] = $ya1['rate'];
+                $mdrStatusOne[] = [
+                    'month' => $ya1['month'],
+                    'status' => $ya1['status']
                 ];
             }
+            
+            $yearTwoArray = array();
+            $mdrStatusTwo = array();
+            foreach($year2Array as $ya2) {
+                $yearTwoArray[$ya2['month']] = $ya2['rate'];
+                $mdrStatusTwo[] = [
+                    'month' => $ya2['month'],
+                    'status' => $ya2['status']
+                ];
+            }
+            
+            // $monthAndDataArray = array();
+            // foreach($barChartPerDeptArray as $data) {
+            //     $monthAndDataArray[$data['month']] = $data['rate'];
+                
+            //     $statusArray[] = [
+            //         'month' => $data['month'],
+            //         'status' => $data['status']
+            //     ];
+            // }
 
             return view('admin.dashboard',
                 array(
@@ -144,18 +178,24 @@ class DashboardController extends Controller
                     'startYearAndMonth' => $request->startYearAndMonth,
                     'endYearAndMonth' => $request->endYearAndMonth,
                     'department'=> $request->department,
-                    
+                    'years' => $years,
                     'listOfDepartment' => $departmentList,
                     'departmentList' => $departmentArray,
                     'yearAndMonth' => !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m'),
                     'dashboardData' => $dashboardDataArray,
                     'mdrStatus' => collect($mdrStatusArray)->sortBy('rate'),
-                    'monthAndData' => $monthAndDataArray,
-                    'mdrSummaryStatusPerDept' => $statusArray,
-                    'date' =>  !empty($request->startYearAndMonth) ? date('F Y', strtotime($request->startYearAndMonth)) : date('F Y')
+                    'yearOneArray' => $yearOneArray,
+                    'yearTwoArray'=> $yearTwoArray,
+                    'mdrStatusOne' => $mdrStatusOne,
+                    'mdrStatusTwo' => $mdrStatusTwo,
+                    'date' =>  !empty($request->startYearAndMonth) ? date('F Y', strtotime($request->startYearAndMonth)) : date('F Y'),
+                    'year1Val' => $request->years1,
+                    'year2Val' => $request->years2
                 )
             );
         } else if (auth()->user()->role == "Department Head" || auth()->user()->role == "Users") {
+            $years = array_combine(range(date("Y"), 1910), range(date("Y"), 1910));
+            
             $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id);
             
             if (!empty($request->year)) {
@@ -211,12 +251,13 @@ class DashboardController extends Controller
                     'status' => $data['status']
                 ];
             }
-
+            
             return view('admin.dashboard',
                 array(
                     'data' => $dataArray,
                     'status' => $statusArray,
-                    'years' => $request->year
+                    'years' => $years,
+                    'yearData' => $request->year
                 )
             );
         } else if(auth()->user()->role == "Human Resources") {

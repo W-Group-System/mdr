@@ -55,6 +55,7 @@ class MdrController extends Controller
                     ->where('month', date('m', strtotime($request->yearAndMonth)));
             }
         ])
+        ->where('status', 1)
         ->get();
         
         $approver = MdrSummary::with('mdrStatus')

@@ -43,7 +43,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="department">Department</label>
-                                            <select name="department" id="department" class="form-control">
+                                            <select name="department" id="department" class="form-control cat">
                                                 <option value="">-Department-</option>
                                                 @foreach ($listOfDepartment as $departmentData)
                                                     <option value="{{ $departmentData->id }}" {{ $departmentData->id == $department ? 'selected' : '' }}>{{ $departmentData->name }}</option>
@@ -133,7 +133,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="department">Department</label>
-                                            <select name="departmentValue" id="department" class="form-control">
+                                            <select name="departmentValue" id="department" class="form-control cat" required>
                                                 <option value="">-Department-</option>
                                                 @foreach ($listOfDepartment as $departmentData)
                                                     <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->name }}</option>
@@ -143,20 +143,30 @@
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label for="startYearAndMonth">Start Year & Month</label>
-                                            <input type="month" name="startYearAndMonth" id="startYearAndMonth" class="form-control input-sm" value="{{ $startYearAndMonth }}">
+                                            <label for="year1">Years</label>
+                                            <select name="years1" id="year1" class="form-control cat" required>
+                                                <option value="">-Years-</option>
+                                                @foreach ($years as $key=>$y)
+                                                    <option value="{{$key}}" {{$key == $year1Val ? 'selected' : ''}}>{{$y}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label for="endYearAndMonth">End Year & Month</label>
-                                            <input type="month" name="endYearAndMonth" id="endYearAndMonth" class="form-control input-sm" min="" value="{{ $endYearAndMonth }}">
+                                            <label for="year2">Years</label>
+                                            <select name="years2" id="year2" class="form-control cat" required>
+                                                <option value="">-Years-</option>
+                                                @foreach ($years as $key=>$y)
+                                                    <option value="{{$key}}" {{$key == $year2Val ? 'selected' : ''}}>{{$y}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <label for="">&nbsp;</label>
                                         <div class="form-group">
-                                            <button class="btn btn-sm btn-primary">Filter</button>
+                                            <button class="btn btn-sm btn-primary">Compare</button>
                                         </div>
                                     </div>
                                 </div>
@@ -167,7 +177,14 @@
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <canvas id="barChartDepartment" height="190"></canvas>
+                            <canvas id="barChartDepartment" height="70"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <canvas id="yearChart2" height="70"></canvas>
                         </div>
                     </div>
                 </div>
@@ -182,10 +199,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mdrSummaryStatusPerDept as $statusData)
+                                    @foreach ($mdrStatusOne as $ms1)
                                         <tr>
-                                            <td>{{ $statusData['month'] }}</td>
-                                            <td>{{ $statusData['status'] }}</td>
+                                            <td>{{ $ms1['month'] }}</td>
+                                            <td>{{ $ms1['status'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
+                            <table class="table table-striped table-bordered table-hover" id="">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($mdrStatusTwo as $ms2)
+                                        <tr>
+                                            <td>{{ $ms2['month'] }}</td>
+                                            <td>{{ $ms2['status'] }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -204,7 +243,12 @@
                             <form action="" method="get">
                                 <div class="row">
                                     <div class="col-lg-3">
-                                        <input type="text" name="year" id="year" class="form-control input-sm" maxlength="4" value="{{ $years }}" placeholder="Enter a year">
+                                        <select name="year" id="year" class="form-control cat">
+                                            <option value="">-Years-</option>
+                                            @foreach ($years as $key=>$year)
+                                                <option value="{{$key}}" {{$key==$yearData?'selected':''}}>{{$year}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="col-lg-3">
                                         <button type="submit" class="btn btn-sm btn-primary">Filter</button>
@@ -227,7 +271,7 @@
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h3>Status in year {{ isset($years) ? $years : date('Y') }}</h3>
+                            <h3>Status in year </h3>
                         </div>
                         <div class="ibox-content">
                             <table class="table table-striped table-bordered table-hover" id="">
@@ -261,7 +305,6 @@
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <label for="yearAndMonth">Year & Month</label>
-                                        <div class="form-group">
                                             <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
                                         </div>
                                     </div>
@@ -327,20 +370,19 @@
 @if(auth()->user()->role == "Approver")
 <script>
     $(document).ready(function() {
-        $("[name='department']").chosen({width: "100%"});
-        $("[name='departmentValue']").chosen({width: "100%"});
+        $(".cat").chosen({width: "100%"});
 
-        $('#startYearAndMonth').on('change', function() {
-            var startYearAndMonth = $(this).val();
-            var startDate = new Date(startYearAndMonth);
-            startDate.setMonth(startDate.getMonth() + 1);
+        // $('#startYearAndMonth').on('change', function() {
+        //     var startYearAndMonth = $(this).val();
+        //     var startDate = new Date(startYearAndMonth);
+        //     startDate.setMonth(startDate.getMonth() + 1);
 
-            var year = startDate.getFullYear();
-            var month = ('0' + (startDate.getMonth() + 1)).slice(-2);
-            var minEndDate = year + '-' + month;
+        //     var year = startDate.getFullYear();
+        //     var month = ('0' + (startDate.getMonth() + 1)).slice(-2);
+        //     var minEndDate = year + '-' + month;
             
-            $('#endYearAndMonth').attr('min', minEndDate);
-        })
+        //     $('#endYearAndMonth').attr('min', minEndDate);
+        // });
 
         var dept = {!! json_encode(array_keys($dashboardData)) !!}
         var data = {!! json_encode(array_values($dashboardData)) !!}
@@ -366,19 +408,16 @@
         var ctx2 = document.getElementById("barChart").getContext("2d");
         new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
         
-        var month = {!! json_encode(array_keys($monthAndData)) !!}
-        var data = {!! json_encode(array_values($monthAndData)) !!}
-        
+        var month1 = {!! json_encode(array_keys($yearOneArray)) !!};
+        var data1 = {!! json_encode(array_values($yearOneArray)) !!};
+
         var barDataDepartment = {
-            labels: month,
+            labels: month1,
             datasets: [
                 {
-                    label: "Total Rating in " + "{{ isset($yearAndMonth) ? date('F Y', strtotime($yearAndMonth)) : date('F Y') }}",
+                    label: "MDR data in year of {{$year1Val}}",
                     backgroundColor: 'rgba(26,179,148,0.5)',
-                    borderColor: "rgba(26,179,148,0.7)",
-                    pointBackgroundColor: "rgba(26,179,148,1)",
-                    pointBorderColor: "#fff",
-                    data: data
+                    data: data1
                 }
             ]
         };
@@ -389,8 +428,29 @@
 
         var ctx2 = document.getElementById("barChartDepartment").getContext("2d");
         new Chart(ctx2, {type: 'bar', data: barDataDepartment, options:barOptionsDepartment});
+        
+        var month2 = {!! json_encode(array_keys($yearTwoArray)) !!};
+        var data2 = {!! json_encode(array_values($yearTwoArray)) !!};
 
-        var yearAndMonth = "{{ $date }}"
+        var year2BarData = {
+            labels: month2,
+            datasets: [
+                {
+                    label: "MDR data in year of {{$year2Val}}",
+                    backgroundColor: '#1C84C6',
+                    data: data2
+                }
+            ]
+        };
+
+        var year2Options = {
+            responsive: true
+        };
+
+        var ctx2 = document.getElementById("yearChart2").getContext("2d");
+        new Chart(ctx2, {type: 'bar', data: year2BarData, options:year2Options});
+
+        var yearAndMonth = "{{ $date }};"
         
         $('#mdrStatusTable').DataTable({
             pageLength: 10,
@@ -408,6 +468,8 @@
 @endif
 @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
 <script>
+    $(".cat").chosen({width: "100%"});
+
     var month = {!! json_encode(array_keys($data)) !!}
 
     var data = {!! json_encode(array_values($data)) !!}
@@ -416,7 +478,7 @@
         labels: month,
         datasets: [
             {
-                label: "Total Rating in year " + "{{ isset($years) ? $years : date('Y') }}",
+                label: "",
                 backgroundColor: 'rgba(26,179,148,0.5)',
                 borderColor: "rgba(26,179,148,0.7)",
                 pointBackgroundColor: "rgba(26,179,148,1)",
