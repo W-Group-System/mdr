@@ -35,7 +35,7 @@
                                     <table class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>KPI</th>
+                                                <th>Key Performance Indicator</th>
                                                 <th>Target</th>
                                                 <th>Actual</th>
                                                 <th>Grade</th>
@@ -548,26 +548,30 @@
                                     <div class="panel-heading">
                                     </div>
                                     <div class="panel-body">
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>Approver</th>
-                                                <th>Status</th>
-                                                <th>Date</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($approver as $approverData)
-                                                    @foreach ($approverData->mdrStatus as $item)
-                                                        <tr>
-                                                            <td>{{ $item->users->name }}</td>
-                                                            <td>{{ $item->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                            <td>{{ !empty($item->start_date) ? date('F d, Y', strtotime($item->start_date)) : 'No Date' }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                        <div class='row text-center'>
+                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                            <strong>Approver</strong>
+                                            </div>
+                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                            <strong>Status</strong>
+                                            </div>
+                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                            <strong>Start Date</strong>
+                                            </div>
+                                        </div>
+                                        @foreach ($approver->mdrStatus as $status)
+                                            <div class="row text-center">
+                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                {{$status->users->name}}
+                                                </div>
+                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                {{!empty($status->status_desc)?$status->status_desc:'WAITING'}}
+                                                </div>
+                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                {{!empty($status->start_date)?date('F d, Y', strtotime($status->start_date)):'No Date'}}
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -636,27 +640,33 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(res) {
-                    var appendHtml = ``;
-
-                    $.each(res.filePath, function(key, path) {
-                        appendHtml += `
-                            <div class="attachment-kpi-${key}">
-                                <a href="${path}" target="_blank" class="btn btn-sm btn-info">
-                                    <i class="fa fa-eye"></i>
-                                </a>
+                    console.log(res.error);
+                    if (res.status == 0) {
+                        swal('ERROR', `${res.error.toString()}`, 'error');
+                    }
+                    else {
+                        var appendHtml = ``;
     
-                                <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${key}">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </div>
-                        `
-                    })
-
-                    $(".kpi-attachment-container-"+res.id).append(appendHtml)
-
-                    swal("SUCCESS", "Successfully Added.", "success");
-
-                    $("#uploadModal-"+res.id).modal('hide');
+                        $.each(res.filePath, function(key, path) {
+                            appendHtml += `
+                                <div class="attachment-kpi-${key}">
+                                    <a href="${path}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+        
+                                    <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${key}">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            `
+                        })
+    
+                        $(".kpi-attachment-container-"+res.id).append(appendHtml)
+    
+                        swal("SUCCESS", "Successfully Added.", "success");
+    
+                        $("#uploadModal-"+res.id).modal('hide');
+                    }
                 }
             })
         })

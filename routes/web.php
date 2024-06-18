@@ -23,7 +23,7 @@ Auth::routes(['register' => false]);
 Route::group(['middleware' => 'auth'], function() {
     Route::group(['middleware' => 'deactivate'], function() {
         # Dashboard
-        Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
+        Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard')->middleware('humanResource');
         Route::post('/print_pdf', 'Admin\DashboardController@printPdf');
         
         Route::group(['middleware' => 'adminAccess'], function() {

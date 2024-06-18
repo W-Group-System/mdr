@@ -10,8 +10,31 @@
 @endsection
 
 @section('content')
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content">
     <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <form action="" method="get">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                Year & Month:
+                                <div class="form-group">
+                                    <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" value="{{$yearAndMonth}}" max="{{date('Y-m')}}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                &nbsp;
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <h1 class="text-center">{{$department->name}}</h1>
@@ -23,14 +46,6 @@
                 </div>
 
                 <div class="ibox-content">
-                    @if (Session::has('errors'))
-                        <div class="alert alert-danger">
-                            @foreach (Session::get('errors') as $errors)
-                                {{ $errors }}<br>
-                            @endforeach
-                        </div>
-                    @endif
-
                     <div class="modal" id="monthModal">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">

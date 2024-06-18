@@ -14,7 +14,7 @@ class MdrStatus extends Model implements Auditable
     protected $table = 'mdr_status';
 
     // protected $fillable = ['department_id', 'department_head_id', 'deadline', 'submission_date', 'status', 'approved_date', 'rate', 'remarks'];
-    protected $fillable = ['status', 'start_date'];
+    protected $fillable = ['status', 'start_date', 'status_desc'];
 
     public function users() {
         return $this->belongsTo(User::class, 'user_id');

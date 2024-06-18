@@ -73,24 +73,15 @@ class MdrController extends Controller
         );
     }
 
-    public function mdrView() {
-        // $mdrScoreList = Department::with([
-        //     'kpi_scores' => function($q) {
-        //         $q->orderBy('year', 'DESC')
-        //             ->orderBy('month', 'DESC');
-        //     }
-        // ])
-        // ->where('id', auth()->user()->department_id)
-        // ->first();
+    public function mdrView(Request $request) {
+        $kpiScore = MdrScore::where('department_id', auth()->user()->department_id);
 
-        // foreach($mdrScoreList->kpi_scores as $kpiScore) {
-        //     // if($kpiScore->final_approved == 0) {
-        //     // }
-        //     $yearAndMonth = $kpiScore->year.'-'.$kpiScore->month;
-        // }
+        if(!empty($request->yearAndMonth)) {
+            $kpiScore = $kpiScore->where('year', date('Y', strtotime($request->yearAndMonth)))
+                            ->where('month', date('m', strtotime($request->yearAndMonth)));
+        }
 
-        $kpiScore = MdrScore::where('department_id', auth()->user()->department_id)
-            ->orderBy('year', 'DESC')
+        $kpiScore = $kpiScore->orderBy('year', 'DESC')
             ->orderBy('month', 'DESC')
             ->get();
         
@@ -107,7 +98,8 @@ class MdrController extends Controller
                 // 'mdrScoreList' => $mdrScoreList,
                 'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : date('Y-m'),
                 'kpiScore' => $kpiScore,
-                'department' => $department
+                'department' => $department,
+                'yearAndMonth' => $request->yearAndMonth
             )
         );
     }
@@ -145,7 +137,7 @@ class MdrController extends Controller
             ->where('year', date('Y', strtotime($request->yearAndMonth)))
             ->where('month', date('m', strtotime($request->yearAndMonth)))
             ->where('department_id', auth()->user()->department_id)
-            ->get();
+            ->first();
 
         return view('dept-head.edit-mdr',
             array(

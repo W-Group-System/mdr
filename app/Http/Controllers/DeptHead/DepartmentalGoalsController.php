@@ -318,12 +318,17 @@ class DepartmentalGoalsController extends Controller
     
     public function uploadAttachments(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'file[]' => 'max:2048|mimes:pdf,jpg,png,jpeg'
+            'file[]' => 'array',
+            'file.*' => 'max:2048|mimes:pdf,jpg,png,jpeg,xlsx'
+        ], [
+            'file.*.mimes' => 'The file must be pdf,jpg,png,jpeg,xlsx'
         ]);
 
         if ($validator->fails()) {
-            
-            return back()->with('kpiErrors', $validator->errors()->all());
+            return response()->json([
+                'status' => 0,
+                'error' => collect($validator->errors()->all())->first()
+            ]);
         }
         else {
             if ($request->hasFile('file')) {
@@ -352,6 +357,7 @@ class DepartmentalGoalsController extends Controller
                 }
 
                 return response()->json([
+                    'status' => 1,
                     'id' => $id,
                     'file' => count($request->file('file')),
                     'filePath' => $filePathArray,

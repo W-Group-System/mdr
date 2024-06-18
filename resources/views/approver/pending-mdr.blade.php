@@ -79,7 +79,7 @@
                                                 <div class="panel panel-primary">
                                                     <div class="panel-heading"></div>
                                                     <div class="panel-body">
-                                                        <table class="table table-hover">
+                                                        {{-- <table class="table table-hover">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Approver</th>
@@ -96,7 +96,31 @@
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
-                                                        </table>
+                                                        </table> --}}
+                                                        <div class="row text-center">
+                                                            <div class="col-md-4 border border-primary border-top-bottom border-left-right">
+                                                                <strong>Approver</strong>
+                                                            </div>
+                                                            <div class="col-md-4 border border-primary border-top-bottom border-left-right">
+                                                                <strong>Status</strong>
+                                                            </div>
+                                                            <div class="col-md-4 border border-primary border-top-bottom border-left-right">
+                                                                <strong>Date Approved</strong>
+                                                            </div>
+                                                        </div>
+                                                        @foreach ($data->mdrStatus as $status)
+                                                        <div class="row text-center">
+                                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                            {{$status->users->name}}
+                                                            </div>
+                                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                            {{!empty($status->status_desc)?$status->status_desc:'WAITING'}}
+                                                            </div>
+                                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                            {{!empty($status->start_date)?$status->start_date:'No Date'}}
+                                                            </div>
+                                                        </div>
+                                                        @endforeach
                                                     </div>
                                                 </div>
                                             </div>

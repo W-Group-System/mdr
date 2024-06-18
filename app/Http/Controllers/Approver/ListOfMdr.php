@@ -33,7 +33,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ListOfMdr extends Controller
 {
     public function index(Request $request) {
-        $departmentData = Department::with('kpi_scores', 'mdrSetup', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver')
+        $departmentData = Department::with([
+            'kpi_scores', 'mdrSetup', 'departmentalGoals', 'process_development', 'innovation', 'user', 'approver'])
             ->where('id', $request->department_id)
             ->first();
 
@@ -80,7 +81,8 @@ class ListOfMdr extends Controller
                 $processDevelopmentList = $departmentData->process_development->where('status_level', $approver->status_level);
                 $kpiScore = $departmentData->kpi_scores->first();
                 $mdrSummary = $departmentData->mdrSummary->first();
-                $mdrStatus = $departmentData->mdrSummary;
+                // $mdrStatus = $departmentData->mdrSummary;
+                $mdrStatus = $mdrSummary;
                 
                 if ($departmentalGoalsList->isNotEmpty()) {
                     $departmentalGoalsList->each(function($item, $key)use($approver) {
@@ -111,15 +113,34 @@ class ListOfMdr extends Controller
                         'status_level' => $approver->status_level != 1 ? 1 : 0
                     ]);
                     
-                    foreach($mdrStatus as $ms) {
-                        $status = $ms->mdrStatus->where('mdr_summary_id', $mdrSummary->id);
+                    // foreach($mdrStatus as $ms) {
+                    //     $status = $ms->mdrStatus->where('mdr_summary_id', $mdrSummary->id);
                         
-                        $status->each(function($item, $key)use($approver) {
-                            $item->update([
-                                'status' => 0, 
-                                'start_date' => null
+                    //     $status->each(function($item, $key)use($approver) {
+                    //         $item->update([
+                    //             'status' => 0, 
+                    //             'start_date' => null
+                    //         ]);
+                    //     });
+                        
+                    // }
+                    $status = $mdrStatus->mdrStatus;
+                    
+                    $status->each(function($item, $key)use($approver) {
+                        $item->update([
+                            'status' => 0, 
+                            'start_date' => null,
+                            'status_desc' => null
+                        ]);
+                    });
+
+                    foreach($status as $ms) {
+                        if (auth()->user()->id == $ms->user_id) {
+                            $ms->update([
+                                'start_date' => date('Y-m-d'),
+                                'status_desc' => 'RETURNED'
                             ]);
-                        });
+                        }
                     }
 
                     $user = User::where('id', $departmentData->user_id)->first();
@@ -129,7 +150,7 @@ class ListOfMdr extends Controller
                     $user->notify(new ReturnNotification($user->name, $request->monthOf, $approver));
 
                     Alert::success('SUCCESS', 'Successfully Returned.');
-                    return back();
+                    return redirect()->to('for_approval');
                 }
                 else {
                     Alert::error('ERROR', 'You already returned the MDR.');
@@ -257,17 +278,12 @@ class ListOfMdr extends Controller
                             'final_approved' => 1
                         ]);
                         
-                        // $mdrSummary->update([
-                        //     'approved_date' => date('Y-m-d'), 
-                        //     'final_approved' => 1,
-                        //     'penalty_status' => $mdrSummary->rate < 2.99 ? 'For NTE' : null
-                        // ]);
-
                         foreach($status->mdrStatus as $ms) {
                             if ($approver->user_id == $ms->user_id) {
                                 $ms->update([
                                     'status' => 1,
-                                    'start_date' => date('Y-m-d')
+                                    'start_date' => date('Y-m-d'),
+                                    'status_desc' => 'APPROVED'
                                 ]);
                             }
                         }
@@ -320,7 +336,7 @@ class ListOfMdr extends Controller
                         }
 
                         Alert::success('SUCCESS', 'Successfully Approved.');
-                        return back();
+                        return redirect()->to('for_approval');
                     
                     }
                     else {
@@ -354,7 +370,15 @@ class ListOfMdr extends Controller
                             if ($approver->user_id == $ms->user_id) {
                                 $ms->update([
                                     'status' => 1,
-                                    'start_date' => date('Y-m-d')
+                                    'start_date' => date('Y-m-d'),
+                                    'status_desc' => 'APPROVED'
+                                ]);
+                            }
+
+                            if ($ms->status_desc == 'RETURNED') {
+                                $ms->update([
+                                    'start_date' => null,
+                                    'status_desc' => null
                                 ]);
                             }
                         }
@@ -364,8 +388,7 @@ class ListOfMdr extends Controller
                         $user->notify(new ApprovedNotification($user->name, $approver, $request->monthOf));
 
                         Alert::success('SUCCESS', 'Successfully Approved.');
-                        return back();
-                    
+                        return redirect()->to('for_approval');
                     }
                 }
                 else {

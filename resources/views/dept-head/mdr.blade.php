@@ -33,7 +33,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td> {{ auth()->user()->name  }}</td>
+                                    <td>{{auth()->user()->name}}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#mdrStatusModal">
                                             <i class="fa fa-eye"></i>
@@ -79,26 +79,30 @@
                                     <div class="panel-heading">
                                     </div>
                                     <div class="panel-body">
-                                        <table class="table table-hover">
-                                            <thead>
-                                            <tr>
-                                                <th>Approver</th>
-                                                <th>Status</th>
-                                                <th>Date</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if(!empty($approver))
-                                                    @foreach ($approver->mdrStatus as $approverData)
-                                                        <tr>
-                                                            <td>{{ $approverData->users->name }}</td>
-                                                            <td>{{ $approverData->status == 1 ? 'APPROVED' : 'WAITING'}}</td>
-                                                            <td>{{ !empty($approverData->start_date) ? $approverData->start_date : 'NO DATE' }}</td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endif
-                                            </tbody>
-                                        </table>
+                                        <div class='row text-center'>
+                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                            <strong>Approver</strong>
+                                            </div>
+                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                            <strong>Status</strong>
+                                            </div>
+                                            <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                            <strong>Start Date</strong>
+                                            </div>
+                                        </div>
+                                        @foreach ($approver->mdrStatus as $status)
+                                            <div class="row text-center">
+                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                {{$status->users->name}}
+                                                </div>
+                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                {{!empty($status->status_desc)?$status->status_desc:'WAITING'}}
+                                                </div>
+                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                                {{!empty($status->start_date)?$status->start_date:'No Date'}}
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>

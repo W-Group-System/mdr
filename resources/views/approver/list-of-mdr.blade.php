@@ -11,6 +11,9 @@
             @if (auth()->user()->id == $approver->user_id)
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-title">
+                            <p>MDR Scores</p>
+                        </div>
                         <div class="ibox-content">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover" id="kpiScores">
@@ -79,17 +82,24 @@
                         ->where('status_level', $approver->status_level)
                         ->get();
     
-                    $innovation = $data->innovation()
+                    // $innovation = $data->innovation()
+                    //     ->where('year', date('Y', strtotime($yearAndMonth)))
+                    //     ->where('month', date('m', strtotime($yearAndMonth)))
+                    //     ->where('status_level', $approver->status_level)
+                    //     ->get();
+
+                    $attachments = $data->attachments()
                         ->where('year', date('Y', strtotime($yearAndMonth)))
                         ->where('month', date('m', strtotime($yearAndMonth)))
-                        ->where('status_level', $approver->status_level)
                         ->get();
                 @endphp
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-title">
+                            <p>Departmental Goals</p>
+                        </div>
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <p><strong>I.</strong>Departmental Goals</p>
                                 <form action="{{ url('addGradeAndRemarks') }}" method="post" id="addGradeAndRemarks" onsubmit="show()">
                                     @csrf
                                     
@@ -125,13 +135,28 @@
                                                                 <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control" required>{{ $item->remarks }}</textarea>
                                                             </td>
                                                             <td width="10">
-                                                                @foreach ($item->mdrSetup->attachments as $key => $attachment)
+                                                                {{-- @foreach ($item->mdrSetup->attachments as $key => $attachment)
                                                                 <div>
+                                                                    @if($item->mdr_setup_id == $attachment->mdr_setup_id)
                                                                     <span><strong>{{ $key+1 }}</strong>.</span> 
                                                                     <a href="{{ asset('file/' . $attachment->file_name) }}" class="btn btn-sm btn-info" target="_blank">
                                                                         <i class="fa fa-eye"></i>
                                                                     </a>
+                                                                    @endif
                                                                 </div>
+                                                                @endforeach --}}
+                                                                @php
+                                                                    $counter = 1;
+                                                                @endphp
+                                                                @foreach ($attachments as $a)
+                                                                    @if($item->mdr_setup_id == $a->mdr_setup_id)
+                                                                    <div>
+                                                                        <span><strong>{{$counter++}}</strong></span>
+                                                                        <a href="{{ asset('file/' . $a->file_name) }}" class="btn btn-sm btn-info" target="_blank">
+                                                                            <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    @endif
                                                                 @endforeach
                                                             </td>
                                                         </tr>
@@ -150,7 +175,7 @@
                     </div>
                 </div>
     
-                <div class="col-lg-12">
+                {{-- <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
                         <div class="ibox-content">
                             <div class="table-responsive">
@@ -183,9 +208,6 @@
                                                     <td>{{ date('F m, Y', strtotime($innovationData->target_date)) }}</td>
                                                     <td>{{ date('F m, Y', strtotime($innovationData->actual_date)) }}</td>
                                                     <td width="30">
-                                                        {{-- <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#innovationRemarksModal-{{ $innovationData->id }}">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </button> --}}
                                                         <textarea name="remarks[]" id="remarks" cols="30" rows="10" class="form-control">{{ $innovationData->remarks }}</textarea>
                                                     </td>
                                                     <td width="10">
@@ -208,13 +230,15 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins" style="margin-top: 10px;">
+                        <div class="ibox-title">
+                            <p>Process Improvement</p>
+                        </div>
                         <div class="ibox-content">
                             <div class="table-responsive">
-                                <p><strong>III.</strong>Process Improvement</p>
                                 <form action="{{ url('add_pd_remarks') }}" method="post" onsubmit="show()">
                                     @csrf
 

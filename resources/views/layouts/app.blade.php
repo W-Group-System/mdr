@@ -54,12 +54,14 @@
                             </a>
                         </div>
                     </li>
+                    @if(auth()->user()->role != "Human Resources")
                     <li class="{{ Route::currentRouteName() == "dashboard" ? 'active' : '' }}">
                         <a href="{{ route('dashboard') }}">
                             <i class="fa fa-th-large"></i>
                             <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
+                    @endif
                     @if(auth()->user()->role == "Administrator")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="#">

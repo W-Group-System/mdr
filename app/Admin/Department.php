@@ -4,6 +4,7 @@ namespace App\Admin;
 
 use App\Approver\MdrSummary;
 use App\Approver\Warnings;
+use App\DeptHead\Attachments;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\MdrScore;
@@ -52,5 +53,9 @@ class Department extends Model implements Auditable
 
     public function warnings() {
         return $this->hasMany(Warnings::class);
+    }
+
+    public function attachments() {
+        return $this->hasMany(Attachments::class);
     }
 }

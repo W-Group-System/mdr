@@ -26,17 +26,12 @@ class DashboardController extends Controller
                 )
             );
         } else if(auth()->user()->role == "Approver") {
-            // dd($request->all());
             $departmentList = Department::with([
                 'mdrSummary' => function($q)use($request) {
-                    if (!empty($request->department) && !empty($request->yearAndMonth)) {
-                        $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                            ->where('month', date('m', strtotime($request->yearAndMonth)))
-                            ->where('department_id', !empty($request->department) ?  $request->department : '');
-                    }
-                    else if (!empty($request->yearAndMonth)) {
+                    if (!empty($request->yearAndMonth)) {
                         $q->where('year', date('Y', strtotime($request->yearAndMonth)))
                             ->where('month', date('m', strtotime($request->yearAndMonth)));
+                            // ->where('department_id', !empty($request->department) ?  $request->department : '');
                     }
                     else {
                         $q->where('year', date('Y'))
@@ -260,35 +255,36 @@ class DashboardController extends Controller
                     'yearData' => $request->year
                 )
             );
-        } else if(auth()->user()->role == "Human Resources") {
-            $mdrSummary = MdrSummary::with(['departments.user'])
-                ->where('rate', '<', 2.99)
-                ->where('final_approved', 1);
+        } 
+        // else if(auth()->user()->role == "Human Resources") {
+        //     $mdrSummary = MdrSummary::with(['departments.user'])
+        //         ->where('rate', '<', 2.99)
+        //         ->where('final_approved', 1);
 
-            if (!empty($request->yearAndMonth)) {
-                $mdrSummary = $mdrSummary->where('year', date('Y', strtotime($request->yearAndMonth)))
-                                        ->where('month', date('m', strtotime($request->yearAndMonth)));
-            }
-            else {
-                $mdrSummary = $mdrSummary->where('year', date('Y'))
-                                        ->where('month', date('m'));
-            }
+        //     if (!empty($request->yearAndMonth)) {
+        //         $mdrSummary = $mdrSummary->where('year', date('Y', strtotime($request->yearAndMonth)))
+        //                                 ->where('month', date('m', strtotime($request->yearAndMonth)));
+        //     }
+        //     else {
+        //         $mdrSummary = $mdrSummary->where('year', date('Y'))
+        //                                 ->where('month', date('m'));
+        //     }
     
-            $mdrSummary = $mdrSummary->get();
+        //     $mdrSummary = $mdrSummary->get();
             
-            $barDataArray = array();
-            foreach($mdrSummary as $data) {
-                $barDataArray[$data->departments->code] = $data->rate;
-            }
+        //     $barDataArray = array();
+        //     foreach($mdrSummary as $data) {
+        //         $barDataArray[$data->departments->code] = $data->rate;
+        //     }
 
-            return view('admin.dashboard',
-                array(
-                    'mdrSummary' => $mdrSummary,
-                    'yearAndMonth' => !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m'),
-                    'barData' => $barDataArray
-                )
-            );
-        }
+        //     return view('admin.dashboard',
+        //         array(
+        //             'mdrSummary' => $mdrSummary,
+        //             'yearAndMonth' => !empty($request->yearAndMonth) ? $request->yearAndMonth : date('Y-m'),
+        //             'barData' => $barDataArray
+        //         )
+        //     );
+        // }
         
         
     }

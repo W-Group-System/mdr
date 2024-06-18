@@ -40,7 +40,7 @@
                         <div class="ibox-content">
                             <form action="" method="get">
                                 <div class="row">
-                                    <div class="col-lg-3">
+                                    {{-- <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="department">Department</label>
                                             <select name="department" id="department" class="form-control cat">
@@ -50,7 +50,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="yearAndMonth">Year & Month</label>
@@ -295,7 +295,7 @@
                 </div>
             </div>
         </div>
-    @elseif (auth()->user()->role == "Human Resources")
+    {{-- @elseif (auth()->user()->role == "Human Resources")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -353,7 +353,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     @endif
 
 @include('components.footer')
@@ -371,18 +371,6 @@
 <script>
     $(document).ready(function() {
         $(".cat").chosen({width: "100%"});
-
-        // $('#startYearAndMonth').on('change', function() {
-        //     var startYearAndMonth = $(this).val();
-        //     var startDate = new Date(startYearAndMonth);
-        //     startDate.setMonth(startDate.getMonth() + 1);
-
-        //     var year = startDate.getFullYear();
-        //     var month = ('0' + (startDate.getMonth() + 1)).slice(-2);
-        //     var minEndDate = year + '-' + month;
-            
-        //     $('#endYearAndMonth').attr('min', minEndDate);
-        // });
 
         var dept = {!! json_encode(array_keys($dashboardData)) !!}
         var data = {!! json_encode(array_values($dashboardData)) !!}
@@ -497,7 +485,7 @@
 </script>
 @endif
 
-@if(auth()->user()->role == "Human Resources")
+{{-- @if(auth()->user()->role == "Human Resources")
 <script>
 
     var department = {!! json_encode(array_keys($barData)) !!}
@@ -532,5 +520,5 @@
         buttons: [],
     });
 </script>
-@endif
+@endif --}}
 @endpush
