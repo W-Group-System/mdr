@@ -16,12 +16,11 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <form action="" method="get">
-
                         <div class="row">
                             <div class="col-md-3">
                                 Year & Month:
                                 <div class="form-group">
-                                    <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" value="{{$yearAndMonth}}" max="{{date('Y-m')}}">
+                                    <input type="month" name="filterYearAndMonth" id="yearAndMonth" class="form-control input-sm" value="{{$filterYearAndMonth}}" max="{{date('Y-m')}}">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -37,7 +36,7 @@
         </div>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <h1 class="text-center">{{$department->name}}</h1>
+                <h1 class="text-center">{{auth()->user()->department->name}}</h1>
                 <div class="ibox-title">
                     <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
@@ -86,7 +85,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($kpiScore as $data)
+                                @foreach ($mdrScore as $data)
                                     <tr>
                                         <td>{{ $data->departments->name }} </td>
                                         <td>{{ date("F Y", strtotime($data->year . '-' . $data->month))}}</td>

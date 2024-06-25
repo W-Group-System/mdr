@@ -15,7 +15,7 @@
     @foreach ($mdrSetup as $departmentKpiData)
         @include('dept-head.departmental-goals', array('mdrSetup' => $departmentKpiData, 'yearAndMonth' => $yearAndMonth))
         @include('dept-head.process-development', array('mdrSetup' => $mdrSetup))
-        @include('dept-head.innovation', array('mdrSetup' => $mdrSetup))
+        {{-- @include('dept-head.innovation', array('mdrSetup' => $mdrSetup)) --}}
     @endforeach
 
     @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
@@ -90,19 +90,21 @@
                                             <strong>Start Date</strong>
                                             </div>
                                         </div>
-                                        @foreach ($approver->mdrStatus as $status)
+                                        @if(!empty($approver->mdrStatus))
+                                          @foreach ($approver->mdrStatus as $status)
                                             <div class="row text-center">
-                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
-                                                {{$status->users->name}}
-                                                </div>
-                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
-                                                {{!empty($status->status_desc)?$status->status_desc:'WAITING'}}
-                                                </div>
-                                                <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
-                                                {{!empty($status->start_date)?$status->start_date:'No Date'}}
-                                                </div>
+                                              <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                              {{$status->users->name}}
+                                              </div>
+                                              <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                              {{!empty($status->status_desc)?$status->status_desc:'WAITING'}}
+                                              </div>
+                                              <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
+                                              {{!empty($status->start_date)?$status->start_date:'No Date'}}
+                                              </div>
                                             </div>
-                                        @endforeach
+                                          @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>

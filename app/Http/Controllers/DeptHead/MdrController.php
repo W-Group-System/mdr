@@ -73,35 +73,59 @@ class MdrController extends Controller
         );
     }
 
-    public function mdrView(Request $request) {
-        $kpiScore = MdrScore::where('department_id', auth()->user()->department_id);
+    // public function mdrView(Request $request) {
+    //     $kpiScore = MdrScore::where('department_id', auth()->user()->department_id);
 
-        if(!empty($request->yearAndMonth)) {
-            $kpiScore = $kpiScore->where('year', date('Y', strtotime($request->yearAndMonth)))
-                            ->where('month', date('m', strtotime($request->yearAndMonth)));
-        }
+    //     if(!empty($request->yearAndMonth)) {
+    //         $kpiScore = $kpiScore->where('year', date('Y', strtotime($request->yearAndMonth)))
+    //                         ->where('month', date('m', strtotime($request->yearAndMonth)));
+    //     }
 
-        $kpiScore = $kpiScore->orderBy('year', 'DESC')
-            ->orderBy('month', 'DESC')
-            ->get();
+    //     $kpiScore = $kpiScore->orderBy('year', 'DESC')
+    //         ->orderBy('month', 'DESC')
+    //         ->get();
         
-        $yearAndMonth = "0000-00";
-        foreach($kpiScore as $kpiScoreData) {
-            $yearAndMonth = $kpiScoreData->year.'-'.$kpiScoreData->month;
-            break;
-        }
+    //     $yearAndMonth = "0000-00";
+    //     foreach($kpiScore as $kpiScoreData) {
+    //         $yearAndMonth = $kpiScoreData->year.'-'.$kpiScoreData->month;
+    //         break;
+    //     }
 
-        $department = Department::select('name')->where('id', auth()->user()->department_id)->first();
+    //     $department = Department::select('name')->where('id', auth()->user()->department_id)->first();
 
-        return view('dept-head.mdr-list', 
-            array(
-                // 'mdrScoreList' => $mdrScoreList,
-                'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : date('Y-m'),
-                'kpiScore' => $kpiScore,
-                'department' => $department,
-                'yearAndMonth' => $request->yearAndMonth
-            )
-        );
+    //     return view('dept-head.mdr-list', 
+    //         array(
+    //             // 'mdrScoreList' => $mdrScoreList,
+    //             'yearAndMonth' => isset($yearAndMonth) ? $yearAndMonth : date('Y-m'),
+    //             'kpiScore' => $kpiScore,
+    //             'department' => $department,
+    //             'yearAndMonth' => $request->yearAndMonth
+    //         )
+    //     );
+    // }
+
+    public function mdrView(Request $request) {
+      $mdrScore = MdrScore::query();
+
+      if (!empty($request->filterYearAndMonth)) {
+        $mdrScore->where('year', date('Y', strtotime($request->filterYearAndMonth)))
+          ->where('month', date('m', strtotime($request->filterYearAndMonth)));
+      }
+
+      $mdrScore = $mdrScore->where('department_id', auth()->user()->department_id)
+        ->orderBy('month', 'DESC')
+        ->get();
+
+
+      $lastSubmittedMdr = MdrScore::where('department_id', auth()->user()->department_id)->orderBy('month', 'DESC')->first();
+      $yearAndMonth = $lastSubmittedMdr->year.'-'.$lastSubmittedMdr->month;
+
+      return view('dept-head.mdr-list', array(
+          'mdrScore' => $mdrScore,
+          'filterYearAndMonth' => $request->filterYearAndMonth,
+          'yearAndMonth' => $yearAndMonth
+        )
+      );
     }
 
     public function edit(Request $request) {
