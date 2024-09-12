@@ -17,20 +17,18 @@ class DepartmentController extends Controller
             ->select('id', 'code', 'name', 'user_id', 'target_date', 'status')
             ->get();
 
-        $user =  User::where('status', 1)->get();
+        $user =  User::where('status', "Active")->get();
 
         return view('admin.department',
             array(
                 'departmentList' => $departmentList,
                 'user' => $user,
                 'targetDate' => $this->targetDate(),
-                // 'approverList' => $approverList
             )
         );
     }
 
     public function addDepartments(Request $request) {
-        
         $request->validate([
             'departmentCode' => 'unique:departments,code',
         ]);
@@ -40,18 +38,16 @@ class DepartmentController extends Controller
         $dept->name = $request->departmentName;
         $dept->user_id = $request->departmentHead;
         $dept->target_date = $request->targetDate;
-        $dept->status = 1;
+        $dept->status = "Active";
         $dept->save();
 
-        Alert::success('SUCCESS', 'Successfully Added.');
+        Alert::success('Successfully Added')->persistent('Dismiss');
         return back();
     }
 
     public function updateDepartments(Request $request, $id) {
         $request->validate([
             'departmentCode' => 'unique:departments,code, ' . $id,
-            'approver' => 'required',
-            'targetDate' => 'required'
         ]);
 
         $dept = Department::findOrFail($id);
@@ -61,8 +57,9 @@ class DepartmentController extends Controller
         $dept->target_date = $request->targetDate;
         $dept->save();
 
-        $approver = DepartmentApprovers::where('department_id', $id)->delete();
-        if(!empty($request->approver)) {
+        if ($request->has('approver'))
+        {
+            $approver = DepartmentApprovers::where('department_id', $id)->delete();
             foreach($request->approver as $key => $value) {
                 $approver = new DepartmentApprovers;
                 $approver->department_id = $id;
@@ -72,25 +69,25 @@ class DepartmentController extends Controller
             }
         }
 
-        Alert::success('SUCCESS', 'Successfully Updated.');
+        Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
 
     public function deactivate(Request $request, $id) {
         $departmentData = Department::findOrFail($id);
-        $departmentData->status = $request->status;
+        $departmentData->status = "Deactivate";
         $departmentData->save();
         
-        Alert::success('SUCCESS', 'Successfully Deactivated.');
+        Alert::success('Successfully Deactivated')->persistent('Dismiss');
         return back();
     }
 
     public function activate(Request $request, $id) {
         $departmentData = Department::findOrFail($id);
-        $departmentData->status = $request->status;
+        $departmentData->status = "Active";
         $departmentData->save();
 
-        Alert::success('SUCCESS', 'Successfully Activated.');
+        Alert::success('Successfully Activated')->persistent('Dismiss');
 
         return back();
     }

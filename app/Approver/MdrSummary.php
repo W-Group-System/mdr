@@ -4,8 +4,11 @@ namespace App\Approver;
 
 use App\Admin\Department;
 use App\DeptHead\DepartmentalGoals;
+use App\DeptHead\Innovation;
+use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
+use App\DeptHead\ProcessDevelopment;
 use App\HR\ForNod;
 use App\HR\NodAttachments;
 use App\HR\NteAttachments;
@@ -30,9 +33,9 @@ class MdrSummary extends Model implements Auditable
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function mdrStatus() {
-        return $this->hasMany(MdrStatus::class);
-    }
+    // public function mdrStatus() {
+    //     return $this->hasMany(MdrStatus::class);
+    // }
 
     public function kpiScores() {
         return $this->hasOne(MdrScore::class, 'mdr_summary_id');
@@ -48,5 +51,26 @@ class MdrSummary extends Model implements Auditable
 
     public function pipAttachments() {
         return $this->hasOne(PipAttachments::class);
+    }
+
+    public function departmentalGoals()
+    {
+        return $this->hasMany(DepartmentalGoals::class);
+    }
+    public function innovation()
+    {
+        return $this->hasMany(Innovation::class);
+    }
+    public function processImprovement()
+    {
+        return $this->hasMany(ProcessDevelopment::class);
+    }
+    public function mdrScore()
+    {
+        return $this->hasMany(MdrScore::class);
+    }
+    public function approvers()
+    {
+        return $this->hasMany(MdrApprovers::class);
     }
 }

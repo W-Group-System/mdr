@@ -13,7 +13,7 @@
                             <h5>Users</h5>
                         </div>
                         <div class="ibox-content">
-                            <h1 class="no-margins">{{ $totalUsers }}</h1>
+                            <h1 class="no-margins">{{ count($total_users) }}</h1>
                             <small>Total Users</small>
                         </div>
                     </div>
@@ -24,43 +24,33 @@
                             <h5>Departments</h5>
                         </div>
                         <div class="ibox-content">
-                            <h1 class="no-margins">{{ $totalDepartments }}</h1>
+                            <h1 class="no-margins">{{ count($total_dept) }}</h1>
                             <small>Total Departments</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    @endif
 
-    @elseif(auth()->user()->role == "Approver")
+    @if(auth()->user()->role == "Approver")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <form action="" method="get">
+                            <form action="" method="get" onsubmit="show()">
                                 <div class="row">
-                                    {{-- <div class="col-lg-3">
+                                    <div class="col-md-3">
+                                        <label for="">Year and Month :</label>
                                         <div class="form-group">
-                                            <label for="department">Department</label>
-                                            <select name="department" id="department" class="form-control cat">
-                                                <option value="">-Department-</option>
-                                                @foreach ($listOfDepartment as $departmentData)
-                                                    <option value="{{ $departmentData->id }}" {{ $departmentData->id == $department ? 'selected' : '' }}>{{ $departmentData->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div> --}}
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label for="yearAndMonth">Year & Month</label>
-                                            <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
+                                            <input type="month" name="yearAndMonth" class="form-control input-sm" >
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
+                                    <div class="col-md-3">
                                         <label for="">&nbsp;</label>
                                         <div class="form-group">
-                                            <button class="btn btn-sm btn-primary">Filter</button>
+                                            <button type="button" class="btn btn-sm btn-primary">Filter</button>
                                         </div>
                                     </div>
                                 </div>
@@ -75,15 +65,16 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
                             <form action="{{ url('print_pdf') }}" method="post" target="_blank">
                                 @csrf
 
-                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                {{-- <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
-                                {{-- <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
+                                <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
                                 <input type="hidden" name="endYearAndMonth" value="{{ $endYearAndMonth }}"> --}}
 
                                 <button type="submit" class="btn btn-sm btn-warning pull-right">
@@ -92,7 +83,7 @@
                                     <span class="bold">Print PDF</span>
                                 </button>
                             </form>
-                            <table class="table table-striped table-bordered table-hover" id="mdrStatusTable">
+                            <table class="table table-bordered" id="mdrStatusTable">
                                 <thead>
                                     <tr>
                                         <th>Department</th>
@@ -107,25 +98,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mdrStatus as $data)
+                                    {{-- @foreach ($department_array as $summary)
                                         <tr>
-                                            <td>{{ $data['department'] }}</td>
-                                            <td>{{ $data['action'] }}</td>
-                                            <td>{{ $data['status'] }}</td>
-                                            <td>{{ $data['deadline'] }}</td>
-                                            <td>{{ $data['kpi'] }}</td>
-                                            <td>{{ $data['innovation_scores'] }}</td>
-                                            <td>{{ $data['pd_scores'] }}</td>
-                                            <td>{{ $data['timeliness'] }}</td>
-                                            <td>{{ $data['rate'] }}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12">
+                {{-- <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
                             <form action="" method="get">
@@ -231,23 +222,25 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
-    @elseif(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
+    @endif
+
+    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <form action="" method="get">
+                            <form action="" method="get" onsubmit="show()">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <select name="year" id="year" class="form-control cat">
                                             <option value="">-Years-</option>
-                                            @foreach ($years as $key=>$year)
+                                            {{-- @foreach ($years as $key=>$year)
                                                 <option value="{{$key}}" {{$key==$yearData?'selected':''}}>{{$year}}</option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                     </div>
                                     <div class="col-lg-3">
@@ -260,6 +253,9 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>MDR Status Graph</h5>
+                        </div>
                         <div class="ibox-content">
                             <div>
                                 <canvas id="barChart" height="140"></canvas>
@@ -271,10 +267,10 @@
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h3>Status in year </h3>
+                            <h5>Status in Year {{date('Y')}} </h5>
                         </div>
                         <div class="ibox-content">
-                            <table class="table table-striped table-bordered table-hover" id="">
+                            <table class="table table-bordered" id="statusPerYear">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -282,10 +278,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($status as $statusData)
+                                    @foreach ($months as $month)
                                         <tr>
-                                            <td>{{ $statusData['month'] }}</td>
-                                            <td>{{ $statusData['status'] }}</td>
+                                            <td>{{ $month->y }}</td>
+                                            <td>
+                                                @if(count($month->mdr_status) > 0)
+                                                    <span class="label label-success">Submitted</span>
+                                                @else
+                                                    <span class="label label-danger">No Submitted</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -295,65 +297,6 @@
                 </div>
             </div>
         </div>
-    {{-- @elseif (auth()->user()->role == "Human Resources")
-        <div class="wrapper wrapper-content">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-content">
-                            <form action="" method="get">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <label for="yearAndMonth">Year & Month</label>
-                                            <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm" max="{{ date('Y-m') }}" value="{{ $yearAndMonth }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <label for="">&nbsp;</label>
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-content">
-                            <canvas id="barChart" height="70"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-content">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-hover" id="penaltiesTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Department</th>
-                                            <th>Department Head</th>
-                                            <th>Total Rating</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($mdrSummary as $mdrSummaryData)
-                                            <tr>
-                                                <td>{{ $mdrSummaryData->departments->name }}</td>
-                                                <td>{{ $mdrSummaryData->departments->user->name }}</td>
-                                                <td>{{ $mdrSummaryData->rate }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
     @endif
 
 @include('components.footer')
@@ -372,7 +315,19 @@
     $(document).ready(function() {
         $(".cat").chosen({width: "100%"});
 
-        var dept = {!! json_encode(array_keys($dashboardData)) !!}
+        $('#mdrStatusTable').DataTable({
+            pageLength: 10,
+            responsive: true,
+            ordering: false,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                // {extend: 'csv'},
+                {extend: 'excel'},
+            ]
+        });
+
+        @php         
+        /*var dept = {!! json_encode(array_keys($dashboardData)) !!}
         var data = {!! json_encode(array_values($dashboardData)) !!}
 
         var barData = {
@@ -439,29 +394,28 @@
         new Chart(ctx2, {type: 'bar', data: year2BarData, options:year2Options});
 
         var yearAndMonth = "{{ $date }};"
-        
-        $('#mdrStatusTable').DataTable({
-            pageLength: 10,
-            responsive: true,
-            ordering: false,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: [
-                // {extend: 'csv'},
-                {extend: 'excel', title: "MDR Summary for the month of {{ date('F Y', strtotime($yearAndMonth)) }}"},
-            ]
-        });
-
-    })
+        */
+        @endphp
+    }) 
 </script>
 @endif
+
 @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
 <script>
     $(".cat").chosen({width: "100%"});
-
-    var month = {!! json_encode(array_keys($data)) !!}
-
-    var data = {!! json_encode(array_values($data)) !!}
-
+    
+    $('#statusPerYear').DataTable({
+        pageLength: 12,
+        responsive: true,
+        ordering: false,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [
+        ]
+    });
+    
+    var month = {!! json_encode(collect($months)->pluck('y')->toArray()) !!}
+    var data = {!! json_encode(collect($months)->pluck('mdr_status')->map(function($status) { return count($status) ? $status[0] : 0; })->toArray()) !!};
+    
     var barData = {
         labels: month,
         datasets: [
@@ -485,40 +439,4 @@
 </script>
 @endif
 
-{{-- @if(auth()->user()->role == "Human Resources")
-<script>
-
-    var department = {!! json_encode(array_keys($barData)) !!}
-    var values = {!! json_encode(array_values($barData)) !!}
-    
-    var barData = {
-        labels: department,
-        datasets: [
-            {
-                label: "Total Rating in " + "{{ isset($yearAndMonth) ? date('F Y', strtotime($yearAndMonth)) : date('F Y') }}",
-                backgroundColor: 'rgba(26,179,148,0.5)',
-                borderColor: "rgba(26,179,148,0.7)",
-                pointBackgroundColor: "rgba(26,179,148,1)",
-                pointBorderColor: "#fff",
-                data: values
-            }
-        ]
-    };
-
-    var barOptions = {
-        responsive: true
-    };
-
-    var ctx2 = document.getElementById("barChart").getContext("2d");
-    new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
-
-    $('#penaltiesTable').DataTable({
-        pageLength: 10,
-        ordering: false,
-        responsive: true,
-        dom: '<"html5buttons"B>lTfgitp',
-        buttons: [],
-    });
-</script>
-@endif --}}
 @endpush

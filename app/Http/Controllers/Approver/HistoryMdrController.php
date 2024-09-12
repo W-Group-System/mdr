@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Approver;
 
 use App\Admin\Department;
+use App\Admin\MdrGroup;
+use App\DeptHead\DepartmentalGoals;
+use App\DeptHead\Innovation;
+use App\DeptHead\MdrScore;
+use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,40 +16,20 @@ use function PHPSTORM_META\map;
 class HistoryMdrController extends Controller
 {
     public function index(Request $request) {
-        $departmentList = Department::get();
-
-        $departmentData = Department::with([
-            'mdrSetup',
-            'kpi_scores' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->where('final_approved', 1);
-            },
-            'departmentalGoals' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->where('final_approved', 1);
-            },
-            'innovation' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->where('final_approved', 1);
-            },
-            'process_development' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->where('final_approved', 1);
-            },
-        ])
-        ->where('id', $request->department)
-        ->first();
+        $department_list = Department::get();
+        $departmental_goals = DepartmentalGoals::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
+        $innovation = Innovation::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
+        $process_improvement = ProcessDevelopment::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
+        $mdr_score = MdrScore::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
 
         return view('approver.history-mdr',
             array(
-                'departmentList' => $departmentList,
-                'department' => $request->department,
-                'yearAndMonth' => $request->yearAndMonth,
-                'data' => $departmentData
+                'departmental_goals' => $departmental_goals,
+                'innovation' => $innovation,
+                'process_improvement' => $process_improvement,
+                'department_list' => $department_list,
+                'year_and_month' => $request->yearAndMonth,
+                'mdr_score' => $mdr_score
             )
         );
     }

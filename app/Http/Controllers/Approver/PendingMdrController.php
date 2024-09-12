@@ -12,11 +12,7 @@ class PendingMdrController extends Controller
 {
     public function index() {
 
-        $mdrSummary = MdrSummary::with('mdrStatus')
-            ->where('status_level', '<>', 0)
-            ->orderBy('final_approved', 'ASC')
-            ->orderBy('year', 'DESC')
-            ->orderBy('month', 'DESC')
+        $mdrSummary = MdrSummary::orderBy('yearAndMonth', 'DESC')
             ->get();
         
         return view('approver.pending-mdr',

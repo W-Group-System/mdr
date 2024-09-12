@@ -24,10 +24,10 @@ class MdrGroupController extends Controller
     public function addDepartmentGroups(Request $request) {
         $mdrGroup = new MdrGroup;
         $mdrGroup->name =  $request->departmentGroupName;
-        $mdrGroup->status = 1;
+        $mdrGroup->status = "Active";
         $mdrGroup->save();
 
-        Alert::success('SUCCESS', 'Successfully Added.');
+        Alert::success('Successfully Added')->persistent('Dismiss');
         return back();
     }
 
@@ -36,27 +36,27 @@ class MdrGroupController extends Controller
         $mdrGroup->name =  $request->departmentGroupName;
         $mdrGroup->save();
 
-        Alert::success('SUCCESS', 'Successfully Updated.');
+        Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
 
     public function deactivate($id) {
         
         $mdrGroupData = MdrGroup::findOrFail($id);
-        $mdrGroupData->status = 0;
+        $mdrGroupData->status = "Inactive";
         $mdrGroupData->save();
 
-        Alert::success('SUCCESS', 'Successfully Deactivated.');
+        Alert::success('Successfully Deactivated')->persistent('Dismiss');
         return back();
     }
 
     public function activate($id) {
         
         $mdrGroupData = MdrGroup::findOrFail($id);
-        $mdrGroupData->status = 1;
+        $mdrGroupData->status = "Active";
         $mdrGroupData->save();
 
-        Alert::success('SUCCESS', 'Successfully Activated.');
+        Alert::success('Successfully Activated')->persistent('Dismiss');
         return back();
     }
 }

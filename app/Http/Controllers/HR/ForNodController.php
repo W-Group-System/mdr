@@ -21,7 +21,6 @@ class ForNodController extends Controller
                 'nodAttachments.users'
             ])
             ->where('rate', '<', 2.99)
-            ->where('final_approved', 1)
             ->where('penalty_status', "For NOD")
             ->get();
         }
@@ -32,7 +31,6 @@ class ForNodController extends Controller
                 'nodAttachments.users'
             ])
             ->where('rate', '<', 2.99)
-            ->where('final_approved', 1)
             ->where('penalty_status', "For NOD")
             ->where('department_id', auth()->user()->department_id)
             ->get();

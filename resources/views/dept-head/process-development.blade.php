@@ -1,50 +1,34 @@
-
-@if($departmentKpiData->id == 8)
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
+        <div class="ibox-title">
+            <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#addProcessDevelopment">
+                <i class="fa fa-plus"></i>
+                Add Process Improvement
+            </button>
+        </div>
         <div class="ibox-content">
             <div class="table-responsive">
-                <p><span class="period">{{ $departmentKpiData->name }}</span></p>
-                
                 @include('components.error')
-
-                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addProcessDevelopment">Add Process Improvement</button>
 
                 <table class="table table-bordered table-hover" id="processDevelopmentTable">
                     <thead>
                         <tr>
+                            <th>Actions</th>
                             <th>Description</th>
                             <th>Accomplished Date</th>
                             <th>Remarks</th>
                             <th>Attachments</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($departmentKpiData->processDevelopment as $processDevelopmentData)
+                        @foreach ($process_improvement as $processDevelopmentData)
                             <tr>
-                                <td>{{ $processDevelopmentData->description }}</td>
-                                <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
-                                <td>{{ $processDevelopmentData->remarks }}</td>
-                                <td width="10">
-                                    @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
-                                        <div class="pd-attachments-{{ $pdFile->id }}">
-                                            <a href="{{ $pdFile->filepath }}" class="btn btn-sm btn-info" target="_blank">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
-                                            
-                                            <button type="button" class="btn btn-sm btn-danger deletePdAttachments" data-id="{{ $pdFile->id }}" {{ $processDevelopmentData->status_level != 0 ? 'disabled' : '' }}>
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    @endforeach
-                                </td>
-                                <td width="10">
-                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editPdModal-{{ $processDevelopmentData->id }}" {{ $processDevelopmentData->status_level != 0 ? 'disabled' : '' }}>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editProcessDevelopment{{ $processDevelopmentData->id }}">
                                         <i class="fa fa-pencil"></i>
                                     </button>
 
-                                    <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post" onsubmit="show()">
+                                    <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
                                         @csrf
 
                                         <input type="hidden" name="department_id" value="{{ $processDevelopmentData->department_id }}">
@@ -55,104 +39,30 @@
                                         </button>
                                     </form>
                                 </td>
+                                <td>{{ $processDevelopmentData->description }}</td>
+                                <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
+                                <td>{!! nl2br($processDevelopmentData->remarks) !!}</td>
+                                <td>
+                                    @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
+                                        <span>{{$key+1}}. </span>
+                                        <a href="{{ url($pdFile->filepath) }}" target="_blank">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <br>
+                                    @endforeach
+                                </td>
                             </tr>
+
+                            @include('dept-head.edit_process_improvement')
                         @endforeach
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <div class="modal" id="addProcessDevelopment">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">Add Process Improvement</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <form action="{{ url('addProcessDevelopment') }}" method="post" enctype="multipart/form-data" onsubmit="show()">
-                                @csrf
-
-                                <input type="hidden" name="dptGroup" value="{{ $departmentKpiData->id }}">
-                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <input type="text" name="description" id="description" class="form-control input-sm" required>
-                                </div>
-                                <div class="form-group" id="accomplishedDate">
-                                    <label for="accomplishedDate">Accomplished Date</label>
-                                    <input type="date" class="form-control input-sm" name="accomplishedDate" autocomplete="off" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="file">Upload an Attachments</label>
-                                    <input type="file" name="file[]" id="file" class="form-control" multiple required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="remarks">Remarks</label>
-                                    <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10" required></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-sm btn-primary btn-block">Add</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @foreach ($departmentKpiData->processDevelopment as $pd)
-        <div class="modal" id="editPdModal-{{ $pd->id }}">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">Edit Process Improvement</h1>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <form action="{{ url('updateProcessDevelopment/' . $pd->id) }}" method="post" enctype="multipart/form-data" onsubmit="show()">
-                                    @csrf
-                                    
-                                    <input type="hidden" name="pd_id" value="{{ $pd->id }}">
-
-                                    <div class="form-group">
-                                        <label for="description">Description</label>
-                                        <input type="text" name="description" id="description" class="form-control input-sm" value="{{ $pd->description }}">
-                                    </div>
-                                    <div class="form-group" id="accomplishedDate">
-                                        <label for="accomplishedDate">Accomplished Date</label>
-                                        <div class="input-group date">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                            <input type="text" class="form-control input-sm" name="accomplishedDate" autocomplete="off" value="{{ $pd->accomplished_date }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="file">Upload an Attachments</label>
-                                        <input type="file" name="file[]" id="file" class="form-control" multiple>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="remarks">Remarks</label>
-                                        <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10">{{ $pd->remarks }}</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-sm btn-primary btn-block">Update</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
 </div>
-@endif
+
+@include('dept-head.add_process_improvement')
 
 @push('scripts')
 <script src="js/plugins/dataTables/datatables.min.js"></script>
@@ -160,7 +70,6 @@
 <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <script>
     $(document).ready(function() {
-
         $(".deletePdAttachments").on('click', function() {
 
             var id = $(this).data('id');

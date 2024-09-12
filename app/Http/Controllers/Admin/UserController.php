@@ -15,9 +15,9 @@ class UserController extends Controller
     public function index() {
 
         $userList = User::get();
-        $company = Company::where('status',1)->get();
+        $company = Company::where('status',"Active")->get();
         $departmentList = Department::select('id', 'code', 'name')
-            ->where('status',1)
+            ->where('status', "Active")
             ->get();
         
         return view('admin.users', 
@@ -47,10 +47,10 @@ class UserController extends Controller
             $user->password = bcrypt('wgroup123');
             $user->role = $request->role;
             $user->company_id = $request->company;
-            $user->status = 1;
+            $user->status = "Active";
             $user->save();
 
-            Alert::success('SUCCESS', 'Successfully Added.');
+            Alert::success('Successfully Added')->persistent('Dismiss');
             return back();
         }
     }
@@ -75,7 +75,7 @@ class UserController extends Controller
                 $user->save();
             }
             
-            Alert::success('SUCCESS', 'Successfully Updated');
+            Alert::success('Successfully Updated')->persistent('Dismiss');
             return back();
         }
     }
@@ -83,14 +83,14 @@ class UserController extends Controller
     public function changeAccountStatus(Request $request) {
         $userData = User::findOrFail($request->id);
 
-        if ($userData->status == 1) {
-            $userData->status = 0;
+        if ($userData->status == "Active") {
+            $userData->status = "Inactive";
             $userData->save();
 
             return array('status' => 0);
         }
         else {
-            $userData->status = 1;
+            $userData->status = "Active";
             $userData->save();
 
             return array('status' => 1);
@@ -113,7 +113,7 @@ class UserController extends Controller
                 $userData->password = bcrypt($request->password);
                 $userData->save();
 
-                Alert::success('SUCCESS', 'Your password has been changed.');
+                Alert::success('Your password has been changed')->persistent('Dismiss');
                 return back();
             }
         }

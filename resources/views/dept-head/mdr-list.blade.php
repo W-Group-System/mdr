@@ -12,7 +12,7 @@
 @section('content')
 <div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-lg-12">
+        {{-- <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <form action="" method="get">
@@ -33,7 +33,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <h1 class="text-center">{{auth()->user()->department->name}}</h1>
@@ -45,35 +45,13 @@
                 </div>
 
                 <div class="ibox-content">
-                    <div class="modal" id="monthModal">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title">Select a Month</h1>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <form action="{{ url('new-mdr') }}" method="get">
-                                                <div class="form-group">
-                                                    <input type="month" name="yearAndMonth" min="{{ date("Y-m", strtotime("+1month", strtotime($yearAndMonth))) }}" max="{{ date('Y-m') }}" class="form-control input-sm" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <button class="btn btn-sm btn-primary btn-block" type="submit">Next</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
+                        <table class="table table-bordered" id="departmentKpiTable">
                             <thead>
                                 <tr>
-                                    <th>Department</th>
+                                    <th>Actions</th>
                                     <th>Month</th>
                                     <th>KPI</th>
                                     <th>Process Improvement</th>
@@ -81,31 +59,47 @@
                                     <th>Timeliness</th>
                                     <th>Rating</th>
                                     <th>Remarks</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($mdrScore as $data)
                                     <tr>
-                                        <td>{{ $data->departments->name }} </td>
-                                        <td>{{ date("F Y", strtotime($data->year . '-' . $data->month))}}</td>
-                                        <td>{{ $data->score }}</td>
-                                        <td>{{ !empty($data->pd_scores) ? number_format($data->pd_scores, 1) : '0.0' }}</td>
-                                        <td>{{ !empty($data->innovation_scores) ? number_format($data->innovation_scores, 1) : '0.0' }}</td>
-                                        <td>{{ $data->timeliness }}</td>
-                                        <td>{{ $data->total_rating }}</td>
-                                        <td>{{ !empty($data->remarks) ? $data->remarks : 'No Remarks' }}</td>
-                                        <td width="10">
-                                            <form action="{{ url('edit_mdr') }}" method="get">
-                                                
-                                                <input type="hidden" name="yearAndMonth" value="{{ $data->year.'-'.$data->month }}">
+                                        <td>
+                                            @if($data->mdrSummary)
+                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$data->mdrSummary->id}}">
+                                                <i class="fa fa-user"></i>
+                                            </button>
+                                            @endif
 
-                                                <button type="submit" class="btn btn-sm btn-info">
-                                                    <i class="fa fa-eye"></i>
+                                            <form action="{{ url('edit_mdr') }}" method="get" style="display: inline-block;" onsubmit="show()">
+                                                <input type="hidden" name="yearAndMonth" value="{{ $data->yearAndMonth }}">
+
+                                                <button type="submit" class="btn btn-sm btn-warning" @if(optional($data->mdrSummary)->level != null) disabled @endif>
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </button>
+                                            </form>
+
+                                            <form action="{{url('approveMdr')}}" method="POST" style="display: inline-block;" onsubmit="show()">
+                                                @csrf
+
+                                                <input type="hidden" name="yearAndMonth" value="{{$data->yearAndMonth}}">
+                                                <input type="hidden" name="department_id" value="{{$data->department_id}}">
+
+                                                <button type="submit" class="btn btn-sm btn-primary approveBtn" @if(optional($data->mdrSummary)->level != null) disabled @endif>
+                                                    <i class="fa fa-thumbs-up"></i>
                                                 </button>
                                             </form>
                                         </td>
+                                        <td>{{ date("F Y", strtotime($data->yearAndMonth))}}</td>
+                                        <td>{{ $data->score }}</td>
+                                        <td>{{ $data->pd_scores }}</td>
+                                        <td>{{ $data->innovation_scores }}</td>
+                                        <td>{{ $data->timeliness }}</td>
+                                        <td>{{ $data->total_rating }}</td>
+                                        <td>{{ $data->remarks }}</td>
                                     </tr>
+
+                                    @include('dept-head.view_mdr_status')
                                 @endforeach
                             </tbody>
                         </table>
@@ -116,6 +110,7 @@
     </div>
 </div>
 
+@include('dept-head.new_mdr')
 @include('components.footer')
 
 @endsection

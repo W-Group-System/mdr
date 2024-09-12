@@ -59,7 +59,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');
             Route::post('/addUserAccounts', 'Admin\UserController@addUserAccounts');
             Route::post('/updateUserAccounts/{id}', 'Admin\UserController@updateUserAccounts');
-            Route::post('/changePassword/{id}', 'Admin\UserController@changePassword');
+            // Route::post('/changePassword/{id}', 'Admin\UserController@changePassword');
             Route::post('/changeAccountStatus', 'Admin\UserController@changeAccountStatus')->name('changeAccountStatus');
             Route::post('/changePassword/{id}', 'Admin\UserController@changePassword')->name('changePassword');
         });
@@ -71,10 +71,10 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/edit_mdr', 'DeptHead\MdrController@edit');
 
         # Departmental Goals
-        Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
+        // Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
         Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
         Route::post('/create', 'DeptHead\DepartmentalGoalsController@create');
-        // Route::post('/update_mdr', 'DeptHead\DepartmentalGoalsController@update');
+        Route::post('/update_kpi/{id}', 'DeptHead\DepartmentalGoalsController@update');
 
         # Process Development
         Route::post('/addProcessDevelopment', 'DeptHead\ProcessDevelopmentController@add');
@@ -86,7 +86,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/addInnovation', 'DeptHead\InnovationController@add');
         Route::post('/deleteInnovation/{id}', 'DeptHead\InnovationController@delete');
         Route::post('/updateInnovation/{id}', 'DeptHead\InnovationController@update');
-        Route::post('/deleteAttachments', 'DeptHead\InnovationController@deleteAttachments');
+        Route::post('/deleteAttachments/{id}', 'DeptHead\InnovationController@deleteAttachments');
 
         # DepartmentApprovers MDR
         Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
@@ -99,11 +99,11 @@ Route::group(['middleware' => 'auth'], function() {
         # Approver
         
         # List Of MDR
-        Route::get('/list_of_mdr', 'Approver\ListOfMdr@index')->name('listOfMdr');
+        Route::get('/list_of_mdr/{id}', 'Approver\ListOfMdr@index')->name('listOfMdr');
         Route::post('/return_mdr', 'Approver\ListOfMdr@returnMdr');
         Route::post('/addGradeAndRemarks', 'Approver\ListOfMdr@addGradeAndRemarks');
-        Route::post('/approver_mdr', 'Approver\ListOfMdr@approveMdr');
-        Route::post('/submit_scores', 'Approver\ListOfMdr@submitScores');
+        Route::post('/approver_mdr/{id}', 'Approver\ListOfMdr@approveMdr');
+        Route::post('/submit_scores/{id}', 'Approver\ListOfMdr@submitScores');
 
         Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
         Route::post('/add_pd_remarks', 'Approver\ListOfMdr@addPdRemarks');

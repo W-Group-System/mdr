@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Process Improvement Plan</h5>
@@ -63,7 +63,7 @@
                     <div class="table-responsive">
                         @include('components.error')
 
-                        <table class="table table-striped table-bordered table-hover" id="penaltiesTable">
+                        <table class="table table-bordered" id="penaltiesTable">
                             <thead>
                                 <tr>
                                     <th>Department</th>

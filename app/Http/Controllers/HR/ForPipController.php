@@ -17,7 +17,6 @@ class ForPIPController extends Controller
         if(auth()->user()->role=="Human Resources") {
             $mdrSummary = MdrSummary::with('pipAttachments')
                 ->where('rate', '<', 2.99)
-                ->where('final_approved', 1)
                 ->where('penalty_status', "For PIP")
                 ->get();
         }
@@ -25,7 +24,6 @@ class ForPIPController extends Controller
         if (auth()->user()->role == "Department Head") {
             $mdrSummary = MdrSummary::with('pipAttachments')
                 ->where('rate', '<', 2.99)
-                ->where('final_approved', 1)
                 ->where('penalty_status', "For PIP")
                 ->where('department_id', auth()->user()->department_id)
                 ->get();

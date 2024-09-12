@@ -10,13 +10,13 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <form action="" method="get" enctype="multipart/form-data" onsubmit="show()">
+                    <form action="" method="get" onsubmit="show()">
                         <div class="row">
                             <div class="col-lg-3">
                                 <select name="department" id="departmentFilter" class="form-control">
                                     <option value="">- Departments -</option>
                                     @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->name }}</option>
+                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->code .' - '. $departmentData->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -34,7 +34,7 @@
                     Active
                 </div>
                 <div class="ibox-content">
-                    <h1>{{count($mdrSetup->where('status',1))}}</h1>
+                    <h1>{{count($mdrSetup->where('status',"Active"))}}</h1>
                     <small>Total Active</small>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     Deactivate
                 </div>
                 <div class="ibox-content">
-                    <h1>{{count($mdrSetup->where('status',0))}}</h1>
+                    <h1>{{count($mdrSetup->where('status',"Inactive"))}}</h1>
                     <small>Total Deactivate</small>
                 </div>
             </div>
@@ -65,31 +65,24 @@
                         <table class="table table-striped table-bordered table-hover" id="departmentKpiTable">
                             <thead>
                                 <tr>
+                                    <th>Actions</th>
                                     <th>Departments</th>
                                     <th>MDR Groups</th>
                                     <th>Department KPI</th>
                                     <th>Target</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($mdrSetup as $departmentKpiData)
                                     <tr>
-                                        <td>{{ $departmentKpiData->departments->name }}</td>
-                                        <td>{{ $departmentKpiData->mdrGroup->name}}</td>
-                                        <td>{!! nl2br($departmentKpiData->name) !!}</td>
-                                        <td>{!! nl2br($departmentKpiData->target) !!}</td>
                                         <td>
-                                            <div class="label label-{{$departmentKpiData->status == 0 ? 'danger' : 'primary'}}">{{$departmentKpiData->status == 0 ? 'Inactive' : 'Active'}}</div>
-                                        </td>
-                                        <td>
-                                            @if($departmentKpiData->status != 0)
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentKpiData->id }}">
+                                            @if($departmentKpiData->status != "Inactive")
+                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal{{ $departmentKpiData->id }}">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
 
-                                            <form action="{{url('deactivate_mdr_setup/'.$departmentKpiData->id)}}" method="post" onsubmit="show()">
+                                            <form action="{{url('deactivate_mdr_setup/'.$departmentKpiData->id)}}" method="post" onsubmit="show()" style="display: inline-block;">
                                                 @csrf
 
                                                 <button type="submit" class="btn btn-sm btn-danger" title="Deactivate">
@@ -97,7 +90,7 @@
                                                 </button>
                                             </form>
                                             @else
-                                            <form action="{{ url('activate_mdr_setup/'.$departmentKpiData->id) }}" method="post" onsubmit="show()">
+                                            <form action="{{ url('activate_mdr_setup/'.$departmentKpiData->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
                                                 @csrf
 
                                                 <button class="btn btn-sm btn-success" type="submit" title="Activate">
@@ -106,7 +99,16 @@
                                             </form>
                                             @endif
                                         </td>
+                                        <td>{{ $departmentKpiData->departments->code.' - ' .$departmentKpiData->departments->name }}</td>
+                                        <td>{{ $departmentKpiData->mdrGroup->name}}</td>
+                                        <td>{!! nl2br($departmentKpiData->name) !!}</td>
+                                        <td>{!! nl2br($departmentKpiData->target) !!}</td>
+                                        <td>
+                                            <div class="label label-{{$departmentKpiData->status == "Inactive" ? 'danger' : 'primary'}}">{{$departmentKpiData->status == "Inactive" ? 'Inactive' : 'Active'}}</div>
+                                        </td>
                                     </tr>
+
+                                    @include('admin.edit_mdr_setup')
                                 @endforeach
                             </tbody>
                         </table>
@@ -117,104 +119,7 @@
     </div>
 </div>
 
-<div class="modal" id="addModal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title text-left">Add MDR Setup</h1>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <form role="form" method="post" id="addForm" action="{{url('addDepartmentKpi')}}" onsubmit="show()">
-                            @csrf
-
-                            <div class="form-group">
-                                <label>Departments</label>
-                                <select name="department" id="department" class="form-control">
-                                    <option value="">-Departments-</option>
-                                    @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}">{{ $departmentData->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>MDR Groups</label>
-                                <select name="departmentGroupKpi" class="form-control">
-                                    <option value="">-MDR Groups-</option>
-                                    @foreach ($departmentGroupKpiList as $departmentGroupKpiData)
-                                        <option value="{{ $departmentGroupKpiData->id }}">{{ $departmentGroupKpiData->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Department KPI</label>
-                                <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" placeholder="Enter KPI" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Target</label>
-                                <textarea name="target" id="" class="form-control" cols="30" rows="10" placeholder="Enter Target" required></textarea>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@foreach ($mdrSetup as $departmentKpiData)
-<div class="modal" id="editModal-{{ $departmentKpiData->id }}">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title text-left">Edit MDR Setup</h1>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <form method="post" action="{{url('updateDepartmentsKpi/'.$departmentKpiData->id)}}" role="form" onsubmit="show()">
-                            @csrf
-                            <div class="form-group">
-                                <label>Departments</label>
-                                <select name="department" id="department" class="form-control">
-                                    <option value="">-Departments-</option>
-                                    @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentKpiData->department_id ? 'selected' : '' }}>{{ $departmentData->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>MDR Groups</label>
-                                <select name="departmentGroupKpi" class="form-control">
-                                    <option value="">-MDR Groups-</option>
-                                    @foreach ($departmentGroupKpiList as $departmentGroupKpiData)
-                                        <option value="{{ $departmentGroupKpiData->id }}" {{ $departmentGroupKpiData->id == $departmentKpiData->mdr_group_id ? 'selected' : '' }}>{{ $departmentGroupKpiData->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Department KPI</label>
-                                <textarea name="kpiName" id="" class="form-control input-sm" cols="30" rows="10" placeholder="Enter KPI">{{ $departmentKpiData->name }}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Target</label>
-                                <textarea name="target" id="" class="form-control input-sm" cols="30" rows="10" placeholder="Enter Target">{{ $departmentKpiData->target }}</textarea>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endforeach
+@include('admin.new_mdr_setup')
 @endsection
 
 @push('scripts')
@@ -237,11 +142,6 @@
         
         $("[name='department']").chosen({width: "100%"});
         $("[name='departmentGroupKpi']").chosen({width: "100%"});
-
-        // $("#departmentFilter").on('change', function() {
-            
-            
-        // })
     })
 </script>
 @endpush

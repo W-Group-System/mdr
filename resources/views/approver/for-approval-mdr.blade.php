@@ -4,6 +4,7 @@
 @endsection
 
 @section('content')
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-3">
@@ -12,7 +13,7 @@
                     <h5>For Approval</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrSummary)}}</h1>
+                    <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Pending'))}}</h1>
                     <small>Total For Approval</small>
                 </div>
             </div>
@@ -23,7 +24,7 @@
                     <h5>Approved</h5>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{$totalApproveCount}}</h1>
+                    <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Approved'))}}</h1>
                     <small>Total Approved</small>
                 </div>
             </div>
@@ -34,38 +35,37 @@
                     <table class="table table-bordered" id="forApprovalTable">
                         <thead>
                             <tr>
+                                <th>Actions</th>
                                 <th>Department</th>
                                 <th>PIC</th>
                                 <th>Month</th>
                                 <th>Deadline</th>
                                 <th>Submission Date</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrSummary as $mdrSummaryData)
-                                @foreach ($mdrSummaryData->mdrStatus as $key => $status)
-                                    @if(auth()->user()->id == $status->user_id)
-                                        <tr>
-                                            <td>{{ $mdrSummaryData->departments->name }}</td>
-                                            <td>{{ $mdrSummaryData->users->name }}</td>
-                                            <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
-                                            <td>{{ date('F d, Y', strtotime($mdrSummaryData->deadline)) }}</td>
-                                            <td>{{ date('F d, Y', strtotime($mdrSummaryData->submission_date)) }}</td>
-                                            <td>
-                                                <form action="{{ url('list_of_mdr') }}" method="get">
+                            @foreach ($mdrApprovers->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                                @php
+                                    $mdr = $approver->mdrSummary;
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#viewStatus{{$mdr->id}}">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
 
-                                                    <input type="hidden" name="department_id" value="{{ $mdrSummaryData->department_id }}">
-                                                    <input type="hidden" name="yearAndMonth" value="{{ $mdrSummaryData->year.'-'.$mdrSummaryData->month}}">
+                                        <a href="{{url('list_of_mdr/'.$mdr->id)}}" class="btn btn-warning btn-sm" onclick="show()">
+                                            <i class="fa fa-pencil-square-o"></i>                                            
+                                        </a>
+                                    </td>
+                                    <td>{{ $mdr->departments->name }}</td>
+                                    <td>{{ $mdr->departments->user->name }}</td>
+                                    <td>{{ date('F Y', strtotime($mdr->yearAndMonth)) }}</td>
+                                    <td>{{ date('F d, Y', strtotime($mdr->deadline)) }}</td>
+                                    <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
+                                </tr>
 
-                                                    <button type="submit" class="btn btn-sm btn-info viewMdr">
-                                                        <i class="fa fa-eye"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
+                                @include('approver.view_mdr_status')
                             @endforeach
                         </tbody>
                     </table>
@@ -78,9 +78,12 @@
 
 @push('scripts')
 <script src="js/plugins/dataTables/datatables.min.js"></script>
+<script src="js/plugins/chosen/chosen.jquery.js"></script>
 
 <script>
     $(document).ready(function() {
+        $(".cat").chosen({width: "100%"})
+
         $('#forApprovalTable').DataTable({
             pageLength: 10,
             ordering: false,

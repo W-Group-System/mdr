@@ -12,13 +12,15 @@
 @section('content')
 <div class="row">
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
-    @foreach ($mdrSetup as $departmentKpiData)
-        @include('dept-head.departmental-goals', array('mdrSetup' => $departmentKpiData, 'yearAndMonth' => $yearAndMonth))
-        @include('dept-head.process-development', array('mdrSetup' => $mdrSetup))
-        {{-- @include('dept-head.innovation', array('mdrSetup' => $mdrSetup)) --}}
-    @endforeach
+        
+        @include('dept-head.departmental-goals', array('departmentalGoals' => $departmentalGoals))
+        @include('dept-head.innovation', array('innovation' => $innovation))
+        @include('dept-head.process-development', array('process_improvement' => $process_improvement))
 
-    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
+        {{-- @foreach ($mdrSetup as $departmentKpiData)
+        @endforeach --}}
+
+    {{-- @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
@@ -113,7 +115,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif --}}
 </div>
 
 @include('components.footer')
@@ -134,6 +136,14 @@ $(document).ready(function() {
         buttons: [],
     });
 
+    $('#departmentalGoals').DataTable({
+        pageLength: 10,
+        ordering: false,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [],
+    });
+
     $('#innovationTable').DataTable({
         pageLength: 10,
         ordering: false,
@@ -142,76 +152,76 @@ $(document).ready(function() {
         buttons: [],
     });
 
-    $(".uploadKpiAttachmentForm").on('submit', function(e) {
-        e.preventDefault();
+    // $(".uploadKpiAttachmentForm").on('submit', function(e) {
+    //     e.preventDefault();
 
-        var formData = new FormData(this);
+    //     var formData = new FormData(this);
 
-        $.ajax({
-            type: $(this).attr('method'),
-            url: $(this).attr('action'),
-            data: formData,
-            contentType: false,
-            processData:false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(res) {
-                var appendHtml = ``;
+    //     $.ajax({
+    //         type: $(this).attr('method'),
+    //         url: $(this).attr('action'),
+    //         data: formData,
+    //         contentType: false,
+    //         processData:false,
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function(res) {
+    //             var appendHtml = ``;
 
-                $.each(res.filePath, function(key, path) {
-                    appendHtml += `
-                        <div class="attachment-kpi-${key}">
-                            <a href="${path}" target="_blank" class="btn btn-sm btn-info">
-                                <i class="fa fa-eye"></i>
-                            </a>
+    //             $.each(res.filePath, function(key, path) {
+    //                 appendHtml += `
+    //                     <div class="attachment-kpi-${key}">
+    //                         <a href="${path}" target="_blank" class="btn btn-sm btn-info">
+    //                             <i class="fa fa-eye"></i>
+    //                         </a>
     
-                            <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${key}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    `
-                })
+    //                         <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${key}">
+    //                             <i class="fa fa-trash"></i>
+    //                         </button>
+    //                     </div>
+    //                 `
+    //             })
 
-                $(".kpi-attachment-container-"+res.id).append(appendHtml)
+    //             $(".kpi-attachment-container-"+res.id).append(appendHtml)
 
-                swal("SUCCESS", "Successfully Added.", "success");
+    //             swal("SUCCESS", "Successfully Added.", "success");
 
-                $("#uploadModal-"+res.id).modal('hide');
-            }
-        })
-    })
+    //             $("#uploadModal-"+res.id).modal('hide');
+    //         }
+    //     })
+    // })
 
-    $(document).on('click', "[name='deleteKpiAttachments']" ,function() {
-        var id = $(this).data('id');
+    // $(document).on('click', "[name='deleteKpiAttachments']" ,function() {
+    //     var id = $(this).data('id');
 
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover your file!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-        }, function () {
+    //     swal({
+    //         title: "Are you sure?",
+    //         text: "You will not be able to recover your file!",
+    //         type: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#DD6B55",
+    //         confirmButtonText: "Yes, delete it!",
+    //         closeOnConfirm: false
+    //     }, function () {
             
-            $.ajax({
-                type: "POST",
-                url: "{{ url('deleteKpiAttachments') }}",
-                data: {
-                    id: id
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(res) {
-                    swal("Deleted!", "Successfully Deleted.", "success");
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "{{ url('deleteKpiAttachments') }}",
+    //             data: {
+    //                 id: id
+    //             },
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             },
+    //             success: function(res) {
+    //                 swal("Deleted!", "Successfully Deleted.", "success");
 
-                    $('.attachment-kpi-'+id).remove();
-                }
-            })
-        });
-    })
+    //                 $('.attachment-kpi-'+id).remove();
+    //             }
+    //         })
+    //     });
+    // })
 
     $("[name='grade[]']").keypress(function(event) {
         if (event.keyCode == 8) {

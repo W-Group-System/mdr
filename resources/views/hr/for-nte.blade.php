@@ -25,7 +25,7 @@
                     <div class="table-responsive">
                         @include('components.error')
 
-                        <table class="table table-striped table-bordered table-hover" id="penaltiesTable">
+                        <table class="table table-bordered" id="penaltiesTable">
                             <thead>
                                 <tr>
                                     <th>Department</th>

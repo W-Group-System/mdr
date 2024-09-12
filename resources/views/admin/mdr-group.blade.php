@@ -9,7 +9,7 @@
                     Active
                 </div>
                 <div class="ibox-content">
-                    <h1>{{count($departmentGroupList->where('status',1))}}</h1>
+                    <h1>{{count($departmentGroupList->where('status',"Active"))}}</h1>
                     <small>Total Active</small>
                 </div>
             </div>
@@ -20,7 +20,7 @@
                     Deactivate
                 </div>
                 <div class="ibox-content">
-                    <h1>{{count($departmentGroupList->where('status',0))}}</h1>
+                    <h1>{{count($departmentGroupList->where('status',"Deactive"))}}</h1>
                     <small>Total Deactivate</small>
                 </div>
             </div>
@@ -41,23 +41,21 @@
                         <table class="table table-striped table-bordered table-hover" id="departmentGroupTable">
                             <thead>
                                 <tr>
+                                    <th>Actions</th>
                                     <th>Name</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($departmentGroupList as $departmentGroupData)
                                     <tr>
-                                        <td>{{ $departmentGroupData->name }}</td>
-                                        <td><div class="label label-{{$departmentGroupData->status == 0 ? 'danger' : 'primary'}}">{{$departmentGroupData->status == 0 ? 'Inactive' : 'Active'}}</div></td>
                                         <td>
-                                            @if($departmentGroupData->status != 0)
+                                            @if($departmentGroupData->status != "Inactive")
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentGroupData->id }}">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
                                             
-                                            <form action="{{url('deactivate_mdr_group/'.$departmentGroupData->id)}}" method="post" role="form" onsubmit="show()">
+                                            <form action="{{url('deactivate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">
                                                 @csrf
 
                                                 <button class="btn btn-sm btn-danger" type="submit" title="Deactivate">
@@ -65,13 +63,21 @@
                                                 </button>
                                             </form>
                                             @else
-                                            <form action="{{url('activate_mdr_group/'.$departmentGroupData->id)}}" method="post" role="form" onsubmit="show()">
+                                            <form action="{{url('activate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">
                                                 @csrf
 
                                                 <button class="btn btn-sm btn-success" type="submit" title="Activate">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                             </form>
+                                            @endif
+                                        </td>
+                                        <td>{{ $departmentGroupData->name }}</td>
+                                        <td>
+                                            @if($departmentGroupData->status == "Active")
+                                                <div class="label label-primary">Active</div>
+                                            @else
+                                                <div class="label label-danger">Inactive</div>
                                             @endif
                                         </td>
                                     </tr>
@@ -89,25 +95,25 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Add MDR Group</h1>
+                <h5 class="modal-title">Add MDR Group</h5>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <form role="form" method="post" action="{{url('addDepartmentGroups')}}" onsubmit="show()">
+            <form role="form" method="post" action="{{url('addDepartmentGroups')}}" onsubmit="show()">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
                             @csrf
-
                             <div class="form-group">
-                                <label>MDR Groups</label>
-                                <input type="text" name="departmentGroupName" placeholder="Enter mdr groups" class="form-control input-sm" required>
+                                MDR Groups :
+                                <input type="text" name="departmentGroupName" class="form-control input-sm" required>
                             </div>
-                            <div>
-                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Add</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -117,24 +123,25 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title">Edit MDR Group</h1>
+                <h5 class="modal-title">Edit MDR Group</h5>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <form method="post" action="{{url('updateDepartmentGroups/'.$departmentGroupData->id)}}" onsubmit="show()">
+            <form method="post" action="{{url('updateDepartmentGroups/'.$departmentGroupData->id)}}" onsubmit="show()">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
                             @csrf
                             <div class="form-group">
-                                <label>MDR Groups</label>
-                                <input type="text" name="departmentGroupName" placeholder="Enter mdr groups" class="form-control" value="{{ $departmentGroupData->name }}">
+                                MDR Group :
+                                <input type="text" name="departmentGroupName" placeholder="Enter mdr groups" class="form-control input-sm" value="{{ $departmentGroupData->name }}">
                             </div>
-                            <div>
-                                <button class="btn btn-sm btn-primary btn-rounded btn-block">Update</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

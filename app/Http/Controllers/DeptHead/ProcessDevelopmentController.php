@@ -18,123 +18,74 @@ use Symfony\Component\Process\Process;
 class ProcessDevelopmentController extends Controller
 {
     public function add(Request $request) {
-        $request->validate([
-            'description' => 'required',
-            'accomplishedDate' => 'required',
-            'file' => 'required|max:2048'
-        ]);
+        $processDevelopment = new ProcessDevelopment;
+        $processDevelopment->department_id = auth()->user()->department_id;
+        $processDevelopment->mdr_group_id = 8;
+        $processDevelopment->description = $request->description;
+        $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
+        $processDevelopment->yearAndMonth = date('Y-m', strtotime($request->yearAndMonth));
+        $processDevelopment->deadline = date('Y-m', strtotime('+1month', strtotime($request->yearAndMonth))).'-'.auth()->user()->department->target_date;
+        $processDevelopment->remarks = $request->remarks;
+        $processDevelopment->save();
 
-        $departmentData = Department::with([
-                'kpi_scores' => function($q)use($request) {
-                    $q->where('month', date('m', strtotime($request->yearAndMonth)))
-                        ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                        ->where('department_id', auth()->user()->department_id);
-                }, 
-            ])
-            ->where('id',  auth()->user()->department_id)
-            ->first();
+        $file = $request->file('file');
+        foreach($file as $attachment) {
+            $fileName = time() . '-' . $attachment->getClientOriginalName();
+            $attachment->move(public_path('process_improvement_files'),  $fileName);
 
-        $checkStatus = MdrSummary::where('year', date('Y', strtotime($request->yearAndMonth)))
-            ->where('month', date('m', strtotime($request->yearAndMonth)))
-            ->where('department_id', auth()->user()->department_id)
-            ->where('status_level', "<>", 0)
-            ->first();
-
-        if (!empty($checkStatus)) {
-
-            Alert::error('ERROR', 'Failed. Because your MDR has been approved.');
-            return back();
+            $pdAttachments = new ProcessDevelopmentAttachments;
+            $pdAttachments->process_development_id = $processDevelopment->id;
+            $pdAttachments->filepath = '/process_improvement_files/' . $fileName;
+            // $pdAttachments->filename = $fileName;
+            $pdAttachments->save();  
         }
-        else {
-            if($request->hasFile('file')) {
-                
-                if($departmentData->kpi_scores->isEmpty()) {
 
-                    Alert::error('ERROR', 'Please submit KPI first');
-                    return back();
-                }
+        // $mdrScore = $departmentData->kpi_scores->first();
+        
+        // $processImprovementCount = ProcessDevelopment::where('month', date('m', strtotime($request->yearAndMonth)))
+        //     ->where('year', date('Y', strtotime($request->yearAndMonth)))
+        //     ->where('department_id', auth()->user()->department_id)
+        //     ->count();
 
-                $processDevelopment = new ProcessDevelopment;
-                $processDevelopment->department_id = $departmentData->id;
-                $processDevelopment->mdr_group_id = $request->dptGroup;
-                $processDevelopment->description = $request->description;
-                $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
-                $processDevelopment->status_level = 0;
-                $processDevelopment->year = date('Y', strtotime($request->yearAndMonth));
-                $processDevelopment->month = date('m', strtotime($request->yearAndMonth));
-                $processDevelopment->deadline = date('Y-m', strtotime('+1month', strtotime($request->yearAndMonth))).'-'.$departmentData->target_date;
-                $processDevelopment->remarks = $request->remarks;
-                $processDevelopment->save();
-
-                $file = $request->file('file');
-                foreach($file as $attachment) {
-                    $fileName = time() . '-' . $attachment->getClientOriginalName();
-                    $attachment->move(public_path('file'),  $fileName);
-
-                    $pdAttachments = new ProcessDevelopmentAttachments;
-                    $pdAttachments->pd_id = $processDevelopment->id;
-                    $pdAttachments->filepath = 'file/' . $fileName;
-                    $pdAttachments->filename = $fileName;
-                    $pdAttachments->save();  
-                }
-
-                $mdrScore = $departmentData->kpi_scores->first();
-                
-                $processImprovementCount = ProcessDevelopment::where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('department_id', auth()->user()->department_id)
-                    ->count();
-
-                $mdrScoreData = MdrScore::findOrFail($mdrScore->id);
-                
-                if ($processImprovementCount == 1) {
-                    $mdrScoreData->pd_scores = 0.5;
-                    $mdrScoreData->save();
-                }
-                elseif ($processImprovementCount > 1) {
-                    $mdrScoreData->pd_scores = 1.0;
-                    $mdrScoreData->save();
-                }
-                
-                Alert::success('SUCCESS', 'Successfully Added.');
-                return back();
-            }
-            else {
-                
-                Alert::error('ERROR', 'You are not selecting a file.');
-                return back();
-            }
-        } 
+        // $mdrScoreData = MdrScore::findOrFail($mdrScore->id);
+        
+        // if ($processImprovementCount == 1) {
+        //     $mdrScoreData->pd_scores = 0.5;
+        //     $mdrScoreData->save();
+        // }
+        // elseif ($processImprovementCount > 1) {
+        //     $mdrScoreData->pd_scores = 1.0;
+        //     $mdrScoreData->save();
+        // }
+        
+        Alert::success('Successfully Added')->persistent('Dismiss');
+        return back();
     }
 
     public function update(Request $request, $id) {
-        $request->validate([
-            'description' => 'required',
-            'accomplishedDate' => 'required',
-            'file' => 'max:2048'
-        ]);
-        
+        // dd($request->all());
         $processDevelopmentData = ProcessDevelopment::findOrFail($id);
         $processDevelopmentData->description = $request->description;
         $processDevelopmentData->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
         $processDevelopmentData->remarks = $request->remarks;
         $processDevelopmentData->save();
 
-        if($request->hasFile('file')) {
+        if($request->has('file')) {
             $file = $request->file('file');
+
+            $processDevelopmentAttachment = ProcessDevelopmentAttachments::where('process_development_id', $id)->delete();
             foreach($file as $attachment) {
-                $fileName = time() . '-' . $attachment->getClientOriginalName();
-                $attachment->move(public_path('file'),  $fileName);
+                $fileName = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path('process_improvement_files'),  $fileName);
 
                 $processDevelopmentAttachment = new ProcessDevelopmentAttachments;
-                $processDevelopmentAttachment->pd_id = $request->pd_id;
-                $processDevelopmentAttachment->filepath = 'file/' . $fileName;
-                $processDevelopmentAttachment->filename = $fileName;
+                $processDevelopmentAttachment->process_development_id = $processDevelopmentData->id;
+                $processDevelopmentAttachment->filepath = '/process_improvement_files/' . $fileName;
                 $processDevelopmentAttachment->save();
             }
         }
 
-        Alert::success('SUCCESS', 'Successfully Updated.');
+        Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
 

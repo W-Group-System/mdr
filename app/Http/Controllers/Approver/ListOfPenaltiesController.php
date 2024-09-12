@@ -17,7 +17,7 @@ class ListOfPenaltiesController extends Controller
                 'pipAttachments'
             ])
             ->where('rate', '<', 2.99)
-            ->where('final_approved', 1)
+            // ->where('final_approved', 1)
             ->whereNotNull('penalty_status')
             ->get();
         }
@@ -30,7 +30,7 @@ class ListOfPenaltiesController extends Controller
                 'pipAttachments'
             ])
             ->where('rate', '<', 2.99)
-            ->where('final_approved', 1)
+            // ->where('final_approved', 1)
             ->where('department_id', auth()->user()->department_id)
             ->whereNotNull('penalty_status')
             ->get();

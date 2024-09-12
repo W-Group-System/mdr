@@ -4,7 +4,7 @@
 @endsection
 
 @section('content')
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated">
     <div class="row">
         @if(auth()->user()->role=="Human Resources")
         <div class="col-lg-3">
@@ -31,7 +31,7 @@
                             </div>
                         @endif
 
-                        <table class="table table-striped table-bordered table-hover" id="penaltiesTable">
+                        <table class="table table-bordered" id="penaltiesTable">
                             <thead>
                                 <tr>
                                     <th>Department</th>

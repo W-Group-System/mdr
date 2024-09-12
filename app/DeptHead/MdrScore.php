@@ -3,6 +3,7 @@
 namespace App\DeptHead;
 
 use App\Admin\Department;
+use App\Approver\MdrSummary;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
@@ -10,9 +11,12 @@ class MdrScore extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    protected $fillable = ['department_id', 'grade', 'rating', 'score', 'date', 'pd_scores', 'status_level', 'innovation_scores', 'final_approved', 'total_rating', 'timeliness', 'mdr_summary_id'];
-
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    public function mdrSummary()
+    {
+        return $this->belongsTo(MdrSummary::class);
     }
 }

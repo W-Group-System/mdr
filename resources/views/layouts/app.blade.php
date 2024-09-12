@@ -28,6 +28,13 @@
             opacity: .8;
             background-size: 120px 120px;
         }
+
+        @media (min-width: 768px) {
+            #kpiModal {
+                width: 1200px;
+                margin: 30px auto;
+            }
+        }
     </style>
 
     @yield('css')

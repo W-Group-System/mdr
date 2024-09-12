@@ -14,16 +14,13 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrSetupController extends Controller
 {
     public function index(Request $request) {
-        if (!empty($request->department)) {
-            $mdrSetup = MdrSetup::where('department_id',$request->department)->get()->sortBy('department_id');
-        }
-        else {
-            $mdrSetup = MdrSetup::get()->sortBy('department_id')->sortByDesc('department_id');
-        }
+        $mdrSetup = MdrSetup::when($request->department, function($q)use($request) {
+                $q->where('department_id', $request->department);
+            })
+            ->get();
         
-        $departmentList = Department::select('id', 'name')->where('status',1)->get();
-
-        $departmentGroupKpiList = MdrGroup::select('id', 'name')->where('status',1)->get();
+        $departmentList = Department::select('id', 'name', 'code')->where('status',"Active")->get();
+        $departmentGroupKpiList = MdrGroup::select('id', 'name')->where('status',"Active")->get();
 
         return view('admin.mdr-setup',
             array(
@@ -39,18 +36,17 @@ class MdrSetupController extends Controller
 
         $request->validate([
             'department' => 'required',
-            'departmentGroupKpi' => 'required',
         ]);
 
         $mdrSetup = new MdrSetup;
         $mdrSetup->department_id = $request->department;
-        $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
+        $mdrSetup->mdr_group_id = 1;
         $mdrSetup->name = $request->kpiName;
         $mdrSetup->target = $request->target;
-        $mdrSetup->status = 1;
+        $mdrSetup->status = "Active";
         $mdrSetup->save();
 
-        Alert::success('SUCCESS', 'Successfully Added.');
+        Alert::success('Successfully Added')->persistent('Dismiss');
         return back();
     }
 
@@ -58,35 +54,34 @@ class MdrSetupController extends Controller
     
         $request->validate([
             'department' => 'required',
-            'departmentGroupKpi' => 'required',
         ]);
 
         $mdrSetup = MdrSetup::findOrFail($id);
         $mdrSetup->department_id = $request->department;
-        $mdrSetup->mdr_group_id = $request->departmentGroupKpi;
+        $mdrSetup->mdr_group_id = 1;
         $mdrSetup->name = $request->kpiName;
         $mdrSetup->target = $request->target;
         $mdrSetup->save();
 
-        Alert::success('SUCCESS', 'Successfully Updated.');
+        Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
 
     public function deactivate($id) {
         $mdrSetup = MdrSetup::findOrFail($id);
-        $mdrSetup->status = 0;
+        $mdrSetup->status = "Inactive";
         $mdrSetup->save();
         
-        Alert::success('SUCCESS', "Successfully Deactivated.");
+        Alert::success("Successfully Deactivated")->persistent('Dismiss');
         return back();
     }
 
     public function activate($id) {
         $mdrSetup = MdrSetup::findOrFail($id);
-        $mdrSetup->status = 1;
+        $mdrSetup->status = "Activate";
         $mdrSetup->save();
         
-        Alert::success('SUCCESS', "Successfully Activated.");
+        Alert::success("Successfully Activated")->persistent('Dismiss');
         return back();
     }
 }
