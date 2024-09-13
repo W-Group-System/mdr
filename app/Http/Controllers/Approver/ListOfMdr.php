@@ -240,6 +240,11 @@ class ListOfMdr extends Controller
                 $mdrSummary->save();
             }
 
+            $user = User::where('id', $mdr_approvers->user_id)->first();
+            $approver = $user->name;
+            $yearAndMonth = $mdrSummary->yearAndMonth;
+            $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
+
             Alert::success('Succesfully Approved')->persistent('Dismiss');
         }
         else

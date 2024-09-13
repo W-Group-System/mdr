@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('css')
-<link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
-<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<link href="{{ asset('login_css/css/plugins/sweetalert/sweetalert.css') }}" rel="stylesheet">
+
 <style>
     .period {
         margin-left: 5px;
@@ -85,7 +85,7 @@
                                                 <input type="hidden" name="yearAndMonth" value="{{$data->yearAndMonth}}">
                                                 <input type="hidden" name="department_id" value="{{$data->department_id}}">
 
-                                                <button type="submit" class="btn btn-sm btn-primary approveBtn" @if(optional($data->mdrSummary)->level != null) disabled @endif>
+                                                <button type="button" class="btn btn-sm btn-primary approveBtn" @if(optional($data->mdrSummary)->level != null) disabled @endif>
                                                     <i class="fa fa-thumbs-up"></i>
                                                 </button>
                                             </form>
@@ -120,6 +120,7 @@
 <!-- Jasny -->
 <script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <script src="js/plugins/dataTables/datatables.min.js"></script>
+<script src="{{ asset('login_css/js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
@@ -136,6 +137,22 @@
         });
         
         $("[name='department']").chosen({width: "100%"});
+
+        $(".approveBtn").on('click', function() {
+            var form = $(this).closest('form');
+
+            swal({
+                title: "Are you sure?",
+                text: "This mdr will be approved!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, approved it!",
+                closeOnConfirm: false
+            }, function (){
+                form.submit()
+            });
+        })
     })
 </script>
 @endpush

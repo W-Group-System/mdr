@@ -44,13 +44,13 @@
                                     <div class="col-md-3">
                                         <label for="">Year and Month :</label>
                                         <div class="form-group">
-                                            <input type="month" name="yearAndMonth" class="form-control input-sm" >
+                                            <input type="month" name="yearAndMonth" class="form-control input-sm" value="{{$yearAndMonth}}">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="">&nbsp;</label>
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-sm btn-primary">Filter</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Filter</button>
                                         </div>
                                     </div>
                                 </div>
@@ -69,12 +69,12 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <form action="{{ url('print_pdf') }}" method="post" target="_blank">
+                            <form action="{{ url('print_pdf') }}" method="post" target="_blank" onsubmit="show()">
                                 @csrf
 
-                                {{-- <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
 
-                                <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
+                                {{-- <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
                                 <input type="hidden" name="endYearAndMonth" value="{{ $endYearAndMonth }}"> --}}
 
                                 <button type="submit" class="btn btn-sm btn-warning pull-right">
@@ -87,7 +87,7 @@
                                 <thead>
                                     <tr>
                                         <th>Department</th>
-                                        <th>Action</th>
+                                        {{-- <th>Action</th> --}}
                                         <th>Status</th>
                                         <th>Due Date</th>
                                         <th>KPI</th>
@@ -98,19 +98,66 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach ($department_array as $summary)
+                                    @foreach ($mdr_score_array as $summary)
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>{{$summary->name}}</td>
+                                            {{-- <td></td> --}}
+                                            <td>
+                                                @if($summary->status == null)
+                                                    <span class="label label-danger">No MDR Submitted</span>
+                                                @else
+                                                    @if($summary->status == "Pending")
+                                                    <span class="label label-warning">
+                                                    @elseif($summary->status == "Approved")
+                                                    <span class="label label-primary">
+                                                    @endif
+                                                    
+                                                    {{$summary->status}}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($summary->deadline != null)
+                                                {{date('M d, Y', strtotime($summary->deadline))}}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($summary->scores != null)
+                                                {{$summary->scores}}
+                                                @else
+                                                0.0
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($summary->innovation_scores != null)
+                                                {{$summary->innovation_scores}}
+                                                @else
+                                                0.0
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($summary->pd_scores != null)
+                                                {{$summary->pd_scores}}
+                                                @else
+                                                0.0
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($summary->timeliness != null)
+                                                {{$summary->timeliness}}
+                                                @else
+                                                0.0
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($summary->total_rating != null)
+                                                {{$summary->total_rating}}
+                                                @else
+                                                0.0
+                                                @endif
+                                            </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -298,7 +345,7 @@
             </div>
         </div>
     @endif
-
+{{-- {{dd(collect($summary_kpi)->pluck('mdr_status'))}} --}}
 @include('components.footer')
 
 @endsection
@@ -326,15 +373,17 @@
             ]
         });
 
-        @php         
-        /*var dept = {!! json_encode(array_keys($dashboardData)) !!}
-        var data = {!! json_encode(array_values($dashboardData)) !!}
+        var department = {!! json_encode(collect($summary_kpi)->pluck('d')->toArray()) !!}
+        var data = {!! json_encode(collect($summary_kpi)->pluck('mdr_status')->map(function($status) { return count($status) ? $status[0] : 0; })->toArray()) !!};
+
+        console.log(data);
+        
 
         var barData = {
-            labels: dept,
+            labels: department,
             datasets: [
                 {
-                    label: "Total Rating in " + "{{ isset($yearAndMonth) ? date('F Y', strtotime($yearAndMonth)) : date('F Y') }}",
+                    // label: "Total Rating in " + "{{ isset($yearAndMonth) ? date('F Y', strtotime($yearAndMonth)) : date('F Y') }}",
                     backgroundColor: 'rgba(26,179,148,0.5)',
                     borderColor: "rgba(26,179,148,0.7)",
                     pointBackgroundColor: "rgba(26,179,148,1)",
@@ -350,51 +399,51 @@
 
         var ctx2 = document.getElementById("barChart").getContext("2d");
         new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
+
+        @php         
+        // var month1 = {!! json_encode(array_keys($yearOneArray)) !!};
+        // var data1 = {!! json_encode(array_values($yearOneArray)) !!};
+
+        // var barDataDepartment = {
+        //     labels: month1,
+        //     datasets: [
+        //         {
+        //             label: "MDR data in year of {{$year1Val}}",
+        //             backgroundColor: 'rgba(26,179,148,0.5)',
+        //             data: data1
+        //         }
+        //     ]
+        // };
+
+        // var barOptionsDepartment = {
+        //     responsive: true
+        // };
+
+        // var ctx2 = document.getElementById("barChartDepartment").getContext("2d");
+        // new Chart(ctx2, {type: 'bar', data: barDataDepartment, options:barOptionsDepartment});
         
-        var month1 = {!! json_encode(array_keys($yearOneArray)) !!};
-        var data1 = {!! json_encode(array_values($yearOneArray)) !!};
+        // var month2 = {!! json_encode(array_keys($yearTwoArray)) !!};
+        // var data2 = {!! json_encode(array_values($yearTwoArray)) !!};
 
-        var barDataDepartment = {
-            labels: month1,
-            datasets: [
-                {
-                    label: "MDR data in year of {{$year1Val}}",
-                    backgroundColor: 'rgba(26,179,148,0.5)',
-                    data: data1
-                }
-            ]
-        };
+        // var year2BarData = {
+        //     labels: month2,
+        //     datasets: [
+        //         {
+        //             label: "MDR data in year of {{$year2Val}}",
+        //             backgroundColor: '#1C84C6',
+        //             data: data2
+        //         }
+        //     ]
+        // };
 
-        var barOptionsDepartment = {
-            responsive: true
-        };
+        // var year2Options = {
+        //     responsive: true
+        // };
 
-        var ctx2 = document.getElementById("barChartDepartment").getContext("2d");
-        new Chart(ctx2, {type: 'bar', data: barDataDepartment, options:barOptionsDepartment});
-        
-        var month2 = {!! json_encode(array_keys($yearTwoArray)) !!};
-        var data2 = {!! json_encode(array_values($yearTwoArray)) !!};
+        // var ctx2 = document.getElementById("yearChart2").getContext("2d");
+        // new Chart(ctx2, {type: 'bar', data: year2BarData, options:year2Options});
 
-        var year2BarData = {
-            labels: month2,
-            datasets: [
-                {
-                    label: "MDR data in year of {{$year2Val}}",
-                    backgroundColor: '#1C84C6',
-                    data: data2
-                }
-            ]
-        };
-
-        var year2Options = {
-            responsive: true
-        };
-
-        var ctx2 = document.getElementById("yearChart2").getContext("2d");
-        new Chart(ctx2, {type: 'bar', data: year2BarData, options:year2Options});
-
-        var yearAndMonth = "{{ $date }};"
-        */
+        // var yearAndMonth = "{{ $date }};"
         @endphp
     }) 
 </script>

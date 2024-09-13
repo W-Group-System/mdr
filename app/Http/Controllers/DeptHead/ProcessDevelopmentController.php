@@ -91,52 +91,49 @@ class ProcessDevelopmentController extends Controller
 
     public function delete(Request $request, $id) {
         $processDevelopmentData = ProcessDevelopment::findOrFail($id);
-
-        if ($processDevelopmentData) {
-            $processDevelopmentData->delete();
-        }
+        $processDevelopmentData->delete();
         
-        $department = Department::withCount([
-            'process_development' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)));
-            },
-        ])
-        ->with([
-            'kpi_scores' => function($q)use($request) {
-                $q->where('year', date('Y', strtotime($request->yearAndMonth)))
-                    ->where('month', date('m', strtotime($request->yearAndMonth)))
-                    ->where('department_id', auth()->user()->department_id);
-            }
-        ])
-        ->where('id', auth()->user()->department_id)
-        ->first();
+        // $department = Department::withCount([
+        //     'process_development' => function($q)use($request) {
+        //         $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+        //             ->where('month', date('m', strtotime($request->yearAndMonth)));
+        //     },
+        // ])
+        // ->with([
+        //     'kpi_scores' => function($q)use($request) {
+        //         $q->where('year', date('Y', strtotime($request->yearAndMonth)))
+        //             ->where('month', date('m', strtotime($request->yearAndMonth)))
+        //             ->where('department_id', auth()->user()->department_id);
+        //     }
+        // ])
+        // ->where('id', auth()->user()->department_id)
+        // ->first();
 
-        $processImprovementCount = $department->process_development_count;
-        $mdrScore = $department->kpi_scores->first();
+        // $processImprovementCount = $department->process_development_count;
+        // $mdrScore = $department->kpi_scores->first();
         
-        $mdrScoreData = MdrScore::findOrFail($mdrScore->id);
-        if ($processImprovementCount == 1) {
-            $mdrScoreData->pd_scores = 0.5;
-            $mdrScoreData->save();
-        }
-        if($processImprovementCount == 0) {
-            $mdrScoreData->pd_scores = 0.0;
-            $mdrScoreData->save();
-        }
+        // $mdrScoreData = MdrScore::findOrFail($mdrScore->id);
+        // if ($processImprovementCount == 1) {
+        //     $mdrScoreData->pd_scores = 0.5;
+        //     $mdrScoreData->save();
+        // }
+        // if($processImprovementCount == 0) {
+        //     $mdrScoreData->pd_scores = 0.0;
+        //     $mdrScoreData->save();
+        // }
 
-        Alert::success('SUCCESS', 'Successfully Deleted.');
+        Alert::success('Successfully Deleted')->persistent('Dismiss');
         return back();
         
     }
 
-    public function deletePdAttachments(Request $request) {
-        $attachments = ProcessDevelopmentAttachments::findOrFail($request->file_id);
+    // public function deletePdAttachments(Request $request) {
+    //     $attachments = ProcessDevelopmentAttachments::findOrFail($request->file_id);
 
-        if ($attachments) {
-            $attachments->delete();
+    //     if ($attachments) {
+    //         $attachments->delete();
 
-            return array('message' => 'Successfully Deleted.');
-        }
-    }
+    //         return array('message' => 'Successfully Deleted.');
+    //     }
+    // }
 }

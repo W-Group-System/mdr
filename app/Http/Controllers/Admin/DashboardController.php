@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Admin\Department;
 use App\Approver\MdrSummary;
 use App\DeptHead\Mdr;
+use App\DeptHead\MdrScore;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -50,12 +51,78 @@ class DashboardController extends Controller
         if(auth()->user()->role == "Approver")
         {
             $departments = Department::get();
-            // $mdr_summary = MdrSummary::get();
+            $mdr_summary = MdrSummary::where(function($query)use($request) {
+                    if ($request->yearAndMonth)
+                    {
+                        $query->where('yearAndMonth', $request->yearAndMonth);
+                    }
+                    else
+                    {
+                        $query->where('yearAndMonth', date('Y-m'));
+                    }
+                })
+                ->get();
 
-            return view('admin.dashboard',
-              array(
+            $mdr_score_array = [];
+            foreach($departments as $department)
+            {
+                $mdr_score = MdrScore::with('mdrSummary')->where('department_id', $department->id)->where('yearAndMonth', $request->yearAndMonth)->first();
+                $object = new stdClass();
+                $object->name = $department->name;
+                if ($mdr_score)
+                {
+                    $object->status = optional($mdr_score->mdrSummary)->status;
+                    $object->deadline = optional($mdr_score->mdrSummary)->deadline;
+                    $object->scores = $mdr_score->score;
+                    $object->innovation_scores = $mdr_score->innovation_scores;
+                    $object->pd_scores = $mdr_score->pd_scores;
+                    $object->timeliness = $mdr_score->timeliness;
+                    $object->total_rating = $mdr_score->total_rating;
+                }
+                else
+                {
+                    $object->status = null;
+                    $object->deadline = null;
+                    $object->scores = null;
+                    $object->innovation_scores = null;
+                    $object->pd_scores = null;
+                    $object->timeliness = null;
+                    $object->total_rating = null;
+                }
+
+                $mdr_score_array[] = $object;
+            }
+
+            $summary_kpi = [];
+            foreach($departments as $dept)
+            {
+                $object = new \stdClass();
+                $object->d = $dept->code;
+                $object->mdr_status = MdrSummary::select('rate')->where('department_id', $dept->id)
+                    ->where(function($q)use($request) {
+                        if ($request->yearAndMonth == null)
+                        {
+                            $q->where('yearAndMonth', date('Y-m'));
+                        }
+                        else
+                        {
+                            $q->where('yearAndMonth', $request->yearAndMonth);
+                        }
+                    })
+                    ->get()
+                    ->pluck('rate')
+                    ->toArray();
                 
-              )  
+                $summary_kpi[] = $object;
+            }
+            
+            return view('admin.dashboard',
+                array(
+                    'yearAndMonth' => $request->yearAndMonth,
+                    'mdr_summary' => $mdr_summary,
+                    'mdr_score_array' => $mdr_score_array,
+                    'summary_kpi' => $summary_kpi
+                )  
             );
         }
 

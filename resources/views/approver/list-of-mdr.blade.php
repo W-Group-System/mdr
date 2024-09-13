@@ -114,7 +114,7 @@
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
                     <div class="table-responsive">
-                        <p><strong>II.</strong>Innovation</p>
+                        <p>Innovation</p>
                         <table class="table table-bordered" id="innovationTable">
                             <thead>
                                 <tr>
