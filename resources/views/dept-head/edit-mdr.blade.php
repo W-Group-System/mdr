@@ -57,8 +57,9 @@
                                             @foreach ($dptGoals->attachments as $key=>$attachment)
                                                 <span>{{$key+1}}. </span>
                                                 <a href="{{url($attachment->file_path)}}" target="_blank">
-                                                    File link
+                                                    <i class="fa fa-file-pdf-o"></i>
                                                 </a>
+                                                <br>
                                             @endforeach
                                         </td>
                                     </tr>
@@ -123,7 +124,7 @@
                                             @foreach ($data->innovationAttachments as $key=>$file)
                                                 <span>{{$key+1}}. </span>
                                                 <a href="{{ url($file->filepath) }}" target="_blank">
-                                                    File link
+                                                    <i class="fa fa-file-pdf-o"></i>
                                                 </a> <br>
                                             @endforeach
                                         </td>
@@ -181,7 +182,7 @@
                                             @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
                                                 <span>{{$key+1}}. </span>
                                                 <a href="{{ url($pdFile->filepath) }}" target="_blank">
-                                                    File Link
+                                                    <i class="fa fa-file-pdf-o"></i>
                                                 </a>
                                                 <br>
                                             @endforeach
@@ -286,143 +287,13 @@
             buttons: [],
         });
 
-        // $(".uploadKpiAttachmentForm").on('submit', function(e) {
-        //     e.preventDefault();
-
-        //     var formData = new FormData(this);
-
-        //     $.ajax({
-        //         type: $(this).attr('method'),
-        //         url: $(this).attr('action'),
-        //         data: formData,
-        //         contentType: false,
-        //         processData:false,
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         },
-        //         success: function(res) {
-        //             console.log(res.error);
-        //             if (res.status == 0) {
-        //                 swal('ERROR', `${res.error.toString()}`, 'error');
-        //             }
-        //             else {
-        //                 var appendHtml = ``;
-    
-        //                 $.each(res.filePath, function(key, path) {
-        //                     appendHtml += `
-        //                         <div class="attachment-kpi-${key}">
-        //                             <a href="${path}" target="_blank" class="btn btn-sm btn-info">
-        //                                 <i class="fa fa-eye"></i>
-        //                             </a>
-        
-        //                             <button type="button" class="btn btn-sm btn-danger" name="deleteKpiAttachments" data-id="${key}">
-        //                                 <i class="fa fa-trash"></i>
-        //                             </button>
-        //                         </div>
-        //                     `
-        //                 })
-    
-        //                 $(".kpi-attachment-container-"+res.id).append(appendHtml)
-    
-        //                 swal("SUCCESS", "Successfully Added.", "success");
-    
-        //                 $("#uploadModal-"+res.id).modal('hide');
-        //             }
-        //         }
-        //     })
-        // })
-
-        // $(document).on('click',"[name='deleteKpiAttachments']",function() {
-        //     var id = $(this).data('id')
-            
-        //     swal({
-        //         title: "Are you sure?",
-        //         text: "You will not be able to recover your file!",
-        //         type: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonColor: "#DD6B55",
-        //         confirmButtonText: "Yes, delete it!",
-        //         closeOnConfirm: false
-        //     }, function () {
-                
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "{{ url('deleteKpiAttachments') }}",
-        //             data: {
-        //                 id: id
-        //             },
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //             success: function(res) {
-        //                 swal("Deleted!", "Your file has been deleted.", "success");
-
-        //                 $('.attachment-kpi-'+id).remove()
-        //             }
-        //         })
-        //     });
-        // })
-
-        // $(".deletePdAttachments").on('click', function() {
-
-        //     var id = $(this).data('id');
-
-        //     swal({
-        //         title: "Are you sure?",
-        //         text: "You will not be able to recover your file!",
-        //         type: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonColor: "#DD6B55",
-        //         confirmButtonText: "Yes, delete it!",
-        //         closeOnConfirm: false
-        //     }, function () {
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "{{ url('deletePdAttachments') }}",
-        //             data: {
-        //                 file_id: id
-        //             },
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //             success: function(response) {
-        //                 swal("Deleted!", response.message, "success");
-
-        //                 $('.pd-attachments-'+id).remove();
-        //             }
-        //         })
-        //     });
-        // })
-
-        // $("[name='deleteAttachments']").on('click', function() {
-        //     var id = $(this).data('id');
-            
-        //     swal({
-        //         title: "Are you sure?",
-        //         text: "You will not be able to recover your file!",
-        //         type: "warning",
-        //         showCancelButton: true,
-        //         confirmButtonColor: "#DD6B55",
-        //         confirmButtonText: "Yes, delete it!",
-        //         closeOnConfirm: false
-        //     }, function () {
-        //         $.ajax({
-        //             type: "POST",
-        //             url: "{{ url('deleteAttachments') }}",
-        //             data: {
-        //                 file_id: id
-        //             },
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //             success: function(response) {
-        //                 swal("Deleted!", response.message, "success");
-
-        //                 $(".innovation-attachments-" + id).remove();
-        //             }
-        //         })
-        //     });
-        // })
+        $('#departmentalGoals').DataTable({
+            pageLength: 10,
+            ordering: false,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [],
+        });
     })
 </script>
 @endpush

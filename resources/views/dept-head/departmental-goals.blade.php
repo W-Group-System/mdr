@@ -37,8 +37,9 @@
                                     @foreach ($dptGoals->attachments as $key=>$attachment)
                                         <span>{{$key+1}}. </span>
                                         <a href="{{url($attachment->file_path)}}" target="_blank">
-                                            File link
+                                            <i class="fa fa-file-pdf-o"></i>
                                         </a>
+                                        <br>
                                     @endforeach
                                 </td>
                             </tr>

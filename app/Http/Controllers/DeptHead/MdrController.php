@@ -72,44 +72,43 @@ class MdrController extends Controller
     //   $yearAndMonth = $lastSubmittedMdr->year.'-'.$lastSubmittedMdr->month;
 
         $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
-        $mdrScore = MdrScore::where('department_id', auth()->user()->department_id)->get();
-        $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id)->orderBy('id', 'desc')->first();
+        $mdrScore = MdrScore::with('departments', 'mdrSummary')->where('department_id', auth()->user()->department_id)->orderBy('yearAndMonth', 'desc')->get();
         $mdrApprovers = MdrApprovers::where('department_id', auth()->user()->department_id)->get();
 
         return view('dept-head.mdr-list', array(
                 'mdrScore' => $mdrScore,
-                'yearAndMonth' => $mdrSummary != null ? $mdrSummary->yearAndMonth : '',
+                // 'yearAndMonth' => $mdrSummary != null ? $mdrSummary->yearAndMonth : '',
                 'department_approvers' => $department_approvers,
                 'mdrApprovers' => $mdrApprovers
             )
         );
     }
 
-    // public function edit(Request $request) {
-    //     $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)
-    //         ->where('yearAndMonth', $request->yearAndMonth)
-    //         ->get();
+    public function edit(Request $request) {
+        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)
+            ->where('yearAndMonth', $request->yearAndMonth)
+            ->get();
 
-    //     $innovation = Innovation::where('department_id', auth()->user()->department_id)
-    //         ->where('yearAndMonth', $request->yearAndMonth)
-    //         ->get();
+        $innovation = Innovation::where('department_id', auth()->user()->department_id)
+            ->where('yearAndMonth', $request->yearAndMonth)
+            ->get();
 
-    //     $process_improvement = ProcessDevelopment::where('department_id', auth()->user()->department_id)
-    //         ->where('yearAndMonth', $request->yearAndMonth)
-    //         ->get();
+        $process_improvement = ProcessDevelopment::where('department_id', auth()->user()->department_id)
+            ->where('yearAndMonth', $request->yearAndMonth)
+            ->get();
 
-    //     $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
+        $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
 
-    //     return view('dept-head.edit-mdr',
-    //         array(
-    //             'departmentalGoals' => $departmentalGoals,
-    //             'department_approvers' => $department_approvers,
-    //             'yearAndMonth' => $request->yearAndMonth,
-    //             'innovation' => $innovation,
-    //             'process_improvement' => $process_improvement
-    //         )
-    //     );
-    // }
+        return view('dept-head.edit-mdr',
+            array(
+                'departmentalGoals' => $departmentalGoals,
+                'department_approvers' => $department_approvers,
+                'yearAndMonth' => $request->yearAndMonth,
+                'innovation' => $innovation,
+                'process_improvement' => $process_improvement
+            )
+        );
+    }
 
     public function approveMdr(Request $request) {
         $mdrSummary = MdrSummary::where('department_id', $request->department_id)

@@ -17,30 +17,33 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
-        $attachments = $request->file('file');
-
-        foreach($attachments as $key=>$attachment)
+        // dd($request->all());
+        foreach($request->name as $deptKey=>$kpi_name)
         {
             $departmentalGoals = new DepartmentalGoals;
-            $departmentalGoals->kpi_name = $request->name[$key];
+            $departmentalGoals->kpi_name = $kpi_name;
             $departmentalGoals->department_id = auth()->user()->department_id;
-            $departmentalGoals->target = $request->target[$key];
-            $departmentalGoals->actual = $request->actual[$key];
-            $departmentalGoals->grade = $request->grade[$key];
-            $departmentalGoals->remarks = $request->remarks[$key];
+            $departmentalGoals->target = $request->target[$deptKey];
+            $departmentalGoals->actual = $request->actual[$deptKey];
+            $departmentalGoals->grade = $request->grade[$deptKey];
+            $departmentalGoals->remarks = $request->remarks[$deptKey];
             $departmentalGoals->yearAndMonth = $request->yearAndMonth;
             $departmentalGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.$request->target_date;
             $departmentalGoals->save();
-            
-            $name = time().'_'.$attachment->getClientOriginalName();
-            $attachment->move(public_path('departmental_goals_files'), $name);
-            $file_path = "/departmental_goals_files/" . $name;
 
-            $mdrAttachments = new Attachments;
-            $mdrAttachments->department_id = auth()->user()->department_id;
-            $mdrAttachments->file_path = $file_path;
-            $mdrAttachments->departmental_goals_id = $departmentalGoals->id;
-            $mdrAttachments->save();
+            $attachments = $request->file('file')[$deptKey];
+    
+            foreach ($attachments as $attachment) {
+                $name = time() . '_' . $attachment->getClientOriginalName();
+                $attachment->move(public_path('departmental_goals_files'), $name);
+                $file_path = "/departmental_goals_files/" . $name;
+    
+                $mdrAttachments = new Attachments;
+                $mdrAttachments->department_id = auth()->user()->department_id;
+                $mdrAttachments->file_path = $file_path;
+                $mdrAttachments->departmental_goals_id = $departmentalGoals->id;
+                $mdrAttachments->save();
+            }
         }
 
         $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);

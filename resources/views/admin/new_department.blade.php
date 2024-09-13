@@ -18,7 +18,7 @@
                         </div>
                         <div class="col-md-12">
                             Department Head :
-                            <select name="departmentHead" id="departmentHead" class="form-control cat" required>
+                            <select name="departmentHead" id="departmentHead" class="form-control cat">
                                 <option value="">-Department Head-</option>
                                 @foreach ($user->where('role', 'Department Head') as $headData)
                                     <option value="{{ $headData->id }}">{{ $headData->name }}</option>

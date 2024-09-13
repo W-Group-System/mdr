@@ -30,7 +30,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($mdrSetup as $setup)
+                                                @foreach ($mdrSetup as $key=>$setup)
                                                     <tr>
                                                         <td>
                                                             <input type="hidden" name="name[]" value="{{$setup->name}}">
@@ -50,7 +50,7 @@
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{old('remarks[]')}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="file" name="file[]" class="form-control input-sm" value="{{old('file[]')}}" required>
+                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple required>
                                                         </td>
                                                     </tr>
                                                 @endforeach

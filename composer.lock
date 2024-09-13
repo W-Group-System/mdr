@@ -141,7 +141,10 @@
             "autoload": {
                 "psr-4": {
                     "Doctrine\\Common\\Cache\\": "lib/Doctrine/Common/Cache"
-                }
+                },
+                "files": [
+                    "app/Helpers/HelperFunctions.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
