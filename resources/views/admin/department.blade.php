@@ -108,7 +108,7 @@
                                         <td>{{optional($departmentData->user)->name}}</td>
                                         <td>
                                             @php
-                                                $due_date = getOrdinal($departmentData->target_date)
+                                                $due_date = getOrdinal($departmentData->target_date);
                                             @endphp
                                             {{$due_date}}
                                         </td>

@@ -15,7 +15,7 @@ function getOrdinal($number) {
         case 3:
             return $number . 'rd of the Month';
         default:
-            return 'N/A';
+            return $number . 'th of the Month';
     }
 }
 

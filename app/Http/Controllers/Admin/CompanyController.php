@@ -19,10 +19,10 @@ class CompanyController extends Controller
         $company = new Company;
         $company->code = $request->code;
         $company->name = $request->name;
-        $company->status = 1;
+        $company->status = 'Active';
         $company->save();
 
-        Alert::success('SUCCESS', 'Added Successfully.');
+        Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
     }
 
@@ -32,25 +32,25 @@ class CompanyController extends Controller
         $company->name = $request->name;
         $company->save();
 
-        Alert::success('SUCCESS', 'Updated Successfully.');
+        Alert::success('Updated Successfully')->persistent('Dismiss');
         return back();
     }
 
     public function deactivate($id) {
         $company = Company::findOrFail($id);
-        $company->status = 0;
+        $company->status = 'Inactive';
         $company->save();
 
-        Alert::success('SUCCESS', 'Deactivated Successfully.');
+        Alert::success('Deactivated Successfully')->persistent('Dismiss');
         return back();
     }
 
     public function activate($id) {
         $company = Company::findOrFail($id);
-        $company->status = 1;
+        $company->status = 'Active';
         $company->save();
 
-        Alert::success('SUCCESS', 'Activated Successfully.');
+        Alert::success('Activated Successfully')->persistent('Dismiss');
         return back();
     }
 }
