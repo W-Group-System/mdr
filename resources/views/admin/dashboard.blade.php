@@ -163,17 +163,17 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="col-lg-12">
+                <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <form action="" method="get">
+                            <form action="" method="get" onsubmit="show()">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="department">Department</label>
-                                            <select name="departmentValue" id="department" class="form-control cat" required>
+                                            <select name="departmentValue" id="department" class="form-control cat">
                                                 <option value="">-Department-</option>
-                                                @foreach ($listOfDepartment as $departmentData)
+                                                @foreach ($departments as $departmentData)
                                                     <option value="{{ $departmentData->id }}" {{ $departmentData->id == $departmentValue ? 'selected' : '' }}>{{ $departmentData->name }}</option>
                                                 @endforeach
                                             </select>
@@ -182,21 +182,21 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <label for="year1">Years</label>
-                                            <select name="years1" id="year1" class="form-control cat" required>
+                                            <select name="years1" id="year1" class="form-control cat">
                                                 <option value="">-Years-</option>
-                                                @foreach ($years as $key=>$y)
-                                                    <option value="{{$key}}" {{$key == $year1Val ? 'selected' : ''}}>{{$y}}</option>
+                                                @foreach (collect($years)->sortKeysDesc() as $key=>$y)
+                                                    <option value="{{$y}}" @if($y == $year1) selected @endif>{{$y}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label for="year2">Years</label>
-                                            <select name="years2" id="year2" class="form-control cat" required>
+                                            <label for="years2">Years</label>
+                                            <select name="years2" id="year2" class="form-control cat">
                                                 <option value="">-Years-</option>
-                                                @foreach ($years as $key=>$y)
-                                                    <option value="{{$key}}" {{$key == $year2Val ? 'selected' : ''}}>{{$y}}</option>
+                                                @foreach (collect($years)->sortKeysDesc() as $key=>$y)
+                                                    <option value="{{$y}}" @if($y == $year2) selected @endif>{{$y}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -229,7 +229,7 @@
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <table class="table table-striped table-bordered table-hover" id="">
+                            <table class="table table-striped table-bordered table-hover tables" id="">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -237,10 +237,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mdrStatusOne as $ms1)
+                                    @foreach ($months as $month)
                                         <tr>
-                                            <td>{{ $ms1['month'] }}</td>
-                                            <td>{{ $ms1['status'] }}</td>
+                                            <td>{{ $month->y }}</td>
+                                            <td>
+                                                @if(count($month->mdr_status) > 0)
+                                                    <span class="label label-success">Submitted</span>
+                                                @else
+                                                    <span class="label label-danger">No Submitted</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -251,7 +257,7 @@
                 <div class="col-lg-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <table class="table table-striped table-bordered table-hover" id="">
+                            <table class="table table-striped table-bordered table-hover tables" id="">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -259,17 +265,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($mdrStatusTwo as $ms2)
+                                    @foreach ($months_array as $month)
                                         <tr>
-                                            <td>{{ $ms2['month'] }}</td>
-                                            <td>{{ $ms2['status'] }}</td>
+                                            <td>{{ $month->y }}</td>
+                                            <td>
+                                                @if(count($month->mdr_status) > 0)
+                                                    <span class="label label-success">Submitted</span>
+                                                @else
+                                                    <span class="label label-danger">No Submitted</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
         </div>
     @endif
@@ -373,11 +385,19 @@
             ]
         });
 
+        $('.tables').DataTable({
+            pageLength: 10,
+            responsive: true,
+            ordering: false,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                // {extend: 'csv'},
+                {extend: 'excel'},
+            ]
+        });
+
         var department = {!! json_encode(collect($summary_kpi)->pluck('d')->toArray()) !!}
         var data = {!! json_encode(collect($summary_kpi)->pluck('mdr_status')->map(function($status) { return count($status) ? $status[0] : 0; })->toArray()) !!};
-
-        console.log(data);
-        
 
         var barData = {
             labels: department,
@@ -400,48 +420,50 @@
         var ctx2 = document.getElementById("barChart").getContext("2d");
         new Chart(ctx2, {type: 'bar', data: barData, options:barOptions});
 
-        @php         
-        // var month1 = {!! json_encode(array_keys($yearOneArray)) !!};
-        // var data1 = {!! json_encode(array_values($yearOneArray)) !!};
+        var month1 = {!! json_encode(collect($months)->pluck('y')->toArray()) !!};
+        var data1 = {!! json_encode(collect($months)->pluck('mdr_status')->map(function($status) { return count($status) ? $status[0] : 0; })->toArray()) !!};
 
-        // var barDataDepartment = {
-        //     labels: month1,
-        //     datasets: [
-        //         {
-        //             label: "MDR data in year of {{$year1Val}}",
-        //             backgroundColor: 'rgba(26,179,148,0.5)',
-        //             data: data1
-        //         }
-        //     ]
-        // };
-
-        // var barOptionsDepartment = {
-        //     responsive: true
-        // };
-
-        // var ctx2 = document.getElementById("barChartDepartment").getContext("2d");
-        // new Chart(ctx2, {type: 'bar', data: barDataDepartment, options:barOptionsDepartment});
+        console.log(data1);
         
-        // var month2 = {!! json_encode(array_keys($yearTwoArray)) !!};
-        // var data2 = {!! json_encode(array_values($yearTwoArray)) !!};
+        var barDataDepartment = {
+            labels: month1,
+            datasets: [
+                {
+                    label: "MDR data",
+                    backgroundColor: 'rgba(26,179,148,0.5)',
+                    data: data1
+                }
+            ]
+        };
 
-        // var year2BarData = {
-        //     labels: month2,
-        //     datasets: [
-        //         {
-        //             label: "MDR data in year of {{$year2Val}}",
-        //             backgroundColor: '#1C84C6',
-        //             data: data2
-        //         }
-        //     ]
-        // };
+        var barOptionsDepartment = {
+            responsive: true
+        };
 
-        // var year2Options = {
-        //     responsive: true
-        // };
+        var ctx2 = document.getElementById("barChartDepartment").getContext("2d");
+        new Chart(ctx2, {type: 'bar', data: barDataDepartment, options:barOptionsDepartment});
+        
+        var month2 = {!! json_encode(collect($months_array)->pluck('y')->toArray()) !!};
+        var data2 = {!! json_encode(collect($months_array)->pluck('mdr_status')->map(function($status) { return count($status) ? $status[0] : 0; })->toArray()) !!};
 
-        // var ctx2 = document.getElementById("yearChart2").getContext("2d");
-        // new Chart(ctx2, {type: 'bar', data: year2BarData, options:year2Options});
+        var year2BarData = {
+            labels: month2,
+            datasets: [
+                {
+                    label: "MDR data",
+                    backgroundColor: '#1C84C6',
+                    data: data2
+                }
+            ]
+        };
+
+        var year2Options = {
+            responsive: true
+        };
+
+        var ctx2 = document.getElementById("yearChart2").getContext("2d");
+        new Chart(ctx2, {type: 'bar', data: year2BarData, options:year2Options});
+        @php         
 
         // var yearAndMonth = "{{ $date }};"
         @endphp

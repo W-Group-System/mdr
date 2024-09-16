@@ -116,12 +116,46 @@ class DashboardController extends Controller
                 $summary_kpi[] = $object;
             }
             
+            $months = [];
+            for ($m=1; $m<=12; $m++) {
+                $object = new \stdClass();
+                $object->y =date('M-Y', mktime(0,0,0,$m, 1, $request->years1));
+                $object->year1 = date('Y-m', mktime(0,0,0,$m, 1, $request->years1));
+                $object->mdr_status = MdrSummary::select('rate')->where('department_id', $request->departmentValue)->where('yearAndMonth', $object->year1)->pluck('rate')->toArray();
+                $months[$m-1] = $object;
+            }
+            
+            $months_array = [];
+            for ($m=1; $m<=12; $m++) {
+                $object = new \stdClass();
+                $object->y =date('M-Y', mktime(0,0,0,$m, 1, $request->years2));
+                $object->year2 = date('Y-m', mktime(0,0,0,$m, 1, $request->years2));
+                $object->mdr_status = MdrSummary::select('rate')->where('department_id', $request->departmentValue)->where('yearAndMonth', $object->year2)->pluck('rate')->toArray();
+                $months_array[$m-1] = $object;
+            }
+            
+            $start_year = date('Y') - 20;
+            $current_year = date('Y');
+
+            $year_array = [];
+            for($year = $start_year; $year <= $current_year; $year++)
+            {
+                $year_array[] = $year;
+            }
+            
             return view('admin.dashboard',
                 array(
                     'yearAndMonth' => $request->yearAndMonth,
                     'mdr_summary' => $mdr_summary,
                     'mdr_score_array' => $mdr_score_array,
-                    'summary_kpi' => $summary_kpi
+                    'summary_kpi' => $summary_kpi,
+                    'departments' => $departments,
+                    'departmentValue' => $request->departmentValue,
+                    'months' => $months,
+                    'months_array' => $months_array,
+                    'years' => $year_array,
+                    'year1' => $request->years1,
+                    'year2' => $request->years2
                 )  
             );
         }
