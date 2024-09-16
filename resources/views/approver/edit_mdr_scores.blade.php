@@ -12,10 +12,10 @@
                             Process Improvement Scores :
                             <input type="number" name="process_improvement_scores" step=".01" class="form-control input-sm" value="{{$score->pd_scores}}">
                         </div>
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             Innovation Scores :
                             <input type="number" name="innovation_scores" step=".01" class="form-control input-sm" value="{{$score->innovation_scores}}">
-                        </div>
+                        </div> --}}
                         <div class="col-md-12">
                             Timeliness : 
                             <input type="number" name="timeliness" class="form-control input-sm" value="{{$score->timeliness}}">

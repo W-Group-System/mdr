@@ -14,7 +14,7 @@
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
         
         @include('dept-head.departmental-goals', array('departmentalGoals' => $departmentalGoals))
-        @include('dept-head.innovation', array('innovation' => $innovation))
+        {{-- @include('dept-head.innovation', array('innovation' => $innovation)) --}}
         @include('dept-head.process-development', array('process_improvement' => $process_improvement))
 
         {{-- @foreach ($mdrSetup as $departmentKpiData)

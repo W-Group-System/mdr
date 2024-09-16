@@ -197,7 +197,7 @@ class MdrController extends Controller
 
         $userData->notify(new NotifyDeptHead($userData->name, $request->yearAndMonth));
 
-        Alert::success('SUCCESS', 'The MDR is successfully submit.');
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
         return back();
     }
 }

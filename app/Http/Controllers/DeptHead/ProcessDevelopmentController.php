@@ -40,24 +40,8 @@ class ProcessDevelopmentController extends Controller
             $pdAttachments->save();  
         }
 
-        // $mdrScore = $departmentData->kpi_scores->first();
-        
-        // $processImprovementCount = ProcessDevelopment::where('month', date('m', strtotime($request->yearAndMonth)))
-        //     ->where('year', date('Y', strtotime($request->yearAndMonth)))
-        //     ->where('department_id', auth()->user()->department_id)
-        //     ->count();
+        processImprovementComputations("add", $processDevelopment->department_id, $request->yearAndMonth);
 
-        // $mdrScoreData = MdrScore::findOrFail($mdrScore->id);
-        
-        // if ($processImprovementCount == 1) {
-        //     $mdrScoreData->pd_scores = 0.5;
-        //     $mdrScoreData->save();
-        // }
-        // elseif ($processImprovementCount > 1) {
-        //     $mdrScoreData->pd_scores = 1.0;
-        //     $mdrScoreData->save();
-        // }
-        
         Alert::success('Successfully Added')->persistent('Dismiss');
         return back();
     }
@@ -121,6 +105,8 @@ class ProcessDevelopmentController extends Controller
         //     $mdrScoreData->pd_scores = 0.0;
         //     $mdrScoreData->save();
         // }
+
+        processImprovementComputations("delete", $request->department, $request->yearAndMonth);
 
         Alert::success('Successfully Deleted')->persistent('Dismiss');
         return back();

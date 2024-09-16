@@ -1,50 +1,14 @@
-{{-- <div class="modal" id="editKpi{{$dptGoals->id}}">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" >
-            <div class="modal-header">
-                <h5 class="modal-title">Edit KPI</h5>
-            </div>
-            <form method="POST" action="{{url('update_kpi/'.$dptGoals->id)}}" onsubmit="show()" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            Actual :
-                            <textarea name="actual" class="form-control" cols="30" rows="10" required>{!! nl2br($dptGoals->actual) !!}</textarea>
-                        </div>
-                        <div class="col-md-12">
-                            Grade :
-                            <input type="number" name="grade" class="form-control input-sm" value="{{$dptGoals->grade}}" required>
-                        </div>
-                        <div class="col-md-12">
-                            Remarks :
-                            <textarea name="remarks" class="form-control" cols="30" rows="10" required>{!! nl2br($dptGoals->remarks) !!}</textarea>
-                        </div>
-                        <div class="col-md-12">
-                            Attachments :
-                            <input type="file" name="file" class="form-control">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="submit">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> --}}
-
 <div class="modal" id="editKpi">
     <div class="modal-dialog modal-lg" id="kpiModal">
         <div class="modal-content" >
             <div class="modal-header">
                 <h5 class="modal-title">Edit KPI</h5>
             </div>
-            <form method="POST" action="{{url('update_kpi')}}" onsubmit="show()" enctype="multipart/form-data">
+            <form method="POST" action="{{url('addGradeAndRemarks')}}" onsubmit="show()">
                 @csrf
-                <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
-                <input type="hidden" name="target_date" value="{{auth()->user()->department->target_date}}">
+                <input type="hidden" name="yearAndMonth" value="{{$mdrSummary->yearAndMonth}}">
+                <input type="hidden" name="target_date" value="{{$mdrSummary->departments->target_date}}">
+                <input type="hidden" name="department" value="{{$mdrSummary->department_id}}">
 
                 <div class="modal-body">
                     <div class="row">
@@ -63,11 +27,11 @@
                                                     <th>Actual</th>
                                                     <th>Grade</th>
                                                     <th>Remarks</th>
-                                                    <th>Attachments</th>
+                                                    {{-- <th>Attachments</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($departmentalGoals as $key=>$dptGoals)
+                                                @foreach ($mdrSummary->departmentalGoals as $key=>$dptGoals)
                                                     <input type="hidden" name="department_goals_id[]" value="{{$dptGoals->id}}">
 
                                                     <tr>
@@ -80,17 +44,17 @@
                                                             {!! nl2br($dptGoals->target) !!}
                                                         </td>
                                                         <td>
-                                                            <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{$dptGoals->actual}}</textarea>
+                                                            {{$dptGoals->actual}}
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{$dptGoals->grade}}" required>
+                                                            <input type="text" name="grade[]" class="form-control input-sm" maxlength="3" value="{{$dptGoals->grade}}" required>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
                                                         </td>
-                                                        <td>
+                                                        {{-- <td>
                                                             <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple>
-                                                        </td>
+                                                        </td> --}}
                                                     </tr>
                                                 @endforeach
                                             </tbody>

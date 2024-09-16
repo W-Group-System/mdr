@@ -158,62 +158,74 @@ class ListOfMdr extends Controller
         // }        
     }
 
-    // public function addGradeAndRemarks(Request $request) {
-    //     $departmentalGoalsList = DepartmentalGoals::findMany($request->departmentalGoalsId);
-            
-    //     if ($departmentalGoalsList->isNotEmpty()) {
-    //         $grade = collect($request->grade);
-            
-    //         $kpiScore = $grade->map(function($item, $key) {
-    //             if ($item > 100) {
-    //                 $item = 100;
-    //             }
-
-    //             $grades =  $item / 100.00 * 0.5;
-                
-    //             return $grades;
-    //         });
+    public function addGradeAndRemarks(Request $request) {
+        $departmentalGoalsList = DepartmentalGoals::findMany($request->department_goals_id);
         
-    //         $score = number_format($kpiScore->sum(), 2);
+        foreach($departmentalGoalsList as $key=>$dptGoals)
+        {
+            $dptGoals->remarks = $request->remarks[$key];
+            $dptGoals->grade = $request->grade[$key];
+            $dptGoals->save();
+        }
 
-    //         $kpiScore = MdrScore::where('year', date('Y', strtotime($request->yearAndMonth)))
-    //             ->where('month', date('m', strtotime($request->yearAndMonth)))
-    //             ->where('department_id', $request->department_id)
-    //             ->first();
+        computeKpi($request->grade, $request->target_date, $request->yearAndMonth, $request->department);
 
-    //         $totalInnovationAndPIScores = 0.0;
-    //         if ($kpiScore->innovation_scores == 0.0 && $kpiScore->pd_scores == 0.0) {
-    //             $totalInnovationAndPIScores = 0.0;
-    //         }
-    //         else if (($kpiScore->innovation_scores == 0.5 && $kpiScore->pd_scores == 0.5) || ($kpiScore->innovation_scores == 0.5 || $kpiScore->innovation_scores == 0.0) && ($kpiScore->pd_scores == 0.5 || $kpiScore->pd_scores == 0.0)) {
-    //             $totalInnovationAndPIScores = 0.5;
-    //         }
-    //         else if (($kpiScore->innovation_scores == 1.0 && $kpiScore->pd_scores == 1.0) || ($kpiScore->innovation_scores == 0.5 || $kpiScore->innovation_scores == 1.0) && ($kpiScore->pd_scores == 0.5 || $kpiScore->pd_scores == 1.0) || ($kpiScore->innovation_scores == 1.0 || $kpiScore->innovation_scores == 0.0) && ($kpiScore->pd_scores == 1.0 || $kpiScore->pd_scores == 0.0)) {
-    //             $totalInnovationAndPIScores = 1.0;
-    //         }
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+        
+        // if ($departmentalGoalsList->isNotEmpty()) {
+        //     $grade = collect($request->grade);
             
-    //         $deadlineDate = $kpiScore->deadline;
-    //         $timeliness =  $deadlineDate >= date('Y-m-d') ? 0.4 : 0.0;
-    //         $totalRating = $score + $totalInnovationAndPIScores + $timeliness;
+        //     $kpiScore = $grade->map(function($item, $key) {
+        //         if ($item > 100) {
+        //             $item = 100;
+        //         }
+
+        //         $grades =  $item / 100.00 * 0.5;
+                
+        //         return $grades;
+        //     });
+        
+        //     $score = number_format($kpiScore->sum(), 2);
+
+        //     $kpiScore = MdrScore::where('year', date('Y', strtotime($request->yearAndMonth)))
+        //         ->where('month', date('m', strtotime($request->yearAndMonth)))
+        //         ->where('department_id', $request->department_id)
+        //         ->first();
+
+        //     $totalInnovationAndPIScores = 0.0;
+        //     if ($kpiScore->innovation_scores == 0.0 && $kpiScore->pd_scores == 0.0) {
+        //         $totalInnovationAndPIScores = 0.0;
+        //     }
+        //     else if (($kpiScore->innovation_scores == 0.5 && $kpiScore->pd_scores == 0.5) || ($kpiScore->innovation_scores == 0.5 || $kpiScore->innovation_scores == 0.0) && ($kpiScore->pd_scores == 0.5 || $kpiScore->pd_scores == 0.0)) {
+        //         $totalInnovationAndPIScores = 0.5;
+        //     }
+        //     else if (($kpiScore->innovation_scores == 1.0 && $kpiScore->pd_scores == 1.0) || ($kpiScore->innovation_scores == 0.5 || $kpiScore->innovation_scores == 1.0) && ($kpiScore->pd_scores == 0.5 || $kpiScore->pd_scores == 1.0) || ($kpiScore->innovation_scores == 1.0 || $kpiScore->innovation_scores == 0.0) && ($kpiScore->pd_scores == 1.0 || $kpiScore->pd_scores == 0.0)) {
+        //         $totalInnovationAndPIScores = 1.0;
+        //     }
             
-    //         $kpiScore->update([
-    //             'score' => $score,
-    //             'total_rating' => $totalRating
-    //         ]);
+        //     $deadlineDate = $kpiScore->deadline;
+        //     $timeliness =  $deadlineDate >= date('Y-m-d') ? 0.4 : 0.0;
+        //     $totalRating = $score + $totalInnovationAndPIScores + $timeliness;
+            
+        //     $kpiScore->update([
+        //         'score' => $score,
+        //         'total_rating' => $totalRating
+        //     ]);
 
-    //         foreach($departmentalGoalsList as $key=>$dg) {
-    //             $dg->remarks = $request->remarks[$key];
-    //             $dg->grade = $request->grade[$key];
-    //             $dg->save();
-    //         }
+        //     foreach($departmentalGoalsList as $key=>$dg) {
+        //         $dg->remarks = $request->remarks[$key];
+        //         $dg->grade = $request->grade[$key];
+        //         $dg->save();
+        //     }
 
-    //         Alert::success('SUCCESS', 'Successfully Added.');
-    //         return back();
-    //     }
-    //     else {
-    //         return back()->with('errors', ["Can not add remarks"]);
-    //     }
-    // }
+            // Alert::success('SUCCESS', 'Successfully Added.');
+        //     return back();
+        // }
+        // else {
+        //     return back()->with('errors', ["Can not add remarks"]);
+        // }
+    }
 
     public function approveMdr(Request $request, $id) {
         // dd($request->all());
@@ -243,7 +255,7 @@ class ListOfMdr extends Controller
             $user = User::where('id', $mdr_approvers->user_id)->first();
             $approver = $user->name;
             $yearAndMonth = $mdrSummary->yearAndMonth;
-            $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
+            // $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
 
             Alert::success('Succesfully Approved')->persistent('Dismiss');
         }
@@ -285,6 +297,11 @@ class ListOfMdr extends Controller
 
                 $mdrApprover->save();
             }
+
+            $user = User::where('id', $mdr_approvers->user_id)->first();
+            $approver = $user->name;
+            $yearAndMonth = $mdrSummary->yearAndMonth;
+            // $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
 
             Alert::success('Succesfully Returned')->persistent('Dismiss');
         }

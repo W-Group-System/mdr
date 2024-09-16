@@ -52,28 +52,63 @@ class DepartmentalGoalsController extends Controller
         return back();
     }
 
-    public function update(Request $request, $id) {
-        $departmentalGoals = DepartmentalGoals::findOrFail($id);
-        $departmentalGoals->actual = $request->actual;
-        $departmentalGoals->grade = $request->grade;
-        $departmentalGoals->remarks = $request->remarks;
-        if($request->has('file'))
+    public function update(Request $request) {
+        // dd($request->all());
+        // $departmentalGoals = DepartmentalGoals::findOrFail($id);
+        // $departmentalGoals->actual = $request->actual;
+        // $departmentalGoals->grade = $request->grade;
+        // $departmentalGoals->remarks = $request->remarks;
+        // if($request->has('file'))
+        // {
+        //     $mdrAttachments = Attachments::where('departmental_goals_id', $id)->delete();
+
+        //     $attachment = $request->file('file');
+        //     $name = time().'_'.$attachment->getClientOriginalName();
+        //     $attachment->move(public_path('departmental_goals_files'), $name);
+        //     $filename = '/departmental_goals_files/'.$name;
+
+        //     $mdrAttachments = new Attachments;
+        //     $mdrAttachments->department_id = auth()->user()->department_id;
+        //     $mdrAttachments->departmental_goals_id = $id;
+        //     $mdrAttachments->file_path = $filename;
+        //     $mdrAttachments->save();
+        // }
+
+        // $departmentalGoals->save();
+
+        $departmentalGoals = DepartmentalGoals::findMany($request->department_goals_id);
+        
+        foreach($departmentalGoals as $deptKey=>$dptGoals)
         {
-            $mdrAttachments = Attachments::where('departmental_goals_id', $id)->delete();
+            $dptGoals->kpi_name = $request->name[$deptKey];
+            $dptGoals->department_id = auth()->user()->department_id;
+            $dptGoals->target = $request->target[$deptKey];
+            $dptGoals->actual = $request->actual[$deptKey];
+            $dptGoals->grade = $request->grade[$deptKey];
+            $dptGoals->remarks = $request->remarks[$deptKey];
+            $dptGoals->yearAndMonth = $request->yearAndMonth;
+            $dptGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.$request->target_date;
+            $dptGoals->save();
 
-            $attachment = $request->file('file');
-            $name = time().'_'.$attachment->getClientOriginalName();
-            $attachment->move(public_path('departmental_goals_files'), $name);
-            $filename = '/departmental_goals_files/'.$name;
-
-            $mdrAttachments = new Attachments;
-            $mdrAttachments->department_id = auth()->user()->department_id;
-            $mdrAttachments->departmental_goals_id = $id;
-            $mdrAttachments->file_path = $filename;
-            $mdrAttachments->save();
+            if ($request->has('file') && isset($request->file('file')[$deptKey]))
+            {
+                $attachments = $request->file('file')[$deptKey];
+                
+                foreach ($attachments as $attachment) {
+                    $name = time() . '_' . $attachment->getClientOriginalName();
+                    $attachment->move(public_path('departmental_goals_files'), $name);
+                    $file_path = "/departmental_goals_files/" . $name;
+        
+                    $mdrAttachments = new Attachments;
+                    $mdrAttachments->department_id = auth()->user()->department_id;
+                    $mdrAttachments->file_path = $file_path;
+                    $mdrAttachments->departmental_goals_id = $dptGoals->id;
+                    $mdrAttachments->save();
+                }
+            }
         }
 
-        $departmentalGoals->save();
+        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
         
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
@@ -106,7 +141,7 @@ class DepartmentalGoalsController extends Controller
         $value = number_format($kpiValue->sum(), 2);
         $rating = 3.00;
         $score = number_format($kpiScore->sum(), 2);
-
+        
         $deadline = date('Y-m', strtotime("+1 month", strtotime($yearAndMonth))).'-'.$date;
         $timeliness = 0;
         if ($deadline < date('Y-m-d'))
@@ -139,11 +174,11 @@ class DepartmentalGoalsController extends Controller
             $mdrScores->grade = $value;
             $mdrScores->rating = $rating;
             $mdrScores->score = $score;
-            $mdrScores->pd_scores = null;
-            $mdrScores->innovation_scores = null;
+            // $mdrScores->pd_scores = null;
+            // $mdrScores->innovation_scores = null;
             $mdrScores->timeliness = $timeliness;
             $mdrScores->yearAndMonth = $yearAndMonth;
-            $mdrScores->remarks = null;
+            // $mdrScores->remarks = null;
             $mdrScores->save();
         }
     }

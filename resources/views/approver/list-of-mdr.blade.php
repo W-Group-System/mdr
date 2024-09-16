@@ -20,7 +20,7 @@
                                     <th>Month</th>
                                     <th>KPI</th>
                                     <th>Process Improvement</th>
-                                    <th>Innovation</th>
+                                    {{-- <th>Innovation</th> --}}
                                     <th>Timeliness</th>
                                     <th>Rating</th>
                                     <th>Remarks</th>
@@ -38,7 +38,7 @@
                                     <td>{{ date('F Y', strtotime($score->yearAndMonth)) }}</td>
                                     <td>{{ $score->score }}</td>
                                     <td>{{$score->pd_scores}}</td>
-                                    <td>{{$score->innovation_scores}}</td>
+                                    {{-- <td>{{$score->innovation_scores}}</td> --}}
                                     <td>{{$score->timeliness}}</td>
                                     <td>{{ $score->total_rating }}</td>
                                     <td>{{$score->remarks}}</td>
@@ -65,14 +65,15 @@
                     <p>Departmental Goals</p>
                 </div>
                 <div class="ibox-content">
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
+                        <i class="fa fa-pencil"></i>
+                        Edit KPI
+                    </button>
                     <div class="table-responsive">
-                        {{-- <form action="{{ url('addGradeAndRemarks') }}" method="post" onsubmit="show()">
-                            @csrf
-
-                        </form> --}}
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
                                 <tr>
+                                    {{-- <th>Actions</th> --}}
                                     <th>KPI</th>
                                     <th>Target</th>
                                     <th>Actual</th>
@@ -84,6 +85,11 @@
                             <tbody>
                                 @foreach ($mdrSummary->departmentalGoals as $dptGoals)
                                 <tr>
+                                    {{-- <td>
+                                        <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#editKpi{{$dptGoals->id}}">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </button>
+                                    </td> --}}
                                     <td>{!! nl2br($dptGoals->kpi_name) !!}</td>
                                     <td>{!! nl2br($dptGoals->target) !!}</td>
                                     <td>{{ $dptGoals->actual }}</td>
@@ -99,9 +105,11 @@
                                         <a href="{{url($file->file_path)}}" target="_blank">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
+                                        <br>
                                         @endforeach
                                     </td>
                                 </tr>
+
                                 @endforeach
                             </tbody>
                         </table>
@@ -110,7 +118,7 @@
             </div>
         </div>
 
-        <div class="col-lg-12">
+        {{-- <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -156,7 +164,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
@@ -202,13 +210,16 @@
         </div>
     </div>
 </div>
+
+@include('approver.edit_list_of_mdr')
+
 @endsection
 
 @push('scripts')
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
 {{-- datatable --}}
-<script src="js/plugins/dataTables/datatables.min.js"></script>
+<script src="{{ asset('js/plugins/dataTables/datatables.min.js') }}"></script>
 
 <script>
     $(document).ready(function() {
@@ -222,6 +233,24 @@
         });
 
         $('#innovationTable').DataTable({
+            pageLength: 10,
+            ordering: false,
+            responsive: true,
+            stateSave: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: []
+        });
+
+        $('#departmentalGoals').DataTable({
+            pageLength: 10,
+            ordering: false,
+            responsive: true,
+            stateSave: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: []
+        });
+
+        $('#kpiScores').DataTable({
             pageLength: 10,
             ordering: false,
             responsive: true,

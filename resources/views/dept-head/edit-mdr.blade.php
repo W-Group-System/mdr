@@ -27,11 +27,15 @@
                     Departmental Goals
                 </div>
                 <div class="ibox-content">
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
+                        <i class="fa fa-pencil"></i>
+                        Edit KPI
+                    </button>
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
                                 <tr>
-                                    <th>Actions</th>
+                                    {{-- <th>Actions</th> --}}
                                     <th>Key Performance Indicator</th>
                                     <th>Target</th>
                                     <th>Actual</th>
@@ -43,11 +47,11 @@
                             <tbody>
                                 @foreach ($departmentalGoals as $dptGoals)
                                     <tr>
-                                        <td>
+                                        {{-- <td>
                                             <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#editKpi{{$dptGoals->id}}">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                        </td>
+                                        </td> --}}
                                         <td>{!! nl2br($dptGoals->kpi_name) !!}</td>
                                         <td>{!! nl2br($dptGoals->target) !!}</td>
                                         <td>{{$dptGoals->actual}}</td>
@@ -63,8 +67,6 @@
                                             @endforeach
                                         </td>
                                     </tr>
-        
-                                    @include('dept-head.edit_kpi')
                                 @endforeach
                             </tbody>
                         </table>
@@ -73,7 +75,7 @@
             </div>
         </div>
 
-        <div class="col-md-12">
+        {{-- <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
@@ -137,7 +139,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
@@ -169,6 +171,9 @@
 
                                             <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
                                                 @csrf
+
+                                                <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
+                                                <input type="hidden" name="department" value="{{$processDevelopmentData->department_id}}">
 
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fa fa-trash"></i>
@@ -243,7 +248,7 @@
 
 @include('dept-head.add_innovation')
 @include('dept-head.add_process_improvement')
-{{-- @include('dept-head.ad') --}}
+@include('dept-head.edit_kpi')
 @endsection
 
 @push('scripts')
