@@ -13,7 +13,7 @@
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="kpiScores">
+                        <table class="table table-bordered" >
                             <thead>
                                 <tr>
                                     <th>Actions</th>

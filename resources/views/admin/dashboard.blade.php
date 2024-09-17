@@ -69,7 +69,7 @@
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-content">
-                            <form action="{{ url('print_pdf') }}" method="post" target="_blank" onsubmit="show()">
+                            <form action="{{ url('print_pdf') }}" method="post" target="_blank" >
                                 @csrf
 
                                 <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">

@@ -25,13 +25,14 @@
     }
 </style>
 <body>
-    <h2 class="pdf-title">Monthly Department Report Summary for the month of {{ date('F Y', strtotime($yearAndMonth)) }}</h2>
+
+    <h2 class="pdf-title">Monthly Department Report Summary for the month of {{ date('F Y', strtotime($year_and_month)) }}</h2>
 
     <table>
         <thead>
             <tr>
                 <th>Department</th>
-                <th>Action</th>
+                {{-- <th>Action</th> --}}
                 <th>Status</th>
                 <th>Due Date</th>
                 <th>KPI</th>
@@ -42,18 +43,18 @@
             </tr>
         </thead>
         <tbody>
-            @if(count($mdrSummary) > 0)
-                @foreach ($mdrSummary as $data)
+            @if(count($mdr_summary) > 0)
+                @foreach ($mdr_summary as $data)
                     <tr>
-                        <td class="tdData">{{ $data['department'] }}</td>
-                        <td class="tdData">{{ $data['action'] }}</td>
-                        <td class="tdData">{{ $data['status'] }}</td>
-                        <td class="tdData">{{ $data['deadline'] }}</td>
-                        <td class="tdData">{{ $data['kpi'] }}</td>
-                        <td class="tdData">{{ $data['innovation_scores'] }}</td>
-                        <td class="tdData">{{ $data['pd_scores'] }}</td>
-                        <td class="tdData">{{ $data['timeliness'] }}</td>
-                        <td class="tdData">{{ $data['rate'] }}</td>
+                        <td class="tdData">{{ $data->name }}</td>
+                        {{-- <td class="tdData">{{ $data['action'] }}</td> --}}
+                        <td class="tdData">{{ $data->status }}</td>
+                        <td class="tdData">{{ $data->deadline }}</td>
+                        <td class="tdData">{{ $data->scores}}</td>
+                        <td class="tdData">{{ $data->innovation_scores }}</td>
+                        <td class="tdData">{{ $data->pd_scores }}</td>
+                        <td class="tdData">{{ $data->timeliness }}</td>
+                        <td class="tdData">{{ $data->total_rating }}</td>
                     </tr>
                 @endforeach
             @else
