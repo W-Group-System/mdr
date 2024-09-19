@@ -91,7 +91,9 @@
                                         <th>Status</th>
                                         <th>Due Date</th>
                                         <th>KPI</th>
+                                        @if($yearAndMonth < '2024-07')
                                         <th>Innovation</th>
+                                        @endif
                                         <th>Process Improvement</th>
                                         <th>Timeliness</th>
                                         <th>Rate</th>
@@ -128,6 +130,7 @@
                                                 0.0
                                                 @endif
                                             </td>
+                                            @if($yearAndMonth < '2024-07')
                                             <td>
                                                 @if($summary->innovation_scores != null)
                                                 {{$summary->innovation_scores}}
@@ -135,6 +138,7 @@
                                                 0.0
                                                 @endif
                                             </td>
+                                            @endif
                                             <td>
                                                 @if($summary->pd_scores != null)
                                                 {{$summary->pd_scores}}
