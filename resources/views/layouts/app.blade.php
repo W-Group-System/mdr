@@ -94,7 +94,7 @@
                             </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->role == "Approver")
+                    @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
                         <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
                             <a href="{{ url('for_approval') }}">
                                 <i class="fa fa-pencil-square-o"></i>
@@ -120,7 +120,7 @@
                             </a>
                         </li>
                     @endif
-                    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
+                    @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users" || auth()->user()->role == "Business Process Manager")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="{{ url('mdr') }}">
                                 <i class="fa fa-file"></i>

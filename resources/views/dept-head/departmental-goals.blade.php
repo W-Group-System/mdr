@@ -1,17 +1,24 @@
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-title">
+            @if(count($departmentalGoals->where('yearAndMonth', $yearAndMonth)) > 0)
+            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
+                <i class="fa fa-pencil"></i>
+                Edit KPI
+            </button>
+            @else
             <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#newKpi" @if($departmentalGoals->isNotEmpty()) disabled @endif>
                 <i class="fa fa-plus"></i>
                 Add KPI
             </button>
+            @endif
         </div>
         <div class="ibox-content">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover" id="departmentalGoals">
                     <thead>
                         <tr>
-                            <th>Actions</th>
+                            {{-- <th>Actions</th> --}}
                             <th>Key Performance Indicator</th>
                             <th>Target</th>
                             <th>Actual</th>
@@ -23,11 +30,11 @@
                     <tbody>
                         @foreach ($departmentalGoals as $dptGoals)
                             <tr>
-                                <td>
+                                {{-- <td>
                                     <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#editKpi{{$dptGoals->id}}">
                                         <i class="fa fa-pencil"></i>
                                     </button>
-                                </td>
+                                </td> --}}
                                 <td>{!! nl2br($dptGoals->kpi_name) !!}</td>
                                 <td>{!! nl2br($dptGoals->target) !!}</td>
                                 <td>{{$dptGoals->actual}}</td>
@@ -43,8 +50,6 @@
                                     @endforeach
                                 </td>
                             </tr>
-
-                            @include('dept-head.edit_kpi')
                         @endforeach
                     </tbody>
                 </table>
@@ -54,6 +59,7 @@
 </div>
 
 @include('dept-head.new_kpi')
+@include('dept-head.edit_kpi')
 
 {{-- @foreach ($departmentKpiData->mdrSetup as $item)
     <div class="modal" id="uploadModal-{{ $item->id }}">

@@ -20,7 +20,7 @@
                             Department Head :
                             <select name="departmentHead" id="departmentHead" class="form-control cat">
                                 <option value="">-Department Head-</option>
-                                @foreach ($user->where('role', 'Department Head') as $headData)
+                                @foreach ($user->whereIn('role', ['Department Head', 'Business Process Manager']) as $headData)
                                     <option value="{{ $headData->id }}">{{ $headData->name }}</option>
                                 @endforeach
                             </select>

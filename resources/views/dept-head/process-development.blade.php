@@ -1,7 +1,7 @@
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-title">
-            <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#addProcessDevelopment">
+            <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#addProcessDevelopment" @if(count($departmentalGoals) == 0) disabled @endif>
                 <i class="fa fa-plus"></i>
                 Add Process Improvement
             </button>

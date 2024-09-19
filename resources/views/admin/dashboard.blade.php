@@ -33,7 +33,7 @@
         </div>
     @endif
 
-    @if(auth()->user()->role == "Approver")
+    @if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
         <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
@@ -373,7 +373,7 @@
 <script src="{{ asset('js/plugins/chartJs/Chart.min.js') }}"></script>
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
-@if(auth()->user()->role == "Approver")
+@if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
 <script>
     $(document).ready(function() {
         $(".cat").chosen({width: "100%"});

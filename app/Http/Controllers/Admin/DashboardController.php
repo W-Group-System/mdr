@@ -48,7 +48,7 @@ class DashboardController extends Controller
             );
         }
 
-        if(auth()->user()->role == "Approver")
+        if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
         {
             $departments = Department::get();
             $mdr_summary = MdrSummary::where(function($query)use($request) {

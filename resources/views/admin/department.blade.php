@@ -114,7 +114,7 @@
                                         </td>
                                         <td>
                                             @foreach ($departmentData->approver as $approver)
-                                                <small>{{ $approver->status_level .'. ' . $approver->user->name }}</small> <br>
+                                                <small>{{ $approver->status_level .'. ' . optional($approver->user)->name }}</small> <br>
                                             @endforeach
                                         </td>
                                         <td>
@@ -169,7 +169,7 @@
             $(".approverFormGroup").append(`
                 <select name="approver[]" id="" class="form-control approver" style="margin-bottom: 10px;" required="">
                     <option value=""></option>
-                    @foreach($user->where('role', 'Approver') as $approverData)
+                    @foreach($user->whereIn('role', ['Approver', 'Business Process Manager']) as $approverData)
                         <option value="{{ $approverData->id }}">{{ $approverData->name }}</option>
                     @endforeach
                 </select>

@@ -53,7 +53,7 @@
                     @endif
 
                     <div class="wrap-input100" data-validate = "Valid email is required: ex@abc.xyz">
-                        <input  type="email" class="input100" name="email" value="{{old('email')}}" required >
+                        <input  type="email" class="input100" name="email" required >
                         <span class="focus-input100"></span>
                         <span class="label-input100">Email</span>
                     </div>

@@ -20,7 +20,7 @@
                             Department Head :
                             <select name="departmentHead" id="departmentHead" class="form-control cat">
                                 <option value="">-Department Head-</option>
-                                @foreach ($user->where('role', 'Department Head') as $headData)
+                                @foreach ($user->whereIn('role', ['Department Head', 'Business Process Manager']) as $headData)
                                     <option value="{{ $headData->id }}" {{ $headData->id == $departmentData->user_id ? 'selected' : '' }}>{{ $headData->name }}</option>
                                 @endforeach
                             </select>
@@ -47,7 +47,7 @@
                                     @foreach ($departmentData->approver as $approver)
                                         <select name="approver[]" class="form-control cat approver">
                                             <option value=""></option>
-                                            @foreach($user->where('role', 'Approver') as $approverData)
+                                            @foreach($user->whereIn('role', ['Approver', 'Business Process Manager']) as $approverData)
                                                 <option value="{{ $approverData->id }}" {{ $approverData->id == $approver->user_id ? 'selected' : '' }}>{{ $approverData->name }}</option>
                                             @endforeach
                                         </select>
