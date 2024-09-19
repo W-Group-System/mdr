@@ -128,7 +128,7 @@
                             </a>
                         </li>
                     @endif
-                    @if(auth()->user()->role == "Human Resources" || auth()->user()->role == "Department Head")
+                    @if(auth()->user()->role == "Human Resources" || auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
                         <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">
                             <a href="{{ url('list_of_penalties') }}">
                                 <i class="fa fa-list" aria-hidden="true"></i>

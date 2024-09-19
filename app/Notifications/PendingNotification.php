@@ -10,7 +10,7 @@ use Illuminate\Support\HtmlString;
 
 class PendingNotification extends Notification
 {
-    use Queueable;
+    // use Queueable;
 
     protected $table;
     /**

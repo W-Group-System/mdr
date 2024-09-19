@@ -31,7 +31,7 @@ class DashboardController extends Controller
             );
         }
 
-        if (auth()->user()->role == "Department Head")
+        if (auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
         {
             $months = [];
             for ($m=1; $m<=12; $m++) {
