@@ -99,7 +99,7 @@
                                             </form>
                                             @endif
                                         </td>
-                                        <td>{{ $departmentKpiData->departments->code.' - ' .$departmentKpiData->departments->name }}</td>
+                                        <td>{{ optional($departmentKpiData->departments)->code.' - ' .optional($departmentKpiData->departments)->name }}</td>
                                         <td>{{ $departmentKpiData->mdrGroup->name}}</td>
                                         <td>{!! nl2br($departmentKpiData->name) !!}</td>
                                         <td>{!! nl2br($departmentKpiData->target) !!}</td>
