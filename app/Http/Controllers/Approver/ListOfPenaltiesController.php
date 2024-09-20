@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class ListOfPenaltiesController extends Controller
 {
     public function index() {
-        if (auth()->user()->role == "Approver" || auth()->user()->role == "Human Resources") {
+        if (auth()->user()->role == "Approver" || auth()->user()->role == "Human Resources" || auth()->user()->role == "Users") {
             $mdrSummary = MdrSummary::with([
                 'departments',
                 'nteAttachments',

@@ -25,7 +25,7 @@ class ForNteController extends Controller
                 ->where('penalty_status', 'For NTE')
                 ->get();
         }
-        if(auth()->user()->role == "Department Head") {
+        if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users") {
             $mdrSummary = MdrSummary::with([
                     'departments',
                     'nteAttachments',

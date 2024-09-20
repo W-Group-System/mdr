@@ -25,7 +25,7 @@ class ForNodController extends Controller
             ->get();
         }
 
-        if(auth()->user()->role == "Department Head") {
+        if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users") {
             $mdrSummary = MdrSummary::with([
                 'departments.user',
                 'nodAttachments.users'
