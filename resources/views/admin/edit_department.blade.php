@@ -45,12 +45,14 @@
                                 Department Approver :
                                 <div class="approverFormGroup">
                                     @foreach ($departmentData->approver as $approver)
-                                        <select name="approver[]" class="form-control cat approver">
-                                            <option value=""></option>
-                                            @foreach($user->whereIn('role', ['Approver', 'Business Process Manager']) as $approverData)
-                                                <option value="{{ $approverData->id }}" {{ $approverData->id == $approver->user_id ? 'selected' : '' }}>{{ $approverData->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <div class="select-container">
+                                            <select name="approver[]" class="form-control cat approver">
+                                                <option value=""></option>
+                                                @foreach($user->whereIn('role', ['Approver', 'Business Process Manager', 'Department Head']) as $approverData)
+                                                    <option value="{{ $approverData->id }}" {{ $approverData->id == $approver->user_id ? 'selected' : '' }}>{{ $approverData->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     @endforeach
                                 </div>
                             </div>
