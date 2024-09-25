@@ -46,7 +46,7 @@ class DepartmentalGoalsController extends Controller
             }
         }
 
-        // $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
+        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
@@ -108,39 +108,39 @@ class DepartmentalGoalsController extends Controller
             }
         }
 
-        // $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
+        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
         
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
     }
 
     public function computeKpi($grades, $date, $yearAndMonth) {
-        $grade = collect($grades);
+        // $grade = collect($grades);
         
-        $kpiValue = $grade->map(function($item, $key) {
+        // $kpiValue = $grade->map(function($item, $key) {
 
-            if ($item > 100) {
-                $item = 100;
-            }
+        //     if ($item > 100) {
+        //         $item = 100;
+        //     }
 
-            $value = $item / 100.00;
+        //     $value = $item / 100.00;
 
-            return $value;
-        });
+        //     return $value;
+        // });
         
-        $kpiScore = $grade->map(function($item, $key) {
-            if ($item > 100) {
-                $item = 100;
-            }
+        // $kpiScore = $grade->map(function($item, $key) {
+        //     if ($item > 100) {
+        //         $item = 100;
+        //     }
 
-            $grades =  $item / 100.00 * 0.5;
+        //     $grades =  $item / 100.00 * 0.5;
             
-            return $grades;
-        });
+        //     return $grades;
+        // });
         
-        $value = number_format($kpiValue->sum(), 2);
-        $rating = 3.00;
-        $score = number_format($kpiScore->sum(), 2);
+        // $value = number_format($kpiValue->sum(), 2);
+        // $rating = 3.00;
+        // $score = number_format($kpiScore->sum(), 2);
         
         $deadline = date('Y-m', strtotime("+1 month", strtotime($yearAndMonth))).'-'.$date;
         $timeliness = 0;
@@ -159,9 +159,12 @@ class DepartmentalGoalsController extends Controller
         {
             $mdrScores = new MdrScore;
             $mdrScores->department_id = auth()->user()->department_id;
-            $mdrScores->grade = $value;
-            $mdrScores->rating = $rating;
-            $mdrScores->score = $score;
+            // $mdrScores->grade = $value;
+            // $mdrScores->rating = $rating;
+            // $mdrScores->score = $score;
+            $mdrScores->grade = null;
+            $mdrScores->rating = null;
+            $mdrScores->score = null;
             $mdrScores->pd_scores = null;
             $mdrScores->innovation_scores = null;
             $mdrScores->timeliness = $timeliness;
@@ -171,9 +174,12 @@ class DepartmentalGoalsController extends Controller
         }
         else
         {
-            $mdrScores->grade = $value;
-            $mdrScores->rating = $rating;
-            $mdrScores->score = $score;
+            // $mdrScores->grade = $value;
+            // $mdrScores->rating = $rating;
+            // $mdrScores->score = $score;
+            $mdrScores->grade = null;
+            $mdrScores->rating = null;
+            $mdrScores->score = null;
             // $mdrScores->pd_scores = null;
             // $mdrScores->innovation_scores = null;
             $mdrScores->timeliness = $timeliness;
