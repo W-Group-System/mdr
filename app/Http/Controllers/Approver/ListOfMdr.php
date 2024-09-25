@@ -464,11 +464,12 @@ class ListOfMdr extends Controller
     }
 
     public function submitScores(Request $request, $id) {
+        // dd($request->all());
         $mdrScore = MdrScore::findOrFail($id);
         $mdrScore->pd_scores = $request->process_improvement_scores;
         $mdrScore->innovation_scores = $request->innovation_scores;
-        $mdrScore->timeliness;
-        $mdrScore->remarks;
+        $mdrScore->timeliness = $request->timeliness;
+        $mdrScore->remarks = $request->remarks;
         $mdrScore->save();
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
