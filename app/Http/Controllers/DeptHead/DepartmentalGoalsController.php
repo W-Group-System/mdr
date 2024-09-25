@@ -25,7 +25,7 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->department_id = auth()->user()->department_id;
             $departmentalGoals->target = $request->target[$deptKey];
             $departmentalGoals->actual = $request->actual[$deptKey];
-            $departmentalGoals->grade = $request->grade[$deptKey];
+            // $departmentalGoals->grade = $request->grade[$deptKey];
             $departmentalGoals->remarks = $request->remarks[$deptKey];
             $departmentalGoals->yearAndMonth = $request->yearAndMonth;
             $departmentalGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.$request->target_date;
@@ -46,7 +46,7 @@ class DepartmentalGoalsController extends Controller
             }
         }
 
-        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
+        // $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
@@ -108,7 +108,7 @@ class DepartmentalGoalsController extends Controller
             }
         }
 
-        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
+        // $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
         
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();
