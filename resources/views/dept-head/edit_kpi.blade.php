@@ -83,7 +83,7 @@
                                                             <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{$dptGoals->actual}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{$dptGoals->grade}}" required>
+                                                            <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{$dptGoals->grade}}" disabled required>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>

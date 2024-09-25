@@ -44,7 +44,7 @@
                                                             <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{old('actual[]')}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{old('grade[]')}}" required>
+                                                            <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{old('grade[]')}}" disabled required>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{old('remarks[]')}}</textarea>
