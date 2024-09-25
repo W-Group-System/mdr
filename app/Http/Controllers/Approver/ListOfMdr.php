@@ -255,7 +255,7 @@ class ListOfMdr extends Controller
             $user = User::where('id', $mdr_approvers->user_id)->first();
             $approver = $user->name;
             $yearAndMonth = $mdrSummary->yearAndMonth;
-            // $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
+            $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
 
             Alert::success('Succesfully Approved')->persistent('Dismiss');
         }
@@ -301,7 +301,7 @@ class ListOfMdr extends Controller
             $user = User::where('id', $mdr_approvers->user_id)->first();
             $approver = $user->name;
             $yearAndMonth = $mdrSummary->yearAndMonth;
-            // $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
+            $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
 
             Alert::success('Succesfully Returned')->persistent('Dismiss');
         }
