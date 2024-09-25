@@ -84,7 +84,7 @@ class DepartmentalGoalsController extends Controller
             $dptGoals->department_id = auth()->user()->department_id;
             $dptGoals->target = $request->target[$deptKey];
             $dptGoals->actual = $request->actual[$deptKey];
-            $dptGoals->grade = $request->grade[$deptKey];
+            // $dptGoals->grade = $request->grade[$deptKey];
             $dptGoals->remarks = $request->remarks[$deptKey];
             $dptGoals->yearAndMonth = $request->yearAndMonth;
             $dptGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.$request->target_date;
