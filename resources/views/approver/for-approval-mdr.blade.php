@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrApprovers->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                            @foreach ($mdrApprovers->where('status', 'Pending') as $key => $approver)
                                 @php
                                     $mdr = $approver->mdrSummary;
                                 @endphp

@@ -1,6 +1,7 @@
 <?php
 
 use App\DeptHead\Innovation;
+use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
 
@@ -114,4 +115,16 @@ function computeKpi($grades, $date, $yearAndMonth, $department)
     $mdrScores->total_rating = $total_rating;
     $mdrScores->save();
     
+}
+
+function for_approval_count()
+{
+    $mdrApprovers = MdrApprovers::with('mdrSummary')->where('user_id', auth()->user()->id)->where('status', 'Pending')->get();
+
+    if (auth()->user()->role == "Administrator")
+    {
+        $mdrApprovers = MdrApprovers::orderBy('id', 'desc')->get();
+    }
+
+    return $mdrApprovers;
 }

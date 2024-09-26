@@ -251,6 +251,36 @@ class ListOfMdr extends Controller
             {
                 $mdrSummary->status = "Approved";
                 $mdrSummary->save();
+
+                if ($mdrSummary->mdrScoreHasOne->total_rating < 2.99)
+                {
+                    $warnings = Warnings::where('mdr_summary_id',$mdrSummary->id)->first();
+                    if ($warnings == null)
+                    {
+                        $warnings = new Warnings;
+                        $warnings->department_id = $mdrSummary->department_id;
+                        $warnings->warning_level = 1;
+                        $warnings->mdr_summary_id = $mdrSummary->id;
+                        $warnings->save();
+                    }
+                    else
+                    {
+                        $warnings->warning_level = 2;
+                        $warnings->save();
+
+                        $mdrSummary->penalty_status = 'For NTE';
+                        $mdrSummary->save();
+                    }
+                }
+
+                // $user = User::where('role', "Human Resources")->get();
+                // $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
+                // $department = $mdrSummary->departments->name;
+                // $rate = $mdrSummary->rate;
+
+                // foreach($user as $u) {
+                //     $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
+                // }
             }
 
             // if (auth()->user()->role == "Approvers" || auth()->user()->role == "Business Process Manager")
@@ -366,7 +396,7 @@ class ListOfMdr extends Controller
         //                         $ms->update([
         //                             'status' => 1,
         //                             'start_date' => date('Y-m-d'),
-        //                             'status_desc' => 'APPROVED'
+        //                             'status_desc' => 'APPROVED'  
         //                         ]);
         //                     }
         //                 }

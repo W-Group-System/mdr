@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-8">
                             Remarks :
-                            <textarea name="remarks" class="form-control" cols="30" rows="10"></textarea>
+                            <textarea name="remarks" class="form-control" cols="30" rows="10" required></textarea>
                         </div>
                     </div>
                 </div>

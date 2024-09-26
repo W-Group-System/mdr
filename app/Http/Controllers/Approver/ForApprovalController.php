@@ -13,7 +13,12 @@ class ForApprovalController extends Controller
 {
     public function index() {
 
-        $mdrApprovers = MdrApprovers::with('mdrSummary')->get();
+        $mdrApprovers = MdrApprovers::with('mdrSummary')->where('user_id', auth()->user()->id)->get();
+
+        if (auth()->user()->role == "Administrator")
+        {
+            $mdrApprovers = MdrApprovers::orderBy('id', 'desc')->get();
+        }
 
         return view('approver.for-approval-mdr', 
             array(

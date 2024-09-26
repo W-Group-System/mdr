@@ -21,7 +21,7 @@ class ForNteController extends Controller
                     'departments',
                     'nteAttachments',
                 ])
-                ->where('rate', '<', 2.99)
+                // ->where('rate', '<', 2.99)
                 ->where('penalty_status', 'For NTE')
                 ->get();
         }
@@ -30,7 +30,7 @@ class ForNteController extends Controller
                     'departments',
                     'nteAttachments',
                 ])
-                ->where('rate', '<', 2.99)
+                ->whereHas('nteAttachments')
                 ->where('penalty_status', 'For NTE')
                 ->where('department_id', auth()->user()->department_id)
                 ->get();
@@ -45,57 +45,72 @@ class ForNteController extends Controller
 
     public function uploadNte(Request $request, $id) {
         $request->validate([
-            'files' => 'max:2048'
+            'files' => 'max:1024'
         ]);
 
-        if ($request->hasFile('files')) {
-            $mdrSummary = MdrSummary::with('nteAttachments')->findOrFail($id);
+        $files = $request->file('files');
+        $fileName = time().'-'.$files->getClientOriginalName();
+        $files->move(public_path('nte_attachments'), $fileName);
 
-            $files = $request->file('files');
-            $fileName = time().'-'.$files->getClientOriginalName();
-            $files->move(public_path('nte_attachments'), $fileName);
+        $nteFile = new NteAttachments;
+        $nteFile->department_id = $request->departmentId;
+        $nteFile->mdr_summary_id = $request->mdrSummaryId;
+        $nteFile->user_id = auth()->user()->id;
+        $nteFile->yearAndMonth = date('Y-m', strtotime($request->yearAndMonth));
+        $nteFile->filepath = '/nte_attachments/'.$fileName;
+        $nteFile->save();
 
-            if (empty($mdrSummary->nteAttachments)) {
-                $nteFile = new NteAttachments;
-                $nteFile->department_id = $request->departmentId;
-                $nteFile->mdr_summary_id = $request->mdrSummaryId;
-                $nteFile->user_id = auth()->user()->id;
-                $nteFile->year = date('Y', strtotime($request->yearAndMonth));
-                $nteFile->month = date('m', strtotime($request->yearAndMonth));
-                $nteFile->filepath = 'nte_attachments/'.$fileName;
-                $nteFile->filename = $fileName;
-                $nteFile->save();
-            }
-            else {
-                $nteFile = NteAttachments::findOrFail($mdrSummary->nteAttachments->id);
-                $nteFile->user_id = auth()->user()->id;
-                $nteFile->year = date('Y', strtotime($request->yearAndMonth));
-                $nteFile->month = date('m', strtotime($request->yearAndMonth));
-                $nteFile->filepath = 'nte_attachments/'.$fileName;
-                $nteFile->filename = $fileName;
-                $nteFile->save();
-            }
+        Alert::success('Uploaded successfully.')->persistent('Dismiss');
+        return back();
 
-            if (auth()->user()->role == "Human Resources") {
-                $user = User::where('department_id', $request->departmentId)
-                    ->where('role', "Department Head")
-                    ->first();
-                $user->notify(new NteNotificationForDeptHead($nteFile->filepath, $user->name, $request->yearAndMonth));
+        // if ($request->hasFile('files')) {
+        //     $mdrSummary = MdrSummary::with('nteAttachments')->findOrFail($id);
+
+        //     $files = $request->file('files');
+        //     $fileName = time().'-'.$files->getClientOriginalName();
+        //     $files->move(public_path('nte_attachments'), $fileName);
+
+        //     if (empty($mdrSummary->nteAttachments)) {
+        //         $nteFile = new NteAttachments;
+        //         $nteFile->department_id = $request->departmentId;
+        //         $nteFile->mdr_summary_id = $request->mdrSummaryId;
+        //         $nteFile->user_id = auth()->user()->id;
+        //         $nteFile->year = date('Y', strtotime($request->yearAndMonth));
+        //         $nteFile->month = date('m', strtotime($request->yearAndMonth));
+        //         $nteFile->filepath = 'nte_attachments/'.$fileName;
+        //         $nteFile->filename = $fileName;
+        //         $nteFile->save();
+        //     }
+        //     else {
+        //         $nteFile = NteAttachments::findOrFail($mdrSummary->nteAttachments->id);
+        //         $nteFile->user_id = auth()->user()->id;
+        //         $nteFile->year = date('Y', strtotime($request->yearAndMonth));
+        //         $nteFile->month = date('m', strtotime($request->yearAndMonth));
+        //         $nteFile->filepath = 'nte_attachments/'.$fileName;
+        //         $nteFile->filename = $fileName;
+        //         $nteFile->save();
+        //     }
+
+        //     if (auth()->user()->role == "Human Resources") {
+        //         $user = User::where('department_id', $request->departmentId)
+        //             ->where('role', "Department Head")
+        //             ->first();
+        //         $user->notify(new NteNotificationForDeptHead($nteFile->filepath, $user->name, $request->yearAndMonth));
                     
-                $departmentApprovers = DepartmentApprovers::where('department_id', $request->departmentId)->where('status_level', 1)->first();
-                $approver = User::where('id', $departmentApprovers->user_id)->first();
-                $hr = User::where('id', $nteFile->user_id)->first();
-                $typeOfPenalties = "NTE File";
-                $approver->notify(new ApproverNotification($approver->name, $request->yearAndMonth, $hr->name, $departmentApprovers->department->name, $typeOfPenalties));
-            }
+        //         $departmentApprovers = DepartmentApprovers::where('department_id', $request->departmentId)->where('status_level', 1)->first();
+        //         $approver = User::where('id', $departmentApprovers->user_id)->first();
+        //         $hr = User::where('id', $nteFile->user_id)->first();
+        //         $typeOfPenalties = "NTE File";
+        //         $approver->notify(new ApproverNotification($approver->name, $request->yearAndMonth, $hr->name, $departmentApprovers->department->name, $typeOfPenalties));
+        //     }
 
-            Alert::success('SUCCESS', 'Uploaded successfully.');
-            return back();
-        }
-        else {
-            Alert::success('ERROR', 'You are not selecting a file.');
-            return back();
-        }
+        //     Alert::success('SUCCESS', 'Uploaded successfully.');
+        //     return back();
+        // }
+        // else {
+        //     Alert::success('ERROR', 'You are not selecting a file.');
+        //     return back();
+        // }
         
     }
 
@@ -112,16 +127,30 @@ class ForNteController extends Controller
     }
 
     public function nteStatus(Request $request, $id) {
-        $nteAttachments = NteAttachments::findOrFail($id);
-        $nteAttachments->status = $request->status;
-        $nteAttachments->acknowledge_by = $request->acknowledge_by;
-        $nteAttachments->save();
+        if(auth()->user()->role == "Department Head")
+        {
+            $file = $request->file('files');
+            $name = time().'_'.$file->getClientOriginalName();
+            $file->move(public_path('nte_attachments'), $name);
+            $file_path = '/nte_attachments/'.$name;
+            
+            $nte_attachments = NteAttachments::findOrFail($id);
+            $nte_attachments->filepath = $file_path;
+            $nte_attachments->save();
+        }
+        else
+        {
+            $nteAttachments = NteAttachments::findOrFail($id);
+            $nteAttachments->status = $request->status;
+            $nteAttachments->acknowledge_by = $request->acknowledge_by;
+            $nteAttachments->save();
 
-        $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
-        $mdrSummary->penalty_status = $request->status;
-        $mdrSummary->save();
+            $mdrSummary = MdrSummary::findOrFail($request->mdr_summary_id);
+            $mdrSummary->penalty_status = $request->status;
+            $mdrSummary->save();
+        }
         
-        Alert::success('SUCCESS', 'Successfully Submitted.');
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
         return back();
     }
 }

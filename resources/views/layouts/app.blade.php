@@ -70,6 +70,12 @@
                     </li>
                     @endif
                     @if(auth()->user()->role == "Administrator")
+                        <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
+                            <a href="{{ url('for_approval') }}">
+                                <i class="fa fa-pencil-square-o"></i>
+                                <span class="nav-label">For Approval MDR</span>
+                            </a>
+                        </li>
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                             <a href="#">
                                 <i class="fa fa-file"></i>
@@ -161,11 +167,22 @@
                         <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#">
                             <i class="fa fa-bars"></i>
                         </a>
+                        
                     </div>
                     <ul class="nav navbar-top-links navbar-right">
                         <li>
-                            <span class="m-r-sm text-muted welcome-message">Welcome to Online MDR System</span>
+                            <span class="m-r-sm text-muted welcome-message">Welcome to {{config('app.name', 'Laravel')}}</span>
                         </li>
+                        @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
+                        <li>
+                            <a class="count-info" href="{{url('for_approval')}}" title='For Approval'>
+                                <i class="fa fa-bell"></i>  
+                                @if(count(for_approval_count()) > 0)
+                                <span class="label label-danger">{{count(for_approval_count())}}</span>
+                                @endif
+                            </a>
+                        </li>
+                        @endif
                         <li>
                             <a href="{{ route('logout') }}" onclick="logout(); show();">
                                 <i class="fa fa-sign-out"></i> Log out

@@ -77,4 +77,8 @@ class MdrSummary extends Model implements Auditable
     {
         return $this->belongsTo(User::class,'user_id');
     }
+    public function mdrScoreHasOne()
+    {
+        return $this->hasOne(MdrScore::class);
+    }
 }

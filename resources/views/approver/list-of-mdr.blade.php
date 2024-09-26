@@ -8,6 +8,22 @@
     <div class="row">
         <div class="col-md-12">
             <div class="mb-3 mt-3">
+                @if(auth()->user()->role == "Administrator")
+                @foreach ($mdrSummary->approvers->where('status', 'Pending') as $key => $approver)
+                    @php
+                        $mdr = $mdrSummary;
+                    @endphp
+
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#view{{$mdr->id}}">
+                        <i class="fa fa-eye"></i>
+                        View Status
+                    </button>
+
+                    @include('approver.view_mdr_status')
+                @endforeach
+                @endif
+
+                @if(auth()->user()->role == "Approver" || auth()->user()->role == "Department Head")
                 @foreach ($mdrSummary->approvers->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
                     @php
                         $mdr = $mdrSummary;
@@ -20,6 +36,7 @@
 
                     @include('approver.view_mdr_status')
                 @endforeach
+                @endif
             </div>
         </div>
 
@@ -33,7 +50,7 @@
                         <table class="table table-bordered" >
                             <thead>
                                 <tr>
-                                    @if(auth()->user()->role != "Department Head")
+                                    @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
                                     <th>Actions</th>
                                     @endif
                                     <th>Month</th>
@@ -48,7 +65,7 @@
                             <tbody>
                                 @foreach ($mdrSummary->mdrScore as $score)
                                 <tr>
-                                    @if(auth()->user()->role != "Department Head")
+                                    @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
                                     <td>
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
                                             data-target="#editScores{{$score->id}}">
@@ -86,7 +103,8 @@
                     <p>Departmental Goals</p>
                 </div>
                 <div class="ibox-content">
-                    @if(auth()->user()->role != "Department Head")
+                    {{-- {{dd(auth()->user()->role)}} --}}
+                    @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
                         <i class="fa fa-pencil"></i>
                         Edit KPI

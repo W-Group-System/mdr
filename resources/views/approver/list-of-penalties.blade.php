@@ -66,103 +66,36 @@
                         <table class="table table-bordered" id="penaltiesTable">
                             <thead>
                                 <tr>
+                                    <th>Actions</th>
                                     <th>Department</th>
                                     <th>Department Head</th>
                                     <th>Month</th>
                                     <th>Total Rating</th>
                                     <th>Uploaded By</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($mdrSummary as $mdrSummaryData)
                                 <tr>
-                                    <td>{{ $mdrSummaryData->departments->name }}</td>
-                                    <td>{{ $mdrSummaryData->departments->user->name }}</td>
-                                    <td>{{ date('F Y', strtotime($mdrSummaryData->year.'-'.$mdrSummaryData->month)) }}</td>
-                                    <td>{{ $mdrSummaryData->rate }}</td>
-                                    <td>{{ !empty($mdrSummaryData->nteAttachments->users->name) ? $mdrSummaryData->nteAttachments->users->name : '' }}</td>
-                                    <td width="100">
+                                    <td>
                                         @if(!empty($mdrSummaryData->nteAttachments))
-                                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#viewModal-{{$mdrSummaryData->id}}" type="button" title="View">
+                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#view{{$mdrSummaryData->id}}" type="button" title="View">
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         @endif
                                     </td>
+                                    <td>{{ $mdrSummaryData->departments->name }}</td>
+                                    <td>{{ $mdrSummaryData->user->name }}</td>
+                                    <td>{{ date('F Y', strtotime($mdrSummaryData->yearAndMonth)) }}</td>
+                                    <td>{{ $mdrSummaryData->mdrScoreHasOne->total_rating }}</td>
+                                    <td>{{ !empty($mdrSummaryData->nteAttachments->users->name) ? $mdrSummaryData->nteAttachments->users->name : '' }}</td>
                                 </tr>
+
+                                @include('approver.view_penalties')
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-
-                    @foreach ($mdrSummary as $mdrSummaryData)
-                        @if(!empty($mdrSummaryData->nteAttachments))
-                        <div class="modal" id="viewModal-{{$mdrSummaryData->id}}">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title">View Status</h1>
-                                    </div>
-                                    <div class="modal-body">
-                                        @if(!empty($mdrSummaryData->nteAttachments))
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                NTE Files :
-                                                <span>
-                                                    <a href="{{$mdrSummaryData->nteAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nteAttachments->filename}}</a>
-                                                </span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                Acknowledge by :
-                                                <span>{{isset($mdrSummaryData->nteAttachments->acknowledge->name)?$mdrSummaryData->nteAttachments->acknowledge->name:''}}</span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                Status :
-                                                <span>{{$mdrSummaryData->nteAttachments->status}}</span>
-                                            </div>
-                                        </div>
-                                        @endif
-                                        @if(!empty($mdrSummaryData->nodAttachments))
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                NOD Files :
-                                                <span>
-                                                    <a href="{{$mdrSummaryData->nodAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nodAttachments->filename}}</a>
-                                                </span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                Acknowledge by :
-                                                <span>{{isset($mdrSummaryData->nodAttachments->acknowledge->name)?$mdrSummaryData->nodAttachments->acknowledge->name:''}}</span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                Status :
-                                                <span>{{$mdrSummaryData->nodAttachments->status}}</span>
-                                            </div>
-                                        </div>
-                                        @endif
-                                        @if(!empty($mdrSummaryData->pipAttachments))
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                PIP Files :
-                                                <span>
-                                                    <a href="{{$mdrSummaryData->nteAttachments->filepath}}" target="_blank">{{$mdrSummaryData->nteAttachments->filename}}</a>
-                                                </span>
-                                            </div>
-                                            <div class="col-md-4">
-                                                Acknowledge by :
-                                                <span>{{isset($mdrSummaryData->nteAttachments->acknowledge->name)?$mdrSummaryData->nteAttachments->acknowledge->name:''}}</span>
-                                            </div>
-                                        </div>
-                                        @endif
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                    @endforeach
                 </div>
             </div>
         </div>
