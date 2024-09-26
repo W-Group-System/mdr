@@ -73,4 +73,8 @@ class MdrSummary extends Model implements Auditable
     {
         return $this->hasMany(MdrApprovers::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

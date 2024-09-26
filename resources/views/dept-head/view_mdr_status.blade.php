@@ -19,11 +19,14 @@
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         <strong>Status</strong>
                                     </div>
-                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                         <strong>Start Date</strong>
                                     </div>
-                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                         <strong>Action Date</strong>
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        <strong>Remarks</strong>
                                     </div>
                                 </div>
 
@@ -35,10 +38,16 @@
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->status}}
                                     </div>
-                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->start_date}}
                                     </div>
-                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        @if($approver->status == "Approved" || $approver->status == "Returned")
+                                            {{date('Y-m-d', strtotime($approver->updated_at))}}
+                                        @endif
+                                    </div>
+                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->remarks}}
                                     </div>
                                 </div>
                                 @endforeach

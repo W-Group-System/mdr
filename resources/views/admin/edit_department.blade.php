@@ -34,7 +34,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <button type="button" class="btn btn-sm btn-primary addApprover">
                                 <i class="fa fa-plus"></i>
                             </button>
@@ -55,6 +55,33 @@
                                         </div>
                                     @endforeach
                                 </div>
+                            </div>
+                        </div> --}}
+                        <div class="col-md-12">
+                            <hr>
+                            <button type="button" class="btn btn-xs btn-primary addApprover" onclick="add_edit_approver({{$departmentData->id}})">
+                                <i class="fa fa-plus-square-o"></i>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-danger deleteApprover" onclick="delete_edit_approver({{$departmentData->id}})">
+                                <i class="fa fa-minus-square-o"></i>
+                            </button>
+                            <span>&nbsp;</span>
+                            <div class='approvers-data-{{$departmentData->id}} form-group'>
+                                @foreach ($departmentData->approver as $approver)
+                                <div class='row mb-2 mt-2 form-group' id='approver_{{$departmentData->id}}_{{$approver->status_level}}'>
+                                    <div class='col-md-1  text-right'>
+                                        <small class='align-items-center'>{{$approver->status_level}}</small>
+                                    </div>
+                                    <div class='col-md-11'>
+                                        <select name='approver[]' class='form-control-sm form-control cat' required>
+                                            <option value=""></option>
+                                            @foreach($user->whereIn('role', ['Approver', 'Business Process Manager', 'Department Head']) as $approverData)
+                                                <option value="{{ $approverData->id }}" @if($approver->user_id == $approverData->id) selected @endif>{{ $approverData->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                @endforeach
                             </div>
                         </div>
                     </div>

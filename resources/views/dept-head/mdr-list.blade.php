@@ -37,12 +37,15 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <h1 class="text-center">{{auth()->user()->department->name}}</h1>
+
+                @if(auth()->user()->role == "Users")
                 <div class="ibox-title">
                     <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         New MDR
                     </button>
                 </div>
+                @endif
 
                 <div class="ibox-content">
                     
@@ -79,6 +82,7 @@
                                                 </button>
                                             </form>
 
+                                            @if(auth()->user()->role == "Users")
                                             <form action="{{url('approveMdr')}}" method="POST" style="display: inline-block;" onsubmit="show()">
                                                 @csrf
 
@@ -89,14 +93,15 @@
                                                     <i class="fa fa-thumbs-up"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                         </td>
                                         <td>{{ date("F Y", strtotime($data->yearAndMonth))}}</td>
-                                        <td>{{ $data->score }}</td>
-                                        <td>{{ $data->pd_scores }}</td>
-                                        <td>{{ $data->innovation_scores }}</td>
-                                        <td>{{ $data->timeliness }}</td>
-                                        <td>{{ $data->total_rating }}</td>
-                                        <td>{{ $data->remarks }}</td>
+                                        <td>@if($data->score != null){{ $data->score }}@else 0.00 @endif</td>
+                                        <td>@if($data->pd_scores){{ $data->pd_scores }}@else 0.00 @endif</td>
+                                        <td>@if($data->innovation_scores){{ $data->innovation_scores }}@else 0.00 @endif</td>
+                                        <td>@if($data->timeliness != null){{ $data->timeliness }}@else @endif</td>
+                                        <td>@if($data->total_rating != null){{ $data->total_rating }} @else 0.00 @endif</td>
+                                        <td>@if($data->remarks != null){{ $data->remarks }}@else N/A @endif</td>
                                     </tr>
 
                                     @include('dept-head.view_mdr_status')
@@ -143,11 +148,11 @@
 
             swal({
                 title: "Are you sure?",
-                text: "This mdr will be approved!",
+                text: "The mdr will be submitted",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, approved it!",
+                confirmButtonText: "Yes, submit it!",
                 closeOnConfirm: false
             }, function (){
                 form.submit()

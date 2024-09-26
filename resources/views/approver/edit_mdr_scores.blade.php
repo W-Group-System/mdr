@@ -18,7 +18,7 @@
                         </div> --}}
                         <div class="col-md-12">
                             Timeliness : 
-                            <input type="number" name="timeliness" class="form-control input-sm" value="{{$score->timeliness}}">
+                            <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$score->timeliness}}">
                         </div>
                         <div class="col-md-12">
                             Remarks :

@@ -1,11 +1,28 @@
 @extends('layouts.app')
 @section('css')
-<link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
+<link href="{{asset('css/plugins/chosen/bootstrap-chosen.css')}}" rel="stylesheet">
 @endsection
 
 @section('content')
 <div class="wrapper wrapper-content animated">
     <div class="row">
+        <div class="col-md-12">
+            <div class="mb-3 mt-3">
+                @foreach ($mdrSummary->approvers->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                    @php
+                        $mdr = $mdrSummary;
+                    @endphp
+
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#view{{$mdr->id}}">
+                        <i class="fa fa-eye"></i>
+                        View Status
+                    </button>
+
+                    @include('approver.view_mdr_status')
+                @endforeach
+            </div>
+        </div>
+
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
@@ -16,7 +33,9 @@
                         <table class="table table-bordered" >
                             <thead>
                                 <tr>
+                                    @if(auth()->user()->role != "Department Head")
                                     <th>Actions</th>
+                                    @endif
                                     <th>Month</th>
                                     <th>KPI</th>
                                     <th>Process Improvement</th>
@@ -29,19 +48,21 @@
                             <tbody>
                                 @foreach ($mdrSummary->mdrScore as $score)
                                 <tr>
+                                    @if(auth()->user()->role != "Department Head")
                                     <td>
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
                                             data-target="#editScores{{$score->id}}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </button>
                                     </td>
+                                    @endif
                                     <td>{{ date('F Y', strtotime($score->yearAndMonth)) }}</td>
-                                    <td>{{ $score->score }}</td>
-                                    <td>{{$score->pd_scores}}</td>
+                                    <td>@if($score->score != null){{ $score->score }}@else 0.0 @endif</td>
+                                    <td>@if($score->pd_scores != null){{$score->pd_scores}}@else 0.0 @endif</td>
                                     {{-- <td>{{$score->innovation_scores}}</td> --}}
                                     <td>{{$score->timeliness}}</td>
                                     <td>{{ $score->total_rating }}</td>
-                                    <td>{{$score->remarks}}</td>
+                                    <td>@if($score->remarks != null){{$score->remarks}}@else N/A @endif</td>
                                 </tr>
                                 {{-- <form action="{{ url('submit_scores') }}" method="post" id="submitScoresForm"
                                     onsubmit="show()">
@@ -65,10 +86,12 @@
                     <p>Departmental Goals</p>
                 </div>
                 <div class="ibox-content">
+                    @if(auth()->user()->role != "Department Head")
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
                         <i class="fa fa-pencil"></i>
                         Edit KPI
                     </button>
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
@@ -217,12 +240,15 @@
 
 @push('scripts')
 {{-- chosen --}}
-<script src="js/plugins/chosen/chosen.jquery.js"></script>
+<script src="{{asset('js/plugins/chosen/chosen.jquery.js')}}"></script>
 {{-- datatable --}}
 <script src="{{ asset('js/plugins/dataTables/datatables.min.js') }}"></script>
 
 <script>
     $(document).ready(function() {
+        $(".cat").chosen({width: "100%"})
+
+
         $('#processDevelopmentTable').DataTable({
             pageLength: 10,
             ordering: false,

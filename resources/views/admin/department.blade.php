@@ -164,27 +164,27 @@
         });
         
 
-        $(".addApprover").on('click', function() {
+        // $(".addApprover").on('click', function() {
             
-            $(".approverFormGroup").append(`
-                <div class="select-container">
-                    <select name="approver[]" id="" class="form-control approver" style="margin-bottom: 10px;" required="">
-                        <option value=""></option>
-                        @foreach($user->whereIn('role', ['Approver', 'Business Process Manager']) as $approverData)
-                            <option value="{{ $approverData->id }}">{{ $approverData->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            `)
+        //     $(".approverFormGroup").append(`
+        //         <div class="select-container">
+        //             <select name="approver[]" id="" class="form-control approver" style="margin-bottom: 10px;" required="">
+        //                 <option value=""></option>
+        //                 @foreach($user->whereIn('role', ['Approver', 'Business Process Manager']) as $approverData)
+        //                     <option value="{{ $approverData->id }}">{{ $approverData->name }}</option>
+        //                 @endforeach
+        //             </select>
+        //         </div>
+        //     `)
 
-            $(".approver").chosen({width: "100%"});
-        })
+        //     $(".approver").chosen({width: "100%"});
+        // })
 
-        $('.deleteApprover').on('click', function() {
-            console.log('dasda');
+        // $('.deleteApprover').on('click', function() {
+        //     console.log('dasda');
             
-            $('.select-container').last().remove()
-        })
+        //     $('.select-container').last().remove()
+        // })
     })
 </script>
 @endpush

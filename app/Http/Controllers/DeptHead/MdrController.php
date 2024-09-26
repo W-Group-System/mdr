@@ -125,6 +125,7 @@ class MdrController extends Controller
             $mdrSummary->status = "Pending";
             $mdrSummary->rate = null;
             $mdrSummary->level = 1;
+            $mdrSummary->user_id = auth()->user()->id;
             $mdrSummary->save();
 
             $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
@@ -184,6 +185,9 @@ class MdrController extends Controller
             ->update(['mdr_summary_id' => $mdrSummary->id]);
 
         MdrScore::where('department_id', $request->department_id)->where('yearAndMonth', $request->yearAndMonth)->update(['mdr_summary_id' => $mdrSummary->id]);
+
+        // $user = User::where('role', 'Department Head')->where('department_id', $request->department_id)->first();
+        // $user->notify(new NotifyDeptHead($user->name, $request->yearAndMonth));
 
         Alert::success('Successfully Approved')->persistent('Dismiss');
         return back();

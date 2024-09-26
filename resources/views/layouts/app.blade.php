@@ -94,13 +94,14 @@
                             </ul>
                         </li>
                     @endif
-                    @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
+                    @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager" || auth()->user()->role == "Department Head")
                         <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
                             <a href="{{ url('for_approval') }}">
                                 <i class="fa fa-pencil-square-o"></i>
                                 <span class="nav-label">For Approval MDR</span>
                             </a>
                         </li>
+                        @if(auth()->user()->role != "Department Head")
                         <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
                             <a href="{{ url('pending_mdr') }}">
                                 <i class="fa fa-clock-o"></i>
@@ -119,6 +120,7 @@
                                 <span class="nav-label">List of Penalties</span>
                             </a>
                         </li>
+                        @endif
                     @endif
                     @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users" || auth()->user()->role == "Business Process Manager")
                         <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">

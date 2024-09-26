@@ -36,10 +36,12 @@ function processImprovementComputations($action, $department, $yearAndMonth)
         if ($processImprovementCount == 1)
         {
             $mdr_score->pd_scores = 0.5;
+            $mdr_score->total_rating = 0.5;
         }
         else
         {
             $mdr_score->pd_scores = 1.0;
+            $mdr_score->total_rating = 1.0;
         }
 
         $mdr_score->save();
@@ -50,10 +52,12 @@ function processImprovementComputations($action, $department, $yearAndMonth)
         if ($processImprovementCount == 1)
         {
             $mdr_score->pd_scores = 0.5;
+            $mdr_score->total_rating = 0.5;
         }
         else
         {
             $mdr_score->pd_scores = 0.0;
+            $mdr_score->total_rating = 0.0;
         }
 
         $mdr_score->save();
@@ -97,35 +101,17 @@ function computeKpi($grades, $date, $yearAndMonth, $department)
     }
     else 
     {
-        $timeliness = 0.1;
+        $timeliness = 0.4;
     }
     
     $mdrScores = MdrScore::where('department_id', $department)->where('yearAndMonth', $yearAndMonth)->first();
+    $mdrScores->grade = $value;
+    $mdrScores->rating = $rating;
+    $mdrScores->score = $score;
     
-    if ($mdrScores == null)
-    {
-        $mdrScores = new MdrScore;
-        $mdrScores->department_id = auth()->user()->department_id;
-        $mdrScores->grade = $value;
-        $mdrScores->rating = $rating;
-        $mdrScores->score = $score;
-        $mdrScores->pd_scores = null;
-        $mdrScores->innovation_scores = null;
-        $mdrScores->timeliness = $timeliness;
-        $mdrScores->yearAndMonth = $yearAndMonth;
-        $mdrScores->remarks = null;
-        $mdrScores->save();
-    }
-    else
-    {
-        $mdrScores->grade = $value;
-        $mdrScores->rating = $rating;
-        $mdrScores->score = $score;
-        // $mdrScores->pd_scores = null;
-        // $mdrScores->innovation_scores = null;
-        // $mdrScores->timeliness = $timeliness;
-        // $mdrScores->yearAndMonth = $yearAndMonth;
-        // $mdrScores->remarks = null;
-        $mdrScores->save();
-    }
+    $total_rating = $mdrScores->score + $mdrScores->pd_scores + $mdrScores->timeliness;
+    
+    $mdrScores->total_rating = $total_rating;
+    $mdrScores->save();
+    
 }

@@ -150,7 +150,7 @@ class DepartmentalGoalsController extends Controller
         }
         else 
         {
-            $timeliness = 0.1;
+            $timeliness = 0.4;
         }
         
         $mdrScores = MdrScore::where('department_id', auth()->user()->department_id)->where('yearAndMonth', $yearAndMonth)->first();
