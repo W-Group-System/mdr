@@ -19,7 +19,7 @@ Route::get('/', function() {
 });
 
 Auth::routes(['register' => false]);
-
+Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 Route::group(['middleware' => 'auth'], function() {
     Route::group(['middleware' => 'deactivate'], function() {
         # Dashboard
