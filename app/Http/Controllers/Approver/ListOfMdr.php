@@ -548,21 +548,26 @@ class ListOfMdr extends Controller
     //     return back();
     // }
 
-    // public function addPdRemarks(Request $request) {
-    //     $piData = ProcessDevelopment::findMany($request->pi_id);
+    public function addPdRemarks(Request $request, $id) {
+        $process_improvement = ProcessDevelopment::findOrFail($id);
+        $process_improvement->remarks = $request->remarks;
+        $process_improvement->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+
+        // $piData = ProcessDevelopment::findMany($request->pi_id);
         
-    //     if ($piData->isNotEmpty()) {
-    //         foreach($piData as $key=>$pi) {
-    //             $pi->remarks = $request->remarks[$key];
-    //             $pi->save();
-    //         }
+        // if ($piData->isNotEmpty()) {
+        //     foreach($piData as $key=>$pi) {
+        //         $pi->remarks = $request->remarks[$key];
+        //         $pi->save();
+        //     }
 
-    //         Alert::success('SUCCESS', 'Successfully Updated.');
-    //     }
-    //     else {
-    //         Alert::error('ERROR', 'The process improvement is empty.');
-    //     }
-
-    //     return back();
-    // }
+        //     Alert::success('SUCCESS', 'Successfully Updated.');
+        // }
+        // else {
+        //     Alert::error('ERROR', 'The process improvement is empty.');
+        // }
+    }
 }

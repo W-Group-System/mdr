@@ -199,6 +199,7 @@
                         <table class="table table-bordered table-hover" id="processDevelopmentTable">
                             <thead>
                                 <tr>
+                                    <th>Action</th>
                                     <th>Description</th>
                                     <th>Accomplished Date</th>
                                     <th>Remarks</th>
@@ -208,6 +209,11 @@
                             <tbody>
                                 @foreach ($mdrSummary->processImprovement as $item)
                                 <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{$item->id}}">  
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </button>
+                                    </td>
                                     <td>{{ $item->description }}</td>
                                     <td>{{ date('F d, Y', strtotime($item->accomplished_date)) }}</td>
                                     <td>
@@ -224,6 +230,8 @@
                                         @endforeach
                                     </td>
                                 </tr>
+
+                                @include('approver.edit_process_improvement_remarks')
                                 @endforeach
                             </tbody>
                         </table>

@@ -105,8 +105,8 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/approver_mdr/{id}', 'Approver\ListOfMdr@approveMdr');
         Route::post('/submit_scores/{id}', 'Approver\ListOfMdr@submitScores');
 
-        Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
-        Route::post('/add_pd_remarks', 'Approver\ListOfMdr@addPdRemarks');
+        // Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
+        Route::post('/add_pd_remarks/{id}', 'Approver\ListOfMdr@addPdRemarks');
 
         # For Approval MDR
         Route::get('/for_approval', 'Approver\ForApprovalController@index')->name('forApproval');
