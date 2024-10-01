@@ -99,6 +99,18 @@
                                 <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
                             </ul>
                         </li>
+                        <li class="{{ Route::currentRouteName() == 'upload' ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-cog"></i>
+                                <span class="nav-label">Upload</span> 
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <li class=""><a href="{{ url('upload') }}">Upload KPI</a></li>
+                                {{-- <li class=""><a href="{{ url('departments') }}">Departments</a></li>
+                                <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li> --}}
+                            </ul>
+                        </li>
                     @endif
                     @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager" || auth()->user()->role == "Department Head")
                         <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">

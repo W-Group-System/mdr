@@ -20,7 +20,7 @@
 <div class="wrapper wrapper-content">
     <div class="row">
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
-        
+        @include('components.error')
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">

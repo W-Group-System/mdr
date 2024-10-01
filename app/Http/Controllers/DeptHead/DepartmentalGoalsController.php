@@ -75,6 +75,10 @@ class DepartmentalGoalsController extends Controller
         // }
 
         // $departmentalGoals->save();
+        $request->validate([
+            'file[]' => 'array',
+            'file.*' => 'max:1024'
+        ]);
 
         $departmentalGoals = DepartmentalGoals::findMany($request->department_goals_id);
         

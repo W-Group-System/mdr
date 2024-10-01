@@ -62,6 +62,10 @@ Route::group(['middleware' => 'auth'], function() {
             // Route::post('/changePassword/{id}', 'Admin\UserController@changePassword');
             Route::post('/changeAccountStatus', 'Admin\UserController@changeAccountStatus')->name('changeAccountStatus');
             Route::post('/changePassword/{id}', 'Admin\UserController@changePassword')->name('changePassword');
+
+            # Upload
+            Route::get('upload', 'UploadController@index')->name('upload');
+            Route::post('upload-kpi', 'UploadController@uploadKpi');
         });
 
         # === Department Head ===
