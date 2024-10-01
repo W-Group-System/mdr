@@ -6,9 +6,9 @@
 @section('content')
 <div class="wrapper wrapper-content animated">
     <div class="row">
-        <div class="col-md-12">
+        {{-- <div class="col-md-12">
             <div class="mb-3 mt-3">
-                {{-- @if(auth()->user()->role == "Administrator")
+                @if(auth()->user()->role == "Administrator")
                 @foreach ($mdrSummary->approvers->where('status', 'Pending') as $key => $approver)
                     @php
                         $mdr = $mdrSummary;
@@ -36,10 +36,10 @@
 
                     @include('approver.view_mdr_status')
                 @endforeach
-                @endif --}}
+                @endif
             </div>
-        </div>
-
+        </div> --}}
+        <h1 class="text-center">{{$mdrSummary->departments->name}}</h1>
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
@@ -79,7 +79,7 @@
                                     {{-- <td>{{$score->innovation_scores}}</td> --}}
                                     <td>{{$score->timeliness}}</td>
                                     <td>{{ $score->total_rating }}</td>
-                                    <td>@if($score->remarks != null){{$score->remarks}}@else N/A @endif</td>
+                                    <td>@if($score->remarks != null){{$score->remarks}}@endif</td>
                                 </tr>
                                 {{-- <form action="{{ url('submit_scores') }}" method="post" id="submitScoresForm"
                                     onsubmit="show()">
@@ -281,10 +281,10 @@
                                             </div>
                                             <div class="panel-body">
                                                 <div class='row text-center'>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Approver</strong>
                                                     </div>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Status</strong>
                                                     </div>
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
@@ -293,16 +293,16 @@
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Action Date</strong>
                                                     </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Remarks</strong>
                                                     </div>
                                                 </div>
                                                 @foreach ($mdrSummary->approvers->where('mdr_summary_id', $mdr->id) as $approver)
                                                 <div class="row text-center">
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->users->name}}
                                                     </div>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->status}}
                                                     </div>
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
@@ -313,7 +313,7 @@
                                                         {{date('Y-m-d', strtotime($approver->updated_at))}}
                                                         @endif  
                                                     </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->remarks}}
                                                     </div>
                                                 </div>

@@ -12,18 +12,23 @@
                     <form action="" method="get" enctype="multipart/form-data" onsubmit="show()">
                         <div class="row">
                             <div class="col-lg-3">
+                                <label>Department :</label>
                                 <select name="department" id="department" class="form-control">
                                     <option value="">- Department -</option>
                                     @foreach ($department_list as $department)
-                                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+                                        <option value="{{ $department->id }}" @if($department->id == $department_id) selected @endif>{{ $department->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-3">
+                                <label>Year & Month :</label>
                                 <input type="month" name="yearAndMonth" id="yearAndMonth" class="form-control input-sm">
                             </div>
                             <div class="col-lg-3">
-                                <button class="btn btn-sm btn-primary">Filter</button>
+                                <label for="">&nbsp;</label>
+                                <div class="form-group">
+                                    <button class="btn btn-sm btn-primary">Filter</button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -32,6 +37,7 @@
         </div>
         
         @if($department_list && $year_and_month)
+        <h1 class="text-center">{{$dept_name}}</h1>
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-content">

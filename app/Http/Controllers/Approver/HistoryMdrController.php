@@ -21,6 +21,7 @@ class HistoryMdrController extends Controller
         $innovation = Innovation::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
         $process_improvement = ProcessDevelopment::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
         $mdr_score = MdrScore::where('department_id', $request->department)->where('yearAndMonth', $request->yearAndMonth)->get();
+        $dept_name = Department::where('id', $request->department)->first();
 
         return view('approver.history-mdr',
             array(
@@ -29,7 +30,9 @@ class HistoryMdrController extends Controller
                 'process_improvement' => $process_improvement,
                 'department_list' => $department_list,
                 'year_and_month' => $request->yearAndMonth,
-                'mdr_score' => $mdr_score
+                'mdr_score' => $mdr_score,
+                'department_id' => $request->department,
+                'dept_name' => $dept_name->name
             )
         );
     }

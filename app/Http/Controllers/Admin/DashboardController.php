@@ -272,7 +272,7 @@ class DashboardController extends Controller
         
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('pdf.mdr-summary', $data_array)
-            ->setPaper('a3', 'landscape');
+            ->setPaper('a4', 'portrait');
 
         return $pdf->stream('MDR Summary.pdf');
     }
