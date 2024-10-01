@@ -68,42 +68,44 @@ function processImprovementComputations($action, $department, $yearAndMonth)
 function computeKpi($grades, $date, $yearAndMonth, $department)
 {
     $grade = collect($grades);
-        
-    $kpiValue = $grade->map(function($item, $key) {
-
-        if ($item > 100) {
-            $item = 100;
-        }
-
-        $value = $item / 100.00;
-
-        return $value;
-    });
     
-    $kpiScore = $grade->map(function($item, $key) {
-        if ($item > 100) {
-            $item = 100;
-        }
+    // $kpiValue = $grade->map(function($item, $key) {
 
-        $grades =  $item / 100.00 * 0.5;
-        
-        return $grades;
-    });
+    //     if ($item > 100) {
+    //         $item = 100;
+    //     }
+
+    //     $value = $item / 100.00;
+
+    //     return $value;
+    // });
     
-    $value = number_format($kpiValue->sum(), 2);
+    // $kpiScore = $grade->map(function($item, $key) {
+    //     if ($item > 100) {
+    //         $item = 100;
+    //     }
+
+    //     $grades =  $item / 100.00 * 0.5;
+        
+    //     return $grades;
+    // });
+    
+    // $value = number_format($kpiValue->sum(), 2);
+    // $score = number_format($kpiScore->sum(), 2);
     $rating = 3.00;
-    $score = number_format($kpiScore->sum(), 2);
+    $value = round($grade->sum(), 2);
+    $score = round($grade->sum(), 2);
     
     $deadline = date('Y-m', strtotime("+1 month", strtotime($yearAndMonth))).'-'.$date;
-    $timeliness = 0;
-    if ($deadline < date('Y-m-d'))
-    {
-        $timeliness = 0.0;
-    }
-    else 
-    {
-        $timeliness = 0.4;
-    }
+    // $timeliness = 0;
+    // if ($deadline < date('Y-m-d'))
+    // {
+    //     $timeliness = 0.0;
+    // }
+    // else 
+    // {
+    //     $timeliness = 0.5;
+    // }
     
     $mdrScores = MdrScore::where('department_id', $department)->where('yearAndMonth', $yearAndMonth)->first();
     $mdrScores->grade = $value;

@@ -14,9 +14,12 @@
                     <thead>
                         <tr>
                             <th>Actions</th>
-                            <th>Description</th>
-                            <th>Accomplished Date</th>
-                            <th>Remarks</th>
+                            <th>Activities</th>
+                            <th>Benefit <br>
+                                <small><i>(Specify if Time Savings, Risk Mitigation, Cost Savings / Profit gain, Employee Morale)</i></small>
+                            </th>
+                            <th>DICR Number</th>
+                            <th>Date Approved</th>
                             <th>Attachments</th>
                         </tr>
                     </thead>
@@ -40,8 +43,8 @@
                                     </form>
                                 </td>
                                 <td>{{ $processDevelopmentData->description }}</td>
-                                <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
                                 <td>{!! nl2br($processDevelopmentData->remarks) !!}</td>
+                                <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
                                 <td>
                                     @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
                                         <span>{{$key+1}}. </span>

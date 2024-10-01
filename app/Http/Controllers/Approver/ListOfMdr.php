@@ -283,13 +283,13 @@ class ListOfMdr extends Controller
                 // }
             }
 
-            // if (auth()->user()->role == "Approvers" || auth()->user()->role == "Business Process Manager")
-            // {
-            //     $user = User::where('id', $mdr_approvers->user_id)->first();
-            //     $approver = $user->name;
-            //     $yearAndMonth = $mdrSummary->yearAndMonth;
-            //     $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
-            // }
+            if (auth()->user()->role == "Approvers" || auth()->user()->role == "Business Process Manager")
+            {
+                $user = User::where('id', $mdr_approvers->user_id)->first();
+                $approver = $user->name;
+                $yearAndMonth = $mdrSummary->yearAndMonth;
+                $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
+            }
 
             Alert::success('Succesfully Approved')->persistent('Dismiss');
         }
@@ -347,10 +347,10 @@ class ListOfMdr extends Controller
                 $mdrApprover->save();
             }
 
-            // $user = User::where('id', $mdr_approvers->user_id)->first();
-            // $approver = $user->name;
-            // $yearAndMonth = $mdrSummary->yearAndMonth;
-            // $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
+            $user = User::where('id', $mdr_approvers->user_id)->first();
+            $approver = $user->name;
+            $yearAndMonth = $mdrSummary->yearAndMonth;
+            $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
 
             Alert::success('Succesfully Returned')->persistent('Dismiss');
         }

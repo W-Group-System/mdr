@@ -10,22 +10,24 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            Description :
-                            <input type="text" name="description" id="description" class="form-control input-sm"
-                                required>
+                            Activities :
+                            <input type="text" name="activities" id="description" class="form-control input-sm" required>
                         </div>
                         <div class="col-md-12">
-                            Accomplished Date :
-                            <input type="date" class="form-control input-sm" name="accomplishedDate" autocomplete="off" required>
+                            Benefits :
+                            <textarea name="benefits" id="benefits" class="form-control" cols="30" rows="10" required></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            DICR Number :
+                            <input type="text" name="dicr_number" class="form-control input-sm" required>
+                        </div>
+                        <div class="col-md-12">
+                            Date Approved :
+                            <input type="date" name="date_approved" class="form-control input-sm" required>
                         </div>
                         <div class="col-md-12">
                             Upload an Attachments :
                             <input type="file" name="file[]" id="file" class="form-control" multiple required>
-                        </div>
-                        <div class="col-md-12">
-                            Remarks :
-                            <textarea name="remarks" id="remarks" class="form-control" cols="30" rows="10"
-                                required></textarea>
                         </div>
                     </div>
                 </div>

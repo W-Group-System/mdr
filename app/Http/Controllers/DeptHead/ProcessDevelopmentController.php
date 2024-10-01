@@ -21,11 +21,15 @@ class ProcessDevelopmentController extends Controller
         $processDevelopment = new ProcessDevelopment;
         $processDevelopment->department_id = auth()->user()->department_id;
         $processDevelopment->mdr_group_id = 8;
-        $processDevelopment->description = $request->description;
-        $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
+        // $processDevelopment->description = $request->description;
+        // $processDevelopment->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
+        // $processDevelopment->remarks = $request->remarks;
         $processDevelopment->yearAndMonth = date('Y-m', strtotime($request->yearAndMonth));
         $processDevelopment->deadline = date('Y-m', strtotime('+1month', strtotime($request->yearAndMonth))).'-'.auth()->user()->department->target_date;
-        $processDevelopment->remarks = $request->remarks;
+        $processDevelopment->activities = $request->activities;
+        $processDevelopment->remarks = $request->benefits;
+        $processDevelopment->dicr_number = $request->dicr_number;
+        $processDevelopment->accomplished_date = $request->date_approved;
         $processDevelopment->save();
 
         $file = $request->file('file');
@@ -49,9 +53,10 @@ class ProcessDevelopmentController extends Controller
     public function update(Request $request, $id) {
         // dd($request->all());
         $processDevelopmentData = ProcessDevelopment::findOrFail($id);
-        $processDevelopmentData->description = $request->description;
-        $processDevelopmentData->accomplished_date = date("Y-m-d", strtotime($request->accomplishedDate));
-        $processDevelopmentData->remarks = $request->remarks;
+        $processDevelopmentData->activities = $request->activities;
+        $processDevelopmentData->remarks = $request->benefits;
+        $processDevelopmentData->dicr_number = $request->dicr_number;
+        $processDevelopmentData->accomplished_date = $request->date_approved;
         $processDevelopmentData->save();
 
         if($request->has('file')) {
