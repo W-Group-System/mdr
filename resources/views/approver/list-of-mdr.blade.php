@@ -359,10 +359,10 @@
                                             </div>
                                             <div class="panel-body">
                                                 <div class='row text-center'>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Approver</strong>
                                                     </div>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Status</strong>
                                                     </div>
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
@@ -371,16 +371,16 @@
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Action Date</strong>
                                                     </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
                                                         <strong>Remarks</strong>
                                                     </div>
                                                 </div>
                                                 @foreach ($mdrSummary->approvers->where('mdr_summary_id', $mdr->id) as $approver)
                                                 <div class="row text-center">
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->users->name}}
                                                     </div>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->status}}
                                                     </div>
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
@@ -391,7 +391,7 @@
                                                         {{date('Y-m-d', strtotime($approver->updated_at))}}
                                                         @endif  
                                                     </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    <div class='col-md-4 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->remarks}}
                                                     </div>
                                                 </div>
@@ -409,11 +409,11 @@
                                     </div>
                                     <div class="col-md-8">
                                         Remarks :
-                                        <textarea name="remarks" class="form-control" cols="30" rows="10" required></textarea>
+                                        <textarea name="remarks" class="form-control" cols="30" rows="10" style="height: 10vh;" required></textarea>
                                     </div>
                                     <div class="col-md-12">
                                         &nbsp;
-                                        <button type="submit" class="btn btn-primary btn-sm btn-block">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
                                     </div>
                                 </div>
                             </form>
