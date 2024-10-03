@@ -99,13 +99,16 @@ class MdrController extends Controller
 
         $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
 
+        // $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id)->where('yearAndMonth', $request->yearAndMonth)->first();
+
         return view('dept-head.edit-mdr',
             array(
                 'departmentalGoals' => $departmentalGoals,
                 'department_approvers' => $department_approvers,
                 'yearAndMonth' => $request->yearAndMonth,
                 'innovation' => $innovation,
-                'process_improvement' => $process_improvement
+                'process_improvement' => $process_improvement,
+                // 'mdrSummary' => $mdrSummary
             )
         );
     }
@@ -186,11 +189,11 @@ class MdrController extends Controller
 
         MdrScore::where('department_id', $request->department_id)->where('yearAndMonth', $request->yearAndMonth)->update(['mdr_summary_id' => $mdrSummary->id]);
 
-        // $user = User::where('role', 'Department Head')->where('department_id', $request->department_id)->first();
-        // $user->notify(new NotifyDeptHead($user->name, $request->yearAndMonth));
+        $user = User::where('role', 'Department Head')->where('department_id', $request->department_id)->first();
+        $user->notify(new NotifyDeptHead($user->name, $request->yearAndMonth));
 
         Alert::success('Successfully Approved')->persistent('Dismiss');
-        return back();
+        return redirect('/mdr');
     }
 
     public function submitMdr(Request $request) {

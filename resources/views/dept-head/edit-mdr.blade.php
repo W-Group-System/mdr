@@ -247,6 +247,32 @@
                 </div>
             </div>
         </div> --}}
+
+        <div class="col-lg-12">
+            <div class="ibx float-e-margins">
+                {{-- <div class="ibox-title">
+                    <b>MDR Status</b>
+                </div> --}}
+                <div class="ibox-content">
+                    @if(auth()->user()->role == "Users" || auth()->user()->role == "Department Head")
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form action="{{url('approveMdr')}}" method="POST" onsubmit="show()">
+                                    @csrf
+
+                                    <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
+                                    <input type="hidden" name="department_id" value="{{auth()->user()->department_id}}">
+                                    {{-- @if(optional($data->mdrSummary)->level != null) disabled @endif --}}
+                                    <button type="button" class="btn btn-block btn-primary approveBtn" >
+                                        Approved
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -303,6 +329,22 @@
             dom: '<"html5buttons"B>lTfgitp',
             buttons: [],
         });
+
+        $(".approveBtn").on('click', function() {
+            var form = $(this).closest('form');
+
+            swal({
+                title: "Are you sure?",
+                text: "The mdr will be submitted",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, submit it!",
+                closeOnConfirm: false
+            }, function (){
+                form.submit()
+            });
+        })
     })
 </script>
 @endpush

@@ -82,7 +82,7 @@
                                                 </button>
                                             </form>
 
-                                            @if(auth()->user()->role == "Users")
+                                            {{-- @if(auth()->user()->role == "Users")
                                             <form action="{{url('approveMdr')}}" method="POST" style="display: inline-block;" onsubmit="show()">
                                                 @csrf
 
@@ -93,7 +93,7 @@
                                                     <i class="fa fa-thumbs-up"></i>
                                                 </button>
                                             </form>
-                                            @endif
+                                            @endif --}}
                                         </td>
                                         <td>{{ date("F Y", strtotime($data->yearAndMonth))}}</td>
                                         <td>@if($data->score != null){{ $data->score }}@else 0.00 @endif</td>
@@ -143,21 +143,21 @@
         
         $("[name='department']").chosen({width: "100%"});
 
-        $(".approveBtn").on('click', function() {
-            var form = $(this).closest('form');
+        // $(".approveBtn").on('click', function() {
+        //     var form = $(this).closest('form');
 
-            swal({
-                title: "Are you sure?",
-                text: "The mdr will be submitted",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, submit it!",
-                closeOnConfirm: false
-            }, function (){
-                form.submit()
-            });
-        })
+        //     swal({
+        //         title: "Are you sure?",
+        //         text: "The mdr will be submitted",
+        //         type: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonColor: "#DD6B55",
+        //         confirmButtonText: "Yes, submit it!",
+        //         closeOnConfirm: false
+        //     }, function (){
+        //         form.submit()
+        //     });
+        // })
     })
 </script>
 @endpush
