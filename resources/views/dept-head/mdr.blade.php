@@ -12,6 +12,7 @@
 @section('content')
 <div class="row">
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
+        @include('components.error')
         
         @include('dept-head.departmental-goals', array('departmentalGoals' => $departmentalGoals))
         {{-- @include('dept-head.innovation', array('innovation' => $innovation)) --}}

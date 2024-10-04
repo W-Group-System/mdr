@@ -30,7 +30,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrController extends Controller
 {
     public function index(Request $request) {
-        $mdrSetup = MdrSetup::where('department_id', auth()->user()->department_id)->where('status', 'Active')->get();
+        $mdrSetup = MdrSetup::where('department_id', auth()->user()->department_id)->where('status', 'Active')->orderBy('name', 'asc')->get();
 
         $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)
             ->where('yearAndMonth', $request->yearAndMonth)

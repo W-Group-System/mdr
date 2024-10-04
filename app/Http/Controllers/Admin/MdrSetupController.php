@@ -15,8 +15,9 @@ class MdrSetupController extends Controller
 {
     public function index(Request $request) {
         $mdrSetup = MdrSetup::when($request->department, function($q)use($request) {
-                $q->where('department_id', $request->department);
+                $q->where('department_id', $request->department)->orderBy('name', 'asc');
             })
+            ->orderBy('department_id', 'asc')
             ->get();
         
         $departmentList = Department::select('id', 'name', 'code')->where('status',"Active")->get();

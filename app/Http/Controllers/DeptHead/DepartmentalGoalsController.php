@@ -17,10 +17,9 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
-        // dd($request->all());
         $request->validate([
             'file[]' => 'array',
-            'file.*' => 'max:1024'
+            'file.*.*' => 'max:1024'
         ]);
         
         foreach($request->name as $deptKey=>$kpi_name)
@@ -82,7 +81,7 @@ class DepartmentalGoalsController extends Controller
         // $departmentalGoals->save();
         $request->validate([
             'file[]' => 'array',
-            'file.*' => 'max:1024'
+            'file.*.*' => 'max:1024'
         ]);
 
         $departmentalGoals = DepartmentalGoals::findMany($request->department_goals_id);

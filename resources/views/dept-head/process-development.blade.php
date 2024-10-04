@@ -8,8 +8,6 @@
         </div>
         <div class="ibox-content">
             <div class="table-responsive">
-                @include('components.error')
-
                 <table class="table table-bordered table-hover" id="processDevelopmentTable">
                     <thead>
                         <tr>
