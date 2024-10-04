@@ -235,7 +235,7 @@ class ListOfMdr extends Controller
         $mdr_approvers->save();
 
         $mdrSummary = MdrSummary::where('id', $mdr_approvers->mdrSummary->id)->first();
-        $nextMdrApprovers = MdrApprovers::where('mdr_summary_id', $mdr_approvers->mdrSummary->id)->where('status', 'Waiting')->orWhere('status', 'Returned')->orderBy('level', 'asc')->first();
+        $nextMdrApprovers = MdrApprovers::where('mdr_summary_id', $mdr_approvers->mdrSummary->id)->whereIn('status', ['Waiting', 'Returned'])->orderBy('level', 'asc')->first();
         
         if ($request->action == "Approved")
         {
