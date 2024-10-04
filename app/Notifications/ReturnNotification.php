@@ -50,7 +50,7 @@ class ReturnNotification extends Notification
         return (new MailMessage)
                     ->greeting("Hello Mr./Ms. ".' '. $this->name)
                     ->line('We would like to inform you that your MDR in ' . date('F Y', strtotime($this->yearAndMonth)). ' is return by ' . $this->approver)
-                    ->action('Click the button to see your MDR', url('edit_mdr?yearAndMonth='.$this->yearAndMonth))
+                    ->action('Click the button to see your MDR', url('for_approval'))
                     ->line('Thank you for using our application!');
     }
 
