@@ -18,6 +18,11 @@ class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
         // dd($request->all());
+        $request->validate([
+            'file[]' => 'array',
+            'file.*' => 'max:1024'
+        ]);
+        
         foreach($request->name as $deptKey=>$kpi_name)
         {
             $departmentalGoals = new DepartmentalGoals;
