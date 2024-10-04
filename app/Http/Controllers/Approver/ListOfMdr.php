@@ -273,20 +273,21 @@ class ListOfMdr extends Controller
                     }
                 }
 
-                // $user = User::where('role', "Human Resources")->get();
-                // $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
-                // $department = $mdrSummary->departments->name;
-                // $rate = $mdrSummary->rate;
+                $user = User::where('role', "Human Resources")->get();
+                $yearAndMonth = $mdrSummary->year.'-'.$mdrSummary->month;
+                $department = $mdrSummary->departments->name;
+                $rate = $mdrSummary->rate;
 
-                // foreach($user as $u) {
-                //     $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
-                // }
+                foreach($user as $u) {
+                    $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
+                }
             }
 
-            if (auth()->user()->role == "Approvers" || auth()->user()->role == "Business Process Manager")
+            if (auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
             {
-                $user = User::where('id', $mdr_approvers->user_id)->first();
-                $approver = $user->name;
+                $user = User::where('department_id', $mdrSummary->department_id)->where('role', 'Department Head')->first();
+                $approvers = User::where('id', $mdr_approvers->user_id)->first();
+                $approver = $approvers->name;
                 $yearAndMonth = $mdrSummary->yearAndMonth;
                 $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
             }
@@ -347,10 +348,11 @@ class ListOfMdr extends Controller
                 $mdrApprover->save();
             }
 
-            if (auth()->user()->role == "Approvers" || auth()->user()->role == "Business Process Manager")
+            if (auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
             {
-                $user = User::where('id', $mdr_approvers->user_id)->first();
-                $approver = $user->name;
+                $user = User::where('department_id', $mdrSummary->department_id)->where('role', 'Department Head')->first();
+                $approvers = User::where('id', $mdr_approvers->user_id)->first();
+                $approver = $approvers->name;
                 $yearAndMonth = $mdrSummary->yearAndMonth;
                 $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
             }
