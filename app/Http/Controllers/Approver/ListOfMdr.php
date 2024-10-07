@@ -283,13 +283,20 @@ class ListOfMdr extends Controller
                 }
             }
 
+            if (auth()->user()->role == "Department Head")
+            {
+                $approvers = User::where('id', $nextMdrApprovers->user_id)->first();
+                $approvers->notify(new EmailNotificationForApprovers($approvers, $mdrSummary->departments, $mdrSummary->yearAndMonth));
+            }
+
             if (auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
             {
                 $user = User::where('department_id', $mdrSummary->department_id)->where('role', 'Department Head')->first();
-                $approvers = User::where('id', $mdr_approvers->user_id)->first();
+                $approvers = User::where('id', $nextMdrApprovers->user_id)->first();
                 $approver = $approvers->name;
                 $yearAndMonth = $mdrSummary->yearAndMonth;
                 $user->notify(new ApprovedNotification($user->name, $approver, $yearAndMonth));
+                $approvers->notify(new EmailNotificationForApprovers($approvers, $mdrSummary->departments, $mdrSummary->yearAndMonth));
             }
 
             Alert::success('Succesfully Approved')->persistent('Dismiss');

@@ -23,8 +23,8 @@ class EmailNotificationForApprovers extends Notification
     
     public function __construct($user, $dept, $yearAndMonth)
     {
-        $this->user = $user;
-        $this->dept = $dept;
+        $this->user = $user->name;
+        $this->dept = $dept->name;
         $this->yearAndMonth = $yearAndMonth;
     }
 
