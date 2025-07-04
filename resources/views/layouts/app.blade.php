@@ -84,7 +84,7 @@
                             </a>
                             <ul class="nav nav-second-level">
                                 <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
-                                <li class=""><a href="{{ url('mdr_setup') }}">MDR Setup</a></li>
+                                <li class=""><a href="{{ url('department_kpis') }}">Department KPI's</a></li>
                             </ul>
                         </li>
                         <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
@@ -99,12 +99,12 @@
                                 <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
                             </ul>
                         </li>
-                        <li class="{{ Route::currentRouteName() == 'upload' ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::currentRouteName() == 'upload' ? 'active' : '' }}">
                             <a href="{{url('upload')}}">
                                 <i class="fa fa-upload"></i>
                                 <span class="nav-label">Upload</span> 
                             </a>
-                        </li>
+                        </li> --}}
                     @endif
                     @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager" || auth()->user()->role == "Department Head")
                         <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">

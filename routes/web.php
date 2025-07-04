@@ -35,11 +35,11 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/activate_department/{id}', 'Admin\DepartmentController@activate');
     
             # MDR Setups
-            Route::get('/mdr_setup', 'Admin\MdrSetupController@index')->name('mdr');
-            Route::post('/addDepartmentKpi', 'Admin\MdrSetupController@addDepartmentKpi');
-            Route::post('/updateDepartmentsKpi/{id}', 'Admin\MdrSetupController@updateDepartmentKpi');
-            Route::post('/deactivate_mdr_setup/{id}', 'Admin\MdrSetupController@deactivate');
-            Route::post('/activate_mdr_setup/{id}', 'Admin\MdrSetupController@activate');
+            Route::get('/department_kpis', 'Admin\DepartmentKpiController@index')->name('mdr');
+            Route::post('/addDepartmentKpi', 'Admin\DepartmentKpiController@addDepartmentKpi');
+            Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKpiController@updateDepartmentKpi');
+            Route::post('/deactivate_mdr_setup/{id}', 'Admin\DepartmentKpiController@deactivate');
+            Route::post('/activate_mdr_setup/{id}', 'Admin\DepartmentKpiController@activate');
             
             # Companies
             Route::get('/companies', 'Admin\CompanyController@index')->name('settings');

@@ -4,31 +4,28 @@ namespace App\Http\Controllers\Admin;
 
 use App\Admin\Department;
 use App\Admin\MdrGroup;
-use App\Admin\MdrSetup;
+use App\DepartmentKpi;
 use App\DeptHead\DepartmentalGoals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class MdrSetupController extends Controller
+class DepartmentKpiController extends Controller
 {
     public function index(Request $request) {
-        $mdrSetup = MdrSetup::when($request->department, function($q)use($request) {
-                $q->where('department_id', $request->department)->orderBy('name', 'asc');
-            })
+        $department_kpis = DepartmentKpi::with('mdr_group','department')
+            ->where('department_id', $request->department)
             ->orderBy('department_id', 'asc')
             ->get();
         
         $departmentList = Department::select('id', 'name', 'code')->where('status',"Active")->get();
-        $departmentGroupKpiList = MdrGroup::select('id', 'name')->where('status',"Active")->get();
 
-        return view('admin.mdr-setup',
+        return view('admin.department_kpi',
             array(
                 'departmentList' => $departmentList,
-                'departmentGroupKpiList' => $departmentGroupKpiList,
                 'department' => $request->department,
-                'mdrSetup' => $mdrSetup
+                'department_kpis' => $department_kpis
             )
         );
     }
@@ -39,7 +36,7 @@ class MdrSetupController extends Controller
             'department' => 'required',
         ]);
 
-        $mdrSetup = new MdrSetup;
+        $mdrSetup = new DepartmentKpi;
         $mdrSetup->department_id = $request->department;
         $mdrSetup->mdr_group_id = 1;
         $mdrSetup->name = $request->kpiName;
@@ -57,7 +54,7 @@ class MdrSetupController extends Controller
             'department' => 'required',
         ]);
 
-        $mdrSetup = MdrSetup::findOrFail($id);
+        $mdrSetup = DepartmentKpi::findOrFail($id);
         $mdrSetup->department_id = $request->department;
         $mdrSetup->mdr_group_id = 1;
         $mdrSetup->name = $request->kpiName;
@@ -69,7 +66,7 @@ class MdrSetupController extends Controller
     }
 
     public function deactivate($id) {
-        $mdrSetup = MdrSetup::findOrFail($id);
+        $mdrSetup = DepartmentKpi::findOrFail($id);
         $mdrSetup->status = "Inactive";
         $mdrSetup->save();
         
@@ -78,7 +75,7 @@ class MdrSetupController extends Controller
     }
 
     public function activate($id) {
-        $mdrSetup = MdrSetup::findOrFail($id);
+        $mdrSetup = DepartmentKpi::findOrFail($id);
         $mdrSetup->status = "Activate";
         $mdrSetup->save();
         

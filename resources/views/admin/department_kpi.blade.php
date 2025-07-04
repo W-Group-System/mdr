@@ -32,9 +32,12 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     Active
+                    <div class="pull-right">
+                        <span class="label label-success">As of - {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
-                    <h1>{{count($mdrSetup->where('status',"Active"))}}</h1>
+                    <h1>{{count($department_kpis->where('status',"Active"))}}</h1>
                     <small>Total Active</small>
                 </div>
             </div>
@@ -43,9 +46,12 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     Deactivate
+                    <div class="pull-right">
+                        <span class="label label-danger">As of - {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
-                    <h1>{{count($mdrSetup->where('status',"Inactive"))}}</h1>
+                    <h1>{{count($department_kpis->where('status',"Inactive"))}}</h1>
                     <small>Total Deactivate</small>
                 </div>
             </div>
@@ -67,22 +73,21 @@
                                 <tr>
                                     <th>Actions</th>
                                     <th>Departments</th>
-                                    <th>MDR Groups</th>
                                     <th>Department KPI</th>
                                     <th>Target</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($mdrSetup as $departmentKpiData)
+                                @foreach ($department_kpis as $department_kpi)
                                     <tr>
                                         <td>
-                                            @if($departmentKpiData->status != "Inactive")
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal{{ $departmentKpiData->id }}">
-                                                <i class="fa fa-pencil"></i>
+                                            @if($department_kpi->status != "Inactive")
+                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal{{ $department_kpi->id }}">
+                                                <i class="fa fa-pencil-square-o"></i>
                                             </button>
 
-                                            <form action="{{url('deactivate_mdr_setup/'.$departmentKpiData->id)}}" method="post" onsubmit="show()" style="display: inline-block;">
+                                            <form action="{{url('deactivate_mdr_setup/'.$department_kpi->id)}}" method="post" onsubmit="show()" style="display: inline-block;">
                                                 @csrf
 
                                                 <button type="submit" class="btn btn-sm btn-danger" title="Deactivate">
@@ -90,7 +95,7 @@
                                                 </button>
                                             </form>
                                             @else
-                                            <form action="{{ url('activate_mdr_setup/'.$departmentKpiData->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
+                                            <form action="{{ url('activate_mdr_setup/'.$department_kpi->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
                                                 @csrf
 
                                                 <button class="btn btn-sm btn-success" type="submit" title="Activate">
@@ -99,16 +104,13 @@
                                             </form>
                                             @endif
                                         </td>
-                                        <td>{{ optional($departmentKpiData->departments)->code.' - ' .optional($departmentKpiData->departments)->name }}</td>
-                                        <td>{{ $departmentKpiData->mdrGroup->name}}</td>
-                                        <td>{!! nl2br($departmentKpiData->name) !!}</td>
-                                        <td>{!! nl2br($departmentKpiData->target) !!}</td>
+                                        <td>{{ $department_kpi->department->name }}</td>
+                                        <td>{!! nl2br($department_kpi->name) !!}</td>
+                                        <td>{!! nl2br($department_kpi->target) !!}</td>
                                         <td>
-                                            <div class="label label-{{$departmentKpiData->status == "Inactive" ? 'danger' : 'primary'}}">{{$departmentKpiData->status == "Inactive" ? 'Inactive' : 'Active'}}</div>
+                                            <div class="label label-{{$department_kpi->status == "Inactive" ? 'danger' : 'primary'}}">{{$department_kpi->status == "Inactive" ? 'Inactive' : 'Active'}}</div>
                                         </td>
                                     </tr>
-
-                                    @include('admin.edit_mdr_setup')
                                 @endforeach
                             </tbody>
                         </table>
@@ -120,6 +122,10 @@
 </div>
 
 @include('admin.new_mdr_setup')
+@foreach ($department_kpis as $department_kpi)
+@include('admin.edit_mdr_setup')
+@endforeach
+
 @endsection
 
 @push('scripts')
