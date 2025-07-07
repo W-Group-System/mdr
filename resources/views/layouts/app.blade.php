@@ -97,6 +97,7 @@
                                 <li class=""><a href="{{ url('companies') }}">Companies</a></li>
                                 <li class=""><a href="{{ url('departments') }}">Departments</a></li>
                                 <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
+                                <li class=""><a href="{{ url('department-approvers') }}">Department Approvers</a></li>
                             </ul>
                         </li>
                         {{-- <li class="{{ Route::currentRouteName() == 'upload' ? 'active' : '' }}">
@@ -126,12 +127,12 @@
                                 <span class="nav-label">Monthly MDR Data</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">
+                        {{-- <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">
                             <a href="{{ url('list_of_penalties') }}">
                                 <i class="fa fa-list" aria-hidden="true"></i>
                                 <span class="nav-label">List of Penalties</span>
                             </a>
-                        </li>
+                        </li> --}}
                         @endif
                     @endif
                     @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users" || auth()->user()->role == "Business Process Manager")
@@ -142,7 +143,7 @@
                             </a>
                         </li>
                     @endif
-                    @if(auth()->user()->role == "Human Resources" || auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
+                    {{-- @if(auth()->user()->role == "Human Resources" || auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
                         <li class="{{ Route::currentRouteName() == "listOfPenalties" ? 'active' : '' }}">
                             <a href="{{ url('list_of_penalties') }}">
                                 <i class="fa fa-list" aria-hidden="true"></i>
@@ -161,7 +162,7 @@
                                 <li class=""><a href="{{ url('performance_improvement_plan') }}">Performance Improvement Plan</a></li>
                             </ul>
                         </li>
-                    @endif
+                    @endif --}}
                 </ul>
             </div>
         </nav>

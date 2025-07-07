@@ -69,7 +69,6 @@
                                     <th>Department Name</th>
                                     <th>Department Head</th>
                                     <th>Target Date</th>
-                                    <th>Approvers</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -111,11 +110,6 @@
                                                 $due_date = getOrdinal($departmentData->target_date);
                                             @endphp
                                             {{$due_date}}
-                                        </td>
-                                        <td>
-                                            @foreach ($departmentData->approver as $approver)
-                                                <small>{{ $approver->status_level .'. ' . optional($approver->user)->name }}</small> <br>
-                                            @endforeach
                                         </td>
                                         <td>
                                             @if($departmentData->status == "Active")

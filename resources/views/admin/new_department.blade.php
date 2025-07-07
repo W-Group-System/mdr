@@ -34,7 +34,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <hr>
                             <button type="button" class="btn btn-xs btn-primary addApprover" onclick="add_approver()">
                                 <i class="fa fa-plus-square-o"></i>
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -69,7 +69,7 @@
         </div>
     </div>
 </div>
-<script>
+{{-- <script>
     function add_approver()
     {
         var lastItemID = $('.approvers-data').children().last().attr('id');
@@ -147,4 +147,4 @@
             $('#'+lastItemID).remove();
         }
     }
-</script>
+</script> --}}

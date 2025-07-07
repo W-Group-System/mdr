@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                         </div> --}}
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             <hr>
                             <button type="button" class="btn btn-xs btn-primary addApprover" onclick="add_edit_approver({{$departmentData->id}})">
                                 <i class="fa fa-plus-square-o"></i>
@@ -83,7 +83,7 @@
                                 </div>
                                 @endforeach
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">

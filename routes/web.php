@@ -138,5 +138,8 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/performance_improvement_plan', 'HR\ForPipController@index')->name('ntePenalties');
         Route::post('/upload_pip/{id}', 'HR\ForPipController@uploadPip');
         Route::post('/pip_status/{id}', 'HR\ForPipController@pipStatus');
+
+        # Department Approvers
+        Route::get('department-approvers','DepartmentApproverController@index');
     });
 });
