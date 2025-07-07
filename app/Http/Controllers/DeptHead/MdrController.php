@@ -7,6 +7,7 @@ use App\Admin\Department;
 use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
+use App\DepartmentKpi;
 use App\DeptHead\Attachments;
 use App\DeptHead\BusinessPlan;
 use App\DeptHead\DepartmentalGoals;
@@ -30,56 +31,32 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrController extends Controller
 {
     public function index(Request $request) {
-        $mdrSetup = MdrSetup::where('department_id', auth()->user()->department_id)->where('status', 'Active')->orderBy('name', 'asc')->get();
-
-        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)
-            ->where('yearAndMonth', $request->yearAndMonth)
-            ->get();
-
-        $innovation = Innovation::where('department_id', auth()->user()->department_id)
-            ->where('yearAndMonth', $request->yearAndMonth)
-            ->get();
-
-        $process_improvement = ProcessDevelopment::where('department_id', auth()->user()->department_id)
-            ->where('yearAndMonth', $request->yearAndMonth)
-            ->get();
+        $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)->where('status', 'Active')->orderBy('name', 'asc')->get();
+        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $mdr_groups = MdrGroup::get();
         
         return view('dept-head.mdr',
             array(
-                'mdrSetup' => $mdrSetup,
-                // 'approver' => $approver,
+                'department_kpis' => $department_kpis,
                 'yearAndMonth' => $request->yearAndMonth,
                 'departmentalGoals' => $departmentalGoals,
-                'innovation' => $innovation,
-                'process_improvement' => $process_improvement
+                'innovations' => $innovations,
+                'mdr_groups' => $mdr_groups
             )
         );
     }
 
     public function mdrView(Request $request) {
-    //   $mdrScore = MdrScore::query();
+        $department_approvers = DepartmentApprovers::get();
+        // $mdrScore = MdrScore::with('departments', 'mdrSummary')->where('department_id', auth()->user()->department_id)->orderBy('yearAndMonth', 'desc')->get();
+        // $mdrApprovers = MdrApprovers::where('department_id', auth()->user()->department_id)->get();
 
-    //   if (!empty($request->filterYearAndMonth)) {
-    //     $mdrScore->where('year', date('Y', strtotime($request->filterYearAndMonth)))
-    //       ->where('month', date('m', strtotime($request->filterYearAndMonth)));
-    //   }
-
-    //   $mdrScore = $mdrScore->where('department_id', auth()->user()->department_id)
-    //     ->orderBy('month', 'DESC')
-    //     ->get();
-
-    //   $lastSubmittedMdr = MdrScore::where('department_id', auth()->user()->department_id)->orderBy('month', 'DESC')->first();
-    //   $yearAndMonth = $lastSubmittedMdr->year.'-'.$lastSubmittedMdr->month;
-
-        $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
-        $mdrScore = MdrScore::with('departments', 'mdrSummary')->where('department_id', auth()->user()->department_id)->orderBy('yearAndMonth', 'desc')->get();
-        $mdrApprovers = MdrApprovers::where('department_id', auth()->user()->department_id)->get();
-
-        return view('dept-head.mdr-list', array(
-                'mdrScore' => $mdrScore,
+        return view('dept-head.department_mdr', array(
+                // 'mdrScore' => $mdrScore,
                 // 'yearAndMonth' => $mdrSummary != null ? $mdrSummary->yearAndMonth : '',
                 'department_approvers' => $department_approvers,
-                'mdrApprovers' => $mdrApprovers
+                // 'mdrApprovers' => $mdrApprovers
             )
         );
     }

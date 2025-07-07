@@ -8,11 +8,12 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            @php
+                            {{-- @php
                                 $mdr_score = $mdrScore->first();
                             @endphp
+                            <input type="month" name="yearAndMonth" min="{{date('Y-m', strtotime("+1 month", strtotime($mdr_score->yearAndMonth)))}}" class="form-control input-sm" required> --}}
                             Select Year & Month :
-                            <input type="month" name="yearAndMonth" min="{{date('Y-m', strtotime("+1 month", strtotime($mdr_score->yearAndMonth)))}}" class="form-control input-sm" required>
+                            <input type="month" name="yearAndMonth" class="form-control input-sm" required>
                         </div>
                         <div class="col-md-12">
                             <hr>
@@ -51,21 +52,6 @@
                     <button class="btn btn-primary" type="submit">Save</button>
                 </div>
             </form>
-            
-            {{-- <div class="row">
-                <div class="col-lg-12">
-                    <form action="{{ url('new-mdr') }}" method="get">
-                        <div class="form-group">
-                            <input type="month" name="yearAndMonth" min="{{ date(" Y-m", strtotime("+1month",
-                                strtotime($yearAndMonth))) }}" max="{{ date('Y-m') }}" class="form-control input-sm"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <button class="btn btn-sm btn-primary btn-block" type="submit">Next</button>
-                        </div>
-                    </form>
-                </div>
-            </div> --}}
         </div>
     </div>
 </div>

@@ -7,7 +7,7 @@
             <form method="POST" action="{{url('create')}}" onsubmit="show()" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
-                <input type="hidden" name="target_date" value="{{auth()->user()->department->target_date}}">
+                {{-- <input type="hidden" name="target_date" value="{{auth()->user()->department->target_date}}"> --}}
 
                 <div class="modal-body">
                     <div class="row">
@@ -30,15 +30,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($mdrSetup as $key=>$setup)
+                                                @foreach ($department_kpis as $key=>$department_kpi)
                                                     <tr>
                                                         <td>
-                                                            <input type="hidden" name="name[]" value="{{$setup->name}}">
-                                                            {!! nl2br($setup->name) !!}
+                                                            <input type="hidden" name="department_kpi_id[]" value="{{$department_kpi->id}}">
+                                                            {!! nl2br($department_kpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            <input type="hidden" name="target[]" value="{{$setup->target}}">
-                                                            {!! nl2br($setup->target) !!}
+                                                            {!! nl2br($department_kpi->target) !!}
                                                         </td>
                                                         <td>
                                                             <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{old('actual[]')}}</textarea>

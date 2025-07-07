@@ -12,45 +12,33 @@
                     <thead>
                         <tr>
                             <th>Actions</th>
-                            <th>Innovations / Projects</th>
-                            <th>Project Summary</th>
-                            <th>Job / Work Order Number</th>
-                            <th>Start Date</th>
-                            <th>Target Date of Completion</th>
-                            <th>Actual Date of Completion</th>
-                            <th>Remarks</th>
-                            <th>Attachments</th>
+                            <th>Project Charter</th>
+                            <th>Project Benefit</th>
+                            <th>Accomplishment Report</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($innovation as $data)
+                        @foreach ($innovations as $innovation)
                         <tr>
                             <td>
-                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal{{$data->id}}">
-                                    <div class="fa fa-pencil-square-o"></div>
+                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $innovation->id }}">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i>
                                 </button>
                             </td>
-                            <td>{{ $data->projects }}</td>
-                            <td>{{ $data->project_summary }}</td>
-                            <td>{{ $data->work_order_number }}</td>
-                            <td>{{ date('F m, Y', strtotime($data->start_date)) }}</td>
-                            <td>{{ date('F m, Y', strtotime($data->target_date)) }}</td>
-                            <td>{{ date('F m, Y', strtotime($data->actual_date)) }}</td>
+                            <td>{{ $innovation->project_charter }}</td>
+                            <td>{{ $innovation->project_benefit }}</td>
                             <td>
-                                {!! nl2br(e($data->remarks)) !!}
-                            </td>
-                            <td>
-                                @foreach ($data->innovationAttachments as $key=>$file)
-                                <span>{{ $key+1 }}. &nbsp;</span>
-                                <a href="{{ url($file->filepath) }}" target="_blank">
-                                    <i class="fa fa-file-pdf-o"></i>
-                                </a>
-                                <br>
+                                @foreach ($innovation->innovationAttachments as $attachment)
+                                    <a href="{{ url($attachment->filepath) }}" target="_blank">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                    </a>
+                                    <br>
                                 @endforeach
                             </td>
                         </tr>
-
-                        @include('dept-head.edit_innovation')
                         @endforeach
                     </tbody>
                 </table>
@@ -60,3 +48,6 @@
 </div>
 
 @include('dept-head.add_innovation')
+@foreach ($innovations as $innovation)
+@include('dept-head.edit_innovation')
+@endforeach

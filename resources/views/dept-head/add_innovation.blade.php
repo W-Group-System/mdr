@@ -12,36 +12,16 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            Innovation Projects :
-                            <input type="text" name="innovationProjects" id="innovationProjects" class="form-control input-sm" required >
+                            Project Charter :
+                            <input type="text" name="project_charter" class="form-control input-sm" required >
                         </div>
                         <div class="col-md-12">
-                            Project Summary :
-                            <textarea name="projectSummary" cols="30" rows="10" class="form-control" required></textarea>
+                            Project Benefit :
+                            <textarea name="project_benefit" cols="30" rows="10" class="form-control" required></textarea>
                         </div>
                         <div class="col-md-12">
-                            Job / Work Number :
-                            <input type="text" name="jobOrWorkNum" id="jobOrWorkNum" class="form-control input-sm" required>
-                        </div>
-                        <div class="col-md-12">
-                            Start Date :
-                            <input type="date" class="form-control input-sm" name="startDate" required>
-                        </div>
-                        <div class="col-md-12">
-                            Target Date :
-                            <input type="date" class="form-control input-sm" name="targetDate" required>
-                        </div>
-                        <div class="col-md-12">
-                            Actual Date :
-                            <input type="date" class="form-control input-sm" name="actualDate" required>
-                        </div>
-                        <div class="col-md-12">
-                            Supporting Documents :
-                            <input type="file" name="file[]" id="file" class="form-control" multiple>
-                        </div>
-                        <div class="col-md-12">
-                            Remarks :
-                            <textarea name="remarks" id="remarks" class="form-control input-sm" cols="30" rows="10" required></textarea>
+                            Accomplishment Report :
+                            <input type="file" name="accomplishment_report[]" class="form-control" multiple required>
                         </div>
                     </div>
                 </div>

@@ -17,25 +17,26 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
+        // dd($request->all());
         $request->validate([
             'file[]' => 'array',
             'file.*.*' => 'max:1024'
         ]);
         
-        foreach($request->name as $deptKey=>$kpi_name)
+        foreach($request->department_kpi_id as $key=>$department_kpi_id)
         {
             $departmentalGoals = new DepartmentalGoals;
-            $departmentalGoals->kpi_name = $kpi_name;
+            $departmentalGoals->department_kpi_id = $department_kpi_id;
             $departmentalGoals->department_id = auth()->user()->department_id;
-            $departmentalGoals->target = $request->target[$deptKey];
-            $departmentalGoals->actual = $request->actual[$deptKey];
-            // $departmentalGoals->grade = $request->grade[$deptKey];
-            $departmentalGoals->remarks = $request->remarks[$deptKey];
-            $departmentalGoals->yearAndMonth = $request->yearAndMonth;
-            $departmentalGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.$request->target_date;
+            // $departmentalGoals->target = $request->target[$deptKey];
+            $departmentalGoals->actual = $request->actual[$key];
+            $departmentalGoals->remarks = $request->remarks[$key];
+            $departmentalGoals->year = date('Y', strtotime($request->yearAndMonth));
+            $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
+            $departmentalGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'. auth()->user()->department->target_date;
             $departmentalGoals->save();
 
-            $attachments = $request->file('file')[$deptKey];
+            $attachments = $request->file('file')[$key];
     
             foreach ($attachments as $attachment) {
                 $name = time() . '_' . $attachment->getClientOriginalName();
@@ -50,52 +51,23 @@ class DepartmentalGoalsController extends Controller
             }
         }
 
-        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
+        // $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
     }
 
     public function update(Request $request) {
-        // dd($request->all());
-        // $departmentalGoals = DepartmentalGoals::findOrFail($id);
-        // $departmentalGoals->actual = $request->actual;
-        // $departmentalGoals->grade = $request->grade;
-        // $departmentalGoals->remarks = $request->remarks;
-        // if($request->has('file'))
-        // {
-        //     $mdrAttachments = Attachments::where('departmental_goals_id', $id)->delete();
-
-        //     $attachment = $request->file('file');
-        //     $name = time().'_'.$attachment->getClientOriginalName();
-        //     $attachment->move(public_path('departmental_goals_files'), $name);
-        //     $filename = '/departmental_goals_files/'.$name;
-
-        //     $mdrAttachments = new Attachments;
-        //     $mdrAttachments->department_id = auth()->user()->department_id;
-        //     $mdrAttachments->departmental_goals_id = $id;
-        //     $mdrAttachments->file_path = $filename;
-        //     $mdrAttachments->save();
-        // }
-
-        // $departmentalGoals->save();
         $request->validate([
             'file[]' => 'array',
             'file.*.*' => 'max:1024'
         ]);
 
         $departmentalGoals = DepartmentalGoals::findMany($request->department_goals_id);
-        
         foreach($departmentalGoals as $deptKey=>$dptGoals)
         {
-            $dptGoals->kpi_name = $request->name[$deptKey];
-            $dptGoals->department_id = auth()->user()->department_id;
-            $dptGoals->target = $request->target[$deptKey];
             $dptGoals->actual = $request->actual[$deptKey];
-            // $dptGoals->grade = $request->grade[$deptKey];
             $dptGoals->remarks = $request->remarks[$deptKey];
-            $dptGoals->yearAndMonth = $request->yearAndMonth;
-            $dptGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.$request->target_date;
             $dptGoals->save();
 
             if ($request->has('file') && isset($request->file('file')[$deptKey]))
@@ -116,7 +88,7 @@ class DepartmentalGoalsController extends Controller
             }
         }
 
-        $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
+        // $this->computeKpi($request->grade, $request->target_date, $request->yearAndMonth);
         
         Alert::success('Successfully Updated')->persistent('Dismiss');
         return back();

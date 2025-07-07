@@ -12,33 +12,11 @@
 @section('content')
 <div class="wrapper wrapper-content">
     <div class="row">
-        {{-- <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <form action="" method="get">
-                        <div class="row">
-                            <div class="col-md-3">
-                                Year & Month:
-                                <div class="form-group">
-                                    <input type="month" name="filterYearAndMonth" id="yearAndMonth" class="form-control input-sm" value="{{$filterYearAndMonth}}" max="{{date('Y-m')}}">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                &nbsp;
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> --}}
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <h1 class="text-center">{{auth()->user()->department->name}}</h1>
 
-                @if(auth()->user()->role == "Users")
+                @if(auth()->user()->role == "Users" || auth()->user()->role == "Department Head")
                 <div class="ibox-title">
                     <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
@@ -56,15 +34,15 @@
                                 <tr>
                                     <th>Actions</th>
                                     <th>Month</th>
-                                    <th>KPI</th>
+                                    {{-- <th>KPI</th>
                                     <th>Process Improvement</th>
                                     <th>Innovation</th>
                                     <th>Timeliness</th>
                                     <th>Rating</th>
-                                    <th>Remarks</th>
+                                    <th>Remarks</th> --}}
                                 </tr>
                             </thead>
-                            <tbody>
+                            {{-- <tbody>
                                 @foreach ($mdrScore as $data)
                                     <tr>
                                         <td>
@@ -81,19 +59,6 @@
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                             </form>
-
-                                            {{-- @if(auth()->user()->role == "Users")
-                                            <form action="{{url('approveMdr')}}" method="POST" style="display: inline-block;" onsubmit="show()">
-                                                @csrf
-
-                                                <input type="hidden" name="yearAndMonth" value="{{$data->yearAndMonth}}">
-                                                <input type="hidden" name="department_id" value="{{$data->department_id}}">
-
-                                                <button type="button" class="btn btn-sm btn-primary approveBtn" @if(optional($data->mdrSummary)->level != null) disabled @endif>
-                                                    <i class="fa fa-thumbs-up"></i>
-                                                </button>
-                                            </form>
-                                            @endif --}}
                                         </td>
                                         <td>{{ date("F Y", strtotime($data->yearAndMonth))}}</td>
                                         <td>@if($data->score != null){{ $data->score }}@else 0.00 @endif</td>
@@ -106,7 +71,7 @@
 
                                     @include('dept-head.view_mdr_status')
                                 @endforeach
-                            </tbody>
+                            </tbody> --}}
                         </table>
                     </div>
                 </div>

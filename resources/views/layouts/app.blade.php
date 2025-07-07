@@ -107,7 +107,7 @@
                             </a>
                         </li> --}}
                     @endif
-                    @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager" || auth()->user()->role == "Department Head")
+                    @if(Auth::user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
                         <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
                             <a href="{{ url('for_approval') }}">
                                 <i class="fa fa-pencil-square-o"></i>

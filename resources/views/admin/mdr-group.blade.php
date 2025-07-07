@@ -52,7 +52,7 @@
                                         <td>
                                             @if($departmentGroupData->status != "Inactive")
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentGroupData->id }}">
-                                                <i class="fa fa-pencil"></i>
+                                                <i class="fa fa-pencil-square-o"></i>
                                             </button>
                                             
                                             <form action="{{url('deactivate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">

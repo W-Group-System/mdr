@@ -11,12 +11,13 @@
 
 @section('content')
 <div class="row">
-        <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
-        @include('components.error')
-        
-        @include('dept-head.departmental-goals', array('departmentalGoals' => $departmentalGoals))
-        {{-- @include('dept-head.innovation', array('innovation' => $innovation)) --}}
-        @include('dept-head.process-development', array('process_improvement' => $process_improvement))
+    <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
+    @include('components.error')
+    
+    @include('dept-head.departmental-goals', array('departmentalGoals' => $departmentalGoals, 'yearAndMonth' => $yearAndMonth))
+    @if($mdr_groups->where('name', 'Innovation')->where('status','Active')->isNotEmpty())
+        @include('dept-head.innovation', array('innovations' => $innovations))
+    @endif
 </div>
 
 @include('components.footer')

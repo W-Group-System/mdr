@@ -59,13 +59,12 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');
             Route::post('/addUserAccounts', 'Admin\UserController@addUserAccounts');
             Route::post('/updateUserAccounts/{id}', 'Admin\UserController@updateUserAccounts');
-            // Route::post('/changePassword/{id}', 'Admin\UserController@changePassword');
             Route::post('/changeAccountStatus', 'Admin\UserController@changeAccountStatus')->name('changeAccountStatus');
             Route::post('/changePassword/{id}', 'Admin\UserController@changePassword')->name('changePassword');
 
             # Upload
-            Route::get('upload', 'UploadController@index')->name('upload');
-            Route::post('upload-kpi', 'UploadController@uploadKpi');
+            // Route::get('upload', 'UploadController@index')->name('upload');
+            // Route::post('upload-kpi', 'UploadController@uploadKpi');
         });
 
         # === Department Head ===
@@ -97,8 +96,8 @@ Route::group(['middleware' => 'auth'], function() {
         Route::post('/submitMdr', 'DeptHead\MdrController@submitMdr');
 
         # Department Penalties
-        Route::get('/department_penalties', 'DeptHead\DepartmentPenaltiesController@index')->name('departmentPenalties');
-        Route::get('/department_nod', 'DeptHead\DepartmentNodController@index')->name('departmentPenalties');
+        // Route::get('/department_penalties', 'DeptHead\DepartmentPenaltiesController@index')->name('departmentPenalties');
+        // Route::get('/department_nod', 'DeptHead\DepartmentNodController@index')->name('departmentPenalties');
 
         # Approver
         
@@ -127,17 +126,17 @@ Route::group(['middleware' => 'auth'], function() {
         # Human Resources
 
         # Penalties
-        Route::get('/notice_of_explanation', 'HR\ForNteController@index')->name('ntePenalties');
-        Route::post('/upload_nte/{id}', 'HR\ForNteController@uploadNte');
-        Route::post('/nte_status/{id}', 'HR\ForNteController@nteStatus');
+        // Route::get('/notice_of_explanation', 'HR\ForNteController@index')->name('ntePenalties');
+        // Route::post('/upload_nte/{id}', 'HR\ForNteController@uploadNte');
+        // Route::post('/nte_status/{id}', 'HR\ForNteController@nteStatus');
 
-        Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('ntePenalties');
-        Route::post('/upload_nod/{id}', 'HR\ForNodController@uploadNod');
-        Route::post('/nod_status/{id}', 'HR\ForNodController@nodStatus');
+        // Route::get('/notice_of_disciplinary', 'HR\ForNodController@index')->name('ntePenalties');
+        // Route::post('/upload_nod/{id}', 'HR\ForNodController@uploadNod');
+        // Route::post('/nod_status/{id}', 'HR\ForNodController@nodStatus');
 
-        Route::get('/performance_improvement_plan', 'HR\ForPipController@index')->name('ntePenalties');
-        Route::post('/upload_pip/{id}', 'HR\ForPipController@uploadPip');
-        Route::post('/pip_status/{id}', 'HR\ForPipController@pipStatus');
+        // Route::get('/performance_improvement_plan', 'HR\ForPipController@index')->name('ntePenalties');
+        // Route::post('/upload_pip/{id}', 'HR\ForPipController@uploadPip');
+        // Route::post('/pip_status/{id}', 'HR\ForPipController@pipStatus');
 
         # Department Approvers
         Route::get('department-approvers','DepartmentApproverController@index');
