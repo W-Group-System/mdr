@@ -34,7 +34,7 @@
     @endif
 
     @if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
-        <div class="wrapper wrapper-content">
+        {{-- <div class="wrapper wrapper-content">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
@@ -73,10 +73,6 @@
                                 @csrf
 
                                 <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
-
-                                {{-- <input type="hidden" name="startYearAndMonth" value="{{ $startYearAndMonth }}">
-                                <input type="hidden" name="endYearAndMonth" value="{{ $endYearAndMonth }}"> --}}
-
                                 <button type="submit" class="btn btn-sm btn-warning pull-right">
                                     <i class="fa fa-print"></i>
                                     &nbsp;
@@ -87,7 +83,6 @@
                                 <thead>
                                     <tr>
                                         <th>Department</th>
-                                        {{-- <th>Action</th> --}}
                                         <th>Status</th>
                                         <th>Due Date</th>
                                         <th>KPI</th>
@@ -103,7 +98,6 @@
                                     @foreach ($mdr_score_array as $summary)
                                         <tr>
                                             <td>{{$summary->name}}</td>
-                                            {{-- <td></td> --}}
                                             <td>
                                                 @if($summary->status == null)
                                                     <span class="label label-danger">No MDR Submitted</span>
@@ -287,7 +281,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     @endif
 
     @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
@@ -373,7 +367,7 @@
 <script src="{{ asset('js/plugins/chartJs/Chart.min.js') }}"></script>
 {{-- chosen --}}
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
-@if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
+{{-- @if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
 <script>
     $(document).ready(function() {
         $(".cat").chosen({width: "100%"});
@@ -473,7 +467,7 @@
         @endphp
     }) 
 </script>
-@endif
+@endif --}}
 
 @if(auth()->user()->role == "Department Head" || auth()->user()->role == "Users")
 <script>

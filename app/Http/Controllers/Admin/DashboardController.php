@@ -50,112 +50,112 @@ class DashboardController extends Controller
 
         if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
         {
-            $departments = Department::get();
-            $mdr_summary = MdrSummary::where(function($query)use($request) {
-                    if ($request->yearAndMonth)
-                    {
-                        $query->where('yearAndMonth', $request->yearAndMonth);
-                    }
-                    else
-                    {
-                        $query->where('yearAndMonth', date('Y-m'));
-                    }
-                })
-                ->get();
+            // $departments = Department::get();
+            // $mdr_summary = MdrSummary::where(function($query)use($request) {
+            //         if ($request->yearAndMonth)
+            //         {
+            //             $query->where('yearAndMonth', $request->yearAndMonth);
+            //         }
+            //         else
+            //         {
+            //             $query->where('yearAndMonth', date('Y-m'));
+            //         }
+            //     })
+            //     ->get();
 
-            $mdr_score_array = [];
-            foreach($departments as $department)
-            {
-                $mdr_score = MdrScore::with('mdrSummary')->where('department_id', $department->id)->where('yearAndMonth', $request->yearAndMonth)->first();
-                $object = new stdClass();
-                $object->name = $department->name;
-                if ($mdr_score)
-                {
-                    $object->status = optional($mdr_score->mdrSummary)->status;
-                    $object->deadline = optional($mdr_score->mdrSummary)->deadline;
-                    $object->scores = $mdr_score->score;
-                    $object->innovation_scores = $mdr_score->innovation_scores;
-                    $object->pd_scores = $mdr_score->pd_scores;
-                    $object->timeliness = $mdr_score->timeliness;
-                    $object->total_rating = $mdr_score->total_rating;
-                }
-                else
-                {
-                    $object->status = null;
-                    $object->deadline = null;
-                    $object->scores = null;
-                    $object->innovation_scores = null;
-                    $object->pd_scores = null;
-                    $object->timeliness = null;
-                    $object->total_rating = null;
-                }
+            // $mdr_score_array = [];
+            // foreach($departments as $department)
+            // {
+            //     $mdr_score = MdrScore::with('mdrSummary')->where('department_id', $department->id)->where('yearAndMonth', $request->yearAndMonth)->first();
+            //     $object = new stdClass();
+            //     $object->name = $department->name;
+            //     if ($mdr_score)
+            //     {
+            //         $object->status = optional($mdr_score->mdrSummary)->status;
+            //         $object->deadline = optional($mdr_score->mdrSummary)->deadline;
+            //         $object->scores = $mdr_score->score;
+            //         $object->innovation_scores = $mdr_score->innovation_scores;
+            //         $object->pd_scores = $mdr_score->pd_scores;
+            //         $object->timeliness = $mdr_score->timeliness;
+            //         $object->total_rating = $mdr_score->total_rating;
+            //     }
+            //     else
+            //     {
+            //         $object->status = null;
+            //         $object->deadline = null;
+            //         $object->scores = null;
+            //         $object->innovation_scores = null;
+            //         $object->pd_scores = null;
+            //         $object->timeliness = null;
+            //         $object->total_rating = null;
+            //     }
 
-                $mdr_score_array[] = $object;
-            }
+            //     $mdr_score_array[] = $object;
+            // }
             
-            $summary_kpi = [];
-            foreach($departments as $dept)
-            {
-                $object = new \stdClass();
-                $object->d = $dept->code;
-                $object->mdr_status = MdrSummary::select('rate')->where('department_id', $dept->id)
-                    ->where(function($q)use($request) {
-                        if ($request->yearAndMonth == null)
-                        {
-                            $q->where('yearAndMonth', date('Y-m'));
-                        }
-                        else
-                        {
-                            $q->where('yearAndMonth', $request->yearAndMonth);
-                        }
-                    })
-                    ->get()
-                    ->pluck('rate')
-                    ->toArray();
+            // $summary_kpi = [];
+            // foreach($departments as $dept)
+            // {
+            //     $object = new \stdClass();
+            //     $object->d = $dept->code;
+            //     $object->mdr_status = MdrSummary::select('rate')->where('department_id', $dept->id)
+            //         ->where(function($q)use($request) {
+            //             if ($request->yearAndMonth == null)
+            //             {
+            //                 $q->where('yearAndMonth', date('Y-m'));
+            //             }
+            //             else
+            //             {
+            //                 $q->where('yearAndMonth', $request->yearAndMonth);
+            //             }
+            //         })
+            //         ->get()
+            //         ->pluck('rate')
+            //         ->toArray();
                 
-                $summary_kpi[] = $object;
-            }
+            //     $summary_kpi[] = $object;
+            // }
             
-            $months = [];
-            for ($m=1; $m<=12; $m++) {
-                $object = new \stdClass();
-                $object->y =date('M-Y', mktime(0,0,0,$m, 1, $request->years1));
-                $object->year1 = date('Y-m', mktime(0,0,0,$m, 1, $request->years1));
-                $object->mdr_status = MdrSummary::select('rate')->where('department_id', $request->departmentValue)->where('yearAndMonth', $object->year1)->pluck('rate')->toArray();
-                $months[$m-1] = $object;
-            }
+            // $months = [];
+            // for ($m=1; $m<=12; $m++) {
+            //     $object = new \stdClass();
+            //     $object->y =date('M-Y', mktime(0,0,0,$m, 1, $request->years1));
+            //     $object->year1 = date('Y-m', mktime(0,0,0,$m, 1, $request->years1));
+            //     $object->mdr_status = MdrSummary::select('rate')->where('department_id', $request->departmentValue)->where('yearAndMonth', $object->year1)->pluck('rate')->toArray();
+            //     $months[$m-1] = $object;
+            // }
             
-            $months_array = [];
-            for ($m=1; $m<=12; $m++) {
-                $object = new \stdClass();
-                $object->y =date('M-Y', mktime(0,0,0,$m, 1, $request->years2));
-                $object->year2 = date('Y-m', mktime(0,0,0,$m, 1, $request->years2));
-                $object->mdr_status = MdrSummary::select('rate')->where('department_id', $request->departmentValue)->where('yearAndMonth', $object->year2)->pluck('rate')->toArray();
-                $months_array[$m-1] = $object;
-            }
+            // $months_array = [];
+            // for ($m=1; $m<=12; $m++) {
+            //     $object = new \stdClass();
+            //     $object->y =date('M-Y', mktime(0,0,0,$m, 1, $request->years2));
+            //     $object->year2 = date('Y-m', mktime(0,0,0,$m, 1, $request->years2));
+            //     $object->mdr_status = MdrSummary::select('rate')->where('department_id', $request->departmentValue)->where('yearAndMonth', $object->year2)->pluck('rate')->toArray();
+            //     $months_array[$m-1] = $object;
+            // }
             
-            $start_year = date('Y') - 20;
-            $current_year = date('Y');
+            // $start_year = date('Y') - 20;
+            // $current_year = date('Y');
 
-            $year_array = [];
-            for($year = $start_year; $year <= $current_year; $year++)
-            {
-                $year_array[] = $year;
-            }
+            // $year_array = [];
+            // for($year = $start_year; $year <= $current_year; $year++)
+            // {
+            //     $year_array[] = $year;
+            // }
             
             return view('admin.dashboard',
                 array(
-                    'yearAndMonth' => $request->yearAndMonth,
-                    'mdr_summary' => $mdr_summary,
-                    'mdr_score_array' => $mdr_score_array,
-                    'summary_kpi' => $summary_kpi,
-                    'departments' => $departments,
-                    'departmentValue' => $request->departmentValue,
-                    'months' => $months,
-                    'months_array' => $months_array,
-                    'years' => $year_array,
-                    'year1' => $request->years1,
-                    'year2' => $request->years2
+                    // 'yearAndMonth' => $request->yearAndMonth,
+                    // 'mdr_summary' => $mdr_summary,
+                    // 'mdr_score_array' => $mdr_score_array,
+                    // 'summary_kpi' => $summary_kpi,
+                    // 'departments' => $departments,
+                    // 'departmentValue' => $request->departmentValue,
+                    // 'months' => $months,
+                    // 'months_array' => $months_array,
+                    // 'years' => $year_array,
+                    // 'year1' => $request->years1,
+                    // 'year2' => $request->years2
                 )  
             );
         }
