@@ -130,3 +130,8 @@ function for_approval_count()
 
     return $mdrApprovers;
 }
+
+function department_deadline()
+{
+    
+}

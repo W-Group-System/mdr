@@ -208,7 +208,7 @@
                                     <input type="hidden" name="department_id" value="{{auth()->user()->department_id}}">
                                     {{-- @if(optional($data->mdrSummary)->level != null) disabled @endif --}}
                                     <button type="button" class="btn btn-block btn-primary approveBtn" >
-                                        Approved
+                                        Submit MDR
                                     </button>
                                 </form>
                             </div>
