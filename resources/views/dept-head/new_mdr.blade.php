@@ -8,12 +8,12 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            {{-- @php
-                                $mdr_score = $mdrScore->first();
-                            @endphp
-                            <input type="month" name="yearAndMonth" min="{{date('Y-m', strtotime("+1 month", strtotime($mdr_score->yearAndMonth)))}}" class="form-control input-sm" required> --}}
                             Select Year & Month :
+                            @if($year_and_month)
+                            <input type="month" name="yearAndMonth" min="{{date('Y-m', strtotime("+1 month", strtotime($year_and_month)))}}" class="form-control input-sm" required>
+                            @else
                             <input type="month" name="yearAndMonth" class="form-control input-sm" required>
+                            @endif
                         </div>
                         <div class="col-md-12">
                             <hr>

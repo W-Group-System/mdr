@@ -1,4 +1,4 @@
-<div class="modal" id="mdrStatusModal{{optional($data->mdrSummary)->id}}">
+<div class="modal" id="mdrStatusModal{{$mdr->id}}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,18 +19,15 @@
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         <strong>Status</strong>
                                     </div>
-                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                        <strong>Start Date</strong>
-                                    </div>
-                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         <strong>Action Date</strong>
                                     </div>
-                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         <strong>Remarks</strong>
                                     </div>
                                 </div>
 
-                                @foreach ($mdrApprovers->where('mdr_summary_id', optional($data->mdrSummary)->id) as $approver)
+                                @foreach ($mdr->mdrApprover as $approver)
                                 <div class="row text-center">
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->users->name}}
@@ -38,15 +35,12 @@
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->status}}
                                     </div>
-                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                        {{$approver->start_date}}
-                                    </div>
-                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         @if($approver->status == "Approved" || $approver->status == "Returned")
                                             {{date('Y-m-d', strtotime($approver->updated_at))}}
                                         @endif
                                     </div>
-                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->remarks}}
                                     </div>
                                 </div>

@@ -12,6 +12,7 @@ use App\DeptHead\Attachments;
 use App\DeptHead\BusinessPlan;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
+use App\DeptHead\Mdr;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
@@ -49,12 +50,12 @@ class MdrController extends Controller
 
     public function mdrView(Request $request) {
         $department_approvers = DepartmentApprovers::get();
-        // $mdrScore = MdrScore::with('departments', 'mdrSummary')->where('department_id', auth()->user()->department_id)->orderBy('yearAndMonth', 'desc')->get();
-        // $mdrApprovers = MdrApprovers::where('department_id', auth()->user()->department_id)->get();
+        $mdr_year_exists = Mdr::where('department_id', auth()->user()->department_id)->orderBy('year', 'desc')->orderBy('month', 'desc')->first();
+        $mdrs = Mdr::where('department_id', auth()->user()->department_id)->orderBy('year', 'desc')->orderBy('month', 'desc')->get();
 
         return view('dept-head.department_mdr', array(
-                // 'mdrScore' => $mdrScore,
-                // 'yearAndMonth' => $mdrSummary != null ? $mdrSummary->yearAndMonth : '',
+                'mdrs' => $mdrs,
+                'year_and_month' => $mdr_year_exists ? $mdr_year_exists->year.'-'.$mdr_year_exists->month : '',
                 'department_approvers' => $department_approvers,
                 // 'mdrApprovers' => $mdrApprovers
             )
@@ -62,29 +63,25 @@ class MdrController extends Controller
     }
 
     public function edit(Request $request) {
-        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)
-            ->where('yearAndMonth', $request->yearAndMonth)
-            ->get();
+        // dd($request->all());
+        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
 
-        $innovation = Innovation::where('department_id', auth()->user()->department_id)
-            ->where('yearAndMonth', $request->yearAndMonth)
-            ->get();
+        // $process_improvement = ProcessDevelopment::where('department_id', auth()->user()->department_id)
+        //     ->where('yearAndMonth', $request->yearAndMonth)
+        //     ->get();
 
-        $process_improvement = ProcessDevelopment::where('department_id', auth()->user()->department_id)
-            ->where('yearAndMonth', $request->yearAndMonth)
-            ->get();
-
-        $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
+        // $department_approvers = DepartmentApprovers::where('department_id', auth()->user()->department_id)->get();
 
         // $mdrSummary = MdrSummary::where('department_id', auth()->user()->department_id)->where('yearAndMonth', $request->yearAndMonth)->first();
 
         return view('dept-head.edit-mdr',
             array(
                 'departmentalGoals' => $departmentalGoals,
-                'department_approvers' => $department_approvers,
+                // 'department_approvers' => $department_approvers,
                 'yearAndMonth' => $request->yearAndMonth,
-                'innovation' => $innovation,
-                'process_improvement' => $process_improvement,
+                'innovations' => $innovations,
+                // 'process_improvement' => $process_improvement,
                 // 'mdrSummary' => $mdrSummary
             )
         );
@@ -174,14 +171,55 @@ class MdrController extends Controller
     }
 
     public function submitMdr(Request $request) {
-        
-        $userData = User::where('department_id', auth()->user()->department_id)
-            ->where('role', "Department Head")
-            ->first();
+        // dd($request->all());
+        $mdrs = Mdr::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->first();
 
-        $userData->notify(new NotifyDeptHead($userData->name, $request->yearAndMonth));
+        if ($mdrs)
+        {
+            // $mdrs = new Mdr;
+            // $mdrs->status = 'Pending';
+            // $mdr->year = date('Y', strtotime($request->year));
+            // $mdr->month = date('m', strtotime($request->month));
+            // $mdrs->save();
+        }
+        else
+        {
+            $mdrs = new Mdr;
+            $mdrs->status = 'Pending';
+            $mdrs->department_id = auth()->user()->department_id;
+            $mdrs->year = date('Y', strtotime($request->year_and_month));
+            $mdrs->month = date('m', strtotime($request->year_and_month));
+            $mdrs->save();
+
+            DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
+            Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
+
+            $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->get();
+            foreach($department_approvers as $key=>$department_approver)
+            {
+                $dept_approver = new MdrApprovers;
+                $dept_approver->mdr_id = $mdrs->id;
+                $dept_approver->user_id = $department_approver->user_id;
+                $dept_approver->level = $key+1;
+                if ($key == 0)
+                {
+                    $dept_approver->status = 'Pending';
+                }
+                else
+                {
+                    $dept_approver->status = 'Waiting';
+                }
+                $dept_approver->save();
+            }
+        }
+
+        // $userData = User::where('department_id', auth()->user()->department_id)
+        //     ->where('role', "Department Head")
+        //     ->first();
+
+        // $userData->notify(new NotifyDeptHead($userData->name, $request->yearAndMonth));
 
         Alert::success('Successfully Submitted')->persistent('Dismiss');
-        return back();
+        return redirect('mdr');
     }
 }

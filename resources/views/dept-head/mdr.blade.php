@@ -18,6 +18,20 @@
     @if($mdr_groups->where('name', 'Innovation')->where('status','Active')->isNotEmpty())
         @include('dept-head.innovation', array('innovations' => $innovations))
     @endif
+
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins" >
+            <div class="ibox-content">
+                <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">
+                    @csrf
+
+                    <input type="hidden" name="year_and_month" value="{{ $yearAndMonth }}">
+                    
+                    <button type="submit" class="btn btn-block btn-primary">Submit MDR</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @include('components.footer')

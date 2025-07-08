@@ -34,44 +34,54 @@
                                 <tr>
                                     <th>Actions</th>
                                     <th>Month</th>
-                                    {{-- <th>KPI</th>
-                                    <th>Process Improvement</th>
+                                    <th>KPI</th>
+                                    {{-- <th>Process Improvement</th> --}}
                                     <th>Innovation</th>
                                     <th>Timeliness</th>
                                     <th>Rating</th>
-                                    <th>Remarks</th> --}}
+                                    <th>Remarks</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
-                            {{-- <tbody>
-                                @foreach ($mdrScore as $data)
+                            <tbody>
+                                @foreach ($mdrs as $mdr)
                                     <tr>
                                         <td>
-                                            @if($data->mdrSummary)
-                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$data->mdrSummary->id}}">
+                                            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$mdr->id}}">
                                                 <i class="fa fa-user"></i>
                                             </button>
-                                            @endif
 
+                                            @if(count($mdr->mdrApprover) > 0)
                                             <form action="{{ url('edit_mdr') }}" method="get" style="display: inline-block;" onsubmit="show()">
-                                                <input type="hidden" name="yearAndMonth" value="{{ $data->yearAndMonth }}">
+                                                <input type="hidden" name="yearAndMonth" value="{{ $mdr->year.'-'.$mdr->month }}">
 
-                                                <button type="submit" class="btn btn-sm btn-warning" @if(optional($data->mdrSummary)->level != null) disabled @endif>
+                                                <button type="submit" class="btn btn-sm btn-warning">
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                         </td>
-                                        <td>{{ date("F Y", strtotime($data->yearAndMonth))}}</td>
-                                        <td>@if($data->score != null){{ $data->score }}@else 0.00 @endif</td>
-                                        <td>@if($data->pd_scores){{ $data->pd_scores }}@else 0.00 @endif</td>
-                                        <td>@if($data->innovation_scores){{ $data->innovation_scores }}@else 0.00 @endif</td>
-                                        <td>@if($data->timeliness != null){{ $data->timeliness }}@else @endif</td>
-                                        <td>@if($data->total_rating != null){{ $data->total_rating }} @else 0.00 @endif</td>
-                                        <td>@if($data->remarks != null){{ $data->remarks }}@else N/A @endif</td>
+                                        <td>{{ date("F Y", strtotime($mdr->year.'-'.$mdr->month))}}</td>
+                                        <td>{{ number_format($mdr->score,2) }}</td>
+                                        {{-- <td>@if($mdr->pd_scores){{ $mdr->pd_scores }}@else 0.00 @endif</td> --}}
+                                        <td>{{ number_format($mdr->innovation_scores,2) }}</td>
+                                        <td>{{ number_format($mdr->timeliness,2) }}</td>
+                                        <td>{{ number_format($mdr->total_rating,2) }}</td>
+                                        <td>{{ number_format($mdr->remarks) }}</td>
+                                        <td>
+                                            @if($mdr->status == 'Pending')
+                                            <span class="label label-warning">
+                                            @elseif($mdr->status == 'Approved')
+                                            <span class="label label-primary">
+                                            @endif
+                                            {{ $mdr->status }}
+                                            </span>
+                                        </td>
                                     </tr>
 
                                     @include('dept-head.view_mdr_status')
                                 @endforeach
-                            </tbody> --}}
+                            </tbody>
                         </table>
                     </div>
                 </div>

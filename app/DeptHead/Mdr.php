@@ -9,10 +9,14 @@ class Mdr extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
 
-    public function departments() {
+    public function departments() 
+    {
         return $this->belongsTo(Department::class, 'department_id');
     }
-
+    public function mdrApprover()
+    {
+        return $this->hasMany(MdrApprovers::class);
+    }
     // public function mdrSummary()
     // {
     //     return $this->belongsTo(MdrSummary::class);
