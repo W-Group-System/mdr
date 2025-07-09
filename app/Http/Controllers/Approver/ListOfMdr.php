@@ -10,6 +10,7 @@ use App\Approver\MdrSummary;
 use App\Approver\Warnings;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
+use App\DeptHead\Mdr;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
@@ -34,7 +35,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class ListOfMdr extends Controller
 {
     public function index(Request $request, $id) {
-        $mdrSummary = MdrSummary::with('departmentalGoals', 'innovation', 'processImprovement', 'mdrScore')->findOrFail($id);
+        $mdrSummary = Mdr::with('departments')->findOrFail($id);
 
         return view('approver.list-of-mdr', 
             array(

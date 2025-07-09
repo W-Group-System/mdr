@@ -9,7 +9,7 @@
         {{-- <div class="col-md-12">
             <div class="mb-3 mt-3">
                 @if(auth()->user()->role == "Administrator")
-                @foreach ($mdrSummary->approvers->where('status', 'Pending') as $key => $approver)
+                @foreach ($mdrSummary->mdrApprover->where('status', 'Pending') as $key => $approver)
                     @php
                         $mdr = $mdrSummary;
                     @endphp
@@ -24,7 +24,7 @@
                 @endif
 
                 @if(auth()->user()->role == "Approver" || auth()->user()->role == "Department Head")
-                @foreach ($mdrSummary->approvers->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                @foreach ($mdrSummary->mdrApprover->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
                     @php
                         $mdr = $mdrSummary;
                     @endphp
@@ -63,23 +63,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($mdrSummary->mdrScore as $score)
+                                {{-- @foreach ($mdrSummary->mdrScore as $score) --}}
                                 <tr>
                                     @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
                                     <td>
                                         <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
-                                            data-target="#editScores{{$score->id}}">
+                                            data-target="#editScores{{$mdrSummary->id}}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </button>
                                     </td>
                                     @endif
-                                    <td>{{ date('F Y', strtotime($score->yearAndMonth)) }}</td>
-                                    <td>@if($score->score != null){{ $score->score }}@else 0.0 @endif</td>
-                                    <td>@if($score->pd_scores != null){{$score->pd_scores}}@else 0.0 @endif</td>
+                                    <td>{{ date('F', strtotime($mdrSummary->month)) }}</td>
+                                    <td>@if($mdrSummary->score != null){{ $mdrSummary->score }}@else 0.0 @endif</td>
+                                    <td>@if($mdrSummary->pd_scores != null){{$mdrSummary->pd_scores}}@else 0.0 @endif</td>
                                     {{-- <td>{{$score->innovation_scores}}</td> --}}
-                                    <td>{{$score->timeliness}}</td>
-                                    <td>{{ $score->total_rating }}</td>
-                                    <td>@if($score->remarks != null){{$score->remarks}}@endif</td>
+                                    <td>{{$mdrSummary->timeliness}}</td>
+                                    <td>{{ $mdrSummary->total_rating }}</td>
+                                    <td>@if($mdrSummary->remarks != null){{$mdrSummary->remarks}}@endif</td>
                                 </tr>
                                 {{-- <form action="{{ url('submit_scores') }}" method="post" id="submitScoresForm"
                                     onsubmit="show()">
@@ -89,7 +89,7 @@
                                 </form> --}}
 
                                 @include('approver.edit_mdr_scores')
-                                @endforeach
+                                {{-- @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -131,8 +131,8 @@
                                             <i class="fa fa-pencil-square-o"></i>
                                         </button>
                                     </td> --}}
-                                    <td>{!! nl2br($dptGoals->kpi_name) !!}</td>
-                                    <td>{!! nl2br($dptGoals->target) !!}</td>
+                                    <td>{!! nl2br($dptGoals->departmentKpi->name) !!}</td>
+                                    <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
                                     <td>{{ $dptGoals->actual }}</td>
                                     <td>
                                         {{$dptGoals->grade}}
@@ -207,7 +207,7 @@
             </div>
         </div> --}}
 
-        <div class="col-lg-12">
+        {{-- <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
                     <p>Process Improvement</p>
@@ -256,7 +256,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-lg-12">
             <div class="ibx float-e-margins">
@@ -265,11 +265,10 @@
                 </div>
                 <div class="ibox-content">
                     @if(auth()->user()->role == "Administrator")
-                        @foreach ($mdrSummary->approvers->where('status', 'Pending') as $key => $approver)
+                        @foreach ($mdrSummary->mdrApprover->where('status', 'Pending') as $key => $approver)
                             @php
                                 $mdr = $mdrSummary;
                             @endphp
-            
                             <form action="{{url('approver_mdr/'.$approver->id)}}" method="post" onsubmit="show()">
                                 @csrf
 
@@ -297,7 +296,7 @@
                                                         <strong>Remarks</strong>
                                                     </div>
                                                 </div>
-                                                @foreach ($mdrSummary->approvers->where('mdr_summary_id', $mdr->id) as $approver)
+                                                @foreach ($mdrSummary->mdrApprover->where('mdr_summary_id', $mdr->id) as $approver)
                                                 <div class="row text-center">
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->users->name}}
@@ -343,7 +342,7 @@
                     @endif
 
                     @if(auth()->user()->role == "Approver" || auth()->user()->role == "Department Head" || auth()->user()->role == "Business Process Manager")
-                        @foreach ($mdrSummary->approvers->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                        @foreach ($mdrSummary->mdrApprover->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
                             @php
                                 $mdr = $mdrSummary;
                             @endphp
@@ -375,7 +374,7 @@
                                                         <strong>Remarks</strong>
                                                     </div>
                                                 </div>
-                                                @foreach ($mdrSummary->approvers->where('mdr_summary_id', $mdr->id) as $approver)
+                                                @foreach ($mdrSummary->mdrApprover->where('mdr_summary_id', $mdr->id) as $approver)
                                                 <div class="row text-center">
                                                     <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
                                                         {{$approver->users->name}}

@@ -17,6 +17,14 @@ class Mdr extends Model implements Auditable
     {
         return $this->hasMany(MdrApprovers::class);
     }
+    public function departmentalGoals()
+    {
+        return $this->hasMany(DepartmentalGoals::class, 'mdr_id', 'id');
+    }
+    public function processImprovement()
+    {
+        return $this->hasMany(ProcessDevelopment::class);
+    }
     // public function mdrSummary()
     // {
     //     return $this->belongsTo(MdrSummary::class);

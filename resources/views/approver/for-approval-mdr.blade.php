@@ -46,21 +46,20 @@
                         <tbody>
                             @foreach ($mdrApprovers->where('status', 'Pending') as $key => $approver)
                                 @php
-                                    $mdr = $approver->mdrSummary;
+                                    $mdr = $approver->mdrRelationship;
                                 @endphp
                                 <tr>
                                     <td>
                                         {{-- <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#viewStatus{{$mdr->id}}">
                                             <i class="fa fa-eye"></i>
                                         </button> --}}
-
                                         <a href="{{url('list_of_mdr/'.$mdr->id)}}" class="btn btn-warning btn-sm" onclick="show()">
                                             <i class="fa fa-pencil-square-o"></i>                                            
                                         </a>
                                     </td>
                                     <td>{{ $mdr->departments->name }}</td>
                                     <td>{{ optional($mdr->user)->name }}</td>
-                                    <td>{{ date('F Y', strtotime($mdr->yearAndMonth)) }}</td>
+                                    <td>{{ DateTime::createFromFormat('!m', $mdr->month)->format('F') }} {{ $mdr->year }}</td>
                                     <td>{{ date('F d, Y', strtotime($mdr->deadline)) }}</td>
                                     <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
                                 </tr>

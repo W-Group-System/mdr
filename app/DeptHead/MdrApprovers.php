@@ -29,4 +29,9 @@ class MdrApprovers extends Model implements Auditable
     {
         return $this->belongsTo(MdrSummary::class);
     }
+
+    public function mdrRelationship()
+    {
+        return $this->belongsTo(Mdr::class, 'mdr_id', 'id');
+    }
 }
