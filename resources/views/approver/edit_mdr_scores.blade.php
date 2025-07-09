@@ -1,16 +1,16 @@
-<div class="modal" id="editScores{{$score->id}}">
+<div class="modal" id="editScores{{$mdrSummary->id}}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Edit MDR Scores</h5>
             </div>
-            <form action="{{url('submit_scores/'.$score->id)}}" method="post" onsubmit="show()">
+            <form action="{{url('submit_scores/'.$mdrSummary->id)}}" method="post" onsubmit="show()">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
                             Process Improvement Scores :
-                            <input type="number" name="process_improvement_scores" step=".01" class="form-control input-sm" value="{{$score->pd_scores}}">
+                            <input type="number" name="process_improvement_scores" step=".01" class="form-control input-sm" value="{{$mdrSummary->pd_scores}}">
                         </div>
                         {{-- <div class="col-md-12">
                             Innovation Scores :
@@ -18,7 +18,7 @@
                         </div> --}}
                         <div class="col-md-12">
                             Timeliness : 
-                            <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$score->timeliness}}">
+                            <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$mdrSummary->timeliness}}">
                         </div>
                         {{-- <div class="col-md-12">
                             Remarks :
