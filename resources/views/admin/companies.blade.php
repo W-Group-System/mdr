@@ -3,10 +3,13 @@
 @section('content')
 <div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Companies</h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($company)}}</h1>
@@ -14,10 +17,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Active</h5>
+                    <div class="pull-right">
+                        <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($company->where('status', "Active"))}}</h1>
@@ -25,10 +31,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Inactive</h5>
+                    <div class="pull-right">
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($company->where('status', "Inactive"))}}</h1>
@@ -65,7 +74,7 @@
                                         <td>
                                             @if($c->status == "Active")
                                             <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $c->id }}">
-                                                <i class="fa fa-pencil"></i>
+                                                <i class="fa fa-pencil-square-o"></i>
                                             </button>
                                             
                                             <form action="{{url('deactivate_company/'.$c->id)}}" method="post" onsubmit="show()" style="display: inline-block;">

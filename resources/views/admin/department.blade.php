@@ -14,10 +14,13 @@
 
 <div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Departments</h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($departmentList)}}</h1>
@@ -25,10 +28,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Active</h5>
+                    <div class="pull-right">
+                        <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($departmentList->where('status', "Active"))}}</h1>
@@ -36,10 +42,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Inactive</h5>
+                    <div class="pull-right">
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($departmentList->where('status', "Inactive"))}}</h1>

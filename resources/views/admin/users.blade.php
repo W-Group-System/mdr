@@ -14,7 +14,7 @@
 @section('content')
 <div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Users
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Active</h5>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Inactive</h5>
@@ -144,9 +144,9 @@
     $(document).ready(function() {
         var elems = document.querySelectorAll('.js-switch');
         elems.forEach(function(elem) {
-            new Switchery(elem, { color: '#1AB394' });
+            new Switchery(elem, { color: '#1AB394', size: 'small' })
         })
-
+        
         $(".switchery").on('click', function() {
             var id = $(this).siblings().eq(0).val()
             
