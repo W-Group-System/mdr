@@ -65,19 +65,19 @@
                             </a>
                         </div>
                     </li>
-                    <li class="{{ Route::currentRouteName() == " dashboard" ? 'active' : '' }}">
-                        <a href="{{ route('dashboard') }}">
+                    <li class="{{ Route::currentRouteName() == "dashboard" ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="active">
                             <i class="fa fa-th-large"></i>
                             <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
-                    <li class="{{ Route::currentRouteName() == " forApproval" ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
                         <a href="{{ url('for_approval') }}">
                             <i class="fa fa-pencil-square-o"></i>
                             <span class="nav-label">For Approval MDR</span>
                         </a>
                     </li>
-                    <li class="{{ Route::currentRouteName() == " mdr" ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                         <a href="#">
                             <i class="fa fa-file"></i>
                             <span class="nav-label">MDR</span>
@@ -101,25 +101,19 @@
                             <li class=""><a href="{{ url('department-approvers') }}">Department Approvers</a></li>
                         </ul>
                     </li>
-                    <li class="{{ Route::currentRouteName() == " forApproval" ? 'active' : '' }}">
-                        <a href="{{ url('for_approval') }}">
-                            <i class="fa fa-pencil-square-o"></i>
-                            <span class="nav-label">For Approval MDR</span>
-                        </a>
-                    </li>
-                    <li class="{{ Route::currentRouteName() == " pendingMdr" ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
                         <a href="{{ url('pending_mdr') }}">
                             <i class="fa fa-clock-o"></i>
                             <span class="nav-label">Pending MDR</span>
                         </a>
                     </li>
-                    <li class="{{ Route::currentRouteName() == " historyMdr" ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == "historyMdr" ? 'active' : '' }}">
                         <a href="{{ url('history_mdr') }}">
                             <i class="fa fa-calendar"></i>
                             <span class="nav-label">Monthly MDR Data</span>
                         </a>
                     </li>
-                    <li class="{{ Route::currentRouteName() == " mdr" ? 'active' : '' }}">
+                    <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                         <a href="{{ url('mdr') }}">
                             <i class="fa fa-file"></i>
                             <span class="nav-label">MDR</span>

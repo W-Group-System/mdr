@@ -43,15 +43,24 @@ class User extends Authenticatable implements Auditable
         'email_verified_at' => 'datetime',
     ];
 
-    public function approver() {
+    public function approver() 
+    {
         return $this->hasOne(DepartmentApprovers::class, 'approver_id');
     }
-
-    public function department() {
+    public function department() 
+    {
         return $this->belongsTo(Department::class, 'department_id');
     }
-
-    public function company() {
+    public function company() 
+    {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+    public function audit()
+    {
+        return $this->hasMany(Audit::class);
+    }
+    public function access_module()
+    {
+        return $this->hasMany(UserAccessModule::class);
     }
 }

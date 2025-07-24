@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('css')
-    {{-- switch --}}
-    <link href="css/plugins/switchery/switchery.css" rel="stylesheet">
+{{-- switch --}}
+<link href="css/plugins/switchery/switchery.css" rel="stylesheet">
 
-    {{-- chosen --}}
-    <link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
+{{-- chosen --}}
+<link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
 
-    <!-- Sweet Alert -->
-    <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -17,7 +17,11 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Users</h5>
+                    <h5>Users
+                    </h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($userList)}}</h1>
@@ -29,6 +33,9 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Active</h5>
+                    <div class="pull-right">
+                        <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($userList->where('status', "Active"))}}</h1>
@@ -40,6 +47,9 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Inactive</h5>
+                    <div class="pull-right">
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($userList->where('status', "Inactive"))}}</h1>
@@ -54,17 +64,17 @@
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         Add Users
-                    </button>                    
+                    </button>
                 </div>
 
                 <div class="ibox-content">
                     <div class="table-responsive">
                         @if (Session::has('errors'))
-                            <div class="alert alert-danger">
-                                @foreach (Session::get('errors') as $errors)
-                                    {{ $errors }}<br>
-                                @endforeach
-                            </div>
+                        <div class="alert alert-danger">
+                            @foreach (Session::get('errors') as $errors)
+                            {{ $errors }}<br>
+                            @endforeach
+                        </div>
                         @endif
 
                         <table class="table table-striped table-bordered table-hover" id="userTable">
@@ -81,30 +91,34 @@
                             </thead>
                             <tbody>
                                 @foreach ($userList as $userData)
-                                    <tr>
-                                        <td>
-                                            <div class="btn btn-group-sm">
-                                                <button class="btn btn-warning" data-toggle="modal" data-target="#editModal{{ $userData->id }}">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#changePasswordModal{{ $userData->id }}">
-                                                    <i class="fa fa-key"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td>{{ $userData->name }}</td>
-                                        <td>{{ $userData->email }}</td>
-                                        <td>{{isset($userData->company->name) ? $userData->company->name : ''}}</td>
-                                        <td>{{ isset($userData->department->name) ? $userData->department->name : '' }}</td>
-                                        <td>{{$userData->role}}</td>
-                                        <td>
-                                            <input type="hidden" name="id" id="id" value="{{ $userData->id }}">
-                                            <input type="checkbox" class="js-switch" name="account_status" {{ $userData->status == "Active" ? 'checked' : '' }}/>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        <a href="{{ url('user_access_module/'.$userData->id) }}" class="btn btn-success btn-sm" title="User Access Module">
+                                            <i class="fa fa-key"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                            data-target="#editModal{{ $userData->id }}">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                            data-target="#changePasswordModal{{ $userData->id }}">
+                                            <i class="fa fa-lock"></i>
+                                        </button>
+                                    </td>
+                                    <td>{{ $userData->name }}</td>
+                                    <td>{{ $userData->email }}</td>
+                                    <td>{{isset($userData->company->name) ? $userData->company->name : ''}}</td>
+                                    <td>{{ isset($userData->department->name) ? $userData->department->name : '' }}</td>
+                                    <td>{{$userData->role}}</td>
+                                    <td>
+                                        <input type="hidden" name="id" id="id" value="{{ $userData->id }}">
+                                        <input type="checkbox" class="js-switch" name="account_status" {{
+                                            $userData->status == "Active" ? 'checked' : '' }}/>
+                                    </td>
+                                </tr>
 
-                                    @include('admin.edit_user')
-                                    @include('admin.change_password')
+                                @include('admin.edit_user')
+                                @include('admin.change_password')
                                 @endforeach
                             </tbody>
                         </table>

@@ -33,7 +33,7 @@
                 <div class="ibox-title">
                     Active
                     <div class="pull-right">
-                        <span class="label label-success">As of - {{ date('Y-m-d') }}</span>
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -47,7 +47,7 @@
                 <div class="ibox-title">
                     Deactivate
                     <div class="pull-right">
-                        <span class="label label-danger">As of - {{ date('Y-m-d') }}</span>
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">

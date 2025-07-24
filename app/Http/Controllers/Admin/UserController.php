@@ -6,7 +6,9 @@ use App\Admin\Company;
 use App\Admin\Department;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Module;
 use App\User;
+use App\UserAccessModule;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -118,5 +120,135 @@ class UserController extends Controller
             }
         }
         
+    }
+
+    public function userAccessModule($id)
+    {
+        $modules = Module::with('submodule')->get();
+        $user = User::with('audit','access_module')->findOrFail($id);
+
+        return view('admin.user_access_module', 
+            array(
+                'modules' => $modules,
+                'user' => $user
+            )
+        );
+    }
+
+    public function storeAccessModule(Request $request)
+    {
+        // dd($request->all());
+        $user_access_module = UserAccessModule::where('user_id', $request->user_id)->first();
+        if ($user_access_module)
+        {
+            foreach($request->module_access as $moduleKey=>$module)
+            {
+                $user_access_module = UserAccessModule::where('user_id', $request->user_id)->where('module_id',$moduleKey)->first();
+                foreach($module as $actionKey=>$value)
+                {
+                    if ($actionKey == "read")
+                    {
+                        $user_access_module->read = $value;
+                    }
+                    if ($actionKey == "create")
+                    {
+                        $user_access_module->create = $value;
+                    }
+                    if ($actionKey == "update")
+                    {
+                        $user_access_module->update = $value;
+                    }
+                    if ($actionKey == "delete")
+                    {
+                        $user_access_module->delete = $value;
+                    }
+                    $user_access_module->save();
+                }
+            }
+
+            foreach($request->submodule_access as $submoduleKey=>$module)
+            {
+                $user_access_module = UserAccessModule::where('user_id', $request->user_id)->where('submodule_id',$submoduleKey)->first();
+                foreach($module as $actionKey=>$value)
+                {
+                    if ($actionKey == "read")
+                    {
+                        $user_access_module->read = $value;
+                    }
+                    if ($actionKey == "create")
+                    {
+                        $user_access_module->create = $value;
+                    }
+                    if ($actionKey == "update")
+                    {
+                        $user_access_module->update = $value;
+                    }
+                    if ($actionKey == "delete")
+                    {
+                        $user_access_module->delete = $value;
+                    }
+                    $user_access_module->save();
+                }
+            }
+        }
+        else
+        {
+            foreach($request->module_access as $moduleKey=>$module)
+            {
+                $user_access_module = new UserAccessModule;
+                $user_access_module->user_id = $request->user_id;
+                $user_access_module->module_id = $moduleKey;
+                foreach($module as $actionKey=>$value)
+                {
+                    if ($actionKey == "read")
+                    {
+                        $user_access_module->read = $value;
+                    }
+                    if ($actionKey == "create")
+                    {
+                        $user_access_module->create = $value;
+                    }
+                    if ($actionKey == "update")
+                    {
+                        $user_access_module->update = $value;
+                    }
+                    if ($actionKey == "delete")
+                    {
+                        $user_access_module->delete = $value;
+                    }
+                    $user_access_module->save();
+                }
+            }
+
+            foreach($request->submodule_access as $submoduleKey=>$module)
+            {
+                $user_access_module = new UserAccessModule;
+                $user_access_module->user_id = $request->user_id;
+                $user_access_module->submodule_id = $submoduleKey;
+                foreach($module as $actionKey=>$value)
+                {
+                    if ($actionKey == "read")
+                    {
+                        $user_access_module->read = $value;
+                    }
+                    if ($actionKey == "create")
+                    {
+                        $user_access_module->create = $value;
+                    }
+                    if ($actionKey == "update")
+                    {
+                        $user_access_module->update = $value;
+                    }
+                    if ($actionKey == "delete")
+                    {
+                        $user_access_module->delete = $value;
+                    }
+                    $user_access_module->save();
+                }
+            }
+        }
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
     }
 }

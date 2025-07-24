@@ -14,58 +14,54 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function() {
+Route::get('/', function () {
     return redirect('/login');
 });
 
 Auth::routes(['register' => false]);
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
-Route::group(['middleware' => 'auth'], function() {
-    Route::group(['middleware' => 'deactivate'], function() {
+Route::group(['middleware' => 'auth'], function () {
+    Route::group(['middleware' => 'deactivate'], function () {
         # Dashboard
         Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard')->middleware('humanResource');
         Route::post('/print_pdf', 'Admin\DashboardController@printPdf');
-        
-        Route::group(['middleware' => 'adminAccess'], function() {
-            # Departments
-            Route::get('/departments', 'Admin\DepartmentController@index')->name('settings');
-            Route::post('/addDepartments', 'Admin\DepartmentController@addDepartments');
-            Route::post('/updateDepartments/{id}', 'Admin\DepartmentController@updateDepartments');
-            Route::post('/deactivate_department/{id}', 'Admin\DepartmentController@deactivate');
-            Route::post('/activate_department/{id}', 'Admin\DepartmentController@activate');
-    
-            # MDR Setups
-            Route::get('/department_kpis', 'Admin\DepartmentKpiController@index')->name('mdr');
-            Route::post('/addDepartmentKpi', 'Admin\DepartmentKpiController@addDepartmentKpi');
-            Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKpiController@updateDepartmentKpi');
-            Route::post('/deactivate_mdr_setup/{id}', 'Admin\DepartmentKpiController@deactivate');
-            Route::post('/activate_mdr_setup/{id}', 'Admin\DepartmentKpiController@activate');
-            
-            # Companies
-            Route::get('/companies', 'Admin\CompanyController@index')->name('settings');
-            Route::post('/add_company', 'Admin\CompanyController@store');
-            Route::post('/update_company/{id}', 'Admin\CompanyController@update');
-            Route::post('/deactivate_company/{id}', 'Admin\CompanyController@deactivate');
-            Route::post('/activate_company/{id}', 'Admin\CompanyController@activate');
-    
-            # MDR Groups
-            Route::get('/mdr_group', 'Admin\MdrGroupController@index')->name('mdr');
-            Route::post('/addDepartmentGroups', 'Admin\MdrGroupController@addDepartmentGroups');
-            Route::post('/updateDepartmentGroups/{id}', 'Admin\MdrGroupController@updateDepartmentGroups');
-            Route::post('/deactivate_mdr_group/{id}', 'Admin\MdrGroupController@deactivate');
-            Route::post('/activate_mdr_group/{id}', 'Admin\MdrGroupController@activate');
-    
-            # User Accounts
-            Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');
-            Route::post('/addUserAccounts', 'Admin\UserController@addUserAccounts');
-            Route::post('/updateUserAccounts/{id}', 'Admin\UserController@updateUserAccounts');
-            Route::post('/changeAccountStatus', 'Admin\UserController@changeAccountStatus')->name('changeAccountStatus');
-            Route::post('/changePassword/{id}', 'Admin\UserController@changePassword')->name('changePassword');
 
-            # Upload
-            // Route::get('upload', 'UploadController@index')->name('upload');
-            // Route::post('upload-kpi', 'UploadController@uploadKpi');
-        });
+        # Departments
+        Route::get('/departments', 'Admin\DepartmentController@index')->name('settings');
+        Route::post('/addDepartments', 'Admin\DepartmentController@addDepartments');
+        Route::post('/updateDepartments/{id}', 'Admin\DepartmentController@updateDepartments');
+        Route::post('/deactivate_department/{id}', 'Admin\DepartmentController@deactivate');
+        Route::post('/activate_department/{id}', 'Admin\DepartmentController@activate');
+
+        # MDR Setups
+        Route::get('/department_kpis', 'Admin\DepartmentKpiController@index')->name('mdr');
+        Route::post('/addDepartmentKpi', 'Admin\DepartmentKpiController@addDepartmentKpi');
+        Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKpiController@updateDepartmentKpi');
+        Route::post('/deactivate_mdr_setup/{id}', 'Admin\DepartmentKpiController@deactivate');
+        Route::post('/activate_mdr_setup/{id}', 'Admin\DepartmentKpiController@activate');
+
+        # Companies
+        Route::get('/companies', 'Admin\CompanyController@index')->name('settings');
+        Route::post('/add_company', 'Admin\CompanyController@store');
+        Route::post('/update_company/{id}', 'Admin\CompanyController@update');
+        Route::post('/deactivate_company/{id}', 'Admin\CompanyController@deactivate');
+        Route::post('/activate_company/{id}', 'Admin\CompanyController@activate');
+
+        # MDR Groups
+        Route::get('/mdr_group', 'Admin\MdrGroupController@index')->name('mdr');
+        Route::post('/addDepartmentGroups', 'Admin\MdrGroupController@addDepartmentGroups');
+        Route::post('/updateDepartmentGroups/{id}', 'Admin\MdrGroupController@updateDepartmentGroups');
+        Route::post('/deactivate_mdr_group/{id}', 'Admin\MdrGroupController@deactivate');
+        Route::post('/activate_mdr_group/{id}', 'Admin\MdrGroupController@activate');
+
+        # User Accounts
+        Route::get('/user-accounts', 'Admin\UserController@index')->name('settings');
+        Route::post('/addUserAccounts', 'Admin\UserController@addUserAccounts');
+        Route::post('/updateUserAccounts/{id}', 'Admin\UserController@updateUserAccounts');
+        Route::post('/changeAccountStatus', 'Admin\UserController@changeAccountStatus')->name('changeAccountStatus');
+        Route::post('/changePassword/{id}', 'Admin\UserController@changePassword')->name('changePassword');
+        Route::get('user_access_module/{id}','Admin\UserController@userAccessModule');
+        Route::post('store_access_module','Admin\UserController@storeAccessModule');
 
         # === Department Head ===
         #MDR
@@ -100,7 +96,7 @@ Route::group(['middleware' => 'auth'], function() {
         // Route::get('/department_nod', 'DeptHead\DepartmentNodController@index')->name('departmentPenalties');
 
         # Approver
-        
+
         # List Of MDR
         Route::get('/list_of_mdr/{id}', 'Approver\ListOfMdr@index')->name('listOfMdr');
         Route::post('/return_mdr', 'Approver\ListOfMdr@returnMdr');
@@ -139,6 +135,6 @@ Route::group(['middleware' => 'auth'], function() {
         // Route::post('/pip_status/{id}', 'HR\ForPipController@pipStatus');
 
         # Department Approvers
-        Route::get('department-approvers','DepartmentApproverController@index');
+        Route::get('department-approvers', 'DepartmentApproverController@index');
     });
 });
