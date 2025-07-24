@@ -31,7 +31,7 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    Active
+                    <h5>Active</h5>
                     <div class="pull-right">
                         <span class="label label-success">as of {{ date('Y-m-d') }}</span>
                     </div>
@@ -45,7 +45,7 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    Deactivate
+                    <h5>Deactivate</h5>
                     <div class="pull-right">
                         <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
                     </div>

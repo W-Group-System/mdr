@@ -3,10 +3,13 @@
 @section('content')
 <div class="wrapper wrapper-content">
     <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    Active
+                    <h5>MDR Group</h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1>{{count($departmentGroupList->where('status',"Active"))}}</h1>
@@ -14,10 +17,27 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    Deactivate
+                    <h5>Active</h5>
+                    <div class="pull-right">
+                        <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <h1>{{count($departmentGroupList->where('status',"Active"))}}</h1>
+                    <small>Total Active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Deactivate</h5>
+                    <div class="pull-right">
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1>{{count($departmentGroupList->where('status',"Deactive"))}}</h1>
@@ -28,10 +48,12 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
+                    @if(check_access('MDR Group','create'))
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         Add Department Group
                     </button>
+                    @endif
 
                 </div>
                 <div class="ibox-content">
@@ -51,25 +73,31 @@
                                     <tr>
                                         <td>
                                             @if($departmentGroupData->status != "Inactive")
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentGroupData->id }}">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </button>
+                                                @if(check_access('MDR Group','update'))
+                                                <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal-{{ $departmentGroupData->id }}">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </button>
+                                                @endif
                                             
-                                            <form action="{{url('deactivate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">
-                                                @csrf
+                                                @if(check_access('MDR Group', 'delete'))
+                                                <form action="{{url('deactivate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">
+                                                    @csrf
 
-                                                <button class="btn btn-sm btn-danger" type="submit" title="Deactivate">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
+                                                    <button class="btn btn-sm btn-danger" type="submit" title="Deactivate">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
                                             @else
-                                            <form action="{{url('activate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">
-                                                @csrf
+                                                @if(check_access('MDR Group','delete'))
+                                                <form action="{{url('activate_mdr_group/'.$departmentGroupData->id)}}" method="post" style="display: inline-block;" onsubmit="show()">
+                                                    @csrf
 
-                                                <button class="btn btn-sm btn-success" type="submit" title="Activate">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                            </form>
+                                                    <button class="btn btn-sm btn-success" type="submit" title="Activate">
+                                                        <i class="fa fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>{{ $departmentGroupData->name }}</td>

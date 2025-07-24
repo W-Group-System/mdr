@@ -4,6 +4,9 @@ use App\DeptHead\Innovation;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
+use App\Module;
+use App\Submodule;
+use App\UserAccessModule;
 
 function getOrdinal($number) {
     $number = (int) $number;
@@ -134,4 +137,25 @@ function for_approval_count()
 function department_deadline()
 {
     
+}
+
+function check_access($module_name,$action)
+{
+    $module = Module::where('module_name', $module_name)->first();
+    if (empty($module))
+    {
+        $submodule = Submodule::where('submodule_name', $module_name)->first();
+        $user_access_module = UserAccessModule::where($action,'on')->where('submodule_id', $submodule->id)->where('user_id', auth()->user()->id)->first();
+    }
+    else
+    {
+        $user_access_module = UserAccessModule::where($action,'on')->where('module_id', $module->id)->where('user_id', auth()->user()->id)->first();
+    }
+    
+    if ($user_access_module)
+    {
+        return true;
+    }
+
+    return false;
 }

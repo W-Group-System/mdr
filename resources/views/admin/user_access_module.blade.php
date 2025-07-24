@@ -82,7 +82,7 @@
                                         </td>
                                         <td>
                                             <input type="hidden" name="submodule_access[{{ $submodule->id }}][delete]" value="">
-                                            <input type="checkbox" class="js-switch" name="submodule_access[{{ $submodule->id }}][update]" value="on" @if(in_array($submodule->id, $delete_submodule)) checked @endif>
+                                            <input type="checkbox" class="js-switch" name="submodule_access[{{ $submodule->id }}][delete]" value="on" @if(in_array($submodule->id, $delete_submodule)) checked @endif>
                                         </td>
                                     </tr>
                                     @endforeach

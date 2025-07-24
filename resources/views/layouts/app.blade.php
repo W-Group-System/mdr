@@ -71,12 +71,15 @@
                             <span class="nav-label">Dashboard</span>
                         </a>
                     </li>
+                    @if(check_access('For Approval MDR','read'))
                     <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
                         <a href="{{ url('for_approval') }}">
                             <i class="fa fa-pencil-square-o"></i>
                             <span class="nav-label">For Approval MDR</span>
                         </a>
                     </li>
+                    @endif
+                    @if(check_access('MDR Group','read') || check_access('Department KPI','read'))
                     <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                         <a href="#">
                             <i class="fa fa-file"></i>
@@ -84,10 +87,16 @@
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
+                            @if(check_access('MDR Group','read'))
                             <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
+                            @endif  
+                            @if(check_access('Department KPI','read'))
                             <li class=""><a href="{{ url('department_kpis') }}">Department KPI's</a></li>
+                            @endif  
                         </ul>
                     </li>
+                    @endif
+                    @if(check_access('Companies','read') || check_access('Departments','read') || check_access('User Accounts','read') || check_access('Department Approvers','read'))
                     <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
                         <a href="#">
                             <i class="fa fa-cog"></i>
@@ -95,30 +104,45 @@
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level">
+                            @if(check_access('Companies','read'))
                             <li class=""><a href="{{ url('companies') }}">Companies</a></li>
+                            @endif
+                            @if(check_access('Departments','read'))
                             <li class=""><a href="{{ url('departments') }}">Departments</a></li>
+                            @endif
+                            @if(check_access('User Accounts','read'))
                             <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
+                            @endif
+                            @if(check_access('Department Approvers','read'))
                             <li class=""><a href="{{ url('department-approvers') }}">Department Approvers</a></li>
+                            @endif
                         </ul>
                     </li>
+                    @endif
+                    @if(check_access('Pending MDR', 'read'))
                     <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
                         <a href="{{ url('pending_mdr') }}">
                             <i class="fa fa-clock-o"></i>
                             <span class="nav-label">Pending MDR</span>
                         </a>
                     </li>
+                    @endif
+                    @if(check_access('Monthly MDR Data', 'read'))
                     <li class="{{ Route::currentRouteName() == "historyMdr" ? 'active' : '' }}">
                         <a href="{{ url('history_mdr') }}">
                             <i class="fa fa-calendar"></i>
                             <span class="nav-label">Monthly MDR Data</span>
                         </a>
                     </li>
+                    @endif
+                    @if(check_access('Department MDR','read'))
                     <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                         <a href="{{ url('mdr') }}">
                             <i class="fa fa-file"></i>
                             <span class="nav-label">MDR</span>
                         </a>
                     </li>
+                    @endif
                 </ul>
             </div>
         </nav>
