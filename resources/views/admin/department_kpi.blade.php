@@ -59,10 +59,12 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
+                    @if(check_access('Department KPI', 'create'))
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         Add MDR Setup
                     </button>
+                    @endif
                 </div>
                 <div class="ibox-content">
                     @include('components.error')
@@ -82,26 +84,28 @@
                                 @foreach ($department_kpis as $department_kpi)
                                     <tr>
                                         <td>
-                                            @if($department_kpi->status != "Inactive")
-                                            <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal{{ $department_kpi->id }}">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </button>
+                                            @if(check_access('Department KPI', 'update'))
+                                                @if($department_kpi->status != "Inactive")
+                                                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal{{ $department_kpi->id }}">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </button>
+                                                    
+                                                    <form action="{{url('deactivate_mdr_setup/'.$department_kpi->id)}}" method="post" onsubmit="show()" style="display: inline-block;">
+                                                        @csrf
 
-                                            <form action="{{url('deactivate_mdr_setup/'.$department_kpi->id)}}" method="post" onsubmit="show()" style="display: inline-block;">
-                                                @csrf
+                                                        <button type="submit" class="btn btn-sm btn-danger" title="Deactivate">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                <form action="{{ url('activate_mdr_setup/'.$department_kpi->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
+                                                    @csrf
 
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Deactivate">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                            @else
-                                            <form action="{{ url('activate_mdr_setup/'.$department_kpi->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
-                                                @csrf
-
-                                                <button class="btn btn-sm btn-success" type="submit" title="Activate">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                            </form>
+                                                    <button class="btn btn-sm btn-success" type="submit" title="Activate">
+                                                        <i class="fa fa-check"></i>
+                                                    </button>
+                                                </form>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>{{ $department_kpi->department->name }}</td>
