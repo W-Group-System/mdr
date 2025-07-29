@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Admin\DepartmentApprovers;
+use App\User;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentApproverController extends Controller
 {
@@ -14,9 +16,15 @@ class DepartmentApproverController extends Controller
      */
     public function index()
     {
-        $department_approvers = DepartmentApprovers::get();
+        $department_approvers = DepartmentApprovers::with('user')->get();
+        $users = User::where('status','Active')->get();
 
-        return view('admin.department_approvers', compact('department_approvers'));
+        return view('admin.department_approvers', 
+            array(
+                'department_approvers' => $department_approvers,
+                'users' => $users
+            )
+        );
     }
 
     /**
@@ -37,7 +45,14 @@ class DepartmentApproverController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $department_approvers = new DepartmentApprovers;
+        $department_approvers->user_id = $request->approver;
+        $department_approvers->status_level = $request->level;
+        $department_approvers->status = 'Active';
+        $department_approvers->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
     }
 
     /**
@@ -71,7 +86,14 @@ class DepartmentApproverController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // dd($request->all(),$id);
+        $department_approvers = DepartmentApprovers::findOrFail($id);
+        $department_approvers->user_id = $request->approver;
+        $department_approvers->status_level = $request->level;
+        $department_approvers->save();
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
     }
 
     /**
@@ -83,5 +105,25 @@ class DepartmentApproverController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function deactivate($id)
+    {
+        $department_approvers = DepartmentApprovers::findOrFail($id);
+        $department_approvers->status = 'Inactive';
+        $department_approvers->save();
+
+        Alert::success('Successfully Deactivated')->persistent('Dismiss');
+        return back();
+    }
+
+    public function activate($id)
+    {
+        $department_approvers = DepartmentApprovers::findOrFail($id);
+        $department_approvers->status = 'Active';
+        $department_approvers->save();
+
+        Alert::success('Successfully Activated')->persistent('Dismiss');
+        return back();
     }
 }

@@ -135,6 +135,10 @@ Route::group(['middleware' => 'auth'], function () {
         // Route::post('/pip_status/{id}', 'HR\ForPipController@pipStatus');
 
         # Department Approvers
-        Route::get('department-approvers', 'DepartmentApproverController@index');
+        Route::get('department-approvers', 'DepartmentApproverController@index')->name('settings');
+        Route::post('store-department-approvers', 'DepartmentApproverController@store');
+        Route::post('update-department-approvers/{id}', 'DepartmentApproverController@update');
+        Route::post('activate-department-approvers/{id}', 'DepartmentApproverController@activate');
+        Route::post('deactivate-department-approvers/{id}', 'DepartmentApproverController@deactivate');
     });
 });
