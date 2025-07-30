@@ -48,7 +48,7 @@
                                 @foreach ($departmentalGoals as $dptGoals)
                                     <tr>
                                         <td>{!! nl2br($dptGoals->departmentKpi->name) !!}
-                                            <p class="m-t-md"><a href="javascript:void(0)" data-toggle="modal" data-target="#comments{{ $dptGoals->id }}"><i class="fa fa-comments"></i> {{ count($dptGoals->comments) }} View Comments</a></p>
+                                            <p class="m-t-md"><a href="javascript:void(0)" data-toggle="modal" data-target="#comments{{ $dptGoals->id }}"><i class="fa fa-comments"></i> {{ count($dptGoals->comments) }} Comments</a></p>
                                         </td>
                                         <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
                                         <td>{{$dptGoals->actual}}</td>
