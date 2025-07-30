@@ -24,7 +24,7 @@
                                                     <th>KPI</th>
                                                     <th>Target</th>
                                                     <th>Actual</th>
-                                                    <th>Grade</th>
+                                                    {{-- <th>Grade</th> --}}
                                                     <th>Remarks</th>
                                                     <th>Attachments</th>
                                                 </tr>
@@ -37,14 +37,14 @@
                                                             {!! nl2br($department_kpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            {!! nl2br($department_kpi->target) !!}
+                                                            <textarea name="target[]" class="form-control" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
                                                         </td>
                                                         <td>
                                                             <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{old('actual[]')}}</textarea>
                                                         </td>
-                                                        <td>
+                                                        {{-- <td>
                                                             <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{old('grade[]')}}" disabled required>
-                                                        </td>
+                                                        </td> --}}
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{old('remarks[]')}}</textarea>
                                                         </td>

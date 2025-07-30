@@ -24,7 +24,7 @@
                                                     <th>KPI</th>
                                                     <th>Target</th>
                                                     <th>Actual</th>
-                                                    <th>Grade</th>
+                                                    {{-- <th>Grade</th> --}}
                                                     <th>Remarks</th>
                                                     <th>Attachments</th>
                                                 </tr>
@@ -37,14 +37,14 @@
                                                             {!! nl2br($dptGoals->departmentKpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            {!! nl2br($dptGoals->departmentKpi->target) !!}
+                                                            <textarea name="target[]" class="form-control" cols="30" rows="10" required>{{$dptGoals->target}}</textarea>
                                                         </td>
                                                         <td>
                                                             <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{$dptGoals->actual}}</textarea>
                                                         </td>
-                                                        <td>
+                                                        {{-- <td>
                                                             <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{$dptGoals->grade}}" disabled required>
-                                                        </td>
+                                                        </td> --}}
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
                                                         </td>

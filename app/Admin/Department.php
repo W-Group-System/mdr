@@ -19,43 +19,39 @@ class Department extends Model implements Auditable
 
     protected $fillable = ['code', 'name', 'user_id', 'target_date', 'status'];
 
-    public function user() {
+    public function user() 
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
-
-    public function kpi_scores() {
-        return $this->hasMany(MdrScore::class);
-    }
-
-    public function process_development() {
-        return $this->hasMany(ProcessDevelopment::class);
-    }
-
-    public function mdrSetup() {
-        return $this->hasMany(mdrSetup::class);
-    }
-
-    public function departmentalGoals() {
-        return $this->hasMany(DepartmentalGoals::class);
-    }
-
-    public function innovation() {
-        return $this->hasMany(Innovation::class);
-    }
-
-    public function approver() {
-        return $this->hasMany(DepartmentApprovers::class);
-    }
-
-    public function mdrSummary() {
-        return $this->hasMany(MdrSummary::class);
-    }
-
-    public function warnings() {
-        return $this->hasMany(Warnings::class);
-    }
-
-    public function attachments() {
-        return $this->hasMany(Attachments::class);
-    }
+    // public function kpi_scores() 
+    // {
+    //     return $this->hasMany(MdrScore::class);
+    // }
+    // public function process_development() 
+    // {
+    //     return $this->hasMany(ProcessDevelopment::class);
+    // }
+    // public function mdrSetup() {
+    //     return $this->hasMany(mdrSetup::class);
+    // }
+    // public function departmentalGoals() 
+    // {
+    //     return $this->hasMany(DepartmentalGoals::class);
+    // }
+    // public function innovation() 
+    // {
+    //     return $this->hasMany(Innovation::class);
+    // }
+    // public function approver() {
+    //     return $this->hasMany(DepartmentApprovers::class);
+    // }
+    // public function mdrSummary() {
+    //     return $this->hasMany(MdrSummary::class);
+    // }
+    // public function warnings() {
+    //     return $this->hasMany(Warnings::class);
+    // }
+    // public function attachments() {
+    //     return $this->hasMany(Attachments::class);
+    // }
 }

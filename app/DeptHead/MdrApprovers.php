@@ -17,19 +17,17 @@ class MdrApprovers extends Model implements Auditable
     // protected $fillable = ['department_id', 'department_head_id', 'deadline', 'submission_date', 'status', 'approved_date', 'rate', 'remarks'];
     // protected $fillable = ['status', 'start_date', 'status_desc'];
 
-    public function users() {
+    public function users() 
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
-
     public function departments() {
         return $this->belongsTo(Department::class, 'department_id');
     }
-
     public function mdrSummary()
     {
         return $this->belongsTo(MdrSummary::class);
     }
-
     public function mdrRelationship()
     {
         return $this->belongsTo(Mdr::class, 'mdr_id', 'id');

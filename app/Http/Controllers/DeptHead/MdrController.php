@@ -172,7 +172,15 @@ class MdrController extends Controller
 
     public function submitMdr(Request $request) {
         // dd($request->all());
-        $mdrs = Mdr::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->first();
+        $mdrs = Mdr::with('departmentalGoals')->where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->first();
+
+        $departmental_goals = DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->first();
+        
+        if (empty($departmental_goals))
+        {
+            Alert::error('Please submit KPI first, before submitting the MDR')->persistent('Dismiss');
+            return back();
+        }
 
         if ($mdrs)
         {
@@ -194,7 +202,7 @@ class MdrController extends Controller
             DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
             Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
 
-            $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->get();
+            $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->where('status','Active')->get();
             foreach($department_approvers as $key=>$department_approver)
             {
                 $dept_approver = new MdrApprovers;

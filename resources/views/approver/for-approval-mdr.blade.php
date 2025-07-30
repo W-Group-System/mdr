@@ -11,6 +11,9 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>For Approval</h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Pending'))}}</h1>
@@ -22,6 +25,9 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5>Approved</h5>
+                    <div class="pull-right">
+                        <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Approved'))}}</h1>
@@ -58,9 +64,13 @@
                                         </a>
                                     </td>
                                     <td>{{ $mdr->departments->name }}</td>
-                                    <td>{{ optional($mdr->user)->name }}</td>
+                                    <td>
+                                        @if ($mdr->departments->user)
+                                            {{ $mdr->departments->user->name}}
+                                        @endif
+                                    </td>
                                     <td>{{ DateTime::createFromFormat('!m', $mdr->month)->format('F') }} {{ $mdr->year }}</td>
-                                    <td>{{ date('F d, Y', strtotime($mdr->deadline)) }}</td>
+                                    <td></td>
                                     <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
                                 </tr>
 

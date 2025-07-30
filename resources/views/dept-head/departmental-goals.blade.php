@@ -31,7 +31,7 @@
                         @foreach ($departmentalGoals as $dptGoals)
                             <tr>
                                 <td>{!! nl2br($dptGoals->departmentKpi->name) !!}</td>
-                                <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
+                                <td>{!! nl2br($dptGoals->target) !!}</td>
                                 <td>{{$dptGoals->actual}}</td>
                                 <td>{{$dptGoals->grade}}</td>
                                 <td>{!! nl2br($dptGoals->remarks) !!}</td>
