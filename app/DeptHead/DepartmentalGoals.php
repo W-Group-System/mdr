@@ -4,6 +4,7 @@ namespace App\DeptHead;
 
 use App\Admin\Department;
 use App\Admin\MdrSetup;
+use App\Comment;
 use App\DepartmentKpi;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -25,5 +26,13 @@ class DepartmentalGoals extends Model implements Auditable
     public function attachments()
     {
         return $this->hasMany(Attachments::class);
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+    public function mdr()
+    {
+        return $this->belongsTo(Mdr::class);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DeptHead;
 use App\Admin\Department;
 use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
+use App\Comment;
 use App\DeptHead\Attachments;
 use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\MdrScore;
@@ -12,6 +13,7 @@ use App\DeptHead\MdrStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Lcobucci\JWT\Signer\Rsa;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentalGoalsController extends Controller
@@ -87,6 +89,18 @@ class DepartmentalGoalsController extends Controller
         }
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
+
+    public function comments(Request $request)
+    {
+        $comments = new Comment();
+        $comments->departmental_goals_id = $request->departmental_goals_id;
+        $comments->comment = $request->comment;
+        $comments->user_id = auth()->user()->id;
+        $comments->save();
+
+        Alert::success('Successfully Commented')->persistent('Dismiss');
         return back();
     }
 }
