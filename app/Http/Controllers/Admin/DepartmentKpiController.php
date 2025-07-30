@@ -76,7 +76,7 @@ class DepartmentKpiController extends Controller
 
     public function activate($id) {
         $mdrSetup = DepartmentKpi::findOrFail($id);
-        $mdrSetup->status = "Activate";
+        $mdrSetup->status = "Active";
         $mdrSetup->save();
         
         Alert::success("Successfully Activated")->persistent('Dismiss');

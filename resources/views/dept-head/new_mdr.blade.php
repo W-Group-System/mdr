@@ -32,7 +32,7 @@
                                             <strong>Approver</strong>
                                         </div>
                                     </div>
-                                    @foreach ($department_approvers as $approver)
+                                    @foreach ($department_approvers->where('status','Active') as $approver)
                                         <div class="row text-center">
                                             <div class='col-md-6 border border-primary border-top-bottom border-left-right'>
                                                 {{$approver->status_level}}
