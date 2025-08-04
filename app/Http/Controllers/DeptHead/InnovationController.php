@@ -26,7 +26,7 @@ class InnovationController extends Controller
         $innovation->project_benefit = $request->project_benefit;
         $innovation->year = date('Y', strtotime($request->yearAndMonth));
         $innovation->month = date('m', strtotime($request->yearAndMonth));
-        $innovation->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'.auth()->user()->department->target_date;
+        $innovation->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
         $innovation->save();
 
         $accomplishment_reports = $request->file('accomplishment_report');

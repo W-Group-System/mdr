@@ -107,7 +107,16 @@ Route::group(['middleware' => 'auth'], function () {
 
         // Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
         Route::post('/add_pd_remarks/{id}', 'Approver\ListOfMdr@addPdRemarks');
+        Route::post('/accept_mdr/{id}', 'Approver\ListOfMdr@acceptMdr');
 
+        # For Acceptance MDR
+        Route::get('/for_acceptance', 'Approver\ForApprovalController@forAcceptance')->name('forAcceptance');
+        Route::post('/approveTime/{id}', 'Approver\ForApprovalController@approveTimeliness');
+        Route::post('/disapproveTime/{id}', 'Approver\ForApprovalController@disapproveTimeliness');
+        
+        # For Acceptance MDR
+        Route::get('/timeliness_approval', 'Approver\ForApprovalController@timelinessApproval')->name('timelinessApproval');
+        
         # For Approval MDR
         Route::get('/for_approval', 'Approver\ForApprovalController@index')->name('forApproval');
 

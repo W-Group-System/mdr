@@ -4,9 +4,13 @@ use App\DeptHead\Innovation;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
+
 use App\Module;
 use App\Submodule;
 use App\UserAccessModule;
+
+use Carbon\Carbon;
+
 
 function getOrdinal($number) {
     $number = (int) $number;
@@ -139,6 +143,7 @@ function department_deadline()
     
 }
 
+
 function check_access($module_name,$action)
 {
     $module = Module::where('module_name', $module_name)->first();
@@ -159,3 +164,31 @@ function check_access($module_name,$action)
 
     return false;
 }
+
+function getAdjustedTargetDate($month, $year, $targetDay)
+    {
+        $mdrDate = DateTime::createFromFormat('!m Y', $month . ' ' . $year);
+
+        $nextMonth = $mdrDate->modify('+1 month');
+
+        $targetDay = str_pad($targetDay, 2, '0', STR_PAD_LEFT);
+        $fullTargetDate = DateTime::createFromFormat('Y-m-d', $nextMonth->format("Y-m") . '-' . $targetDay);
+
+        $dayOfWeek = $fullTargetDate->format('w');
+        if ($dayOfWeek == 6) {
+            $fullTargetDate->modify('+2 days'); 
+        } elseif ($dayOfWeek == 0) {
+            $fullTargetDate->modify('+1 day');
+        }
+
+        return $fullTargetDate;
+    }
+function generateSafeDeadline(string $yearAndMonth, int $targetDay): string
+    {
+        $baseDate = Carbon::createFromFormat('Y-m', $yearAndMonth)->startOfMonth();
+        $nextMonth = $baseDate->copy()->addMonth();
+        $lastDay = $nextMonth->copy()->endOfMonth()->day;
+        $safeDay = min($targetDay, $lastDay);
+        return Carbon::createFromDate($nextMonth->year, $nextMonth->month, $safeDay)->toDateString();
+    }
+

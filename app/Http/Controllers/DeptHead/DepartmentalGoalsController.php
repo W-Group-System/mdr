@@ -34,7 +34,7 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->remarks = $request->remarks[$key];
             $departmentalGoals->year = date('Y', strtotime($request->yearAndMonth));
             $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
-            $departmentalGoals->deadline = date('Y-m', strtotime("+1 month", strtotime($request->yearAndMonth))).'-'. auth()->user()->department->target_date;
+            $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
             $departmentalGoals->save();
 
             $attachments = $request->file('file')[$key];

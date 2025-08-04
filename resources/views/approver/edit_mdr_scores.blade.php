@@ -9,8 +9,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            Process Improvement Scores :
-                            <input type="number" name="process_improvement_scores" step=".01" class="form-control input-sm" value="{{$mdrSummary->pd_scores}}">
+                            Innovation :
+                            <input type="number" name="innovation_scores" step=".01" class="form-control input-sm" value="{{$mdrSummary->innovation_scores}}">
                         </div>
                         {{-- <div class="col-md-12">
                             Innovation Scores :
@@ -18,7 +18,7 @@
                         </div> --}}
                         <div class="col-md-12">
                             Timeliness : 
-                            <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$mdrSummary->timeliness}}">
+                            <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$mdrSummary->timeliness}}" readonly>
                         </div>
                         {{-- <div class="col-md-12">
                             Remarks :
