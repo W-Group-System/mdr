@@ -25,6 +25,7 @@
                                                     <th>KPI</th>
                                                     <th>Target</th>
                                                     <th>Actual</th>
+                                                    <th>Weight</th>
                                                     <th>Grade</th>
                                                     <th>Remarks</th>
                                                     {{-- <th>Attachments</th> --}}
@@ -36,15 +37,18 @@
 
                                                     <tr>
                                                         <td>
-                                                            <input type="hidden" name="name[]" value="{{$dptGoals->kpi_name}}">
-                                                            {!! nl2br($dptGoals->kpi_name) !!}
+                                                            <input type="hidden" name="name[]" value="{{$dptGoals->departmentKpi->name}}">
+                                                            {!! nl2br($dptGoals->departmentKpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            <input type="hidden" name="target[]" value="{{$dptGoals->target}}">
-                                                            {!! nl2br($dptGoals->target) !!}
+                                                            <input type="hidden" name="target[]" value="{{$dptGoals->departmentKpi->target}}">
+                                                            {!! nl2br($dptGoals->departmentKpi->target) !!}
                                                         </td>
                                                         <td>
                                                             {{$dptGoals->actual}}
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="weight[]" class="form-control input-sm" value="{{$dptGoals->weight}}" required>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="grade[]" class="form-control input-sm" value="{{$dptGoals->grade}}" required>

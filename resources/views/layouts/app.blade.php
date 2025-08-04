@@ -62,6 +62,7 @@
                                     <span class="text-muted text-xs block">
                                         {{auth()->user()->role}}
                                     </span>
+                                </span>
                             </a>
                         </div>
                     </li>
@@ -79,23 +80,78 @@
                         </a>
                     </li>
                     @endif
+
                     @if(check_access('MDR Group','read') || check_access('Department KPI','read'))
-                    <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
-                        <a href="#">
-                            <i class="fa fa-file"></i>
-                            <span class="nav-label">MDR</span>
-                            <span class="fa arrow"></span>
-                        </a>
-                        <ul class="nav nav-second-level">
-                            @if(check_access('MDR Group','read'))
-                            <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
-                            @endif  
-                            @if(check_access('Department KPI','read'))
-                            <li class=""><a href="{{ url('department_kpis') }}">Department KPI's</a></li>
-                            @endif  
-                        </ul>
-                    </li>
+                        <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-file"></i>
+                                <span class="nav-label">MDR</span>
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                @if(check_access('MDR Group','read'))
+                                <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
+                                @endif  
+                                @if(check_access('Department KPI','read'))
+                                <li class=""><a href="{{ url('department_kpis') }}">Department KPI's</a></li>
+                                @endif  
+                            </ul>
+                        </li>
                     @endif
+
+                    
+                    @if(auth()->user()->role == "Administrator")
+                        <li class="{{ Route::currentRouteName() == "forApproval" ? 'active' : '' }}">
+                            <a href="{{ url('for_approval') }}">
+                                <i class="fa fa-pencil-square-o"></i>
+                                <span class="nav-label">For Approval MDR</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-file"></i>
+                                <span class="nav-label">MDR</span> 
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <li class=""><a href="{{ url('mdr_group') }}">MDR Group</a></li>
+                                <li class=""><a href="{{ url('department_kpis') }}">Department KPI's</a></li>
+                            </ul>
+                        </li>
+                        <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
+                            <a href="#">
+                                <i class="fa fa-cog"></i>
+                                <span class="nav-label">Settings</span> 
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                <li class=""><a href="{{ url('companies') }}">Companies</a></li>
+                                <li class=""><a href="{{ url('departments') }}">Departments</a></li>
+                                <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
+                                <li class=""><a href="{{ url('department-approvers') }}">Department Approvers</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li class="{{ Route::currentRouteName() == 'upload' ? 'active' : '' }}">
+                            <a href="{{url('upload')}}">
+                                <i class="fa fa-upload"></i>
+                                <span class="nav-label">Upload</span> 
+                            </a>
+                        </li> --}}
+
+                    @endif
+                    <li class="{{ Route::currentRouteName() == "for_acceptance" ? 'active' : '' }}">
+                        <a href="{{ url('for_acceptance') }}">
+                            <i class="fa fa-pencil-square"></i>
+                            <span class="nav-label">For Acceptance</span>
+                        </a>
+                    </li>
+                    <li class="{{ Route::currentRouteName() == "timeliness_approval" ? 'active' : '' }}">
+                        <a href="{{ url('timeliness_approval') }}">
+                            <i class="fa fa-clock-o"></i>
+                            <span class="nav-label">Timeliness Approval</span>
+                        </a>
+                    </li>
+
                     @if(check_access('Companies','read') || check_access('Departments','read') || check_access('User Accounts','read') || check_access('Department Approvers','read'))
                     <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
                         <a href="#">
