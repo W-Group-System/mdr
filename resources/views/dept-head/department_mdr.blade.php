@@ -73,6 +73,8 @@
                                             <span class="label label-warning">
                                             @elseif($mdr->status == 'Approved')
                                             <span class="label label-primary">
+                                            @elseif($mdr->status == 'Returned')
+                                            <span class="label label-danger">
                                             @endif
                                             {{ $mdr->status }}
                                             </span>

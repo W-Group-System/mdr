@@ -13,9 +13,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentController extends Controller
 {
     public function index() {
-        $departmentList = Department::with('approver')
-            ->select('id', 'code', 'name', 'user_id', 'target_date', 'status')
-            ->get();
+        $departmentList = Department::get();
 
         $user =  User::where('status', "Active")->get();
 

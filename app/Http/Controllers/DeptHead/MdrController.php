@@ -171,9 +171,7 @@ class MdrController extends Controller
     }
 
     public function submitMdr(Request $request) {
-        // dd($request->all());
         $mdrs = Mdr::with('departmentalGoals')->where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->first();
-
         $departmental_goals = DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->first();
         
         if (empty($departmental_goals))
@@ -184,11 +182,23 @@ class MdrController extends Controller
 
         if ($mdrs)
         {
-            // $mdrs = new Mdr;
-            // $mdrs->status = 'Pending';
-            // $mdr->year = date('Y', strtotime($request->year));
-            // $mdr->month = date('m', strtotime($request->month));
-            // $mdrs->save();
+            $mdrs->status = 'Pending';
+            $mdrs->timeliness_approval = 'Yes';
+            $mdrs->save();
+
+            $mdr_approvers = MdrApprovers::where('mdr_id', $mdrs->id)->orderBy('level', 'asc')->get();
+            foreach($mdr_approvers as $key=>$mdr_approver)
+            {
+                if ($key == 0)
+                {
+                    $mdr_approver->status = 'Pending';
+                }
+                else
+                {
+                    $mdr_approver->status = 'Waiting';
+                }
+                $mdr_approver->save();
+            }
         }
         else
         {
@@ -204,44 +214,27 @@ class MdrController extends Controller
 
             $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->where('status','Active')->get();
             foreach($department_approvers as $key=>$department_approver)
+            {
+                $dept_approver = new MdrApprovers;
+                $dept_approver->mdr_id = $mdrs->id;
+                $dept_approver->user_id = $department_approver->user_id;
+                $dept_approver->level = $key+1;
+                if ($key == 0)
                 {
-                    $dept_approver = new MdrApprovers;
-                    $dept_approver->mdr_id = $mdrs->id;
-                    $dept_approver->user_id = $department_approver->user_id;
-                    $dept_approver->level = $key+1;
-                    if ($key == 0)
-                    {
-                        $dept_approver->status = 'Pending';
-                    }
-                    else
-                    {
-                        $dept_approver->status = 'Waiting';
-                    }
-                    $dept_approver->save();
-                $hasInnovation = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)
-                    ->exists();
-
-                if ($hasInnovation) {
-                    $mdrs->innovation_scores = 0.5;
-                    $mdrs->save();
+                    $dept_approver->status = 'Pending';
                 }
-                // $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->get();
-                // foreach($department_approvers as $key=>$department_approver)
-                // {
-                //     $dept_approver = new MdrApprovers;
-                //     $dept_approver->mdr_id = $mdrs->id;
-                //     $dept_approver->user_id = $department_approver->user_id;
-                //     $dept_approver->level = $key+1;
-                //     if ($key == 0)
-                //     {
-                //         $dept_approver->status = 'Pending';
-                //     }
-                //     else
-                //     {
-                //         $dept_approver->status = 'Waiting';
-                //     }
-                //     $dept_approver->save();
-                // }
+                else
+                {
+                    $dept_approver->status = 'Waiting';
+                }
+                $dept_approver->save();
+            }
+
+            $hasInnovation = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->exists();
+
+            if ($hasInnovation) {
+                $mdrs->innovation_scores = 0.5;
+                $mdrs->save();
             }
 
             // $userData = User::where('department_id', auth()->user()->department_id)
@@ -249,9 +242,9 @@ class MdrController extends Controller
             //     ->first();
 
             // $userData->notify(new NotifyDeptHead($userData->name, $request->yearAndMonth));
-
-            Alert::success('Successfully Submitted')->persistent('Dismiss');
-            return redirect('mdr');
         }
+
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
+        return redirect('mdr');
     }
 }

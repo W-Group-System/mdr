@@ -282,32 +282,32 @@ class ListOfMdr extends Controller
                 $rate = $mdrSummary->rate;
 
                 foreach($user as $u) {
-                    $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
+                    // $u->notify(new HRNotification($u->name, $yearAndMonth, $department, $rate));
                 }
             }
 
             if (auth()->user()->role == "Department Head")
             {
                 $approvers = User::where('id', $nextMdrApprovers->user_id)->first();
-                $approvers->notify(new EmailNotificationForApprovers($approvers, $mdrSummary->departments, $mdrSummary->yearAndMonth));
+                // $approvers->notify(new EmailNotificationForApprovers($approvers, $mdrSummary->departments, $mdrSummary->yearAndMonth));
             }
 
             if (auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
             {
                 $user = User::where('department_id', $mdrSummary->department_id)->where('role', 'Department Head')->first();
                 $yearAndMonth = $mdrSummary->yearAndMonth;
-                $user->notify(new ApprovedNotification($user->name, auth()->user()->name, $yearAndMonth));
+                // $user->notify(new ApprovedNotification($user->name, auth()->user()->name, $yearAndMonth));
 
-                if ($nextMdrApprovers) {
-                    $approvers = User::where('id', $nextMdrApprovers->user_id)->first();
-                    if ($approvers) {
-                        $approvers->notify(new EmailNotificationForApprovers(
-                            $approvers,
-                            $mdrSummary->departments,
-                            $mdrSummary->yearAndMonth
-                        ));
-                    }
-                }
+                // if ($nextMdrApprovers) {
+                //     $approvers = User::where('id', $nextMdrApprovers->user_id)->first();
+                //     if ($approvers) {
+                //         $approvers->notify(new EmailNotificationForApprovers(
+                //             $approvers,
+                //             $mdrSummary->departments,
+                //             $mdrSummary->yearAndMonth
+                //         ));
+                //     }
+                // }
 
                 // $approvers = User::where('id', $nextMdrApprovers->user_id)->first();
                 // $approver = $approvers->name;
@@ -372,7 +372,7 @@ class ListOfMdr extends Controller
                 $approvers = User::where('id', $mdr_approvers->user_id)->first();
                 $approver = $approvers->name;
                 $yearAndMonth = $mdrSummary->yearAndMonth;
-                $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
+                // $user->notify(new ReturnNotification($user->name, $yearAndMonth, $approver));
             }
 
             Alert::success('Succesfully Returned')->persistent('Dismiss');
