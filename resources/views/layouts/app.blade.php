@@ -148,11 +148,11 @@
                         </a>
                     </li>
                     @endif
-                    @if(check_access('Monthly MDR Data', 'read'))
+                    @if(check_access('Monthly MDR Reports', 'read'))
                     <li class="{{ Route::currentRouteName() == "historyMdr" ? 'active' : '' }}">
-                        <a href="{{ url('history_mdr') }}">
+                        <a href="{{ url('mdr_reports') }}">
                             <i class="fa fa-calendar"></i>
-                            <span class="nav-label">Monthly MDR Data</span>
+                            <span class="nav-label">Monthly MDR Reports</span>
                         </a>
                     </li>
                     @endif

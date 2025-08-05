@@ -32,58 +32,15 @@ function getOrdinal($number) {
     }
 }
 
-function processImprovementComputations($action, $department, $yearAndMonth)
-{
-    $mdr_score = MdrScore::where('department_id', $department)->where('yearAndMonth', $yearAndMonth)->first();
-    
-    $processImprovementCount = ProcessDevelopment::where('yearAndMonth', $yearAndMonth)
-        ->where('department_id', auth()->user()->department_id)
-        ->count();
-    
-    if ($action == "add")
-    {
-        if ($processImprovementCount == 1)
-        {
-            $mdr_score->pd_scores = 0.5;
-            $mdr_score->total_rating = 0.5;
-        }
-        else
-        {
-            $mdr_score->pd_scores = 1.0;
-            $mdr_score->total_rating = 1.0;
-        }
-
-        $mdr_score->save();
-    }
-
-    if($action == "delete")
-    {
-        if ($processImprovementCount == 1)
-        {
-            $mdr_score->pd_scores = 0.5;
-            $mdr_score->total_rating = 0.5;
-        }
-        else
-        {
-            $mdr_score->pd_scores = 0.0;
-            $mdr_score->total_rating = 0.0;
-        }
-
-        $mdr_score->save();
-    }
-}
-
 function computeKpi($grades,$id)
 {
     $grade = collect($grades);
-    $rating = 3.00;
     $value = round($grade->sum(), 2);
-    $score = round($grade->sum(), 2);
+    // $score = round($grade->sum(), 2);
     
     $mdr = Mdr::findOrFail($id);
     $mdr->grade = $value;
-    $mdr->rating = $rating;
-    $mdr->score = $score;
+    // $mdr->score = $score;
     $mdr->save();
 }
 

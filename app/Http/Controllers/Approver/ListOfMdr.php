@@ -218,41 +218,13 @@ class ListOfMdr extends Controller
     public function submitScores(Request $request, $id) {
         // dd($request->all());
         $mdrScore = Mdr::findOrFail($id);
-        // $mdrScore->pd_scores = $request->process_improvement_scores;
         $mdrScore->innovation_scores = $request->innovation_scores;
-        // $mdrScore->timeliness = $request->timeliness;
-        // $mdrScore->remarks = $request->remarks;
-
         $total_rating = $mdrScore->grade + $mdrScore->innovation_scores + $mdrScore->timeliness;
-
         $mdrScore->score = $total_rating;
         $mdrScore->save();
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
-    }
-
-    public function addPdRemarks(Request $request, $id) {
-        $process_improvement = ProcessDevelopment::findOrFail($id);
-        $process_improvement->remarks = $request->remarks;
-        $process_improvement->save();
-
-        Alert::success('Successfully Saved')->persistent('Dismiss');
-        return back();
-
-        // $piData = ProcessDevelopment::findMany($request->pi_id);
-        
-        // if ($piData->isNotEmpty()) {
-        //     foreach($piData as $key=>$pi) {
-        //         $pi->remarks = $request->remarks[$key];
-        //         $pi->save();
-        //     }
-
-        //     Alert::success('SUCCESS', 'Successfully Updated.');
-        // }
-        // else {
-        //     Alert::error('ERROR', 'The process improvement is empty.');
-        // }
     }
 
     public function acceptMdr(Request $request, $id) {
@@ -287,6 +259,8 @@ class ListOfMdr extends Controller
             {
                 $mdrSummary->timeliness = 0.50;
             }
+            $total_scores = floatval($mdrSummary->grade) + floatval($mdrSummary->timeliness) + floatval($mdrSummary->innovation_scores);
+            $mdrSummary->score = $total_scores;
             $mdrSummary->save();
         } 
         elseif($request->action === "AcceptLateApprove") 

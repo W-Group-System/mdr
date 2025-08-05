@@ -38,8 +38,7 @@
                                     {{-- <th>Process Improvement</th> --}}
                                     <th>Innovation</th>
                                     <th>Timeliness</th>
-                                    <th>Rating</th>
-                                    <th>Remarks</th>
+                                    <th>Total Scores</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -63,11 +62,9 @@
                                         </td>
                                         <td>{{ date("F Y", strtotime($mdr->year.'-'.$mdr->month))}}</td>
                                         <td>{{ number_format($mdr->score,2) }}</td>
-                                        {{-- <td>@if($mdr->pd_scores){{ $mdr->pd_scores }}@else 0.00 @endif</td> --}}
                                         <td>{{ number_format($mdr->innovation_scores,2) }}</td>
                                         <td>{{ number_format($mdr->timeliness,2) }}</td>
-                                        <td>{{ number_format($mdr->total_rating,2) }}</td>
-                                        <td>{{ number_format($mdr->remarks) }}</td>
+                                        <td>{{ number_format($mdr->score,2) }}</td>
                                         <td>
                                             @if($mdr->status == 'Pending')
                                             <span class="label label-warning">

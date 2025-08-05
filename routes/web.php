@@ -124,7 +124,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('pending_mdr', 'Approver\PendingMdrController@index')->name('pendingMdr');
 
         # History of MDR
-        Route::get('/history_mdr', 'Approver\HistoryMdrController@index')->name('historyMdr');
+        Route::get('/mdr_reports', 'MdrReportController@index')->name('historyMdr');
 
         # List of Penalties
         Route::get('/list_of_penalties', 'Approver\ListOfPenaltiesController@index')->name('listOfPenalties');
