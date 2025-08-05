@@ -10,25 +10,17 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>For Approval</h5>
+                    <h5>For Acceptance</h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins">{{count($mdrs->where('is_accepted', null))}}</h1>
-                    <small>Total For Approval</small>
+                    <small>Total For Acceptance</small>
                 </div>
             </div>
         </div>
-        {{-- <div class="col-lg-3">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Approved</h5>
-                </div>
-                <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Approved'))}}</h1>
-                    <small>Total Approved</small>
-                </div>
-            </div>
-        </div> --}}
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
@@ -45,29 +37,20 @@
                         </thead>
                         <tbody>
                             @foreach ($mdrs->where('is_accepted', null) as $key => $mdr)
-                            @php
-                                $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
-                            @endphp
-                                {{-- @php
-                                    $mdr = $approver->mdrRelationship;
-                                @endphp --}}
+                                @php
+                                    $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
+                                @endphp
                                 <tr>
                                     <td>
-                                        {{-- <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#viewStatus{{$mdr->id}}">
-                                            <i class="fa fa-eye"></i>
-                                        </button> --}}
                                         <a href="{{url('list_of_mdr/'.$mdr->id)}}" class="btn btn-warning btn-sm" onclick="show()">
                                             <i class="fa fa-pencil-square-o"></i>                                            
                                         </a>
                                     </td>
                                     <td>{{ $mdr->departments->name }}</td>
-                                    {{-- <td>{{ optional($mdr->user)->name }}</td> --}}
                                     <td>{{ DateTime::createFromFormat('!m', $mdr->month)->format('F') }} {{ $mdr->year }}</td>
                                     <td>{{ $fullTargetDate->format('F d, Y') }}</td>
                                     <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
                                 </tr>
-
-                                {{-- @include('approver.view_mdr_status') --}}
                             @endforeach
                         </tbody>
                     </table>

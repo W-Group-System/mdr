@@ -14,7 +14,7 @@
                         </div>
                         <div class="col-md-12">
                             Email :
-                            <input type="email" name="email" class="form-control input-sm" value="{{$userData->email}}" readonly required>
+                            <input type="email" name="email" class="form-control input-sm" value="{{$userData->email}}" required>
                         </div>
                         <div class="col-md-12">
                             Company :

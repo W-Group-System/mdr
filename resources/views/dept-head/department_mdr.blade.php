@@ -51,7 +51,7 @@
                                                 <i class="fa fa-user"></i>
                                             </button>
 
-                                            @if(count($mdr->mdrApprover) > 0)
+                                            @if($mdr->status == "Returned")
                                             <form action="{{ url('edit_mdr') }}" method="get" style="display: inline-block;" onsubmit="show()">
                                                 <input type="hidden" name="yearAndMonth" value="{{ $mdr->year.'-'.$mdr->month }}">
 

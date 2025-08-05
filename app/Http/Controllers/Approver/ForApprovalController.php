@@ -15,11 +15,11 @@ class ForApprovalController extends Controller
 {
     public function index() {
 
-        $mdrApprovers = MdrApprovers::with('mdrSummary')->where('user_id', auth()->user()->id)->get();
+        $mdrApprovers = MdrApprovers::with('mdrRelationship')->where('user_id', auth()->user()->id)->get();
 
         if (auth()->user()->role == "Administrator")
         {
-            $mdrApprovers = MdrApprovers::orderBy('id', 'desc')->get();
+            $mdrApprovers = MdrApprovers::with('mdrRelationship')->orderBy('id', 'desc')->get();
         }
 
         return view('approver.for-approval-mdr', 

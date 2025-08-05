@@ -25,7 +25,7 @@
                         @endforeach
                     </div>
 
-                    @if($dptGoals->mdr->status == "Returned")
+                    @if($dptGoals->mdr->status == "Returned" || auth()->user()->role == "Approver")
                     <div class="media-body">
                         <textarea class="form-control" name="comment" placeholder="Write comment..."></textarea>
                     </div>

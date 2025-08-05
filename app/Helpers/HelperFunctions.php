@@ -1,6 +1,7 @@
 <?php
 
 use App\DeptHead\Innovation;
+use App\DeptHead\Mdr;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
@@ -72,70 +73,31 @@ function processImprovementComputations($action, $department, $yearAndMonth)
     }
 }
 
-function computeKpi($grades, $date, $yearAndMonth, $department)
+function computeKpi($grades,$id)
 {
     $grade = collect($grades);
-    
-    // $kpiValue = $grade->map(function($item, $key) {
-
-    //     if ($item > 100) {
-    //         $item = 100;
-    //     }
-
-    //     $value = $item / 100.00;
-
-    //     return $value;
-    // });
-    
-    // $kpiScore = $grade->map(function($item, $key) {
-    //     if ($item > 100) {
-    //         $item = 100;
-    //     }
-
-    //     $grades =  $item / 100.00 * 0.5;
-        
-    //     return $grades;
-    // });
-    
-    // $value = number_format($kpiValue->sum(), 2);
-    // $score = number_format($kpiScore->sum(), 2);
     $rating = 3.00;
     $value = round($grade->sum(), 2);
     $score = round($grade->sum(), 2);
     
-    $deadline = date('Y-m', strtotime("+1 month", strtotime($yearAndMonth))).'-'.$date;
-    // $timeliness = 0;
-    // if ($deadline < date('Y-m-d'))
-    // {
-    //     $timeliness = 0.0;
-    // }
-    // else 
-    // {
-    //     $timeliness = 0.5;
-    // }
-    
-    $mdrScores = MdrScore::where('department_id', $department)->where('yearAndMonth', $yearAndMonth)->first();
-    $mdrScores->grade = $value;
-    $mdrScores->rating = $rating;
-    $mdrScores->score = $score;
-    
-    $total_rating = $mdrScores->score + $mdrScores->pd_scores + $mdrScores->timeliness;
-    
-    $mdrScores->total_rating = $total_rating;
-    $mdrScores->save();
-    
+    $mdr = Mdr::findOrFail($id);
+    $mdr->grade = $value;
+    $mdr->rating = $rating;
+    $mdr->score = $score;
+    $mdr->save();
 }
 
 function for_approval_count()
 {
-    $mdrApprovers = MdrApprovers::with('mdrSummary')->where('user_id', auth()->user()->id)->where('status', 'Pending')->get();
+    // $mdrApprovers = MdrApprovers::with('mdrSummary')->where('user_id', auth()->user()->id)->where('status', 'Pending')->get();
 
-    if (auth()->user()->role == "Administrator")
-    {
-        $mdrApprovers = MdrApprovers::orderBy('id', 'desc')->get();
-    }
+    // if (auth()->user()->role == "Administrator")
+    // {
+    //     $mdrApprovers = MdrApprovers::orderBy('id', 'desc')->get();
+    // }
 
-    return $mdrApprovers;
+    // return $mdrApprovers;
+    return [];
 }
 
 function department_deadline()
@@ -166,29 +128,30 @@ function check_access($module_name,$action)
 }
 
 function getAdjustedTargetDate($month, $year, $targetDay)
-    {
-        $mdrDate = DateTime::createFromFormat('!m Y', $month . ' ' . $year);
+{
+    $mdrDate = DateTime::createFromFormat('!m Y', $month . ' ' . $year);
 
-        $nextMonth = $mdrDate->modify('+1 month');
+    $nextMonth = $mdrDate->modify('+1 month');
 
-        $targetDay = str_pad($targetDay, 2, '0', STR_PAD_LEFT);
-        $fullTargetDate = DateTime::createFromFormat('Y-m-d', $nextMonth->format("Y-m") . '-' . $targetDay);
+    $targetDay = str_pad($targetDay, 2, '0', STR_PAD_LEFT);
+    $fullTargetDate = DateTime::createFromFormat('Y-m-d', $nextMonth->format("Y-m") . '-' . $targetDay);
 
-        $dayOfWeek = $fullTargetDate->format('w');
-        if ($dayOfWeek == 6) {
-            $fullTargetDate->modify('+2 days'); 
-        } elseif ($dayOfWeek == 0) {
-            $fullTargetDate->modify('+1 day');
-        }
-
-        return $fullTargetDate;
+    $dayOfWeek = $fullTargetDate->format('w');
+    if ($dayOfWeek == 6) {
+        $fullTargetDate->modify('+2 days'); 
+    } elseif ($dayOfWeek == 0) {
+        $fullTargetDate->modify('+1 day');
     }
+
+    return $fullTargetDate;
+}
+
 function generateSafeDeadline(string $yearAndMonth, int $targetDay): string
-    {
-        $baseDate = Carbon::createFromFormat('Y-m', $yearAndMonth)->startOfMonth();
-        $nextMonth = $baseDate->copy()->addMonth();
-        $lastDay = $nextMonth->copy()->endOfMonth()->day;
-        $safeDay = min($targetDay, $lastDay);
-        return Carbon::createFromDate($nextMonth->year, $nextMonth->month, $safeDay)->toDateString();
-    }
+{
+    $baseDate = Carbon::createFromFormat('Y-m', $yearAndMonth)->startOfMonth();
+    $nextMonth = $baseDate->copy()->addMonth();
+    $lastDay = $nextMonth->copy()->endOfMonth()->day;
+    $safeDay = min($targetDay, $lastDay);
+    return Carbon::createFromDate($nextMonth->year, $nextMonth->month, $safeDay)->toDateString();
+}
 

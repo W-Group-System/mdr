@@ -9,6 +9,7 @@
                 <input type="hidden" name="yearAndMonth" value="{{$mdrSummary->yearAndMonth}}">
                 <input type="hidden" name="target_date" value="{{$mdrSummary->departments->target_date}}">
                 <input type="hidden" name="department" value="{{$mdrSummary->department_id}}">
+                <input type="hidden" name="mdr_id" value="{{$mdrSummary->id}}">
 
                 <div class="modal-body">
                     <div class="row">
