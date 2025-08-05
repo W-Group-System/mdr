@@ -99,18 +99,23 @@
                         </li>
                     @endif
 
+                    @if(check_access('For Acceptance','read'))
                     <li class="{{ Route::currentRouteName() == "forAcceptance" ? 'active' : '' }}">
                         <a href="{{ url('for_acceptance') }}">
                             <i class="fa fa-pencil-square"></i>
                             <span class="nav-label">For Acceptance</span>
                         </a>
                     </li>
+                    @endif
+
+                    @if(check_access('Timeliness Approval','read'))
                     <li class="{{ Route::currentRouteName() == "timelinessApproval" ? 'active' : '' }}">
                         <a href="{{ url('timeliness_approval') }}">
                             <i class="fa fa-clock-o"></i>
                             <span class="nav-label">Timeliness Approval</span>
                         </a>
                     </li>
+                    @endif
 
                     @if(check_access('Companies','read') || check_access('Departments','read') || check_access('User Accounts','read') || check_access('Department Approvers','read'))
                     <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
