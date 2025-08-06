@@ -20,7 +20,7 @@ class MdrReportController extends Controller
         $wli_reports_array = [];
         foreach($departments->where('company_id',3) as $department)
         {
-            $mdr = Mdr::where('department_id', $department->id)->get();
+            $mdr = Mdr::where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime($request->year_month)))->orderBy('score','asc')->first();
             $object = new stdClass;
             $object->department = $department->name;
             $object->head = isset($department->user->name) ? $department->user->name : null;
@@ -28,11 +28,22 @@ class MdrReportController extends Controller
             $wli_reports_array[] = $object;
         }
 
+        $whi_reports_array = [];
+        foreach($departments->where('company_id',2) as $department)
+        {
+            $mdr = Mdr::where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime($request->year_month)))->orderBy('score','asc')->first();
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr = $mdr;
+            $whi_reports_array[] = $object;
+        }
         // dd($wli_reports_array);
         return view('approver.history-mdr',
             array(
-                // 'departmental_goals' => $departmental_goals,
-                // 'innovation' => $innovation,
+                'wli_reports_array' => $wli_reports_array,
+                'whi_reports_array' => $whi_reports_array,
+                'year_month' => $request->year_month
                 // 'process_improvement' => $process_improvement,
                 // 'departments' => $departments,
                 // 'year_and_month' => $request->yearAndMonth,
