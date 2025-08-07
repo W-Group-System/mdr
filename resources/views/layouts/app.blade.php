@@ -160,7 +160,7 @@
                     <li class="{{ Route::currentRouteName() == "mdr" ? 'active' : '' }}">
                         <a href="{{ url('mdr') }}">
                             <i class="fa fa-file"></i>
-                            <span class="nav-label">MDR</span>
+                            <span class="nav-label">Department MDR</span>
                         </a>
                     </li>
                     @endif
