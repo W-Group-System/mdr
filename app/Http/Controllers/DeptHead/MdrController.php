@@ -91,7 +91,7 @@ class MdrController extends Controller
         {
             $mdrs->status = 'Pending';
             // $mdrs->timeliness_approval = 'Yes';
-            $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->get();
+            $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
             if (count($innovations) > 0) {
                 $mdrs->innovation_scores = 0.5;
             }
