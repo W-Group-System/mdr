@@ -16,14 +16,12 @@
             <div class="ibox float-e-margins">
                 <h1 class="text-center">{{auth()->user()->department->name}}</h1>
 
-                @if(auth()->user()->role == "Users" || auth()->user()->role == "Department Head")
                 <div class="ibox-title">
                     <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         New MDR
                     </button>
                 </div>
-                @endif
 
                 <div class="ibox-content">
                     
