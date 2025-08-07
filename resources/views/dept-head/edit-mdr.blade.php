@@ -199,20 +199,18 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
-                    @if(auth()->user()->role == "Users" || auth()->user()->role == "Department Head")
-                        <div class="row">
-                            <div class="col-md-12">
-                                <form action="{{url('submitMdr')}}" method="POST" onsubmit="show()">
-                                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="{{url('submitMdr')}}" method="POST" onsubmit="show()">
+                                @csrf
 
-                                    <input type="hidden" name="year_and_month" value="{{$yearAndMonth}}">
-                                    <button type="button" class="btn btn-block btn-primary approveBtn" >
-                                        Submit MDR
-                                    </button>
-                                </form>
-                            </div>
+                                <input type="hidden" name="year_and_month" value="{{$yearAndMonth}}">
+                                <button type="button" class="btn btn-block btn-primary approveBtn" >
+                                    Submit MDR
+                                </button>
+                            </form>
                         </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>

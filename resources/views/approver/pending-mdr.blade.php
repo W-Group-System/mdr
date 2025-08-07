@@ -9,10 +9,13 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    Pending
+                    <h5>Pending</h5>
+                    <div class="pull-right">
+                        <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrSummary->where('status', 'Pending'))}}</h1>
+                    <h1 class="no-margins">{{count($mdrs->where('status', 'Pending'))}}</h1>
                     <small>Total Pending</small>
                 </div>
             </div>
@@ -20,10 +23,13 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    Approved
+                    <h5>Approved</h5>
+                    <div class="pull-right">
+                        <span class="label label-primary">as of {{ date('Y-m-d') }}</span>
+                    </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrSummary->where('status', 'Approved'))}}</h1>
+                    <h1 class="no-margins">{{count($mdrs->where('status', 'Approved'))}}</h1>
                     <small>Total Approved</small>
                 </div>
             </div>
@@ -44,19 +50,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrSummary as $data)
+                            @foreach ($mdrs as $data)
                                 <tr>
-                                    <td width="10">
+                                    {{-- <td width="10">
                                         <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#mdrStatusModal{{ $data->id }}">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                    </td>
-                                    <td>{{ optional($data->departments)->name }}</td>
-                                    <td>{{ optional($data->users)->name }}</td>
-                                    <td>{{ date('F Y', strtotime($data->yearAndMonth)) }}</td>
-                                    <td>{{ date('F d, Y', strtotime($data->submission_date)) }}</td>
-                                    <td>{{ date('F d, Y', strtotime($data->deadline)) }}</td>
-                                    <td>
+                                    </td> --}}
+                                    {{-- <td>{{ optional($data->departments)->name }}</td> --}}
+                                    {{-- <td>{{ optional($data->users)->name }}</td> --}}
+                                    {{-- <td>{{ date('F Y', strtotime($data->yearAndMonth)) }}</td> --}}
+                                    {{-- <td>{{ date('F d, Y', strtotime($data->submission_date)) }}</td> --}}
+                                    {{-- <td>{{ date('F d, Y', strtotime($data->deadline)) }}</td> --}}
+                                    {{-- <td>
                                         @if($data->status == "Pending")
                                         <span class="label label-warning">
                                         @elseif($data->status == "Approved")
@@ -66,11 +72,11 @@
                                         {{$data->status}}
                                         </span>
                                         
-                                    </td>
+                                    </td> --}}
                                     
                                 </tr>
 
-                                @include('approver.pending_mdr_status')
+                                {{-- @include('approver.pending_mdr_status') --}}
                             @endforeach
                         </tbody>
                     </table>

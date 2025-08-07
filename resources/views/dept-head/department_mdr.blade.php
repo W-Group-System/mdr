@@ -48,7 +48,6 @@
                                                 <i class="fa fa-user"></i>
                                             </button>
 
-                                            @if($mdr->status == "Returned")
                                             <form action="{{ url('edit_mdr') }}" method="get" style="display: inline-block;" onsubmit="show()">
                                                 <input type="hidden" name="yearAndMonth" value="{{ $mdr->year.'-'.$mdr->month }}">
 
@@ -56,7 +55,6 @@
                                                     <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                             </form>
-                                            @endif
                                         </td>
                                         <td>{{ date("F Y", strtotime($mdr->year.'-'.$mdr->month))}}</td>
                                         <td>{{ number_format($mdr->score,2) }}</td>
