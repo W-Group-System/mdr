@@ -80,7 +80,8 @@
                                     <th>KPI</th>
                                     <th>Target</th>
                                     <th>Actual</th>
-                                    <th>Grade</th>
+                                    <th>Weight</th>
+                                    <th>Score</th>
                                     <th>Remarks</th>
                                     <th>Attachments</th>
                                 </tr>
@@ -98,6 +99,9 @@
                                     </td>
                                     <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
                                     <td>{{ $dptGoals->actual }}</td>
+                                    <td>
+                                        {{$dptGoals->weight}}
+                                    </td>
                                     <td>
                                         {{$dptGoals->grade}}
                                     </td>

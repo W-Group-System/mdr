@@ -41,7 +41,8 @@
                                     <th>Key Performance Indicator</th>
                                     <th>Target</th>
                                     <th>Actual</th>
-                                    <th>Grade</th>
+                                    <th>Weight</th>
+                                    <th>Score</th>
                                     <th>Remarks</th>
                                     <th>Attachments</th>
                                 </tr>
@@ -54,6 +55,7 @@
                                         </td>
                                         <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
                                         <td>{{$dptGoals->actual}}</td>
+                                        <td>{{ $dptGoals->weight }}</td>
                                         <td>{{$dptGoals->grade}}</td>
                                         <td>{!! nl2br($dptGoals->remarks) !!}</td>
                                         <td>
@@ -79,10 +81,12 @@
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
+                    @if($mdr->status == "Returned")
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         Add Innovation
                     </button>
+                    @endif
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -99,6 +103,7 @@
                                 @foreach ($innovations as $innovation)
                                     <tr>
                                         <td>
+                                            @if($mdr->status == "Returned")
                                             <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $innovation->id }}">
                                                 <i class="fa fa-pencil-square-o"></i>
                                             </button>
@@ -110,6 +115,7 @@
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                         </td>   
                                         <td>{{ $innovation->project_charter }}</td>
                                         <td>{{ $innovation->project_benefit }}</td>
