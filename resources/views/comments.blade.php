@@ -25,11 +25,9 @@
                         @endforeach
                     </div>
 
-                    @if($dptGoals->mdr->status == "Returned" || auth()->user()->role == "Approver")
                     <div class="media-body">
                         <textarea class="form-control" name="comment" placeholder="Write comment..."></textarea>
                     </div>
-                    @endif
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
