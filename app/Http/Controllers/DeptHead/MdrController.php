@@ -66,12 +66,14 @@ class MdrController extends Controller
         // dd($request->all());
         $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $mdr = Mdr::findOrFail($request->mdr_id);
 
         return view('dept-head.edit-mdr',
             array(
                 'departmentalGoals' => $departmentalGoals,
                 'yearAndMonth' => $request->yearAndMonth,
-                'innovations' => $innovations
+                'innovations' => $innovations,
+                'mdr' => $mdr
             )
         );
     }

@@ -195,7 +195,7 @@
                 </div>
             </div>
         </div> --}}
-
+        @if($mdr->status == "Returned")
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
@@ -214,6 +214,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </div>
 
