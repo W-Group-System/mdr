@@ -27,10 +27,12 @@
                     Departmental Goals
                 </div>
                 <div class="ibox-content">
+                    @if($mdr->status == "Returned")
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
                         <i class="fa fa-pencil"></i>
                         Edit KPI
                     </button>
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
