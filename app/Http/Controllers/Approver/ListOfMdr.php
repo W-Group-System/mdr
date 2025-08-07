@@ -37,8 +37,8 @@ class ListOfMdr extends Controller
 {
     public function index($id) 
     {
-        $mdrSummary = Mdr::with('departments')->findOrFail($id);
-
+        $mdrSummary = Mdr::with('departments','innovation','departmentalGoals')->findOrFail($id);
+        
         return view('approver.list-of-mdr', 
             array(
                 'mdrSummary' => $mdrSummary
