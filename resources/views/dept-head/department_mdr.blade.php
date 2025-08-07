@@ -45,7 +45,7 @@
                                     <tr>
                                         <td>
                                             <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$mdr->id}}">
-                                                <i class="fa fa-user"></i>
+                                                <i class="fa fa-history"></i>
                                             </button>
 
                                             <form action="{{ url('edit_mdr') }}" method="get" style="display: inline-block;" onsubmit="show()">

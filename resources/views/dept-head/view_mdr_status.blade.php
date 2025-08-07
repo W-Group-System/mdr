@@ -2,46 +2,44 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">MDR Status</h5>
+                <h5 class="modal-title">View Histories</h5>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                MDR Status
+                                Acceptance History Logs
                             </div>
                             <div class="panel-body">
                                 <div class='row text-center'>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        <strong>Approver</strong>
+                                        <strong>User</strong>
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        <strong>Status</strong>
-                                    </div>
-                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        <strong>Action Date</strong>
+                                        <strong>Action</strong>
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         <strong>Remarks</strong>
                                     </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        <strong>Date</strong>
+                                    </div>
                                 </div>
 
-                                @foreach ($mdr->mdrApprover as $approver)
+                                @foreach ($mdr->mdrHistoryLogs as $historyLogs)
                                 <div class="row text-center">
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        {{$approver->users->name}}
+                                        {{$historyLogs->user->name}}
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        {{$approver->status}}
+                                        {{$historyLogs->action}}
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        @if($approver->status == "Approved" || $approver->status == "Returned")
-                                            {{date('Y-m-d', strtotime($approver->updated_at))}}
-                                        @endif
+                                        {{ $historyLogs->remarks }}
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                        {{$approver->remarks}}
+                                        {{date('M d Y', strtotime($historyLogs->created_at))}}
                                     </div>
                                 </div>
                                 @endforeach

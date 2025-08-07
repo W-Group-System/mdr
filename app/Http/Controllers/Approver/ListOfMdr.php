@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Approver;
 
+use App\AcceptanceHistory;
 use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use App\Admin\MdrGroup;
@@ -228,7 +229,6 @@ class ListOfMdr extends Controller
     }
 
     public function acceptMdr(Request $request, $id) {
-        // dd($request->all());
         $mdrSummary = Mdr::findOrFail($id);
         if($request->action === "Accept") 
         {
@@ -263,6 +263,13 @@ class ListOfMdr extends Controller
             $mdrSummary->score = $total_scores;
             $mdrSummary->save();
 
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = $request->action;
+            $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrSummary->id;
+            $history_logs->save();
+
             Alert::success('Successfully Approved')->persistent('Dismiss');
         } 
         elseif($request->action === "AcceptLateApprove") 
@@ -292,6 +299,13 @@ class ListOfMdr extends Controller
             $mdrSummary->is_accepted = "Returned";
             $mdrSummary->status = "Returned";
             $mdrSummary->save();
+
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = $request->action;
+            $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrSummary->id;
+            $history_logs->save();
 
             Alert::success('Successfully Returned')->persistent('Dismiss');
         } 

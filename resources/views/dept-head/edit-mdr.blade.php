@@ -28,7 +28,8 @@
                 </div>
                 <div class="ibox-content">
                     @if($mdr->status == "Returned")
-                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
+                        style="margin-top: 3px;">
                         <i class="fa fa-pencil"></i>
                         Edit KPI
                     </button>
@@ -49,27 +50,30 @@
                             </thead>
                             <tbody>
                                 @foreach ($departmentalGoals as $dptGoals)
-                                    <tr>
-                                        <td>{!! nl2br($dptGoals->departmentKpi->name) !!}
-                                            <p class="m-t-md"><a href="javascript:void(0)" data-toggle="modal" data-target="#comments{{ $dptGoals->id }}"><i class="fa fa-comments"></i> {{ count($dptGoals->comments) }} Comments</a></p>
-                                        </td>
-                                        <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
-                                        <td>{{$dptGoals->actual}}</td>
-                                        <td>{{ $dptGoals->weight }}</td>
-                                        <td>{{$dptGoals->grade}}</td>
-                                        <td>{!! nl2br($dptGoals->remarks) !!}</td>
-                                        <td>
-                                            @foreach ($dptGoals->attachments as $key=>$attachment)
-                                                <span>{{$key+1}}. </span>
-                                                <a href="{{url($attachment->file_path)}}" target="_blank">
-                                                    <i class="fa fa-file-pdf-o"></i>
-                                                </a>
-                                                <br>
-                                            @endforeach
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>{!! nl2br($dptGoals->departmentKpi->name) !!}
+                                        <p class="m-t-md"><a href="javascript:void(0)" data-toggle="modal"
+                                                data-target="#comments{{ $dptGoals->id }}"><i
+                                                    class="fa fa-comments"></i> {{ count($dptGoals->comments) }}
+                                                Comments</a></p>
+                                    </td>
+                                    <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
+                                    <td>{{$dptGoals->actual}}</td>
+                                    <td>{{ $dptGoals->weight }}</td>
+                                    <td>{{$dptGoals->grade}}</td>
+                                    <td>{!! nl2br($dptGoals->remarks) !!}</td>
+                                    <td>
+                                        @foreach ($dptGoals->attachments as $key=>$attachment)
+                                        <span>{{$key+1}}. </span>
+                                        <a href="{{url($attachment->file_path)}}" target="_blank">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <br>
+                                        @endforeach
+                                    </td>
+                                </tr>
 
-                                    @include('comments')
+                                @include('comments')
                                 @endforeach
                             </tbody>
                         </table>
@@ -101,35 +105,37 @@
                             </thead>
                             <tbody>
                                 @foreach ($innovations as $innovation)
-                                    <tr>
-                                        <td>
-                                            @if($mdr->status == "Returned")
-                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#edit{{ $innovation->id }}">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </button>
-        
-                                            <form action="{{ url('deleteInnovation/'.$innovation->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
-                                                @csrf
-        
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                            @endif
-                                        </td>   
-                                        <td>{{ $innovation->project_charter }}</td>
-                                        <td>{{ $innovation->project_benefit }}</td>
-                                        <td>
-                                            @foreach ($innovation->innovationAttachments as $attachment)
-                                                <a href="{{ url($attachment->filepath) }}" target="_blank">
-                                                    <i class="fa fa-file-pdf-o"></i>
-                                                </a>
-                                                <br>
-                                            @endforeach
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>
+                                        @if($mdr->status == "Returned")
+                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                            data-target="#edit{{ $innovation->id }}">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </button>
 
-                                    @include('dept-head.edit_innovation')
+                                        <form action="{{ url('deleteInnovation/'.$innovation->id) }}" method="post"
+                                            onsubmit="show()" style="display: inline-block;">
+                                            @csrf
+
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        @endif
+                                    </td>
+                                    <td>{{ $innovation->project_charter }}</td>
+                                    <td>{{ $innovation->project_benefit }}</td>
+                                    <td>
+                                        @foreach ($innovation->innovationAttachments as $attachment)
+                                        <a href="{{ url($attachment->filepath) }}" target="_blank">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <br>
+                                        @endforeach
+                                    </td>
+                                </tr>
+
+                                @include('dept-head.edit_innovation')
                                 @endforeach
                             </tbody>
                         </table>
@@ -154,7 +160,8 @@
                                     <th>Actions</th>
                                     <th>Activities</th>
                                     <th>Benefit <br>
-                                        <small><i>(Specify if Time Savings, Risk Mitigation, Cost Savings / Profit gain, Employee Morale)</i></small>
+                                        <small><i>(Specify if Time Savings, Risk Mitigation, Cost Savings / Profit gain,
+                                                Employee Morale)</i></small>
                                     </th>
                                     <th>DICR Number</th>
                                     <th>Date Approved</th>
@@ -163,39 +170,44 @@
                             </thead>
                             <tbody>
                                 @foreach ($process_improvement as $processDevelopmentData)
-                                    <tr>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editProcessDevelopment{{ $processDevelopmentData->id }}">
-                                                <i class="fa fa-pencil"></i>
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                            data-target="#editProcessDevelopment{{ $processDevelopmentData->id }}">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+
+                                        <form
+                                            action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}"
+                                            method="post" onsubmit="show()" style="display: inline-block;">
+                                            @csrf
+
+                                            <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
+                                            <input type="hidden" name="department"
+                                                value="{{$processDevelopmentData->department_id}}">
+
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa fa-trash"></i>
                                             </button>
+                                        </form>
+                                    </td>
+                                    <td>{{ $processDevelopmentData->activities }}</td>
+                                    <td>{!! nl2br($processDevelopmentData->remarks) !!}</td>
+                                    <td>{{$processDevelopmentData->dicr_number}}</td>
+                                    <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}
+                                    </td>
+                                    <td>
+                                        @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
+                                        <span>{{$key+1}}. </span>
+                                        <a href="{{ url($pdFile->filepath) }}" target="_blank">
+                                            <i class="fa fa-file-pdf-o"></i>
+                                        </a>
+                                        <br>
+                                        @endforeach
+                                    </td>
+                                </tr>
 
-                                            <form action="{{ url('deleteProcessDevelopment/' . $processDevelopmentData->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
-                                                @csrf
-
-                                                <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
-                                                <input type="hidden" name="department" value="{{$processDevelopmentData->department_id}}">
-
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                        <td>{{ $processDevelopmentData->activities }}</td>
-                                        <td>{!! nl2br($processDevelopmentData->remarks) !!}</td>
-                                        <td>{{$processDevelopmentData->dicr_number}}</td>
-                                        <td>{{ date('F d, Y', strtotime($processDevelopmentData->accomplished_date )) }}</td>
-                                        <td>
-                                            @foreach ($processDevelopmentData->pdAttachments as $key=>$pdFile)
-                                                <span>{{$key+1}}. </span>
-                                                <a href="{{ url($pdFile->filepath) }}" target="_blank">
-                                                    <i class="fa fa-file-pdf-o"></i>
-                                                </a>
-                                                <br>
-                                            @endforeach
-                                        </td>
-                                    </tr>
-
-                                    @include('dept-head.edit_process_improvement')
+                                @include('dept-head.edit_process_improvement')
                                 @endforeach
                             </tbody>
                         </table>
@@ -203,26 +215,66 @@
                 </div>
             </div>
         </div> --}}
-        @if($mdr->status == "Returned")
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content">
                     <div class="row">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                MDR Status
+                            </div>
+                            <div class="panel-body">
+                                <div class='row text-center'>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        <strong>Approver</strong>
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        <strong>Status</strong>
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        <strong>Action Date</strong>
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        <strong>Remarks</strong>
+                                    </div>
+                                </div>
+
+                                @foreach ($mdr->mdrHistoryLogs as $approver)
+                                <div class="row text-center">
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->users->name}}
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->status}}
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        @if($approver->status == "Approved" || $approver->status == "Returned")
+                                        {{date('Y-m-d', strtotime($approver->updated_at))}}
+                                        @endif
+                                    </div>
+                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        {{$approver->remarks}}
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @if($mdr->status == "Returned")
                         <div class="col-md-12">
                             <form action="{{url('submitMdr')}}" method="POST" onsubmit="show()">
                                 @csrf
 
                                 <input type="hidden" name="year_and_month" value="{{$yearAndMonth}}">
-                                <button type="button" class="btn btn-block btn-primary approveBtn" >
+                                <button type="button" class="btn btn-block btn-primary approveBtn">
                                     Submit MDR
                                 </button>
                             </form>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-        @endif
     </div>
 </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\DeptHead;
 
+use App\AcceptanceHistory;
 use App\Admin\Department;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -29,8 +30,8 @@ class Mdr extends Model implements Auditable
     {
         return $this->hasMany(Innovation::class, 'mdr_id', 'id');
     }
-    // public function mdrSummary()
-    // {
-    //     return $this->belongsTo(MdrSummary::class);
-    // }
+    public function mdrHistoryLogs()
+    {
+        return $this->hasMany(AcceptanceHistory::class);
+    }
 }

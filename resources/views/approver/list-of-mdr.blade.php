@@ -363,77 +363,75 @@
                         @endforeach
                     @endif --}}
 
-                    @if(auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")
-                        @foreach ($mdrSummary->mdrApprover->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
-                            @php
-                                $mdr = $mdrSummary;
-                            @endphp
+                    @foreach ($mdrSummary->mdrApprover->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                        @php
+                            $mdr = $mdrSummary;
+                        @endphp
 
-                            <form action="{{url('approver_mdr/'.$approver->id)}}" method="post" onsubmit="show()">
-                                @csrf
+                        <form action="{{url('approver_mdr/'.$approver->id)}}" method="post" onsubmit="show()">
+                            @csrf
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="panel panel-primary">
-                                            <div class="panel-heading">
-                                                MDR Status
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class='row text-center'>
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                        <strong>Approver</strong>
-                                                    </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                        <strong>Status</strong>
-                                                    </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                        <strong>Action Date</strong>
-                                                    </div>
-                                                    <div class='col-md-5 border border-primary border-top-bottom border-left-right'>
-                                                        <strong>Remarks</strong>
-                                                    </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            MDR Status
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class='row text-center'>
+                                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    <strong>Approver</strong>
                                                 </div>
-                                                @foreach ($mdrSummary->mdrApprover->where('mdr_id', $mdr->id) as $approver)
-                                                <div class="row text-center">
-                                                    <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
-                                                        {{$approver->users->name}}
-                                                    </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                        {{$approver->status}}
-                                                    </div>
-                                                    <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                        @if($approver->status == "Approved" || $approver->status == "Returned")
-                                                        {{date('Y-m-d', strtotime($approver->updated_at))}}
-                                                        @endif  
-                                                    </div>
-                                                    <div class='col-md-5 border border-primary border-top-bottom border-left-right'>
-                                                        {{$approver->remarks}}
-                                                    </div>
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    <strong>Status</strong>
                                                 </div>
-                                                @endforeach
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    <strong>Action Date</strong>
+                                                </div>
+                                                <div class='col-md-5 border border-primary border-top-bottom border-left-right'>
+                                                    <strong>Remarks</strong>
+                                                </div>
                                             </div>
+                                            @foreach ($mdrSummary->mdrApprover->where('mdr_id', $mdr->id) as $approver)
+                                            <div class="row text-center">
+                                                <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                                    {{$approver->users->name}}
+                                                </div>
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    {{$approver->status}}
+                                                </div>
+                                                <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
+                                                    @if($approver->status == "Approved" || $approver->status == "Returned")
+                                                    {{date('Y-m-d', strtotime($approver->updated_at))}}
+                                                    @endif  
+                                                </div>
+                                                <div class='col-md-5 border border-primary border-top-bottom border-left-right'>
+                                                    {{$approver->remarks}}
+                                                </div>
+                                            </div>
+                                            @endforeach
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        Actions :
-                                        <select name="action" class="form-control cat">
-                                            <option value="">Select Action</option>
-                                            <option value="Approved">Approved</option>
-                                            <option value="Returned">Returned</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-8">
-                                        Remarks :
-                                        <textarea name="remarks" class="form-control" cols="30" rows="10" style="height: 10vh;" required></textarea>
-                                    </div>
-                                    <div class="col-md-12">
-                                        &nbsp;
-                                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                                    </div>
                                 </div>
-                            </form>
-                        @endforeach
-                    @endif
+                                <div class="col-md-4">
+                                    Actions :
+                                    <select name="action" class="form-control cat">
+                                        <option value="">Select Action</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Returned">Returned</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    Remarks :
+                                    <textarea name="remarks" class="form-control" cols="30" rows="10" style="height: 10vh;" required></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    &nbsp;
+                                    <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    @endforeach
                 </div>
             </div>
         </div>
