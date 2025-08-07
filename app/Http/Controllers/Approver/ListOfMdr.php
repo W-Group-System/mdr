@@ -262,6 +262,8 @@ class ListOfMdr extends Controller
             $total_scores = floatval($mdrSummary->grade) + floatval($mdrSummary->timeliness) + floatval($mdrSummary->innovation_scores);
             $mdrSummary->score = $total_scores;
             $mdrSummary->save();
+
+            Alert::success('Successfully Approved')->persistent('Dismiss');
         } 
         elseif($request->action === "AcceptLateApprove") 
         {
@@ -290,12 +292,16 @@ class ListOfMdr extends Controller
             $mdrSummary->is_accepted = "Returned";
             $mdrSummary->status = "Returned";
             $mdrSummary->save();
+
+            Alert::success('Successfully Returned')->persistent('Dismiss');
         } 
         elseif($request->action === "Timeliness Approval") 
         {
             $mdrSummary->timeliness_approval = "Yes";
             $mdrSummary->timeliness_remarks = $request->remarks;
             $mdrSummary->save();
+
+            Alert::success('Successfully Approved')->persistent('Dismiss');
         }
 
         // DepartmentalGoals::where('department_id', $request->department_id)
@@ -313,7 +319,6 @@ class ListOfMdr extends Controller
         // $user = User::where('role', 'Department Head')->where('department_id', $request->department_id)->first();
         // $user->notify(new NotifyDeptHead($user->name, $request->yearAndMonth));
 
-        Alert::success('Successfully Approved')->persistent('Dismiss');
         return redirect('/for_acceptance');
     }
 }
