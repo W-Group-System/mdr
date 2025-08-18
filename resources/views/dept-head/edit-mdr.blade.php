@@ -339,10 +339,10 @@
 
             swal({
                 title: "Are you sure?",
-                text: "The mdr will be submitted",
+                text: "The MDR will be submitted",
                 type: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
+                confirmButtonColor: "#1ab394",
                 confirmButtonText: "Yes, submit it!",
                 closeOnConfirm: false
             }, function (){
