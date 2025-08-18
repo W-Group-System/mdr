@@ -144,7 +144,7 @@
                     <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
                         <a href="{{ url('pending_mdr') }}">
                             <i class="fa fa-clock-o"></i>
-                            <span class="nav-label">Pending MDR</span>
+                            <span class="nav-label">MDR List</span>
                         </a>
                     </li>
                     @endif
