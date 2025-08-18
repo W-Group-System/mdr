@@ -242,7 +242,9 @@
                                 @foreach ($mdr->mdrHistoryLogs as $approver)
                                 <div class="row text-center">
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
+                                        @if($approver->users)
                                         {{$approver->users->name}}
+                                        @endif
                                     </div>
                                     <div class='col-md-3 border border-primary border-top-bottom border-left-right'>
                                         {{$approver->status}}
