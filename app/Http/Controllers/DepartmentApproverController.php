@@ -16,7 +16,7 @@ class DepartmentApproverController extends Controller
      */
     public function index()
     {
-        $department_approvers = DepartmentApprovers::with('user')->get();
+        $department_approvers = DepartmentApprovers::with('user')->orderBy('status_level','asc')->get();
         $users = User::where('status','Active')->get();
 
         return view('admin.department_approvers', 
@@ -45,6 +45,11 @@ class DepartmentApproverController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'level' => 'unique:department_approvers,status_level',
+            'approver' => 'unique:department_approvers,user_id'
+        ]);
+
         $department_approvers = new DepartmentApprovers;
         $department_approvers->user_id = $request->approver;
         $department_approvers->status_level = $request->level;
