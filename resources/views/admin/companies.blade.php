@@ -122,6 +122,9 @@
 </div>
 
 @include('admin.new_companies')
+@foreach ($company as $c)
+@include('admin.edit_companies')
+@endforeach
 @endsection
 
 @push('scripts')

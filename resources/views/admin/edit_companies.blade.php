@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title text-left">Add Company</h1>
+                <h6 class="modal-title text-left">Edit Company</h6>
             </div>
             <form action="{{url('update_company/'.$c->id)}}" method="POST" onsubmit="show()">
                 @csrf
