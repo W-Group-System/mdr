@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($departmentList->where('status', "Inactive"))}}</h1>
+                    <h1 class="no-margins">{{count($departmentList->where('status', "Deactivate"))}}</h1>
                     <small>Total Inactive</small>
                 </div>
             </div>
