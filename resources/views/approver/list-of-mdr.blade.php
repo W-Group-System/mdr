@@ -42,9 +42,9 @@
                                     </td>
                                     @endif
                                     <td>{{ date('F', mktime(0, 0, 0, $mdrSummary->month, 1)) }}</td>
-                                    <td>@if($mdrSummary->grade != null){{ $mdrSummary->grade }}@else 0.0 @endif</td>
+                                    <td>@if($mdrSummary->grade != null){{ $mdrSummary->grade }}@else 0.00 @endif</td>
                                     {{-- <td>@if($mdrSummary->pd_scores != null){{$mdrSummary->pd_scores}}@else 0.0 @endif</td> --}}
-                                    <td>@if($mdrSummary->innovation_scores != null){{$mdrSummary->innovation_scores}}@else 0.0 @endif</td>
+                                    <td>@if($mdrSummary->innovation_scores != null){{$mdrSummary->innovation_scores}}@else 0.00 @endif</td>
                                     {{-- <td>{{$score->innovation_scores}}</td> --}}
                                     <td>{{$mdrSummary->timeliness}}</td>
                                     <td>{{ $mdrSummary->score }}</td>
@@ -66,12 +66,12 @@
                 </div>
                 <div class="ibox-content">
                     {{-- {{dd(auth()->user()->role)}} --}}
-                    @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
+                    {{-- @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator") --}}
                     <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
                         <i class="fa fa-pencil"></i>
                         Add Grade
                     </button>
-                    @endif
+                    {{-- @endif --}}
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
@@ -100,10 +100,10 @@
                                     <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
                                     <td>{{ $dptGoals->actual }}</td>
                                     <td>
-                                        {{$dptGoals->weight}}
+                                        {{number_format($dptGoals->weight,2)}}
                                     </td>
                                     <td>
-                                        {{$dptGoals->grade}}
+                                        {{number_format($dptGoals->grade,2)}}
                                     </td>
                                     <td>
                                         {{$dptGoals->remarks}}

@@ -49,10 +49,10 @@
                                                             {{$dptGoals->actual}}
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="weight[]" class="form-control input-sm" value="{{$dptGoals->weight}}" required>
+                                                            <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="{{$dptGoals->weight}}" required>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="grade[]" class="form-control input-sm" value="{{$dptGoals->grade}}" required>
+                                                            <input type="number" name="grade[]" class="form-control input-sm" step=".01" value="{{$dptGoals->grade}}" required>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
