@@ -270,7 +270,7 @@ class ListOfMdr extends Controller
             $history_logs->mdr_id = $mdrSummary->id;
             $history_logs->save();
 
-            Alert::success('Successfully Approved')->persistent('Dismiss');
+            Alert::success('Successfully Accepted')->persistent('Dismiss');
         } 
         elseif($request->action === "AcceptLateApprove") 
         {
