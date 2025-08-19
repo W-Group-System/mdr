@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\DeptHead;
 
+use App\AcceptanceHistory;
 use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use App\Admin\MdrGroup;
@@ -118,6 +119,12 @@ class MdrController extends Controller
                 }
                 $mdr_approver->save();
             }
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = "Submitted";
+            // $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrs->id;
+            $history_logs->save();
         }
         else
         {
@@ -128,6 +135,13 @@ class MdrController extends Controller
             $mdrs->month = date('m', strtotime($request->year_and_month));
             $mdrs->save();
 
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = "Submitted";
+            // $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrs->id;
+            $history_logs->save();
+            
             DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
             $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
 

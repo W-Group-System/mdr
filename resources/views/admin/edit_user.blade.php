@@ -42,7 +42,7 @@
                                 <option value="Approver" @if($userData->role == "Approver") selected @endif>Approver</option>
                                 <option value="Department Head" @if($userData->role == "Department Head") selected @endif>Department Head</option>
                                 <option value="Users" @if($userData->role == "Users") selected @endif>Users</option>
-                                <option value="Human Resources" @if($userData->role == "Human Resources") selected @endif>Human Resources</option>
+                                {{-- <option value="Human Resources" @if($userData->role == "Human Resources") selected @endif>Human Resources</option> --}}
                             </select>
                         </div>
                     </div>
