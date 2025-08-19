@@ -401,9 +401,9 @@
                                                     {{$approver->status}}
                                                 </div>
                                                 <div class='col-md-2 border border-primary border-top-bottom border-left-right'>
-                                                    @if($approver->status == "Approved" || $approver->status == "Returned")
+                                                    {{-- @if($approver->status == "Approved" || $approver->status == "Returned") --}}
                                                     {{date('Y-m-d', strtotime($approver->updated_at))}}
-                                                    @endif  
+                                                    {{-- @endif   --}}
                                                 </div>
                                                 <div class='col-md-5 border border-primary border-top-bottom border-left-right'>
                                                     {{$approver->remarks}}

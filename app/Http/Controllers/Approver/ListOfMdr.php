@@ -203,18 +203,11 @@ class ListOfMdr extends Controller
                         $mdrApprover->status = "Waiting";
                     }
                 }
-                elseif ($key == 0)
-                {
-                    $mdrApprover->status = "Pending";
-                }
-                else
-                {
-                    if($key > 0)
-                    {
-                        if ($key == 1)
-                        {
-                            $mdrApprover->status = "Pending";
-                        }
+                else {
+                    if ($key == 0) {
+                        $mdrApprover->status = "Pending"; 
+                    } else {
+                        $mdrApprover->status = "Waiting"; 
                     }
                 }
 
@@ -232,6 +225,12 @@ class ListOfMdr extends Controller
 
             Alert::success('Succesfully Returned')->persistent('Dismiss');
         }
+        $history_logs = new AcceptanceHistory();
+        $history_logs->user_id = auth()->user()->id;
+        $history_logs->action = $request->action;
+        $history_logs->remarks = $request->remarks;
+        $history_logs->mdr_id = $mdrSummary->id;
+        $history_logs->save();
         
         return redirect('for_approval');
     }
