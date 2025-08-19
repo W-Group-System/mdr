@@ -42,7 +42,7 @@
                                 <option value="Approver">Approver</option>
                                 <option value="Department Head">Department Head</option>
                                 <option value="Users">Users</option>
-                                <option value="Human Resources">Human Resources</option>
+                                {{-- <option value="Human Resources">Human Resources</option> --}}
                             </select>
                         </div>
                     </div>
