@@ -413,12 +413,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                @php
+                                    $approvers = $mdrSummary->mdrApprover->where('mdr_id', $mdr->id)->sortBy('level');
+                                    $lastApprover = $approvers->last();
+                                @endphp
                                 <div class="col-md-4">
                                     Actions :
                                     <select name="action" class="form-control cat">
                                         <option value="">Select Action</option>
                                         <option value="Approved">Approved</option>
-                                        <option value="Returned">Returned</option>
+                                        @if(auth()->id() !== $lastApprover->user_id)
+                                            <option value="Returned">Returned</option>
+                                        @endif
                                     </select>
                                 </div>
                                 <div class="col-md-8">

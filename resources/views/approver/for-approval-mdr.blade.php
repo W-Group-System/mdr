@@ -59,6 +59,9 @@
                                         {{-- <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#viewStatus{{$mdr->id}}">
                                             <i class="fa fa-eye"></i>
                                         </button> --}}
+                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$mdr->id}}">
+                                                <i class="fa fa-history"></i>
+                                        </button>
                                         <a href="{{url('list_of_mdr/'.$mdr->id)}}" class="btn btn-warning btn-sm" onclick="show()">
                                             <i class="fa fa-pencil-square-o"></i>                                            
                                         </a>
@@ -75,6 +78,7 @@
                                 </tr>
 
                                 {{-- @include('approver.view_mdr_status') --}}
+                                @include('dept-head.view_mdr_status')
                             @endforeach
                         </tbody>
                     </table>
