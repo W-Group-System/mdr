@@ -30,7 +30,10 @@
                     <div class="ibox-title" style="display: flex; justify-content:space-between;">
                         <h5>User Access Module</h5>
 
-                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="window.history.back()">Back</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        </div>
                     </div>
 
                     <div class="ibox-content">
