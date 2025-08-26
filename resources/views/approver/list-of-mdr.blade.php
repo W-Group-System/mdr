@@ -34,12 +34,16 @@
                             <tbody>
                                 <tr>
                                     @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
-                                            data-target="#editScores{{$mdrSummary->id}}">
-                                            <i class="fa fa-pencil-square-o"></i>
-                                        </button>
-                                    </td>
+                                       <td>
+                                            @if ($mdrSummary->is_accepted !== null)
+                                                @if(check_access('For Approval MDR','update'))
+                                                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                                        data-target="#editScores{{$mdrSummary->id}}">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </button>
+                                                @endif
+                                            @endif
+                                        </td>
                                     @endif
                                     <td>{{ date('F', mktime(0, 0, 0, $mdrSummary->month, 1)) }}</td>
                                     <td>@if($mdrSummary->grade != null){{ $mdrSummary->grade }}@else 0.00 @endif</td>
@@ -67,10 +71,14 @@
                 <div class="ibox-content">
                     {{-- {{dd(auth()->user()->role)}} --}}
                     {{-- @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator") --}}
-                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
-                        <i class="fa fa-pencil"></i>
-                        Add Grade
-                    </button>
+                    @if ($mdrSummary->is_accepted !== null)
+                        @if(check_access('For Approval MDR','update'))
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
+                                <i class="fa fa-pencil"></i>
+                                Add Grade
+                            </button>
+                        @endif
+                    @endif
                     {{-- @endif --}}
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">

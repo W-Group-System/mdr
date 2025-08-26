@@ -85,6 +85,7 @@
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
+                    <h5>Innovation</h5>
                     @if($mdr->status == "Returned")
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
@@ -217,6 +218,9 @@
         </div> --}}
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Actions</h5>
+                </div>
                 <div class="ibox-content">
                     <div class="row">
                         <div class="panel panel-primary">
