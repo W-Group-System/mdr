@@ -52,24 +52,24 @@ class ListOfMdr extends Controller
         // dd($request->all());
         $departmentalGoalsList = DepartmentalGoals::findMany($request->department_goals_id);
 
-        $total_weight = collect($request->weight)->sum();
-        if ($total_weight > 3.00)
-        {
-            Alert::error('The total weight is greater than 3.00')->persistent('Dismiss');
-            return back();
-        }
-        elseif($total_weight < 3.00)
-        {
-            Alert::error('The total weight is less than 3.00')->persistent('Dismiss');
-            return back();
-        }
+        // $total_weight = collect($request->weight)->sum();
+        // if ($total_weight > 3.00)
+        // {
+        //     Alert::error('The total weight is greater than 3.00')->persistent('Dismiss');
+        //     return back();
+        // }
+        // elseif($total_weight < 3.00)
+        // {
+        //     Alert::error('The total weight is less than 3.00')->persistent('Dismiss');
+        //     return back();
+        // }
         
-        $total_grades = collect($request->grade)->sum();
-        if ($total_grades > $total_weight)
-        {
-            Alert::error('The total grades is not greater than total weight')->persistent('Dismiss');
-            return back();
-        }
+        // $total_grades = collect($request->grade)->sum();
+        // if ($total_grades > $total_weight)
+        // {
+        //     Alert::error('The total grades is not greater than total weight')->persistent('Dismiss');
+        //     return back();
+        // }
 
         foreach($departmentalGoalsList as $key=>$dptGoals)
         {

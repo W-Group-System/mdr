@@ -572,19 +572,27 @@
             });
         });
 
+        $("[name='weight[]']").each(function(weightIndex, weightItem) {
+            $(this).on('input', function() {
+                $("[name='grade[]']").eq(weightIndex).prop('max', weightItem.value)
+            })
+        })
 
+        $("[name='weight[]']").on('blur', function() {
+            let weightGrade = 0;
+            
+            $("[name='weight[]']").each(function() {
+                let val = parseFloat($(this).val()) || 0;
+                weightGrade += val;
+            });
 
+            if (parseFloat(weightGrade) > 3.00)
+            {
+                alert('Total weight is cannot greater than by 3.00')
+                return
+            }
+        });
         
-        // $("[name='grade[]']").keypress(function(event) {
-        //     if (event.keyCode == 8) {
-        //         return
-        //     }
-
-        //     if (event.keyCode < 48 || event.keyCode > 57) {
-        //         event.preventDefault(); 
-        //     }   
-        // });
-
     })
 </script>
 @endpush
