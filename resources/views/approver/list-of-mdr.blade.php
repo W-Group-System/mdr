@@ -597,7 +597,6 @@
             if (parseFloat(weightGrade) > 3.00)
             {
                 alert('Total weight is cannot greater than by 3.00')
-                return
             }
         });
         
