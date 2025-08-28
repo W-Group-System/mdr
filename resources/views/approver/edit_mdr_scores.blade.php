@@ -20,10 +20,10 @@
                             Timeliness : 
                             <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$mdrSummary->timeliness}}" readonly>
                         </div>
-                        {{-- <div class="col-md-12">
+                        <div class="col-md-12">
                             Remarks :
-                            <textarea name="remarks" class="form-control" cols="30" rows="10">{{$score->remarks}}</textarea>
-                        </div> --}}
+                            <textarea name="remarks" class="form-control" cols="30" rows="10"></textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

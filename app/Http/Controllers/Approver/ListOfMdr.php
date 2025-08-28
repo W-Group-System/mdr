@@ -243,6 +243,12 @@ class ListOfMdr extends Controller
         $mdrScore->score = $total_rating;
         $mdrScore->save();
 
+        $history_logs = new AcceptanceHistory();
+        $history_logs->user_id = auth()->user()->id;
+        $history_logs->action = "Edit Innovaton Score";
+        $history_logs->remarks = $request->remarks;
+        $history_logs->mdr_id = $mdrScore->id;
+        $history_logs->save();
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
     }
@@ -269,6 +275,7 @@ class ListOfMdr extends Controller
                 $dept_approver->save();
             }
             $mdrSummary->is_accepted = "Accepted";
+            $mdrSummary->date_accepted = now();
             $fullTargetDate = getAdjustedTargetDate($mdrSummary->month, $mdrSummary->year, $mdrSummary->departments->target_date);
             if (now() > $fullTargetDate) 
             {
