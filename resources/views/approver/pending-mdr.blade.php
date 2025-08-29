@@ -40,43 +40,39 @@
                     <table class="table table-bordered" id="pendingApprovalTable">
                         <thead>
                             <tr>
-                                <th>Approver Status</th>
+                                <th>Actions</th>
                                 <th>Department</th>
                                 <th>PIC</th>
                                 <th>Month</th>
-                                <th>Submission Date</th>
                                 <th>Deadline</th>
-                                <th>MDR Status</th>
+                                <th>Submission Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrs as $data)
+                            @foreach ($mdrs as $mdr)
                                 <tr>
-                                    {{-- <td width="10">
-                                        <button class="btn btn-sm btn-success" type="button" data-toggle="modal" data-target="#mdrStatusModal{{ $data->id }}">
-                                            <i class="fa fa-eye"></i>
+                                    @php
+                                        $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
+                                    @endphp
+                                    <td width="10">
+                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$mdr->id}}">
+                                            <i class="fa fa-history"></i>
                                         </button>
-                                    </td> --}}
-                                    {{-- <td>{{ optional($data->departments)->name }}</td> --}}
-                                    {{-- <td>{{ optional($data->users)->name }}</td> --}}
-                                    {{-- <td>{{ date('F Y', strtotime($data->yearAndMonth)) }}</td> --}}
-                                    {{-- <td>{{ date('F d, Y', strtotime($data->submission_date)) }}</td> --}}
-                                    {{-- <td>{{ date('F d, Y', strtotime($data->deadline)) }}</td> --}}
-                                    {{-- <td>
-                                        @if($data->status == "Pending")
-                                        <span class="label label-warning">
-                                        @elseif($data->status == "Approved")
-                                        <span class="label label-primary">
+                                        <a href="{{url('list_of_mdr/'.$mdr->id)}}" class="btn btn-warning btn-sm" onclick="show()">
+                                            <i class="fa fa-pencil-square-o"></i>                                            
+                                        </a>
+                                    </td>
+                                    <td>{{ $mdr->departments->name }}</td>
+                                    <td>
+                                        @if ($mdr->departments->user)
+                                            {{ $mdr->departments->user->name}}
                                         @endif
-
-                                        {{$data->status}}
-                                        </span>
-                                        
-                                    </td> --}}
-                                    
+                                    </td>
+                                    <td>{{ DateTime::createFromFormat('!m', $mdr->month)->format('F') }} {{ $mdr->year }}</td>
+                                    <td>{{ $fullTargetDate->format('F d, Y') }}</td>
+                                    <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
                                 </tr>
-
-                                {{-- @include('approver.pending_mdr_status') --}}
+                                @include('dept-head.view_mdr_status')
                             @endforeach
                         </tbody>
                     </table>
