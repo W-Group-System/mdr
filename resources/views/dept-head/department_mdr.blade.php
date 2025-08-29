@@ -58,7 +58,7 @@
                                             </form>
                                         </td>
                                         <td>{{ date("F Y", strtotime($mdr->year.'-'.$mdr->month))}}</td>
-                                        <td>{{ number_format($mdr->score,2) }}</td>
+                                        <td>{{ number_format($mdr->grade,2) }}</td>
                                         <td>{{ number_format($mdr->innovation_scores,2) }}</td>
                                         <td>{{ number_format($mdr->timeliness,2) }}</td>
                                         <td>{{ number_format($mdr->score,2) }}</td>
