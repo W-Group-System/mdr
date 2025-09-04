@@ -19,15 +19,22 @@ class PendingMdrController extends Controller
         $filteredMdrs = $mdrs->filter(function ($mdr) use ($filter) {
             $approvers = $mdr->mdrApprover;
             $lastApprover = $approvers->sortByDesc('level')->first();
+            $firstApprover = $approvers->sortBy('level')->first(); 
 
             if ($filter === 'pending') {
-                return !$approvers->where('status', 'Returned')->isNotEmpty()
-                    && $lastApprover
-                    && $lastApprover->status !== 'Approved';
+                return $lastApprover
+                    && $lastApprover->status !== 'Approved'
+                    && (
+                        ($firstApprover && $firstApprover->status !== 'Pending')
+
+                        || ($firstApprover && $firstApprover->status === 'Pending'
+                            && !$approvers->where('status', 'Returned')->isNotEmpty())
+                    );
             }
 
             if ($filter === 'returned') {
-                return $approvers->where('status', 'Returned')->isNotEmpty();
+                return ($firstApprover && $firstApprover->status === 'Pending')
+                    && $approvers->where('status', 'Returned')->isNotEmpty();
             }
 
             if ($filter === 'approved') {
