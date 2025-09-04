@@ -92,6 +92,43 @@ class MdrController extends Controller
 
         if ($mdrs)
         {
+            if($mdrs->status === "Returned") {
+                $mdrs->status = 'Pending';
+                $mdrs->is_accepted = 'Accepted';
+                $mdrs->level = 1;
+
+                $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
+
+                $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->get();
+                if (count($innovations) > 0) {
+                    $mdrs->innovation_scores = 0.5;
+                }
+                $mdr_approvers = MdrApprovers::where('mdr_id', $mdrs->id)->orderBy('level', 'asc')->get();
+                // if (count($mdr_approvers) == 0)
+                // {
+                //     $mdrs->is_accepted = null;
+                // }          
+                // $mdrs->save();
+
+                foreach($mdr_approvers as $key=>$mdr_approver)
+                {
+                    if ($key == 0)
+                    {
+                        $mdr_approver->status = 'Pending';
+                    }
+                    else
+                    {
+                        $mdr_approver->status = 'Waiting';
+                    }
+                    $mdr_approver->save();
+                }
+                $history_logs = new AcceptanceHistory();
+                $history_logs->user_id = auth()->user()->id;
+                $history_logs->action = "Submitted";
+                // $history_logs->remarks = $request->remarks;
+                $history_logs->mdr_id = $mdrs->id;
+                $history_logs->save();
+            }
             $mdrs->status = 'Pending';
             // $mdrs->timeliness_approval = 'Yes';
             $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);

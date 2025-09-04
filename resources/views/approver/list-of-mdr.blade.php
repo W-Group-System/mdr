@@ -449,9 +449,9 @@
                                     Actions :
                                     <select name="action" class="form-control cat">
                                         <option value="">Select Action</option>
-                                        <option value="Approved">Approved</option>
+                                        <option value="Approved">Approve</option>
                                         @if(auth()->id() !== $lastApprover->user_id)
-                                            <option value="Returned">Returned</option>
+                                            <option value="Returned">Return</option>
                                         @endif
                                     </select>
                                 </div>

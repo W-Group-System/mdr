@@ -15,7 +15,7 @@ class ForApprovalController extends Controller
 {
     public function index(Request $request) {
 
-        $filter = $request->get('filter');
+        $filter = $request->get('filter') ?? 'all';
         $isAdmin = auth()->user()->role === 'Administrator';
 
         if ($isAdmin) {
@@ -34,39 +34,45 @@ class ForApprovalController extends Controller
             $approvers = $mdr->siblingApprovers;
             $lastApprover = $approvers->sortByDesc('level')->first();
 
-            if ($filter === 'for-approval') {
-                if ($isAdmin) {
-                    $isPending   = $approvers->where('status', 'Pending')->isNotEmpty();
-                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
-                    return !$hasReturned && $isPending;
-                } else {
-                    $isPending   = $approvers->where('user_id', auth()->id())
-                                            ->where('status', 'Pending')->isNotEmpty();
-                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
-                    return !$hasReturned && $isPending;
-                }
+            $forApproval = false;
+            $returned    = false;
+            $approved    = false;
+
+            if ($isAdmin) {
+                $isPending   = $approvers->where('status', 'Pending')->isNotEmpty();
+                $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+                $forApproval = !$hasReturned && $isPending;
+            } else {
+                $isPending   = $approvers->where('user_id', auth()->id())
+                                        ->where('status', 'Pending')->isNotEmpty();
+                $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+                $forApproval = !$hasReturned && $isPending;
             }
 
-            if ($filter === 'returned') {
-                if ($isAdmin) {
-                    return $approvers->where('status', 'Returned')->isNotEmpty();
-                } else {
-                    $isReturned  = $approvers->where('user_id', auth()->id())
-                                            ->where('status', 'Pending')->isNotEmpty();
-                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
-                    return $isReturned && $hasReturned;
-                }
+            if ($isAdmin) {
+                $returned = $approvers->where('status', 'Returned')->isNotEmpty();
+            } else {
+                $isReturned  = $approvers->where('user_id', auth()->id())
+                                        ->where('status', 'Pending')->isNotEmpty();
+                $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+                $returned    = $isReturned && $hasReturned;
             }
 
-            if ($filter === 'approved') {
-                if ($isAdmin) {
-                    return $lastApprover && $lastApprover->status === 'Approved';
-                } else {
-                    return $mdr->status === 'Approved' && $mdr->user_id === auth()->id();
-                }
+            if ($isAdmin) {
+                $approved = $lastApprover && $lastApprover->status === 'Approved';
+            } else {
+                $approved = $mdr->status === 'Approved' && $mdr->user_id === auth()->id();
             }
 
-            return true; 
+            if ($filter === 'for-approval') return $forApproval;
+            if ($filter === 'returned')     return $returned;
+            if ($filter === 'approved')     return $approved;
+
+            if ($filter === 'all') {
+                return $forApproval || $returned || $approved;
+            }
+
+            return false;
         });
 
         return view('approver.for-approval-mdr', 

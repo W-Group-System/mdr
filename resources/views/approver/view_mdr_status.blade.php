@@ -59,8 +59,8 @@
                             Actions :
                             <select name="action" class="form-control cat">
                                 <option value="">Select Action</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Returned">Returned</option>
+                                <option value="Approved">Approve</option>
+                                <option value="Returned">Return</option>
                             </select>
                         </div>
                         <div class="col-md-8">
