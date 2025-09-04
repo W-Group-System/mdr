@@ -9,14 +9,85 @@
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
+                    <h5>All</h5>
+                    <div class="pull-right">
+                        <span class="label label-success">as of{{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="GET" action="{{ url('mdr_list') }}">
+                        <input type="hidden" name="filter" value="all">
+                        <button type="submit" class="btn btn-link p-0">
+                            <h1 class="no-margins">{{ count($mdrs) }}</h1>
+                        </button>
+                    </form>
+                    <small>Total</small>
+                </div>
+            </div>
+        </div>
+        @php
+            $returnedCount = $mdrs->filter(function ($mdr) {
+                $approvers = $mdr->mdrApprover;
+
+                $level1Pending = $approvers->where('level', 1)->where('status', 'Pending')->isNotEmpty();
+                $hasReturned   = $approvers->where('status', 'Returned')->isNotEmpty();
+
+                return $level1Pending && $hasReturned;
+            })->count();
+
+            $approvedCount = $mdrs->filter(function ($mdr) {
+                $approvers = $mdr->mdrApprover;
+
+                $lastApprover = $approvers->sortByDesc('level')->first();
+
+                return $lastApprover && $lastApprover->status === 'Approved';
+            })->count();
+
+            $pendingCount = $mdrs->filter(function ($mdr) {
+                $approvers = $mdr->mdrApprover;
+
+                $lastApprover = $approvers->sortByDesc('level')->first();
+                $hasReturned  = $approvers->where('status', 'Returned')->isNotEmpty();
+
+                return ! $hasReturned && $lastApprover && $lastApprover->status !== 'Approved';
+            })->count();
+        @endphp
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
                     <h5>Pending</h5>
                     <div class="pull-right">
                         <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrs->where('status', 'Pending'))}}</h1>
+                    <form method="GET" action="{{ url('mdr_list') }}">
+                        <input type="hidden" name="filter" value="pending">
+                        <button type="submit" class="btn btn-link p-0">
+                            <h1 class="no-margins">{{ $pendingCount }}</h1>
+                        </button>
+                    </form>
                     <small>Total Pending</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Returned</h5>
+                    <div class="pull-right">
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                
+                <div class="ibox-content">
+                    <form method="GET" action="{{ url('mdr_list') }}">
+                        <input type="hidden" name="filter" value="returned">
+                        <button type="submit" class="btn btn-link p-0">
+                            <h1 class="no-margins">{{ $returnedCount }}</h1>
+                        </button>
+                    </form>
+                    <small>Total Returned</small>
                 </div>
             </div>
         </div>
@@ -29,7 +100,12 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrs->where('status', 'Approved'))}}</h1>
+                    <form method="GET" action="{{ url('mdr_list') }}">
+                        <input type="hidden" name="filter" value="approved">
+                        <button type="submit" class="btn btn-link p-0">
+                            <h1 class="no-margins">{{ $approvedCount }}</h1>
+                        </button>
+                    </form>
                     <small>Total Approved</small>
                 </div>
             </div>
@@ -49,7 +125,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrs as $mdr)
+                            @foreach ($filteredMdrs as $mdr)
                                 <tr>
                                     @php
                                         $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);

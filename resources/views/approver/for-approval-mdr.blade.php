@@ -7,17 +7,80 @@
 
 <div class="wrapper wrapper-content">
     <div class="row">
+        @php
+            $returnedCount = $mdrApprovers->filter(function ($mdr) {
+                $approvers = $mdr->siblingApprovers;
+                $isReturned = $approvers->where('user_id', auth()->user()->id)->where('status', 'Pending')->isNotEmpty();
+                $hasReturned   = $approvers->where('status', 'Returned')->isNotEmpty();
+
+                return $isReturned && $hasReturned;
+            })->count();
+
+            $forApproval = $mdrApprovers->filter(function ($mdr) {
+                $approvers = $mdr->siblingApprovers;
+                $isPending = $approvers->where('user_id', auth()->user()->id)->where('status', 'Pending')->isNotEmpty();
+                $hasReturned   = $approvers->where('status', 'Returned')->isNotEmpty();
+
+                return !$hasReturned && $isPending ;
+            })->count();
+
+            $approvedCount = $mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Approved')->count();
+            $allCount = $returnedCount + $forApproval + $approvedCount;
+        @endphp
         <div class="col-lg-3">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>For Approval</h5>
+                    <h5>All</h5>
                     <div class="pull-right">
                         <span class="label label-success">as of {{ date('Y-m-d') }}</span>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Pending'))}}</h1>
+                    <form action="{{ url('for_approval') }}" method="GET">
+                        <input type="hidden" name="filter" value="all">
+                        <button type="submit" class="btn btn-link no-padding">
+                            <h1 class="no-margins">{{ $allCount }}</h1>
+                        </button>
+                    </form>
+                    <small>Total</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>For Approval</h5>
+                    <div class="pull-right">
+                        <span class="label label-warning">as of {{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form action="{{ url('for_approval') }}" method="GET">
+                        <input type="hidden" name="filter" value="for-approval">
+                        <button type="submit" class="btn btn-link no-padding">
+                            <h1 class="no-margins">{{ $forApproval }}</h1>
+                        </button>
+                    </form>
                     <small>Total For Approval</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Returned</h5>
+                    <div class="pull-right">
+                        <span class="label label-danger">as of {{ date('Y-m-d') }}</span>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form action="{{ url('for_approval') }}" method="GET">
+                        <input type="hidden" name="filter" value="returned">
+                        <button type="submit" class="btn btn-link no-padding">
+                            <h1 class="no-margins">{{ $returnedCount }}</h1>
+                        </button>
+                    </form>
+                    <small>Total Returned</small>
                 </div>
             </div>
         </div>
@@ -30,7 +93,12 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <h1 class="no-margins">{{count($mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Approved'))}}</h1>
+                    <form action="{{ url('for_approval') }}" method="GET">
+                        <input type="hidden" name="filter" value="approved">
+                        <button type="submit" class="btn btn-link no-padding">
+                            <h1 class="no-margins">{{ $approvedCount }}</h1>
+                        </button>
+                    </form>
                     <small>Total Approved</small>
                 </div>
             </div>
@@ -50,7 +118,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrApprovers->where('status', 'Pending') as $key => $approver)
+                            @foreach ($filteredMdrs as $key => $approver)
                                 @php
                                     $mdr = $approver->mdrRelationship;
                                 @endphp

@@ -26,4 +26,8 @@ class MdrApprovers extends Model implements Auditable
     {
         return $this->belongsTo(Mdr::class, 'mdr_id', 'id');
     }
+    public function siblingApprovers()
+    {
+        return $this->hasMany(MdrApprovers::class, 'mdr_id', 'mdr_id');
+    }
 }

@@ -371,7 +371,12 @@
                         @endforeach
                     @endif --}}
 
-                    @foreach ($mdrSummary->mdrApprover->where('status', 'Pending')->where('user_id', auth()->user()->id) as $key => $approver)
+                    @foreach ($mdrSummary->mdrApprover
+                        ->where('status', 'Pending')
+                        ->where('user_id', auth()->user()->id)
+                        ->filter(function($approver) {
+                            return $approver->mdrRelationship && $approver->mdrRelationship->is_accepted === 'Accepted';
+                        }) as $key => $approver)
                         @php
                             $mdr = $mdrSummary;
                         @endphp

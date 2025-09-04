@@ -36,7 +36,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mdrs->where('is_accepted', null) as $key => $mdr)
+                            @foreach ($mdrs as $key => $mdr)
                                 @php
                                     $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
                                 @endphp

@@ -182,6 +182,7 @@ class ListOfMdr extends Controller
             {
                 $mdrSummary->level = null;
                 $mdrSummary->status = "Returned";
+                $mdrSummary->is_accepted = null;
                 $mdrSummary->save();
             }
             else
@@ -206,6 +207,8 @@ class ListOfMdr extends Controller
                 else {
                     if ($key == 0) {
                         $mdrApprover->status = "Pending"; 
+                    } elseif ($approver->user_id == auth()->user()->id){
+                        $mdrApprover->status = "Returned";
                     } else {
                         $mdrApprover->status = "Waiting"; 
                     }
@@ -257,44 +260,78 @@ class ListOfMdr extends Controller
         $mdrSummary = Mdr::findOrFail($id);
         if($request->action === "Accept") 
         {
-            $department_approvers = DepartmentApprovers::where('status','Active')->orderBy('status_level', 'asc')->get();
-            foreach($department_approvers as $key=>$department_approver)
-            {
-                $dept_approver = new MdrApprovers;
-                $dept_approver->mdr_id = $mdrSummary->id;
-                $dept_approver->user_id = $department_approver->user_id;
-                $dept_approver->level = $key+1;
-                if ($key == 0)
+            if($mdrSummary->date_accepted === null) {
+               $department_approvers = DepartmentApprovers::where('status','Active')->orderBy('status_level', 'asc')->get();
+                foreach($department_approvers as $key=>$department_approver)
                 {
-                    $dept_approver->status = 'Pending';
+                    
+                    $dept_approver = new MdrApprovers;
+                    $dept_approver->mdr_id = $mdrSummary->id;
+                    $dept_approver->user_id = $department_approver->user_id;
+                    $dept_approver->level = $key+1;
+                    if ($key == 0)
+                    {
+                        $dept_approver->status = 'Pending';
+                    }
+                    else
+                    {
+                        $dept_approver->status = 'Waiting';
+                    }
+                    $dept_approver->save();
                 }
-                else
+                $mdrSummary->is_accepted = "Accepted";
+                $mdrSummary->date_accepted = now();
+                $fullTargetDate = getAdjustedTargetDate($mdrSummary->month, $mdrSummary->year, $mdrSummary->departments->target_date);
+                if (now() > $fullTargetDate) 
                 {
-                    $dept_approver->status = 'Waiting';
+                    $mdrSummary->timeliness = 0;
+                } 
+                else 
+                {
+                    $mdrSummary->timeliness = 0.50;
                 }
-                $dept_approver->save();
-            }
-            $mdrSummary->is_accepted = "Accepted";
-            $mdrSummary->date_accepted = now();
-            $fullTargetDate = getAdjustedTargetDate($mdrSummary->month, $mdrSummary->year, $mdrSummary->departments->target_date);
-            if (now() > $fullTargetDate) 
-            {
-                $mdrSummary->timeliness = 0;
-            } 
-            else 
-            {
-                $mdrSummary->timeliness = 0.50;
-            }
-            $total_scores = floatval($mdrSummary->grade) + floatval($mdrSummary->timeliness) + floatval($mdrSummary->innovation_scores);
-            $mdrSummary->score = $total_scores;
-            $mdrSummary->save();
+                $total_scores = floatval($mdrSummary->grade) + floatval($mdrSummary->timeliness) + floatval($mdrSummary->innovation_scores);
+                $mdrSummary->score = $total_scores;
+                $mdrSummary->save();
 
-            $history_logs = new AcceptanceHistory();
-            $history_logs->user_id = auth()->user()->id;
-            $history_logs->action = $request->action;
-            $history_logs->remarks = $request->remarks;
-            $history_logs->mdr_id = $mdrSummary->id;
-            $history_logs->save();
+                $history_logs = new AcceptanceHistory();
+                $history_logs->user_id = auth()->user()->id;
+                $history_logs->action = $request->action;
+                $history_logs->remarks = $request->remarks;
+                $history_logs->mdr_id = $mdrSummary->id;
+                $history_logs->save();     
+            } else {
+                $firstApprover = MdrApprovers::where('mdr_id', $mdrSummary->id)
+                    ->orderBy('level', 'asc')
+                    ->first();
+
+                if ($firstApprover) {
+                    $firstApprover->status = 'Pending';
+                    $firstApprover->save();
+                }
+                $mdrSummary->is_accepted = "Accepted";
+                $mdrSummary->date_accepted = now();
+                $fullTargetDate = getAdjustedTargetDate($mdrSummary->month, $mdrSummary->year, $mdrSummary->departments->target_date);
+                if (now() > $fullTargetDate) 
+                {
+                    $mdrSummary->timeliness = 0;
+                } 
+                else 
+                {
+                    $mdrSummary->timeliness = 0.50;
+                }
+                $total_scores = floatval($mdrSummary->grade) + floatval($mdrSummary->timeliness) + floatval($mdrSummary->innovation_scores);
+                $mdrSummary->score = $total_scores;
+                $mdrSummary->save();
+
+                $history_logs = new AcceptanceHistory();
+                $history_logs->user_id = auth()->user()->id;
+                $history_logs->action = $request->action;
+                $history_logs->remarks = $request->remarks;
+                $history_logs->mdr_id = $mdrSummary->id;
+                $history_logs->save();     
+
+            }
 
             Alert::success('Successfully Accepted')->persistent('Dismiss');
         } 
