@@ -52,12 +52,27 @@
                                     {{-- <td>{{$score->innovation_scores}}</td> --}}
                                     <td>{{$mdrSummary->timeliness}}</td>
                                     <td>{{ $mdrSummary->score }}</td>
-                                    <td>@if($mdrSummary->remarks != null){{$mdrSummary->remarks}}@endif</td>
+                                    <td>
+                                        @php
+                                            $lastRemark = $mdrSummary->mdrHistoryLogs->where('action', 'Edit Innovation Score')->last();
+                                        @endphp
+
+                                        @if ($lastRemark)
+                                            {{ $lastRemark->remarks }}
+                                        @else
+                                            <span class="text-muted">No remarks found</span>
+                                        @endif
+                                        {{-- <button type="button" class="btn btn-warning btn-sm" data-toggle="modal"
+                                                data-target="#remarksHistory{{$mdrSummary->id}}">
+                                                <i class="fa fa-pencil-square-o"></i>
+                                        </button> --}}
+                                    </td>
                                 </tr>
 
                                 @include('approver.edit_mdr_scores')
                             </tbody>
                         </table>
+                        @include('approver.mdr_score_hintory')
                     </div>
                 </div>
             </div>

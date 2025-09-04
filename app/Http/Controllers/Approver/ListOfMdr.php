@@ -248,7 +248,7 @@ class ListOfMdr extends Controller
 
         $history_logs = new AcceptanceHistory();
         $history_logs->user_id = auth()->user()->id;
-        $history_logs->action = "Edit Innovaton Score";
+        $history_logs->action = "Edit Innovation Score";
         $history_logs->remarks = $request->remarks;
         $history_logs->mdr_id = $mdrScore->id;
         $history_logs->save();

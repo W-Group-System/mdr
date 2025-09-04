@@ -10,7 +10,12 @@
                     <div class="row">
                         <div class="col-md-12">
                             Innovation :
-                            <input type="number" name="innovation_scores" step=".01" class="form-control input-sm" value="{{$mdrSummary->innovation_scores}}">
+                            <input type="number" name="innovation_scores" class="form-control input-sm" value="{{$mdrSummary->innovation_scores}}"
+                                step="0.5" min="0" max="0.5" list="timelinessOptions">
+                                <datalist id="timelinessOptions">
+                                    <option value="0">
+                                    <option value="0.5">
+                                </datalist>
                         </div>
                         {{-- <div class="col-md-12">
                             Innovation Scores :
@@ -22,7 +27,7 @@
                         </div>
                         <div class="col-md-12">
                             Remarks :
-                            <textarea name="remarks" class="form-control" cols="30" rows="10"></textarea>
+                            <textarea name="remarks" class="form-control" cols="30" rows="10" required></textarea>
                         </div>
                     </div>
                 </div>
