@@ -8,23 +8,47 @@
 <div class="wrapper wrapper-content">
     <div class="row">
         @php
-            $returnedCount = $mdrApprovers->filter(function ($mdr) {
-                $approvers = $mdr->siblingApprovers;
-                $isReturned = $approvers->where('user_id', auth()->user()->id)->where('status', 'Pending')->isNotEmpty();
-                $hasReturned   = $approvers->where('status', 'Returned')->isNotEmpty();
+            if (auth()->user()->role === 'Administrator') {
+                $returnedCount = $mdrApprovers->filter(function ($mdr) {
+                    $approvers = $mdr->siblingApprovers;
+                    $isReturned = $approvers->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
 
-                return $isReturned && $hasReturned;
-            })->count();
+                    return $isReturned && $hasReturned;
+                })->count();
 
-            $forApproval = $mdrApprovers->filter(function ($mdr) {
-                $approvers = $mdr->siblingApprovers;
-                $isPending = $approvers->where('user_id', auth()->user()->id)->where('status', 'Pending')->isNotEmpty();
-                $hasReturned   = $approvers->where('status', 'Returned')->isNotEmpty();
+                $forApproval = $mdrApprovers->filter(function ($mdr) {
+                    $approvers = $mdr->siblingApprovers;
+                    $isPending = $approvers->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
 
-                return !$hasReturned && $isPending ;
-            })->count();
+                    return !$hasReturned && $isPending;
+                })->count();
 
-            $approvedCount = $mdrApprovers->where('user_id', auth()->user()->id)->where('status', 'Approved')->count();
+                $approvedCount = $mdrApprovers->where('status', 'Approved')->count();
+            } else {
+                $returnedCount = $mdrApprovers->filter(function ($mdr) {
+                    $approvers = $mdr->siblingApprovers;
+                    $isReturned = $approvers->where('user_id', auth()->user()->id)
+                                            ->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+
+                    return $isReturned && $hasReturned;
+                })->count();
+
+                $forApproval = $mdrApprovers->filter(function ($mdr) {
+                    $approvers = $mdr->siblingApprovers;
+                    $isPending = $approvers->where('user_id', auth()->user()->id)
+                                        ->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+
+                    return !$hasReturned && $isPending;
+                })->count();
+
+                $approvedCount = $mdrApprovers->where('user_id', auth()->user()->id)
+                                            ->where('status', 'Approved')->count();
+            }
+
             $allCount = $returnedCount + $forApproval + $approvedCount;
         @endphp
         <div class="col-lg-3">
