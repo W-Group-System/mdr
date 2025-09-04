@@ -47,9 +47,14 @@
                 $approvers = $mdr->mdrApprover;
 
                 $lastApprover = $approvers->sortByDesc('level')->first();
+                $firstApprover = $approvers->sortBy('level')->first(); 
                 $hasReturned  = $approvers->where('status', 'Returned')->isNotEmpty();
 
-                return ! $hasReturned && $lastApprover && $lastApprover->status !== 'Approved';
+                return $lastApprover && $lastApprover->status !== 'Approved' && (
+                    ($firstApprover && $firstApprover->status !== 'Pending')
+                    || ($firstApprover && $firstApprover->status === 'Pending'
+                            && !$approvers->where('status', 'Returned')->isNotEmpty())
+                );
             })->count();
         @endphp
         <div class="col-lg-3">
