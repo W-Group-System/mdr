@@ -11,14 +11,35 @@ use App\Http\Controllers\Controller;
 
 class PendingMdrController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
 
-        $mdrs = Mdr::get();
+        $filter = $request->get('filter', 'all');
+        $mdrs = Mdr::where('is_accepted', 'Accepted')->get();
         
-        return view('approver.pending-mdr',
-            array(
-                'mdrs' => $mdrs
-            )
-        );
+        $filteredMdrs = $mdrs->filter(function ($mdr) use ($filter) {
+            $approvers = $mdr->mdrApprover;
+            $lastApprover = $approvers->sortByDesc('level')->first();
+
+            if ($filter === 'pending') {
+                return !$approvers->where('status', 'Returned')->isNotEmpty()
+                    && $lastApprover
+                    && $lastApprover->status !== 'Approved';
+            }
+
+            if ($filter === 'returned') {
+                return $approvers->where('status', 'Returned')->isNotEmpty();
+            }
+
+            if ($filter === 'approved') {
+                return $lastApprover && $lastApprover->status === 'Approved';
+            }
+
+            return true; 
+        });
+        return view('approver.pending-mdr', [
+            'mdrs' => $mdrs,
+            'filteredMdrs' => $filteredMdrs,
+            'filter' => $filter
+        ]);
     }
 }

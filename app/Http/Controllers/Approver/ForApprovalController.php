@@ -13,25 +13,76 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class ForApprovalController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
 
-        $mdrApprovers = MdrApprovers::with('mdrRelationship')->where('user_id', auth()->user()->id)->get();
+        $filter = $request->get('filter');
+        $isAdmin = auth()->user()->role === 'Administrator';
 
-        if (auth()->user()->role == "Administrator")
-        {
-            $mdrApprovers = MdrApprovers::with('mdrRelationship')->orderBy('id', 'desc')->get();
+        if ($isAdmin) {
+            $mdrApprovers = MdrApprovers::with(['mdrRelationship', 'siblingApprovers'])
+                ->orderBy('id', 'desc')
+                ->get();
+        } else {
+            $mdrApprovers = MdrApprovers::where('user_id', auth()->user()->id)
+                ->whereHas('mdrRelationship', function ($query) {
+                    $query->where('is_accepted', 'Accepted');
+                })
+                ->with(['mdrRelationship', 'siblingApprovers'])
+                ->get();
         }
+        $filteredMdrs = $mdrApprovers->filter(function ($mdr) use ($filter, $isAdmin) {
+            $approvers = $mdr->siblingApprovers;
+            $lastApprover = $approvers->sortByDesc('level')->first();
+
+            if ($filter === 'for-approval') {
+                if ($isAdmin) {
+                    $isPending   = $approvers->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+                    return !$hasReturned && $isPending;
+                } else {
+                    $isPending   = $approvers->where('user_id', auth()->id())
+                                            ->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+                    return !$hasReturned && $isPending;
+                }
+            }
+
+            if ($filter === 'returned') {
+                if ($isAdmin) {
+                    return $approvers->where('status', 'Returned')->isNotEmpty();
+                } else {
+                    $isReturned  = $approvers->where('user_id', auth()->id())
+                                            ->where('status', 'Pending')->isNotEmpty();
+                    $hasReturned = $approvers->where('status', 'Returned')->isNotEmpty();
+                    return $isReturned && $hasReturned;
+                }
+            }
+
+            if ($filter === 'approved') {
+                if ($isAdmin) {
+                    return $lastApprover && $lastApprover->status === 'Approved';
+                } else {
+                    return $mdr->status === 'Approved' && $mdr->user_id === auth()->id();
+                }
+            }
+
+            return true; 
+        });
 
         return view('approver.for-approval-mdr', 
             array(
                 'mdrApprovers' => $mdrApprovers,
+                'filteredMdrs' => $filteredMdrs,
+                'filter'   => $filter,
             )
         );
     }
 
     public function forAcceptance() {
 
-        $mdr = Mdr::orderBy('id', 'desc')->get();
+        $mdr = Mdr::where('is_accepted', null)
+                    ->where('status','!=', 'Returned')
+                    ->orderBy('id', 'desc')->get();
 
         return view('approver.for_acceptance', 
             array(

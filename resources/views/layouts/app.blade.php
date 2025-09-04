@@ -142,7 +142,7 @@
                     @endif
                     @if(check_access('Pending MDR', 'read'))
                     <li class="{{ Route::currentRouteName() == "pendingMdr" ? 'active' : '' }}">
-                        <a href="{{ url('pending_mdr') }}">
+                        <a href="{{ url('mdr_list') }}">
                             <i class="fa fa-clock-o"></i>
                             <span class="nav-label">MDR List</span>
                         </a>
