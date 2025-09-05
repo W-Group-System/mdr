@@ -57,13 +57,13 @@
                             <tbody>
                                 @if(count($whi_reports_array) > 0)
                                     @foreach ($whi_reports_array as $key=>$whi_reports_data)
-                                        <tr @if($whi_reports_data->mdr) @if($whi_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @else class="bg-warning" style="color: black;" @endif>
+                                        <tr @if($whi_reports_data->mdr) @if($whi_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $whi_reports_data->department }}</td>
                                             <td>{{ $whi_reports_data->head }}</td>
                                             <td>
                                                 @if($whi_reports_data->mdr)
-                                                {{ $whi_reports_data->mdr->departments->target_date.'-'.date('M', strtotime($whi_reports_data->mdr->month)).'-'.$whi_reports_data->mdr->year }}
+                                                {{ $whi_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month", strtotime($whi_reports_data->mdr->month))).'-'.$whi_reports_data->mdr->year }}
                                                 @else
                                                 -
                                                 @endif
@@ -167,13 +167,13 @@
                                 @if(count($wli_reports_array) > 0)
                                     @foreach ($wli_reports_array as $key=>$wli_reports_data)
                                         {{-- @dd($wli_reports_data) --}}
-                                        <tr @if($wli_reports_data->mdr) @if($wli_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @else class="bg-warning" style="color: black;" @endif>
+                                        <tr @if($wli_reports_data->mdr) @if($wli_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $wli_reports_data->department }}</td>
                                             <td>{{ $wli_reports_data->head }}</td>
                                             <td>
                                                 @if($wli_reports_data->mdr)
-                                                {{ $wli_reports_data->mdr->departments->target_date.'-'.date('M', strtotime($wli_reports_data->mdr->month)).'-'.$wli_reports_data->mdr->year }}
+                                                {{ $wli_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month", strtotime($wli_reports_data->mdr->month))).'-'.$wli_reports_data->mdr->year }}
                                                 @else
                                                 -
                                                 @endif
