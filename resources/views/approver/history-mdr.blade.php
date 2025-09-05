@@ -116,10 +116,12 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                @if(!$whi_reports_data->mdr)
-                                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $whi_reports_data->departments->id }}">
-                                                    <i class="fa fa-comment"></i>
-                                                </button>
+                                                @if($year_month)
+                                                    @if(!$whi_reports_data->mdr)
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $whi_reports_data->departments->id }}">
+                                                        <i class="fa fa-comment"></i>
+                                                    </button>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>
@@ -226,10 +228,12 @@
                                                 @endforeach
                                             </td>
                                             <td>
-                                                @if(!$wli_reports_data->mdr)
-                                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $wli_reports_data->departments->id }}">
-                                                    <i class="fa fa-comment"></i>
-                                                </button>
+                                                @if($year_month)
+                                                    @if(!$wli_reports_data->mdr)
+                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $wli_reports_data->departments->id }}">
+                                                        <i class="fa fa-comment"></i>
+                                                    </button>
+                                                    @endif
                                                 @endif
                                             </td>
                                         </tr>
