@@ -122,12 +122,12 @@ class MdrController extends Controller
                     }
                     $mdr_approver->save();
                 }
-                $history_logs = new AcceptanceHistory();
-                $history_logs->user_id = auth()->user()->id;
-                $history_logs->action = "Submitted";
-                // $history_logs->remarks = $request->remarks;
-                $history_logs->mdr_id = $mdrs->id;
-                $history_logs->save();
+                // $history_logs = new AcceptanceHistory();
+                // $history_logs->user_id = auth()->user()->id;
+                // $history_logs->action = "Submitted";
+                // // $history_logs->remarks = $request->remarks;
+                // $history_logs->mdr_id = $mdrs->id;
+                // $history_logs->save();
             }
             $mdrs->status = 'Pending';
             // $mdrs->timeliness_approval = 'Yes';
