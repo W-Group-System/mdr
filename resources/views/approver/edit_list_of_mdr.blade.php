@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">Edit KPI</h5>
             </div>
-            <form method="POST" action="{{url('addGradeAndRemarks')}}" onsubmit="show()">
+            <form method="POST" id="gradeForm" action="{{url('addGradeAndRemarks')}}">
                 @csrf
                 <input type="hidden" name="yearAndMonth" value="{{$mdrSummary->yearAndMonth}}">
                 <input type="hidden" name="target_date" value="{{$mdrSummary->departments->target_date}}">
@@ -52,7 +52,7 @@
                                                             <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="{{$dptGoals->weight}}" required>
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="grade[]" class="form-control input-sm" step=".01" value="{{$dptGoals->grade}}" required>
+                                                            <input type="number" name="grade[]" class="form-control input-sm" step=".01" value="{{$dptGoals->grade}}" max="{{ $dptGoals->weight }}" required>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>

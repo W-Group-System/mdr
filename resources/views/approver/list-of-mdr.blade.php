@@ -606,7 +606,7 @@
             })
         })
 
-        $("[name='weight[]']").on('blur', function() {
+        $("[name='weight[]']").on('change', function() {
             let weightGrade = 0;
             
             $("[name='weight[]']").each(function() {
