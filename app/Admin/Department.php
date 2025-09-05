@@ -9,6 +9,7 @@ use App\DeptHead\DepartmentalGoals;
 use App\DeptHead\Innovation;
 use App\DeptHead\MdrScore;
 use App\DeptHead\ProcessDevelopment;
+use App\MdrReportRemark;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -22,6 +23,10 @@ class Department extends Model implements Auditable
     public function user() 
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+    public function remarks()
+    {
+        return $this->hasMany(MdrReportRemark::class);
     }
     // public function kpi_scores() 
     // {

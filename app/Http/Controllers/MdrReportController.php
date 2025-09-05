@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Admin\Department;
 use App\DeptHead\Mdr;
+use App\MdrReportRemark;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 use stdClass;
 
 class MdrReportController extends Controller
@@ -20,9 +22,10 @@ class MdrReportController extends Controller
         $wli_reports_array = [];
         foreach($departments->where('company_id',3) as $department)
         {
-            $mdr = Mdr::where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime($request->year_month)))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime($request->year_month)))->orderBy('score','asc')->first();
             $object = new stdClass;
             $object->department = $department->name;
+            $object->departments = $department;
             $object->head = isset($department->user->name) ? $department->user->name : null;
             $object->mdr = $mdr;
             $wli_reports_array[] = $object;
@@ -31,9 +34,10 @@ class MdrReportController extends Controller
         $whi_reports_array = [];
         foreach($departments->where('company_id',2) as $department)
         {
-            $mdr = Mdr::where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime($request->year_month)))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime($request->year_month)))->orderBy('score','asc')->first();
             $object = new stdClass;
             $object->department = $department->name;
+            $object->departments = $department;
             $object->head = isset($department->user->name) ? $department->user->name : null;
             $object->mdr = $mdr;
             $whi_reports_array[] = $object;
@@ -72,7 +76,26 @@ class MdrReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $mdr_reports_remarks = MdrReportRemark::where('department_id', $request->department_id)->where('year',date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->first();
+        // dd($mdr_reports_remarks);
+        if($mdr_reports_remarks)
+        {
+            $mdr_reports_remarks->remarks = $request->remarks;
+            $mdr_reports_remarks->save();
+        }
+        else
+        {
+            $mdr_reports_remarks = new MdrReportRemark;
+            $mdr_reports_remarks->department_id = $request->department_id;
+            $mdr_reports_remarks->year = date('Y', strtotime($request->year_and_month));
+            $mdr_reports_remarks->month = date('m', strtotime($request->year_and_month));
+            $mdr_reports_remarks->remarks = $request->remarks;
+            $mdr_reports_remarks->save();
+        }
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
     }
 
     /**

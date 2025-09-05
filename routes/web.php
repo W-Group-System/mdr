@@ -125,6 +125,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         # History of MDR
         Route::get('/mdr_reports', 'MdrReportController@index')->name('historyMdr');
+        Route::post('store_remarks','MdrReportController@store');
 
         # List of Penalties
         Route::get('/list_of_penalties', 'Approver\ListOfPenaltiesController@index')->name('listOfPenalties');

@@ -46,6 +46,8 @@
                                     <th rowspan="2">Innovation</th>
                                     <th rowspan="2">Rating</th>
                                     <th rowspan="2">Rating</th>
+                                    <th rowspan="2">Remarks</th>
+                                    <th rowspan="2">Action</th>
                                 </tr>
                                 <tr>
                                     <th>Pre-approved Date</th>
@@ -61,7 +63,7 @@
                                             <td>{{ $whi_reports_data->head }}</td>
                                             <td>
                                                 @if($whi_reports_data->mdr)
-                                                {{ date('d-M-Y', strtotime($whi_reports_data->mdr->pre_approved_date)) }}
+                                                {{ $whi_reports_data->mdr->departments->target_date.'-'.date('M', strtotime($whi_reports_data->mdr->month)).'-'.$whi_reports_data->mdr->year }}
                                                 @else
                                                 -
                                                 @endif
@@ -104,6 +106,22 @@
                                             <td>
                                                 0.00
                                             </td>
+                                            <td>
+                                                @php
+                                                    $year = date('Y', strtotime($year_month));
+                                                    $month = date('m', strtotime($year_month));
+                                                @endphp
+                                                @foreach (($whi_reports_data->departments->remarks)->where('year', $year)->where('month', $month) as $remarks)
+                                                    {!! nl2br(e($remarks->remarks)) !!}
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @if(!$whi_reports_data->mdr)
+                                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $whi_reports_data->departments->id }}">
+                                                    <i class="fa fa-comment"></i>
+                                                </button>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @else
@@ -137,6 +155,8 @@
                                     <th rowspan="2">Innovation</th>
                                     <th rowspan="2">@if($year_month) {{ date('F', strtotime($year_month)) }} @endif Rating</th>
                                     <th rowspan="2">@if($year_month) {{ date('F', strtotime('-1 month', strtotime($year_month))) }} @endif Rating</th>
+                                    <th rowspan="2">Remarks</th>
+                                    <th rowspan="2">Action</th>
                                 </tr>
                                 <tr>
                                     <th>Pre-approved Date</th>
@@ -153,7 +173,7 @@
                                             <td>{{ $wli_reports_data->head }}</td>
                                             <td>
                                                 @if($wli_reports_data->mdr)
-                                                {{ date('d-M-Y', strtotime($wli_reports_data->mdr->pre_approved_date)) }}
+                                                {{ $wli_reports_data->mdr->departments->target_date.'-'.date('M', strtotime($wli_reports_data->mdr->month)).'-'.$wli_reports_data->mdr->year }}
                                                 @else
                                                 -
                                                 @endif
@@ -196,7 +216,24 @@
                                             <td>
                                                 0.00
                                             </td>
+                                            <td>
+                                                @php
+                                                    $year = date('Y', strtotime($year_month));
+                                                    $month = date('m', strtotime($year_month));
+                                                @endphp
+                                                @foreach (($wli_reports_data->departments->remarks)->where('year', $year)->where('month', $month) as $remarks)
+                                                    {!! nl2br(e($remarks->remarks)) !!}
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @if(!$wli_reports_data->mdr)
+                                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $wli_reports_data->departments->id }}">
+                                                    <i class="fa fa-comment"></i>
+                                                </button>
+                                                @endif
+                                            </td>
                                         </tr>
+
                                     @endforeach
                                 @else
                                 <tr>
@@ -211,6 +248,14 @@
         </div>
     </div>
 </div>
+
+@foreach ($whi_reports_array as $data)
+@include('approver.whi_mdr_reports_remarks')
+@endforeach
+
+@foreach ($wli_reports_array as $data)
+@include('approver.wli_mdr_reports_remarks')
+@endforeach
 @endsection
 
 @push('scripts')
