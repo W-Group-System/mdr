@@ -18,14 +18,20 @@ class CheckAccess
     {
         $url = $request->path();
         $module = Module::where('url', $url)->first();
-
-        if(check_access($module->module_name,'read'))
+        if ($module)
         {
-            return $next($request);
+            if(check_access($module->module_name,'read'))
+            {
+                return $next($request);
+            }
+            else
+            {
+                abort(403);
+            }
         }
         else
         {
-            abort(403);
+            return $next($request);
         }
     }
 }
