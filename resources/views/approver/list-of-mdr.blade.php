@@ -620,6 +620,28 @@
             }
         });
         
+
+        $("#gradeForm").on('submit', function(e) {
+            e.preventDefault()
+
+            var totalWeight = 0
+            $("[name='weight[]']").each(function(key, item) {
+                return totalWeight += parseFloat(item.value)
+            })
+
+            if (totalWeight > 3.00)
+            {
+                swal({
+                    title: "Error because the weight is greater than 3",
+                    type: "error"
+                })
+            }
+            else
+            {
+                this.submit()
+                show()
+            }
+        })
     })
 </script>
 @endpush
