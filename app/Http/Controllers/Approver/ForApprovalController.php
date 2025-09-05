@@ -15,7 +15,7 @@ class ForApprovalController extends Controller
 {
     public function index(Request $request) {
 
-        $filter = $request->get('filter') ?? 'all';
+        $filter = $request->get('filter') ?? 'for-approval';
         $isAdmin = auth()->user()->role === 'Administrator';
 
         if ($isAdmin) {
