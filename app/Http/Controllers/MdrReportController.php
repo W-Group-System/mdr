@@ -6,6 +6,7 @@ use App\Admin\Department;
 use App\DeptHead\Mdr;
 use App\MdrReportRemark;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use RealRashid\SweetAlert\Facades\Alert;
 use stdClass;
 
@@ -141,5 +142,45 @@ class MdrReportController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    
+    public function export(Request $request,$year_month)
+    {
+        // dd($request->all());
+        $data = [];
+        $data['year_and_month'] = $year_month;
+
+        $departments = Department::with('user')->where('status','Active')->get();
+        $data['wli'] = [];
+        foreach($departments->where('company_id',3) as $department)
+        {
+            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($year_month)))->where('month', date('m', strtotime($year_month)))->orderBy('score','asc')->first();
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->departments = $department;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr = $mdr;
+            $data['wli'][] = $object;
+        }
+
+        $data['whi'] = [];
+        foreach($departments->where('company_id',2) as $department)
+        {
+            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($year_month)))->where('month', date('m', strtotime($year_month)))->orderBy('score','asc')->first();
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->departments = $department;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr = $mdr;
+            $data['whi'][] = $object;
+        }
+        
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('approver.mdr_report', ['data' => $data])
+            ->setPaper('a3', 'landscape')->setWarnings(false);
+            
+        return $pdf->stream();
+
     }
 }

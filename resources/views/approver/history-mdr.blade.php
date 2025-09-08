@@ -19,6 +19,13 @@
                                 &nbsp;
                                 <div>
                                     <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+
+                                    @if($year_month)
+                                    <a href="{{ url('export/'.$year_month) }}" target="_blank" class="btn btn-sm btn-danger">
+                                        <i class="fa fa-file-pdf-o"></i>
+                                        Export as PDF
+                                    </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
