@@ -262,17 +262,19 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th>Reason</th>
-                                                        <th>Actions</th>
+                                                        <th style="width: 80%">Reason</th>
+                                                        <th style="width: 20%">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td>{{ $mdrSummary->timeliness_remarks }}</td>
-                                                        <td>
-                                                            <button type="button" class="btn  btn-primary approveTimelinessRequest" data-url="{{ url('approveTime', $mdrSummary->id) }}"><i class="fa fa-thumbs-up"></i></button>
-                                                            <button type="button" class="btn  btn-danger disapproveTimelinessRequest" data-url="{{ url('disapproveTime', $mdrSummary->id) }}"><i class="fa fa-thumbs-down"></i></button>
-                                                        </td>
+                                                        @if(check_access('Timeliness Approval', 'update'))
+                                                            <td>
+                                                                <button type="button" class="btn  btn-primary approveTimelinessRequest" data-url="{{ url('approveTime', $mdrSummary->id) }}"><i class="fa fa-thumbs-up"></i></button>
+                                                                <button type="button" class="btn  btn-danger disapproveTimelinessRequest" data-url="{{ url('disapproveTime', $mdrSummary->id) }}"><i class="fa fa-thumbs-down"></i></button>
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 </tbody>
                                             </table>
