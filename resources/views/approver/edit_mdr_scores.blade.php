@@ -11,10 +11,12 @@
                         <div class="col-md-12">
                             Innovation :
                             <input type="number" name="innovation_scores" class="form-control input-sm" value="{{$mdrSummary->innovation_scores}}"
-                                step="0.5" min="0" max="0.5" list="timelinessOptions">
+                                step="0.5" min="0" max="1.5" list="timelinessOptions">
                                 <datalist id="timelinessOptions">
                                     <option value="0">
                                     <option value="0.5">
+                                    <option value="1">
+                                    <option value="1.5">
                                 </datalist>
                         </div>
                         {{-- <div class="col-md-12">
