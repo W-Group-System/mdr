@@ -40,7 +40,8 @@ function computeKpi($grades,$id)
     
     $mdr = Mdr::findOrFail($id);
     $mdr->grade = $value;
-    // $mdr->score = $score;
+    $mdr->score = $mdr->grade + $mdr->timeliness + $mdr->innovation_scores;
+
     $mdr->save();
 }
 
