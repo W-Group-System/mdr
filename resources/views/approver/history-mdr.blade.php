@@ -182,7 +182,7 @@
                                             <td>{{ $wli_reports_data->head }}</td>
                                             <td>
                                                 @if($wli_reports_data->mdr)
-                                                {{ $wli_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month", strtotime($wli_reports_data->mdr->month))).'-'.$wli_reports_data->mdr->year }}
+                                                {{ $wli_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+1 month", strtotime($wli_reports_data->mdr->year.'-'.$wli_reports_data->mdr->month))).'-'.$wli_reports_data->mdr->year }}
                                                 @else
                                                 -
                                                 @endif
