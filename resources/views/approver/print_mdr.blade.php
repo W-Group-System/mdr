@@ -71,13 +71,13 @@
         margin: 0;
         padding: 0;
     }
-    /* footer {
+    footer {
         position: fixed;
         bottom: -60px;
         left: 0px;
         right: 0px;
-        height: 50px;
-    } */
+        height: 60px;
+    }
     .page-number:after {
         content: counter(page);
     }
@@ -91,6 +91,22 @@
 </style>
 
 <body>
+    <footer>
+        <table style='width:100%;' border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class='text-left"'>
+                    <p class="m-0" style="font-weight: normal; font-size:8;">WGI-FR-BPD-020</p>
+                    <p class="m-0" style="font-weight: normal; font-size:8;">Rev. 3 05/05/2025</p>
+                </td>
+                <td class='text-center'>
+                    <i ></i>
+                </td>
+                <td class='text-right'>
+                    <span class="page-number">Page <script type="text/php">{PAGE_NUM} of {PAGE_COUNT}</script></span>
+                </td>
+            </tr>
+        </table>
+    </footer>
     <header>
         <table style='width:100%;' border="1" cellspacing="0" cellpadding="0">
             <tr>
@@ -330,22 +346,6 @@
             </tr>
         </table>
     </main>
-
-    <footer>
-        <table style='width:100%;' border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td class='text-left"'>
-                    <p class="m-0" style="font-weight: bold;"><i>Original - HR; Duplicate - Requestor</i></p>
-                </td>
-                <td class='text-center'>
-                    <i ></i>
-                </td>
-                <td class='text-right'>
-                    <span class="page-number">Page <script type="text/php">{PAGE_NUM} of {PAGE_COUNT}</script></span>
-                </td>
-            </tr>
-        </table>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
