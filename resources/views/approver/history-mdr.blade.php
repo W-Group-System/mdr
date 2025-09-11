@@ -124,10 +124,12 @@
                                             </td>
                                             <td>
                                                 @if($year_month)
-                                                    @if(!$whi_reports_data->mdr)
-                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $whi_reports_data->departments->id }}">
-                                                        <i class="fa fa-comment"></i>
-                                                    </button>
+                                                    @if($whi_reports_data->mdr)
+                                                        @if($whi_reports_data->mdr->grade < 3.00)
+                                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $whi_reports_data->departments->id }}">
+                                                            <i class="fa fa-comment"></i>
+                                                        </button>
+                                                        @endif
                                                     @endif
                                                 @endif
                                             </td>
@@ -236,10 +238,12 @@
                                             </td>
                                             <td>
                                                 @if($year_month)
-                                                    @if(!$wli_reports_data->mdr)
-                                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $wli_reports_data->departments->id }}">
-                                                        <i class="fa fa-comment"></i>
-                                                    </button>
+                                                    @if($wli_reports_data->mdr)
+                                                        @if($wli_reports_data->mdr->grade < 3.00)
+                                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $wli_reports_data->departments->id }}">
+                                                            <i class="fa fa-comment"></i>
+                                                        </button>
+                                                        @endif
                                                     @endif
                                                 @endif
                                             </td>
