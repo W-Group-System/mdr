@@ -121,6 +121,7 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
 
     # Pending MDR
     Route::get('mdr_list', 'Approver\PendingMdrController@index')->name('pendingMdr')->middleware('checkAccess');
+    Route::get('print_mdr','Approver\PendingMdrController@printMdr');
 
     # History of MDR
     Route::get('/mdr_reports', 'MdrReportController@index')->name('historyMdr')->middleware('checkAccess');

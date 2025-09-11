@@ -127,6 +127,7 @@
                                 <th>Month</th>
                                 <th>Deadline</th>
                                 <th>Submission Date</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -135,13 +136,25 @@
                                     @php
                                         $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
                                     @endphp
-                                    <td width="10">
+                                    <td>
                                         <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#mdrStatusModal{{$mdr->id}}">
                                             <i class="fa fa-history"></i>
                                         </button>
                                         <a href="{{url('list_of_mdr/'.$mdr->id)}}" class="btn btn-warning btn-sm" onclick="show()">
                                             <i class="fa fa-pencil-square-o"></i>                                            
                                         </a>
+                                        @if($mdr->status == "Approved")
+                                        <form action="{{ url('print_mdr') }}" method="get" style="display: inline-block;" target="_blank">
+
+                                            <input type="hidden" name="year" value="{{ $mdr->year}}">
+                                            <input type="hidden" name="month" value="{{ $mdr->month}}">
+                                            <input type="hidden" name="department" value="{{ $mdr->department_id}}">
+                                            
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa fa-print"></i>
+                                            </button>
+                                        </form>
+                                        @endif
                                     </td>
                                     <td>{{ $mdr->departments->name }}</td>
                                     <td>
@@ -152,6 +165,17 @@
                                     <td>{{ DateTime::createFromFormat('!m', $mdr->month)->format('F') }} {{ $mdr->year }}</td>
                                     <td>{{ $fullTargetDate->format('F d, Y') }}</td>
                                     <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
+                                    <td>
+                                        @if($mdr->status == "Pending")
+                                        <span class="label label-warning">
+                                        @elseif($mdr->status == "Approved")
+                                        <span class="label label-primary">
+                                        @else
+                                        <span class="label label-danger">
+                                        @endif
+                                            {{ $mdr->status }}
+                                        </span>
+                                    </td>
                                 </tr>
                                 @include('dept-head.view_mdr_status')
                             @endforeach

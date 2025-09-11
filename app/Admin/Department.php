@@ -28,10 +28,10 @@ class Department extends Model implements Auditable
     {
         return $this->hasMany(MdrReportRemark::class);
     }
-    // public function kpi_scores() 
-    // {
-    //     return $this->hasMany(MdrScore::class);
-    // }
+    public function company() 
+    {
+        return $this->belongsTo(Company::class);
+    }
     // public function process_development() 
     // {
     //     return $this->hasMany(ProcessDevelopment::class);
