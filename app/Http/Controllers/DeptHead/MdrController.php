@@ -100,9 +100,9 @@ class MdrController extends Controller
                 $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
 
                 $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->get();
-                if (count($innovations) > 0) {
-                    $mdrs->innovation_scores = 0.5;
-                }
+                // if (count($innovations) > 0) {
+                $mdrs->innovation_scores = 0;
+                // }
                 $mdr_approvers = MdrApprovers::where('mdr_id', $mdrs->id)->orderBy('level', 'asc')->get();
                 // if (count($mdr_approvers) == 0)
                 // {
@@ -134,9 +134,9 @@ class MdrController extends Controller
             $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
 
             $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->get();
-            if (count($innovations) > 0) {
-                $mdrs->innovation_scores = 0.5;
-            }
+            // if (count($innovations) > 0) {
+            $mdrs->innovation_scores = 0;
+            // }
             $mdr_approvers = MdrApprovers::where('mdr_id', $mdrs->id)->orderBy('level', 'asc')->get();
             if (count($mdr_approvers) == 0)
             {
@@ -182,10 +182,10 @@ class MdrController extends Controller
             DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
             $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
 
-            if ($innovations) {
-                $mdrs->innovation_scores = 0.5;
+            // if ($innovations) {
+                $mdrs->innovation_scores = 0;
                 $mdrs->save();
-            }
+            // }
 
             // $userData = User::where('department_id', auth()->user()->department_id)
             //     ->where('role', "Department Head")
