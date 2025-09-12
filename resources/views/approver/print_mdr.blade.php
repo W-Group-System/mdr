@@ -17,7 +17,7 @@
         font-size: 8.8;
     }
     @page {
-        margin-top: 160px; /* equal or slightly bigger than header height */
+        margin-top: 175px; /* equal or slightly bigger than header height */
         margin-bottom: 80px; /* equal or slightly bigger than footer height */
         margin-left: 20px;
         margin-right: 20px;
@@ -158,66 +158,65 @@
 
     <main>
         <table cellpadding='1' cellspacing='0' border="1" style="width: 100%;">
-
             <tr>
                 <td>
-                    <p class="font-weight-bold" style="font-size:11">Company: <span class="font-weight-normal">{{ $data['mdr']->departments->company->name }}</span></p>
+                    <p class="font-weight-bold ml-1" style="font-size:11">Company: <span class="font-weight-normal">{{ $data['mdr']->departments->company->name }}</span></p>
                 </td>
                 <td>
-                    <p class="font-weight-bold text-center" style="font-size: 11;">Criteria</p>
+                    <p class="font-weight-bold ml-1 text-center" style="font-size: 11;">Criteria</p>
                 </td>
                 <td>
-                    <p class="font-weight-bold text-center" style="font-size: 11;">Target Weight</p>
+                    <p class="font-weight-bold ml-1 text-center" style="font-size: 11;">Target Weight</p>
                 </td>
                 <td>
-                    <p class="font-weight-bold text-center" style="font-size: 11;">Final Score</p>
+                    <p class="font-weight-bold ml-1 text-center" style="font-size: 11;">Final Score</p>
                 </td>
             </tr>
             <tr>
                 <td rowspan="3">
-                    <p class="font-weight-bold" style="font-size:11">Department: <span class="font-weight-normal">{{ $data['mdr']->departments->name }}</span></p>
+                    <p class="font-weight-bold ml-1" style="font-size:11">Department: <span class="font-weight-normal">{{ $data['mdr']->departments->name }}</span></p>
                 </td>
                 <td>
-                    <p class="font-weight-normal" style="font-size: 11;">Operational Objectives</p>
+                    <p class="font-weight-normal ml-1" style="font-size: 11;">Operational Objectives</p>
                 </td>
                 <td>
-                    <p class="font-weight-normal text-center" style="font-size: 11;">3.00</p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">3.00</p>
                 </td>
                 <td>
-                    <p class="font-weight-normal text-center" style="font-size: 11;"></p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p class="font-weight-normal" style="font-size: 11;">Innovation</p>
-                </td>
-                <td>
-                    <p class="font-weight-normal text-center" style="font-size: 11;">1.50</p>
-                </td>
-                <td>
-                    <p class="font-weight-normal text-center" style="font-size: 11;"></p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">{{ number_format($data['mdr']->score,2) }}</p>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p class="font-weight-normal" style="font-size: 11;">Timeliness</p>
+                    <p class="font-weight-normal ml-1" style="font-size: 11;">Innovation</p>
                 </td>
                 <td>
-                    <p class="font-weight-normal text-center" style="font-size: 11;">0.50</p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">1.50</p>
                 </td>
                 <td>
-                    <p class="font-weight-normal text-center" style="font-size: 11;"></p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">{{ number_format($data['mdr']->innovation_scores,2) }}</p>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p class="font-weight-bold" style="font-size: 11;">Month Covered: <span class="font-weight-normal">{{ date('F', strtotime($data['mdr']->month)) }}</span></p>
+                    <p class="font-weight-normal ml-1" style="font-size: 11;">Timeliness</p>
                 </td>
                 <td>
-                    <p class="font-weight-bold" style="font-size: 11;">Total</p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">0.50</p>
                 </td>
                 <td>
-                    <p class="font-weight-bold text-center" style="font-size: 11;">5.00</p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">{{ number_format($data['mdr']->timeliness,2) }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p class="font-weight-bold ml-1" style="font-size: 11;">Month Covered: <span class="font-weight-normal">{{ date('F Y', strtotime($data['mdr']->year.'-'.$data['mdr']->month)) }}</span></p>
+                </td>
+                <td>
+                    <p class="font-weight-bold ml-1" style="font-size: 11;">Total</p>
+                </td>
+                <td>
+                    <p class="font-weight-bold ml-1 text-center" style="font-size: 11;">5.00</p>
                 </td>
                 <td>
 
@@ -257,10 +256,10 @@
             @foreach ($data['mdr']->departmentalGoals as $kpi)
             <tr>
                 <td><p class="p-2">{!! nl2br(e($kpi->departmentKpi->name)) !!}</p></td>
-                <td><p class="p-2">{!! nl2br(e($kpi->target)) !!}</p></td>
-                <td><p class="p-2">{{ $kpi->actual }}</p></td>
-                <td><p class="text-center p-2">{{ number_format($kpi->rating,2) }}</p></td>
-                <td><p class="text-center p-2">{{ number_format($kpi->score,2) }}</p></td>
+                <td width="90"><p class="p-2">{!! nl2br(e($kpi->target)) !!}</p></td>
+                <td width="90"><p class="p-2">{{ $kpi->actual }}</p></td>
+                <td><p class="text-center p-2">{{ number_format($kpi->weight,2) }}</p></td>
+                <td><p class="text-center p-2">{{ number_format($kpi->grade,2) }}</p></td>
                 <td><p class="p-2">{!! nl2br(e($kpi->remarks)) !!}</p></td>
             </tr>
             @endforeach
