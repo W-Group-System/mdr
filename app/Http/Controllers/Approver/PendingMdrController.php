@@ -9,6 +9,7 @@ use App\DeptHead\Innovation;
 use App\DeptHead\Mdr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Support\Facades\App;
 
 class PendingMdrController extends Controller
@@ -55,12 +56,14 @@ class PendingMdrController extends Controller
     public function printMdr(Request $request)
     {
         // dd($request->all());
-        $mdrs = Mdr::with('departments.company', 'departmentalGoals.departmentKpi')->where('year', $request->year)->where('month', $request->month)->where('department_id', $request->department)->first();
+        $mdrs = Mdr::with('departments.company', 'departmentalGoals.departmentKpi','departments.user')->where('year', $request->year)->where('month', $request->month)->where('department_id', $request->department)->first();
         $innovations = Innovation::where('year', $request->year)->where('month', $request->month)->where('department_id', $request->department)->first();
+        $users = User::get();
         
         $data = [];
         $data['mdr'] = $mdrs;
         $data['innovations'] = $innovations;
+        $data['users'] = $users;
 
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('approver.print_mdr', ['data' => $data])

@@ -304,24 +304,40 @@
             <tr>
                 <td>
                     <p class="font-weight-normal m-0" style="font-size:10">Prepared by:</p>
-                    <p class="font-weight-bold mb-0 mt-5 text-center" style="font-size:10">(Position)</p>
+
+                    <p class="font-weight-normal mb-0 mt-5 text-center" style="font-size:10">{{ $data['mdr']->departments->user->name }}</p>
+                    <p class="font-weight-bold mb-0 text-center" style="font-size:10">(Department Head)</p>
                     <p class="font-weight-normal m-0 text-center" style="font-size:7">(Signature over Printed Name/Date)</p>
                 </td>
                 <td>
                     <p class="font-weight-normal m-0" style="font-size:10">Checked by:</p>
-                    <p class="font-weight-bold mb-0 mt-5 text-center" style="font-size:10">(PMO/ BP Manager)</p>
+                    @php
+                        $pmo = $data['users']->where('position','Performance Management Officer')->first();
+                        $bpd_manager = $data['users']->where('position','Business Process Manager')->first();
+                    @endphp
+                    <p class="font-weight-normal mb-0 mt-5 text-center" style="font-size:10">{{ $pmo->name.' / '.$bpd_manager->name }}</p>
+                    <p class="font-weight-bold mb-0 text-center" style="font-size:10">(PMO/ BP Manager)</p>
                     <p class="font-weight-normal m-0 text-center" style="font-size:7">(Signature over Printed Name/Date)</p>
                 </td>
             </tr>
             <tr>
                 <td>
+                    @php
+                        $cgo = $data['users']->where('position','Chief Governance Officer')->first();
+                    @endphp
                     <p class="font-weight-normal m-0" style="font-size:10">Reviewed by:</p>
-                    <p class="font-weight-bold mb-0 mt-5 text-center" style="font-size:10">(Chief Governance Officer)</p>
+                    <p class="font-weight-normal mb-0 mt-5 text-center" style="font-size:10">{{ $cgo->name }}</p>
+                    <p class="font-weight-bold mb-0 text-center" style="font-size:10">(Chief Governance Officer)</p>
                     <p class="font-weight-normal m-0 text-center" style="font-size:7">(Signature over Printed Name/Date)</p>
                 </td>
                 <td>
+                    @php
+                        $coo = $data['users']->where('position','Chief Operating Officer')->first();
+                    @endphp
                     <p class="font-weight-normal m-0" style="font-size:10">Noted by:</p>
-                    <p class="font-weight-bold mb-0 mt-5 text-center" style="font-size:10">(Chief Operating Officer)</p>
+
+                    <p class="font-weight-normal mb-0 mt-5 text-center" style="font-size:10">{{ $coo->name }}</p>
+                    <p class="font-weight-bold mb-0 text-center" style="font-size:10">(Chief Operating Officer)</p>
                     <p class="font-weight-normal m-0 text-center" style="font-size:7">(Signature over Printed Name/Date)</p>
                 </td>
             </tr>
@@ -340,7 +356,8 @@
             <tr>
                 <td colspan="2">
                     <p class="font-weight-normal m-0" style="font-size:10">Approved by:</p>
-                    <p class="font-weight-bold mb-0 mt-5 text-center" style="font-size:10">(Chairman)</p>
+                    <p class="font-weight-normal mb-0 mt-5 text-center" style="font-size:10">Wee Lee Hiong</p>
+                    <p class="font-weight-bold mb-0 text-center" style="font-size:10">(Chairman)</p>
                     <p class="font-weight-normal m-0 text-center" style="font-size:7">(Signature over Printed Name/Date)</p>
                 </td>
             </tr>
