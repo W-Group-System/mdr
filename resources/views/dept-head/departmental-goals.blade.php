@@ -53,5 +53,12 @@
     </div>
 </div>
 
+<script>
+    function deactivateMdr(e)
+    {
+        $(e).closest("tr").remove()
+    }
+</script>
+
 @include('dept-head.new_kpi')
 @include('dept-head.edit_kpi')

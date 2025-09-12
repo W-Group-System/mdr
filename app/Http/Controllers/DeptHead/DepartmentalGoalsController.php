@@ -19,6 +19,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
+        // dd($request->all());
         $request->validate([
             'file[]' => 'array',
             'file.*.*' => 'max:1024'

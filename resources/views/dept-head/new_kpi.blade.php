@@ -27,29 +27,35 @@
                                                     {{-- <th>Grade</th> --}}
                                                     <th>Remarks</th>
                                                     <th>Attachments</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($department_kpis as $key=>$department_kpi)
                                                     <tr>
                                                         <td>
-                                                            <input type="hidden" name="department_kpi_id[]" value="{{$department_kpi->id}}">
+                                                            <input type="hidden" name="department_kpi_id[{{ $key }}]" value="{{$department_kpi->id}}">
                                                             {!! nl2br($department_kpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            <textarea name="target[]" class="form-control" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
+                                                            <textarea name="target[{{ $key }}]" class="form-control" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <textarea name="actual[]" class="form-control" cols="30" rows="10" required>{{old('actual[]')}}</textarea>
+                                                            <textarea name="actual[{{ $key }}]" class="form-control" cols="30" rows="10" required></textarea>
                                                         </td>
                                                         {{-- <td>
                                                             <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{old('grade[]')}}" disabled required>
                                                         </td> --}}
                                                         <td>
-                                                            <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{old('remarks[]')}}</textarea>
+                                                            <textarea name="remarks[{{ $key }}]" class="form-control input-sm" cols="30" rows="10" required></textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple required>
+                                                            <input type="file" name="file[{{ $key }}][]" class="form-control input-sm" multiple required>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger" onclick="deactivateMdr(this)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 @endforeach
