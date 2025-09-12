@@ -129,7 +129,7 @@ class ForApprovalController extends Controller
         $timeliness = Mdr::findOrFail($id);
         $timeliness->timeliness_approval = "Disapproved";
         $timeliness->timeliness = 0.00;
-        // $timeliness->disapproved_timeliness = $request->remarks;;
+        $timeliness->disapproved_timeliness = $request->remarks;;
         $timeliness->save();
 
         $history_logs = new AcceptanceHistory();
