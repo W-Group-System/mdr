@@ -378,6 +378,13 @@ class ListOfMdr extends Controller
             $mdrSummary->timeliness_remarks = $request->remarks;
             $mdrSummary->save();
 
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = $request->action;
+            $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrSummary->id;
+            $history_logs->save();
+
             Alert::success('Successfully Approved')->persistent('Dismiss');
         }
 
