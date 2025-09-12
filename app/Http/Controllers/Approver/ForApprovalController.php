@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Approver;
 
+use App\AcceptanceHistory;
 use App\Admin\DepartmentApprovers;
 use App\Approver\MdrSummary;
 use App\DeptHead\Mdr;
@@ -113,6 +114,12 @@ class ForApprovalController extends Controller
         $timeliness->timeliness = 0.50;
         $timeliness->save();
         
+        $history_logs = new AcceptanceHistory();
+        $history_logs->user_id = auth()->user()->id;
+        $history_logs->action = "Approved Timeliness Request";
+        $history_logs->remarks = $request->remarks;
+        $history_logs->mdr_id = $timeliness->id;
+        $history_logs->save();
         return response()->json([
             'message' => 'Successfully Approved',
             'redirect' => url('timeliness_approval') 
@@ -122,8 +129,15 @@ class ForApprovalController extends Controller
         $timeliness = Mdr::findOrFail($id);
         $timeliness->timeliness_approval = "Disapproved";
         $timeliness->timeliness = 0.00;
-        $timeliness->disapproved_timeliness = $request->remarks;;
+        // $timeliness->disapproved_timeliness = $request->remarks;;
         $timeliness->save();
+
+        $history_logs = new AcceptanceHistory();
+        $history_logs->user_id = auth()->user()->id;
+        $history_logs->action = "Disapproved Timeliness Request";
+        $history_logs->remarks = $request->remarks;
+        $history_logs->mdr_id = $timeliness->id;
+        $history_logs->save();
         
         return response()->json([
             'message' => 'Successfully Dispproved',
