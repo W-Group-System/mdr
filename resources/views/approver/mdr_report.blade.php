@@ -27,13 +27,27 @@
     }
 
     table {
+        page-break-inside: auto;
         width: 100%;
-        table-layout: fixed;
     }
 
-    table th,
-    table td {
-        padding: 1;
+    thead {
+        display: table-row-group;
+    }
+
+    tr {
+        page-break-inside: auto;
+    }
+
+    .text-justify {
+        text-align: justify;
+        text-justify: inter-word;
+        margin: 0;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word; 
+        white-space: normal;
+        width: 150px;     
     }
 </style>
 
@@ -55,8 +69,10 @@
                     <th rowspan="2">Timeliness</th>
                     <th rowspan="2">Operational Objectives (3.00)</th>
                     <th rowspan="2">Innovation (1.50)</th>
-                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime($data['year_and_month'])) }} @endif Rating</th>
-                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month', strtotime($data['year_and_month']))) }} @endif Rating</th>
+                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F',
+                        strtotime($data['year_and_month'])) }} @endif Rating</th>
+                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
+                        strtotime($data['year_and_month']))) }} @endif Rating</th>
                     <th rowspan="2">Reason for Low Grade</th>
                     <th rowspan="2">Action Plan</th>
                 </tr>
@@ -150,8 +166,10 @@
                     <th rowspan="2">Timeliness</th>
                     <th rowspan="2">Operational Objectives (3.00)</th>
                     <th rowspan="2">Innovation (1.50)</th>
-                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime($data['year_and_month'])) }} @endif Rating</th>
-                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month', strtotime($data['year_and_month']))) }} @endif Rating</th>
+                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F',
+                        strtotime($data['year_and_month'])) }} @endif Rating</th>
+                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
+                        strtotime($data['year_and_month']))) }} @endif Rating</th>
                     <th rowspan="2">Reason for Low Grade</th>
                     <th rowspan="2">Action Plan</th>
                 </tr>
@@ -163,8 +181,7 @@
             <tbody>
                 {{-- @dd($data['whi']) --}}
                 @foreach ($data['wli'] as $key=>$wli)
-                <tr @if($wli->mdr) @if($wli->mdr->score < 3.00) class="bg-warning" style="color: black;"
-                        @endif @endif>
+                <tr @if($wli->mdr) @if($wli->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
                         <td>
                             WLI
                         </td>
@@ -221,14 +238,14 @@
                         <td class="text-center">
                             0.00
                         </td>
-                        <td class="text-center">
+                        <td>
                             @php
                             $year = date('Y', strtotime($data['year_and_month']));
                             $month = date('m', strtotime($data['year_and_month']));
                             @endphp
                             @foreach (($wli->departments->remarks)->where('year', $year)->where('month',
                             $month) as $remarks)
-                            {!! nl2br(e($remarks->remarks)) !!}
+                            <p class="text-justify">{!! nl2br(e($remarks->remarks)) !!}</p>
                             @endforeach
                         </td>
                         <td class="text-center"></td>

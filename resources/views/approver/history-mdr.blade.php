@@ -233,7 +233,7 @@
                                                     $month = date('m', strtotime($year_month));
                                                 @endphp
                                                 @foreach (($wli_reports_data->departments->remarks)->where('year', $year)->where('month', $month) as $remarks)
-                                                    {!! nl2br(e($remarks->remarks)) !!}
+                                                    <p style="text-align: justify; text-justify:inter-word;">{!! nl2br(e($remarks->remarks)) !!}</p>
                                                 @endforeach
                                             </td>
                                             <td>
