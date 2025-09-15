@@ -27,7 +27,8 @@
                         </div>
                         <div class="col-md-12">
                             Attachment Needed
-                            <input name="attachment_description" id="" class="form-control" value="{{ $department_kpi->attachment_description }}">
+                            <input name="attachment_description" id="attachment_description_edit_{{ $department_kpi->id }}" class="form-control" value="{{ $department_kpi->attachment_description }}">
+                            <small id="descError_edit_{{ $department_kpi->id }}" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
                     </div>
                 </div>
@@ -39,3 +40,20 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    @foreach($department_kpis as $department_kpi)
+        const input{{ $department_kpi->id }} = document.getElementById('attachment_description_edit_{{ $department_kpi->id }}');
+        const error{{ $department_kpi->id }} = document.getElementById('descError_edit_{{ $department_kpi->id }}');
+        
+        input{{ $department_kpi->id }}.addEventListener('input', function() {
+            if (this.value.length > 50) {
+                error{{ $department_kpi->id }}.style.display = 'inline';
+            } else {
+                error{{ $department_kpi->id }}.style.display = 'none';
+            }
+        });
+    @endforeach
+});
+</script>
