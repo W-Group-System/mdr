@@ -27,7 +27,8 @@
                         </div>
                         <div class="col-md-12">
                             Attachment Needed
-                            <input name="attachment_description" id="" class="form-control">
+                            <input name="attachment_description" id="attachment_description" class="form-control">
+                            <small id="descError" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
                     </div>
                 </div>
@@ -39,3 +40,18 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('attachment_description');
+    const error = document.getElementById('descError');
+
+    input.addEventListener('input', function() {
+        if (this.value.length > 50) {
+            error.style.display = 'inline';
+        } else {
+            error.style.display = 'none';
+        }
+    });
+});
+</script>

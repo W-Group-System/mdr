@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="{{ asset('img/wgroup.png') }}" type="image/x-icon">
     <!-- Gritter -->
     <link href="js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .loader {
             position: fixed;

@@ -34,6 +34,7 @@ class DepartmentKpiController extends Controller
 
         $request->validate([
             'department' => 'required',
+            'attachment_description' => 'nullable|string|max:50',
         ]);
 
         $mdrSetup = new DepartmentKpi;
@@ -53,6 +54,7 @@ class DepartmentKpiController extends Controller
     
         $request->validate([
             'department' => 'required',
+            'attachment_description' => 'nullable|string|max:50',
         ]);
 
         $mdrSetup = DepartmentKpi::findOrFail($id);
