@@ -183,7 +183,7 @@
                     <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">3.00</p>
                 </td>
                 <td>
-                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">{{ number_format($data['mdr']->score,2) }}</p>
+                    <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">{{ number_format($data['mdr']->grade,2) }}</p>
                 </td>
             </tr>
             <tr>
