@@ -49,7 +49,10 @@
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple>
+                                                            <small class="form-text text-muted">
+                                                                File to upload: {{ $dptGoals->departmentKpi->attachment_description }}
+                                                            </small>
+                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple>    
                                                         </td>
                                                     </tr>
                                                 @endforeach

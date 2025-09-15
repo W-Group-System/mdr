@@ -25,6 +25,10 @@
                             Target :
                             <textarea name="target" id="" class="form-control" cols="30" rows="10" required></textarea>
                         </div>
+                        <div class="col-md-12">
+                            Attachment Needed
+                            <input name="attachment_description" id="" class="form-control">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
