@@ -220,7 +220,7 @@
                 </td>
                 <td>
                     @php
-                        $total = floatval($data['mdr']->score) + floatval($data['mdr']->innovation_scores) + floatval($data['mdr']->timeliness);
+                        $total = floatval($data['mdr']->grade) + floatval($data['mdr']->innovation_scores) + floatval($data['mdr']->timeliness);
                     @endphp
                     <p class="font-weight-normal ml-1 text-center" style="font-size: 11;">{{ number_format($total,2) }}</p>
                 </td>
