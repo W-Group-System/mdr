@@ -50,6 +50,9 @@
                                                             <textarea name="remarks[{{ $key }}]" class="form-control input-sm" cols="30" rows="10" required></textarea>
                                                         </td>
                                                         <td>
+                                                            <small class="form-text text-muted">
+                                                                File to upload: {{ $department_kpi->attachment_description }}
+                                                            </small>
                                                             <input type="file" name="file[{{ $key }}][]" class="form-control input-sm" multiple required>
                                                         </td>
                                                         <td>

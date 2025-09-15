@@ -41,6 +41,7 @@ class DepartmentKpiController extends Controller
         $mdrSetup->mdr_group_id = 1;
         $mdrSetup->name = $request->kpiName;
         $mdrSetup->target = $request->target;
+        $mdrSetup->attachment_description = $request->attachment_description;
         $mdrSetup->status = "Active";
         $mdrSetup->save();
 
@@ -59,6 +60,7 @@ class DepartmentKpiController extends Controller
         $mdrSetup->mdr_group_id = 1;
         $mdrSetup->name = $request->kpiName;
         $mdrSetup->target = $request->target;
+        $mdrSetup->attachment_description = $request->attachment_description;
         $mdrSetup->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
