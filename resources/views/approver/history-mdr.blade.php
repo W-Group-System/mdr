@@ -13,7 +13,7 @@
                         <div class="row">
                             <div class="col-lg-3">
                                 Year & Month :
-                                <input type="month" name="year_month" class="form-control input-sm" value="{{ $year_month }}">
+                                <input type="month" name="year_month" class="form-control input-sm" value="{{ date('Y-m', strtotime('-1 month')) }}">
                             </div>
                             <div class="col-lg-3">
                                 &nbsp;
