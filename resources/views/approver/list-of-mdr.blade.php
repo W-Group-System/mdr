@@ -284,8 +284,8 @@
                                 @if ($mdrSummary->timeliness_approval != "Yes")
                                     <div class="col-md-4">
                                         Actions :
-                                        <select name="action" class="form-control cat">
-                                            <option value="">Select Action</option>
+                                        <select name="action" class="form-control" required>
+                                            <option value="" disabled selected>Select Action</option>
                                             @if (($mdrSummary->timeliness_approval === "Approved") || ($mdrSummary->timeliness_approval === "Disapproved"))
                                             <option value="AcceptLateApprove">Accept</option>
                                             <option value="Returned">Return</option>
@@ -449,7 +449,7 @@
                                 @endphp
                                 <div class="col-md-4">
                                     Actions :
-                                    <select name="action" class="form-control cat">
+                                    <select name="action" class="form-control" required>
                                         <option value="">Select Action</option>
                                         <option value="Approved">Approve</option>
                                         @if(auth()->id() !== $lastApprover->user_id)
