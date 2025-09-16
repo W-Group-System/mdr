@@ -53,7 +53,7 @@
                                                             <small class="form-text text-muted">
                                                                 File to upload: {{ $department_kpi->attachment_description }}
                                                             </small>
-                                                            <input type="file" name="file[{{ $key }}][]" class="form-control input-sm" multiple required>
+                                                            <input type="file" name="file[{{ $key }}][]" class="form-control input-md" multiple required>
                                                         </td>
                                                         <td>
                                                             <button type="button" class="btn btn-danger" onclick="deactivateMdr(this)">

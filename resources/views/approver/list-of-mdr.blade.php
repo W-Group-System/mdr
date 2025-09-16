@@ -290,7 +290,7 @@
                                             <option value="AcceptLateApprove">Accept</option>
                                             <option value="Returned">Return</option>
                                             @else    
-                                            <option value="Accept">Accept</option>
+                                            <option value="Accepted">Accept</option>
                                             <option value="Returned">Return</option>
                                             @if (now() > $fullTargetDate)
                                             <option value="Timeliness Approval">Timeliness Approval</option>
