@@ -258,7 +258,7 @@ class ListOfMdr extends Controller
 
     public function acceptMdr(Request $request, $id) {
         $mdrSummary = Mdr::findOrFail($id);
-        if($request->action === "Accept") 
+        if($request->action === "Accepted") 
         {
             if($mdrSummary->date_accepted === null) {
                $department_approvers = DepartmentApprovers::where('status','Active')->orderBy('status_level', 'asc')->get();
