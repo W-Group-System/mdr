@@ -52,7 +52,7 @@
                                                             <small class="form-text text-muted">
                                                                 File to upload: {{ $dptGoals->departmentKpi->attachment_description }}
                                                             </small>
-                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple>    
+                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-md" multiple>    
                                                         </td>
                                                     </tr>
                                                 @endforeach
