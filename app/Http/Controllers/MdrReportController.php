@@ -23,7 +23,9 @@ class MdrReportController extends Controller
         $wli_reports_array = [];
         foreach($departments->where('company_id',3) as $department)
         {
-            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', strtotime('-1 month', strtotime($request->year_month)))->orderBy('score','asc')->first();
+
+            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
+
             $object = new stdClass;
             $object->department = $department->name;
             $object->departments = $department;
@@ -35,7 +37,7 @@ class MdrReportController extends Controller
         $whi_reports_array = [];
         foreach($departments->where('company_id',2) as $department)
         {
-            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', strtotime('-1 month', strtotime($request->year_month)))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
             $object = new stdClass;
             $object->department = $department->name;
             $object->departments = $department;
