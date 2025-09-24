@@ -20,10 +20,10 @@ class DepartmentalGoalsController extends Controller
 {
     public function create(Request $request) {
         // dd($request->all());
-        $request->validate([
-            'file[]' => 'array',
-            'file.*.*' => 'max:1024'
-        ]);
+        // $request->validate([
+        //     'file[]' => 'array',
+        //     'file.*.*' => 'max:1024'
+        // ]);
         
         foreach($request->department_kpi_id as $key=>$department_kpi_id)
         {
