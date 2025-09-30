@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Approver;
 
 use App\AcceptanceHistory;
 use App\Admin\DepartmentApprovers;
+use App\Admin\TimelinessSetup;
 use App\Approver\MdrSummary;
 use App\DeptHead\Mdr;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrStatus;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -109,9 +111,21 @@ class ForApprovalController extends Controller
         );
     }
     public function approveTimeliness(Request $request, $id) {
+        $today = Carbon::today()->toDateString();
+        $setup = TimelinessSetup::whereDate('effective_date', '<=', $today)
+            ->orderBy('effective_date', 'desc')
+            ->first();
+        
+        if (! $setup) {
+            return response()->json([
+                'message' => 'No timeliness setup found for today.',
+                'redirect' => url('timeliness_approval') 
+            ], 422);
+        }
+
         $timeliness = Mdr::findOrFail($id);
         $timeliness->timeliness_approval = "Approved";
-        $timeliness->timeliness = 0.50;
+        $timeliness->timeliness = $setup->score;
         $timeliness->save();
         
         $history_logs = new AcceptanceHistory();

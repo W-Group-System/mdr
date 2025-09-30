@@ -7,6 +7,7 @@ use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
+use App\Admin\TimelinessSetup;
 use App\Approver\MdrSummary;
 use App\Approver\Warnings;
 use App\DeptHead\DepartmentalGoals;
@@ -28,6 +29,7 @@ use App\Notifications\HRNotification;
 use App\Notifications\ReturnNotification;
 use App\Notifications\NotifyDeptHead;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -288,7 +290,17 @@ class ListOfMdr extends Controller
                 } 
                 else 
                 {
-                    $mdrSummary->timeliness = 0.50;
+                    $today = Carbon::today()->toDateString();
+                    $setup = TimelinessSetup::whereDate('effective_date', '<=', $today)
+                        ->orderBy('effective_date', 'desc')
+                        ->first();
+                    if (! $setup) {
+                        return response()->json([
+                            'message' => 'No timeliness setup found for today.',
+                            'redirect' => url('timeliness_approval') 
+                        ], 422);
+                    }
+                    $mdrSummary->timeliness = $setup->score;
                 }
                 $total_scores = floatval($mdrSummary->grade) + floatval($mdrSummary->timeliness) + floatval($mdrSummary->innovation_scores);
                 $mdrSummary->score = $total_scores;

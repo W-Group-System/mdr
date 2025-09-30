@@ -32,6 +32,11 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::post('/deactivate_department/{id}', 'Admin\DepartmentController@deactivate');
     Route::post('/activate_department/{id}', 'Admin\DepartmentController@activate');
 
+    # Timeliness_Setup
+    Route::get('/timeliness-setup', 'Admin\ComputationController@timeliness_index')->name('settings')->middleware('checkAccess');
+    Route::post('/addTimelinessSetup', 'Admin\ComputationController@addTimelinessSetup');
+
+
     # MDR Setups
     Route::get('/department_kpis', 'Admin\DepartmentKpiController@index')->name('mdr')->middleware('checkAccess');
     Route::post('/addDepartmentKpi', 'Admin\DepartmentKpiController@addDepartmentKpi');
