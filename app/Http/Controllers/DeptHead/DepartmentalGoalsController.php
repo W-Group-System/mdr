@@ -58,10 +58,10 @@ class DepartmentalGoalsController extends Controller
     }
 
     public function update(Request $request) {
-        $request->validate([
-            'file[]' => 'array',
-            'file.*.*' => 'max:1024'
-        ]);
+        // $request->validate([
+        //     'file[]' => 'array',
+        //     'file.*.*' => 'max:1024'
+        // ]);
 
         $departmentalGoals = DepartmentalGoals::findMany($request->department_goals_id);
         foreach($departmentalGoals as $deptKey=>$dptGoals)
