@@ -284,7 +284,7 @@ class ListOfMdr extends Controller
                 $mdrSummary->is_accepted = "Accepted";
                 $mdrSummary->date_accepted = now();
                 $fullTargetDate = getAdjustedTargetDate($mdrSummary->month, $mdrSummary->year, $mdrSummary->departments->target_date);
-                if (now() > $fullTargetDate) 
+                if (now()->toDateString() > Carbon::instance($fullTargetDate)->toDateString()) 
                 {
                     $mdrSummary->timeliness = 0;
                 } 
@@ -324,7 +324,7 @@ class ListOfMdr extends Controller
                 $mdrSummary->is_accepted = "Accepted";
                 $mdrSummary->date_accepted = now();
                 $fullTargetDate = getAdjustedTargetDate($mdrSummary->month, $mdrSummary->year, $mdrSummary->departments->target_date);
-                if (now() > $fullTargetDate) 
+                if (now()->toDateString() > Carbon::instance($fullTargetDate)->toDateString()) 
                 {
                     $mdrSummary->timeliness = 0;
                 } 
