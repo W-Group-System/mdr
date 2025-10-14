@@ -41,7 +41,8 @@ class DepartmentalGoalsController extends Controller
             $attachments = $request->file('file')[$key];
     
             foreach ($attachments as $attachment) {
-                $name = time() . '_' . $attachment->getClientOriginalName();
+                // $name = time() . '_' . $attachment->getClientOriginalName();
+                $name = time() . '_' . preg_replace('/[#\/\\\?%*:|"<>]/', '', $attachment->getClientOriginalName());
                 $attachment->move(public_path('departmental_goals_files'), $name);
                 $file_path = "/departmental_goals_files/" . $name;
     
@@ -76,7 +77,8 @@ class DepartmentalGoalsController extends Controller
                 $attachments = $request->file('file')[$deptKey];
                 
                 foreach ($attachments as $attachment) {
-                    $name = time() . '_' . $attachment->getClientOriginalName();
+                    // $name = time() . '_' . $attachment->getClientOriginalName();
+                    $name = time() . '_' . preg_replace('/[#\/\\\?%*:|"<>]/', '', $attachment->getClientOriginalName());
                     $attachment->move(public_path('departmental_goals_files'), $name);
                     $file_path = "/departmental_goals_files/" . $name;
         
