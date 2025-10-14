@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <h1 class="text-center">{{auth()->user()->department->name}}</h1>
+                <h1 class="text-center">{{optional(auth()->user()->department)->name}}</h1>
 
                 <div class="ibox-title">
                     <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#monthModal">
