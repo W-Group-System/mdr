@@ -8,7 +8,7 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        {{-- <div class="col-md-12">
                             Innovation :
                             <input type="number" name="innovation_scores" class="form-control input-sm" value="{{$mdrSummary->innovation_scores}}"
                                 step="0.5" min="0" max="1.5" list="timelinessOptions">
@@ -18,11 +18,11 @@
                                     <option value="1">
                                     <option value="1.5">
                                 </datalist>
-                        </div>
-                        {{-- <div class="col-md-12">
+                        </div> --}}
+                        <div class="col-md-12">
                             Innovation Scores :
                             <input type="number" name="innovation_scores" step=".01" class="form-control input-sm" value="{{$score->innovation_scores}}">
-                        </div> --}}
+                        </div>
                         <div class="col-md-12">
                             Timeliness : 
                             <input type="number" step=".01" name="timeliness" class="form-control input-sm" value="{{$mdrSummary->timeliness}}" readonly>
