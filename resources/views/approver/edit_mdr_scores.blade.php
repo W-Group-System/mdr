@@ -21,7 +21,7 @@
                         </div> --}}
                         <div class="col-md-12">
                             Innovation Scores :
-                            <input type="number" name="innovation_scores" step=".01" class="form-control input-sm" value="{{$score->innovation_scores}}">
+                            <input type="number" name="innovation_scores" step=".01" class="form-control input-sm" value="{{$mdrSummary->innovation_scores}}">
                         </div>
                         <div class="col-md-12">
                             Timeliness : 
