@@ -366,7 +366,7 @@ class ListOfMdr extends Controller
                 }
                 $dept_approver->save();
             }
-            $mdrSummary->is_accepted = "accepted";
+            $mdrSummary->is_accepted = "Accepted";
             $mdrSummary->save();
         } 
         elseif($request->action === "Returned") 
