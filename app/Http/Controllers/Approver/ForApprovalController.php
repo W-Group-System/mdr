@@ -90,7 +90,10 @@ class ForApprovalController extends Controller
     public function forAcceptance() {
 
         $mdr = Mdr::where('is_accepted', null)
-                    ->where('status','!=', 'Returned')
+                    ->where(function ($query) {
+                        $query->where('status', '!=', 'Returned')
+                            ->where('status', '!=', 'Draft');
+                    })
                     ->orderBy('id', 'desc')->get();
 
         return view('approver.for_acceptance', 

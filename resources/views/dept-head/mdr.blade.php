@@ -22,7 +22,14 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins" >
             <div class="ibox-content">
-                <form action="{{ url('submitMdr') }}" method="post" onsubmit="show()">
+                <form action="{{ url('submitDraftMdr') }}" method="post" onsubmit="show()">
+                    @csrf
+
+                    <input type="hidden" name="year_and_month" value="{{ $yearAndMonth }}">
+                    
+                    <button type="submit" class="btn btn-block btn-success">Draft MDR</button>
+                </form>
+                <form id="submitMdrForm" action="{{ url('submitMdr') }}" method="post">
                     @csrf
 
                     <input type="hidden" name="year_and_month" value="{{ $yearAndMonth }}">
@@ -77,6 +84,35 @@ $(document).ready(function() {
             event.preventDefault(); 
         } 
     });
+
+     $('#submitMdrForm').on('submit', function (e) {
+        let missing = false;
+        let message = '';
+
+       
+        let kpiInputs = $('#newKpi').find('[name^="target["], [name^="actual["], [name^="remarks["], [name^="file["]');
+
+        if (kpiInputs.length === 0) {
+            e.preventDefault();
+            swal("Missing KPI", "Please add at least one KPI before submitting the MDR.", "error");
+            return false;
+        }
+
+        $('#newKpi').find('textarea[required], input[type="file"][required]').each(function () {
+            if (!$(this).val() || ($(this).attr('type') === 'file' && this.files.length === 0)) {
+                missing = true;
+            }
+        });
+
+        if (missing) {
+            e.preventDefault();
+            swal("Incomplete KPI", "Please complete all required KPI fields (Target, Actual, Remarks, and Attachments).", "error");
+            return false;
+        }
+
+        return true;
+    });
+
 
 })
 
