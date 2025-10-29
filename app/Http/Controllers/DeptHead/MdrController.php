@@ -197,4 +197,48 @@ class MdrController extends Controller
         Alert::success('Successfully Submitted')->persistent('Dismiss');
         return redirect('mdr');
     }
+
+    public function submitDraftMdr(Request $request) 
+    {
+        $year = date('Y', strtotime($request->year_and_month));
+        $month = date('m', strtotime($request->year_and_month));
+        $departmentId = auth()->user()->department_id;
+
+        $mdrs = Mdr::where('year', $year)
+        ->where('month', $month)
+        ->where('department_id', $departmentId)
+        ->first();
+        
+        if ($mdrs)
+        {
+            $mdrs->status = 'Draft';
+            $mdrs->department_id = $departmentId;
+            $mdrs->year = $year;
+            $mdrs->month = $month;
+            $mdrs->save();
+        }
+        else
+        {
+            $mdrs = new Mdr;
+            $mdrs->status = 'Draft';
+            $mdrs->department_id = auth()->user()->department_id;
+            $mdrs->year = date('Y', strtotime($request->year_and_month));
+            $mdrs->month = date('m', strtotime($request->year_and_month));
+            $mdrs->innovation_scores = 0;
+            $mdrs->save();
+            
+            DepartmentalGoals::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
+
+            $mdrs->save();
+
+        }
+        $history = new AcceptanceHistory();
+        $history->user_id = auth()->user()->id;
+        $history->action = "Saved as Draft";
+        $history->mdr_id = $mdrs->id;
+        $history->save();
+
+        Alert::success('Successfully Submitted')->persistent('Dismiss');
+        return redirect('mdr');
+    }
 }

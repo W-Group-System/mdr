@@ -34,6 +34,13 @@
                         Edit KPI
                     </button>
                     @endif
+                    @if($mdr->status == "Draft")
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
+                        style="margin-top: 3px;">
+                        <i class="fa fa-pencil"></i>
+                        Edit KPI
+                    </button>
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
@@ -86,7 +93,7 @@
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
                     <h5>Innovation</h5>
-                    @if($mdr->status == "Returned")
+                    @if($mdr->status == "Returned" || $mdr->status == "Draft")
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                         <span><i class="fa fa-plus"></i></span>&nbsp;
                         Add Innovation
@@ -277,6 +284,25 @@
                             </form>
                         </div>
                         @endif
+                        @if($mdr->status == "Draft")
+                        <div class="col-md-12">
+                            <form action="{{ url('submitDraftMdr') }}" method="post" onsubmit="show()">
+                                @csrf
+
+                                <input type="hidden" name="year_and_month" value="{{ $yearAndMonth }}">
+                                
+                                <button type="submit" class="btn btn-block btn-success">Draft MDR</button>
+                            </form>
+                            <form action="{{url('submitMdr')}}" method="POST" onsubmit="show()">
+                                @csrf
+
+                                <input type="hidden" name="year_and_month" value="{{$yearAndMonth}}">
+                                <button type="button" class="btn btn-block btn-primary approveBtn">
+                                    Submit MDR
+                                </button>
+                            </form>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -338,8 +364,29 @@
             buttons: [],
         });
 
-        $(".approveBtn").on('click', function() {
-            var form = $(this).closest('form');
+        $(".approveBtn").on('click', function (e) {
+            e.preventDefault();
+            let form = $(this).closest('form');
+            let hasMissingFields = false;
+
+            $('#editKpi').find('textarea[required], input[required]').each(function () {
+                if (!$(this).val().trim()) {
+                    hasMissingFields = true;
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            if (hasMissingFields) {
+                Swal.fire({
+                    title: "Incomplete Fields",
+                    text: "Please fill out all required fields in the Edit KPI modal before submitting the MDR.",
+                    icon: "warning",
+                    confirmButtonText: "OK"
+                });
+                return false;
+            }
 
             swal({
                 title: "Are you sure?",
@@ -349,10 +396,10 @@
                 confirmButtonColor: "#1ab394",
                 confirmButtonText: "Yes, submit it!",
                 closeOnConfirm: false
-            }, function (){
-                form.submit()
+            }, function () {
+                form.submit();
             });
-        })
-    })
+        });
+    });
 </script>
 @endpush

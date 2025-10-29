@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
 
     # DepartmentApprovers MDR
     Route::post('/approveMdr', 'DeptHead\MdrController@approveMdr');
+    Route::post('/submitDraftMdr', 'DeptHead\MdrController@submitDraftMdr');
     Route::post('/submitMdr', 'DeptHead\MdrController@submitMdr');
 
     # Department Penalties

@@ -4,9 +4,10 @@
             <div class="modal-header">
                 <h5 class="modal-title">New KPI</h5>
             </div>
-            <form method="POST" action="{{url('create')}}" onsubmit="show()" enctype="multipart/form-data">
+            <form method="POST" action="{{url('create')}}" id="mdrForm" onsubmit="show()" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="yearAndMonth" value="{{$yearAndMonth}}">
+                <input type="hidden" name="save_type" id="save_type" value="final">
                 {{-- <input type="hidden" name="target_date" value="{{auth()->user()->department->target_date}}"> --}}
 
                 <div class="modal-body">
@@ -72,9 +73,22 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-success" type="button" onclick="saveNewDraft()">Save Draft</button>
                     <button class="btn btn-primary" type="submit">Save</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+function saveNewDraft() {
+    document.getElementById('save_type').value = 'draft';
+
+    document.querySelectorAll('#mdrForm [required]').forEach(el => {
+        el.removeAttribute('required');
+    });
+
+    document.getElementById('mdrForm').submit();
+}
+</script>

@@ -38,19 +38,21 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
             $departmentalGoals->save();
 
-            $attachments = $request->file('file')[$key];
+            if ($request->hasFile("file.$key")) {
+                $attachments = $request->file('file')[$key];
     
-            foreach ($attachments as $attachment) {
-                // $name = time() . '_' . $attachment->getClientOriginalName();
-                $name = time() . '_' . preg_replace('/[#\/\\\?%*:|"<>]/', '', $attachment->getClientOriginalName());
-                $attachment->move(public_path('departmental_goals_files'), $name);
-                $file_path = "/departmental_goals_files/" . $name;
-    
-                $mdrAttachments = new Attachments;
-                $mdrAttachments->department_id = auth()->user()->department_id;
-                $mdrAttachments->file_path = $file_path;
-                $mdrAttachments->departmental_goals_id = $departmentalGoals->id;
-                $mdrAttachments->save();
+                foreach ($attachments as $attachment) {
+                    // $name = time() . '_' . $attachment->getClientOriginalName();
+                    $name = time() . '_' . preg_replace('/[#\/\\\?%*:|"<>]/', '', $attachment->getClientOriginalName());
+                    $attachment->move(public_path('departmental_goals_files'), $name);
+                    $file_path = "/departmental_goals_files/" . $name;
+        
+                    $mdrAttachments = new Attachments;
+                    $mdrAttachments->department_id = auth()->user()->department_id;
+                    $mdrAttachments->file_path = $file_path;
+                    $mdrAttachments->departmental_goals_id = $departmentalGoals->id;
+                    $mdrAttachments->save();
+                }
             }
         }
 
