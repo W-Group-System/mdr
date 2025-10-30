@@ -16,6 +16,7 @@ use App\DeptHead\Mdr;
 use App\DeptHead\MdrApprovers;
 use App\DeptHead\MdrScore;
 use App\DeptHead\MdrStatus;
+use App\Approver\PmoAttachment;
 use App\DeptHead\ProcessDevelopment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,6 +29,7 @@ use App\Notifications\EmailNotificationForApprovers;
 use App\Notifications\HRNotification;
 use App\Notifications\ReturnNotification;
 use App\Notifications\NotifyDeptHead;
+use Illuminate\Support\Facades\File;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -79,12 +81,40 @@ class ListOfMdr extends Controller
             $dptGoals->grade = $request->grade[$key];
             $dptGoals->weight = $request->weight[$key];
             $dptGoals->save();
+            if ($request->hasFile("file.$key"))
+            {
+                   foreach ($request->file("file.$key") as $attachment) {
+                    $name = time() . '_' . preg_replace('/[#\/\\\?%*:|"<>]/', '', $attachment->getClientOriginalName());
+                    $attachment->move(public_path('departmental_goals_pmo_files'), $name);
+                    $file_path = "/departmental_goals_pmo_files/" . $name;
+        
+                    $mdrAttachments = new PmoAttachment();
+                    $mdrAttachments->department_id = $request->department;
+                    $mdrAttachments->file_path = $file_path;
+                    $mdrAttachments->departmental_goals_id = $dptGoals->id;
+                    $mdrAttachments->save();
+                }
+            }
         }
+        
 
         computeKpi($request->grade, $request->mdr_id);
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
         return back();
+    }
+
+    public function deletePmoAttachment($id)
+    {
+        $attachment = PmoAttachment::find($id);
+
+        if (!$attachment) {
+            return back()->with('error', 'Attachment not found.');
+        }
+
+        $attachment->delete();
+
+        return back()->with('success', 'Attachment deleted successfully.');
     }
 
     public function approveMdr(Request $request, $id) {

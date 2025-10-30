@@ -4,6 +4,7 @@ namespace App\DeptHead;
 
 use App\Admin\Department;
 use App\Admin\MdrSetup;
+use App\Approver\PmoAttachment;
 use App\Comment;
 use App\DepartmentKpi;
 use Illuminate\Database\Eloquent\Model;
@@ -34,5 +35,9 @@ class DepartmentalGoals extends Model implements Auditable
     public function mdr()
     {
         return $this->belongsTo(Mdr::class);
+    }
+    public function pmoAttachments()
+    {
+        return $this->hasMany(PmoAttachment::class);
     }
 }
