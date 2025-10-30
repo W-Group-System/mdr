@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
     Route::post('/create', 'DeptHead\DepartmentalGoalsController@create');
     Route::post('/update_kpi', 'DeptHead\DepartmentalGoalsController@update');
+    Route::delete('/deleteAttachment/{id}', 'DeptHead\DepartmentalGoalsController@deleteAttachment');
     Route::post('store_comments', 'DeptHead\DepartmentalGoalsController@comments');
 
     # Process Development
@@ -107,6 +108,7 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::get('/list_of_mdr/{id}', 'Approver\ListOfMdr@index')->name('listOfMdr')->middleware('checkAccess');
     Route::post('/return_mdr', 'Approver\ListOfMdr@returnMdr');
     Route::post('/addGradeAndRemarks', 'Approver\ListOfMdr@addGradeAndRemarks');
+    Route::delete('/deletePmoAttachment/{id}', 'Approver\ListOfMdr@deletePmoAttachment');
     Route::post('/approver_mdr/{id}', 'Approver\ListOfMdr@approveMdr');
     Route::post('/submit_scores/{id}', 'Approver\ListOfMdr@submitScores');
 

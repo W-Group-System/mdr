@@ -108,4 +108,17 @@ class DepartmentalGoalsController extends Controller
         Alert::success('Successfully Commented')->persistent('Dismiss');
         return back();
     }
+
+    public function deleteAttachment($id)
+    {
+        $attachment = Attachments::find($id);
+
+        if (!$attachment) {
+            return back()->with('error', 'Attachment not found.');
+        }
+
+        $attachment->delete();
+
+        return back()->with('success', 'Attachment deleted successfully.');
+    }
 }

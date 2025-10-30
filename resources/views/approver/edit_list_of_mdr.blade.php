@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <h5 class="modal-title">Edit KPI</h5>
             </div>
-            <form method="POST" id="gradeForm" action="{{url('addGradeAndRemarks')}}">
+            <form method="POST" id="gradeForm" action="{{url('addGradeAndRemarks')}}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="yearAndMonth" value="{{$mdrSummary->yearAndMonth}}">
                 <input type="hidden" name="target_date" value="{{$mdrSummary->departments->target_date}}">
@@ -29,7 +29,7 @@
                                                     <th>Weight</th>
                                                     <th>Grade</th>
                                                     <th>Remarks</th>
-                                                    {{-- <th>Attachments</th> --}}
+                                                    <th>PMO Attachments</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -56,6 +56,9 @@
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
+                                                        </td>
+                                                        <td>
+                                                            <input type="file" name="file[{{$key}}][]" class="form-control input-md" multiple>    
                                                         </td>
                                                         {{-- <td>
                                                             <input type="file" name="file[{{$key}}][]" class="form-control input-sm" multiple>

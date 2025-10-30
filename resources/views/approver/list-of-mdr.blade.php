@@ -107,6 +107,7 @@
                                     <th>Score</th>
                                     <th>Remarks</th>
                                     <th>Attachments</th>
+                                    <th>PMO Attachments</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -138,6 +139,32 @@
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
                                         <br>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach ($dptGoals->pmoAttachments as $key=>$file)
+                                            <div class="d-flex align-items-center mb-1" style="gap: 6px;">
+                                                <span>{{ $key + 1 }}.</span>
+
+                                                <a href="{{ url($file->file_path) }}" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"></i>
+                                                </a>
+
+                                                @if (auth()->user()->position === "Performance Management Officer")
+                                                    <form action="{{ url('deletePmoAttachment/' . $file->id) }}" 
+                                                        method="POST" 
+                                                        class="deleteAttachmentForm m-0 p-0" 
+                                                        style="display: contents;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" 
+                                                                class="btn btn-danger btn-sm deleteAttachmentBtn p-1 d-flex align-items-center justify-content-center">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+
                                         @endforeach
                                     </td>
                                 </tr>
@@ -645,5 +672,29 @@
             }
         })
     })
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.deleteAttachmentBtn');
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This file will be permanently deleted.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
 </script>
 @endpush

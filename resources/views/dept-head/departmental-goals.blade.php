@@ -41,6 +41,17 @@
                                         <a href="{{url($attachment->file_path)}}" target="_blank">
                                             <i class="fa fa-file-pdf-o"></i>
                                         </a>
+                                        <form action="{{ url('deleteAttachment/' . $attachment->id) }}" 
+                                            method="POST" 
+                                            class="deleteAttachmentForm m-0 p-0" 
+                                            style="display: contents;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" 
+                                                class="btn btn-danger btn-sm deleteAttachmentBtn p-1 d-flex align-items-center justify-content-center">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
                                         <br>
                                     @endforeach
                                 </td>
@@ -58,6 +69,31 @@
     {
         $(e).closest("tr").remove()
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.deleteAttachmentBtn');
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This file will be permanently deleted.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
 </script>
 
 @include('dept-head.new_kpi')
