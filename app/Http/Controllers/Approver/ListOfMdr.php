@@ -8,6 +8,7 @@ use App\Admin\Department;
 use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\Admin\TimelinessSetup;
+use App\Admin\WeightSetup;
 use App\Approver\MdrSummary;
 use App\Approver\Warnings;
 use App\DeptHead\DepartmentalGoals;
@@ -42,11 +43,20 @@ class ListOfMdr extends Controller
 {
     public function index($id) 
     {
+        $today = date('Y-m-d');
+
+        $activeWeightSetup = WeightSetup::where('effective_date', '<=', $today)
+            ->orderBy('effective_date', 'desc')
+            ->first();
+
+        $maxTotal = $activeWeightSetup ? $activeWeightSetup->weight : 3.00; 
+
         $mdrSummary = Mdr::with('departments','innovation','departmentalGoals')->findOrFail($id);
         
         return view('approver.list-of-mdr', 
             array(
-                'mdrSummary' => $mdrSummary
+                'mdrSummary' => $mdrSummary,
+                'maxTotal' => $maxTotal,
             )
         );
     }
