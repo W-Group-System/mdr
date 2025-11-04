@@ -117,7 +117,7 @@
                     </li>
                     @endif
 
-                    @if(check_access('Companies','read') || check_access('Departments','read') || check_access('User Accounts','read') || check_access('Department Approvers','read') || check_access('Timeliness Setup','read'))
+                    @if(check_access('Companies','read') || check_access('Departments','read') || check_access('User Accounts','read') || check_access('Department Approvers','read') || check_access('Timeliness Setup','read') || check_access('Weight Setup','read'))
                     <li class="{{ Route::currentRouteName() == 'settings' ? 'active' : '' }}">
                         <a href="#">
                             <i class="fa fa-cog"></i>
@@ -139,6 +139,9 @@
                             @endif
                             @if(check_access('Timeliness Setup','read'))
                             <li class=""><a href="{{ url('timeliness-setup') }}">Timeliness Setup</a></li>
+                            @endif
+                            @if(check_access('Weight Setup','read'))
+                            <li class=""><a href="{{ url('operational-objective-setup') }}">Operational Objectives Setup</a></li>
                             @endif
                         </ul>
                     </li>

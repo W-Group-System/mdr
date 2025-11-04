@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Admin\TimelinessSetup;
+use App\Admin\WeightSetup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -25,6 +26,28 @@ class ComputationController extends Controller
     public function addTimelinessSetup(Request $request) {
         $timeliness_setup = new TimelinessSetup();
         $timeliness_setup->score = $request->score;
+        $timeliness_setup->effective_date = date('Y-m-d', strtotime($request->effective_date));
+        $timeliness_setup->created_by = auth()->user()->id;
+        $timeliness_setup->save();
+
+        Alert::success('Successfully Added')->persistent('Dismiss');
+        return back();
+    }
+
+    public function operational_objectives_index() {
+        $weight_setup_list = WeightSetup::get();
+        $user =  User::where('status', "Active")->get();
+        return view('admin.weight_setup',
+            array(
+                'user' => $user,
+                'weight_setup_list' => $weight_setup_list,
+            )
+        );
+    }
+
+    public function addWeightSetup(Request $request) {
+        $timeliness_setup = new WeightSetup();
+        $timeliness_setup->weight = $request->weight;
         $timeliness_setup->effective_date = date('Y-m-d', strtotime($request->effective_date));
         $timeliness_setup->created_by = auth()->user()->id;
         $timeliness_setup->save();

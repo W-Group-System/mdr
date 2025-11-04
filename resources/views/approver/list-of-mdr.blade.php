@@ -130,7 +130,7 @@
                                         {{number_format($dptGoals->grade,2)}}
                                     </td>
                                     <td>
-                                        {{$dptGoals->remarks}}
+                                        {!! nl2br($dptGoals->remarks) !!}
                                     </td>
                                     <td>
                                         @foreach ($dptGoals->attachments as $key=>$file)
@@ -629,6 +629,8 @@
             });
         });
 
+        const maxTotal = Number(@json($maxTotal));
+
         $("[name='weight[]']").each(function(weightIndex, weightItem) {
             $(this).on('input', function() {
                 $("[name='grade[]']").eq(weightIndex).prop('max', weightItem.value)
@@ -643,9 +645,11 @@
                 weightGrade += val;
             });
 
-            if (parseFloat(weightGrade) > 3.00)
+            if (parseFloat(weightGrade) >  maxTotal)
             {
-                alert('Total weight is cannot greater than by 3.00')
+                alert(`Total weight cannot be greater than ${maxTotal}`);
+                $(this).val('');
+
             }
         });
         
@@ -658,10 +662,10 @@
                 return totalWeight += parseFloat(item.value)
             })
 
-            if (totalWeight > 3.00)
+            if (totalWeight > maxTotal)
             {
                 swal({
-                    title: "Error because the weight is greater than 3",
+                    title: `Error because the weight is greater than ${maxTotal}`,
                     type: "error"
                 })
             }

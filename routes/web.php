@@ -32,15 +32,19 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::post('/deactivate_department/{id}', 'Admin\DepartmentController@deactivate');
     Route::post('/activate_department/{id}', 'Admin\DepartmentController@activate');
 
-    # Timeliness_Setup
+    # Timeliness Setup
     Route::get('/timeliness-setup', 'Admin\ComputationController@timeliness_index')->name('settings')->middleware('checkAccess');
     Route::post('/addTimelinessSetup', 'Admin\ComputationController@addTimelinessSetup');
 
+    # Operational Objective Setup
+    Route::get('/operational-objective-setup', 'Admin\ComputationController@operational_objectives_index')->name('settings')->middleware('checkAccess');
+    Route::post('/add-operational-objective-setup', 'Admin\ComputationController@addWeightSetup');
 
     # MDR Setups
     Route::get('/department_kpis', 'Admin\DepartmentKpiController@index')->name('mdr')->middleware('checkAccess');
     Route::post('/addDepartmentKpi', 'Admin\DepartmentKpiController@addDepartmentKpi');
     Route::post('/updateDepartmentsKpi/{id}', 'Admin\DepartmentKpiController@updateDepartmentKpi');
+    Route::post('/duplicateDepartmentKpiSave/{id}', 'Admin\DepartmentKpiController@duplicateDepartmentKpiSave');
     Route::post('/deactivate_mdr_setup/{id}', 'Admin\DepartmentKpiController@deactivate');
     Route::post('/activate_mdr_setup/{id}', 'Admin\DepartmentKpiController@activate');
 
@@ -72,6 +76,8 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::get('/mdr', 'DeptHead\MdrController@mdrView')->name('mdr')->middleware('checkAccess');
     Route::get('/new-mdr', 'DeptHead\MdrController@index');
     Route::get('/edit_mdr', 'DeptHead\MdrController@edit');
+    Route::delete('/deleteDeptHeadAttachment/{id}', 'DeptHead\MdrController@deleteDeptHeadAttachment');
+    Route::delete('/deletePmoAttachment/{id}', 'Approver\ListOfMdr@deletePmoAttachment');
 
     # Departmental Goals
     // Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
