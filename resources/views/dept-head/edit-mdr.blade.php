@@ -72,11 +72,24 @@
                                     <td>{!! nl2br($dptGoals->remarks) !!}</td>
                                     <td>
                                         @foreach ($dptGoals->attachments as $key=>$attachment)
-                                        <span>{{$key+1}}. </span>
-                                        <a href="{{url($attachment->file_path)}}" target="_blank">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </a>
-                                        <br>
+                                            <span>{{$key+1}}. </span>
+                                            <a href="{{url($attachment->file_path)}}" target="_blank">
+                                                <i class="fa fa-file-pdf-o"></i>
+                                            </a>
+                                            @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                                                <form action="{{ url('deleteDeptHeadAttachment/' . $attachment->id) }}" 
+                                                    method="POST" 
+                                                    class="deleteAttachmentForm m-0 p-0" 
+                                                    style="display: contents;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" 
+                                                            class="btn btn-danger btn-sm deleteFileBtn p-1 d-flex align-items-center justify-content-center">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <br>
                                         @endforeach
                                     </td>
                                      <td>
@@ -425,6 +438,31 @@
                 closeOnConfirm: false
             }, function () {
                 form.submit();
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.deleteFileBtn');
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This file will be permanently deleted.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
             });
         });
     });

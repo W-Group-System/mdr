@@ -33,7 +33,13 @@ use RealRashid\SweetAlert\Facades\Alert;
 class MdrController extends Controller
 {
     public function index(Request $request) {
-        $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)->where('status', 'Active')->orderBy('name', 'asc')->get();
+        $year = date('Y', strtotime($request->yearAndMonth));
+        $month = date('m', strtotime($request->yearAndMonth));
+
+        $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)
+        ->where('status', 'Active')->orderBy('name', 'asc')->get()
+        ->where('year', $year)
+        ->where('month', $month);
         $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $mdr_groups = MdrGroup::get();
@@ -241,4 +247,19 @@ class MdrController extends Controller
         Alert::success('Successfully Submitted')->persistent('Dismiss');
         return redirect('mdr');
     }
+
+    public function deleteDeptHeadAttachment($id)
+    {
+        $attachment = Attachments::find($id);
+
+        if (!$attachment) {
+            return back()->with('error', 'Attachment not found.');
+        }
+
+        $attachment->delete();
+
+        return back()->with('success', 'Attachment deleted successfully.');
+    }
+
+    
 }

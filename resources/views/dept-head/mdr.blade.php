@@ -85,33 +85,62 @@ $(document).ready(function() {
         } 
     });
 
-     $('#submitMdrForm').on('submit', function (e) {
+    $('#submitMdrForm').on('submit', function (e) {
         let missing = false;
-        let message = '';
 
-       
-        let kpiInputs = $('#newKpi').find('[name^="target["], [name^="actual["], [name^="remarks["], [name^="file["]');
+        $('#departmentalGoals tbody tr').each(function () {
+            const target = $(this).find('td:nth-child(2)').text().trim();
+            const actual = $(this).find('td:nth-child(3)').text().trim();
+            const remarks = $(this).find('td:nth-child(5)').text().trim();
+            const hasAttachment = $(this).find('a[href]').length > 0;
 
-        if (kpiInputs.length === 0) {
-            e.preventDefault();
-            swal("Missing KPI", "Please add at least one KPI before submitting the MDR.", "error");
-            return false;
-        }
-
-        $('#newKpi').find('textarea[required], input[type="file"][required]').each(function () {
-            if (!$(this).val() || ($(this).attr('type') === 'file' && this.files.length === 0)) {
+            if (!target || !actual || !remarks || !hasAttachment) {
                 missing = true;
+                return false; 
             }
         });
 
         if (missing) {
             e.preventDefault();
-            swal("Incomplete KPI", "Please complete all required KPI fields (Target, Actual, Remarks, and Attachments).", "error");
+            swal(
+                "Incomplete KPI Data",
+                "Please ensure all KPIs have Target, Actual, Remarks, and at least one Attachment before submitting.",
+                "error"
+            );
             return false;
         }
 
         return true;
     });
+
+
+    //  $('#submitMdrForm').on('submit', function (e) {
+    //     let missing = false;
+    //     let message = '';
+
+       
+    //     let kpiInputs = $('#newKpi').find('[name^="target["], [name^="actual["], [name^="remarks["], [name^="file["]');
+
+    //     if (kpiInputs.length === 0) {
+    //         e.preventDefault();
+    //         swal("Missing KPI", "Please add at least one KPI before submitting the MDR.", "error");
+    //         return false;
+    //     }
+
+    //     $('#newKpi').find('textarea[required], input[type="file"][required]').each(function () {
+    //         if (!$(this).val() || ($(this).attr('type') === 'file' && this.files.length === 0)) {
+    //             missing = true;
+    //         }
+    //     });
+
+    //     if (missing) {
+    //         e.preventDefault();
+    //         swal("Incomplete KPI", "Please complete all required KPI fields (Target, Actual, Remarks, and Attachments).", "error");
+    //         return false;
+    //     }
+
+    //     return true;
+    // });
 
 
 })
