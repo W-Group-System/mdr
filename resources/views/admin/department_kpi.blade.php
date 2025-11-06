@@ -10,21 +10,50 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <form action="" method="get" onsubmit="show()">
+                   <form action="" method="get" onsubmit="show()">
                         <div class="row">
                             <div class="col-lg-3">
                                 <select name="department" id="departmentFilter" class="form-control">
                                     <option value="">- Departments -</option>
                                     @foreach ($departmentList as $departmentData)
-                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>{{ $departmentData->code .' - '. $departmentData->name }}</option>
+                                        <option value="{{ $departmentData->id }}" {{ $department == $departmentData->id ? 'selected' : '' }}>
+                                            {{ $departmentData->code .' - '. $departmentData->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
+
                             <div class="col-lg-3">
-                                <button class="btn btn-sm btn-primary">Filter</button>
+                                <select name="month" id="monthFilter" class="form-control">
+                                    @foreach (range(1, 12) as $m)
+                                        @php
+                                            $monthValue = str_pad($m, 2, '0', STR_PAD_LEFT); // e.g. 01, 02, ..., 12
+                                            $monthName = date('F', mktime(0, 0, 0, $m, 1));   // e.g. January, February
+                                        @endphp
+                                        <option value="{{ $monthValue }}"
+                                            {{ ($selectedMonth ?? date('m')) == $monthValue ? 'selected' : '' }}>
+                                            {{ $monthName }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <select name="year" id="yearFilter" class="form-control">
+                                    @for ($y = now()->year - 1; $y <= now()->year + 1; $y++)
+                                        <option value="{{ $y }}" {{ ($selectedYear ?? date('Y')) == $y ? 'selected' : '' }}>
+                                            {{ $y }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div class="col-lg-2">
+                                <button class="btn btn-sm btn-primary" type="submit">Filter</button>
                             </div>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -98,6 +127,10 @@
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </form>
+
+                                                    <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#duplicateModal{{ $department_kpi->id }}">
+                                                        <i class="fa fa-copy"></i>
+                                                    </button>
                                                 @else
                                                 <form action="{{ url('activate_mdr_setup/'.$department_kpi->id) }}" method="post" onsubmit="show()" style="display: inline-block;">
                                                     @csrf
@@ -130,6 +163,7 @@
 @include('admin.new_mdr_setup')
 @foreach ($department_kpis as $department_kpi)
 @include('admin.edit_mdr_setup')
+@include('admin.copy_mdr_setup')
 @endforeach
 
 @endsection

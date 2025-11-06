@@ -30,6 +30,31 @@
                             <input name="attachment_description" id="attachment_description" class="form-control">
                             <small id="descError" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
+                        <div class="col-md-6">
+                            Month:
+                            <select name="month" id="month" class="form-control" required>
+                                @foreach (range(1, 12) as $m)
+                                    @php
+                                        $monthValue = str_pad($m, 2, '0', STR_PAD_LEFT);
+                                        $monthName = date('F', mktime(0, 0, 0, $m, 1)); 
+                                    @endphp
+                                    <option value="{{ $monthValue }}"
+                                        {{ date('m') == $monthValue ? 'selected' : '' }}>
+                                        {{ $monthName }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6">
+                            Year:
+                            <select name="year" id="year" class="form-control" required>
+                                @for ($y = now()->year - 1; $y <= now()->year + 1; $y++)
+                                    <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -30,6 +30,31 @@
                             <input name="attachment_description" id="attachment_description_edit_{{ $department_kpi->id }}" class="form-control" value="{{ $department_kpi->attachment_description }}">
                             <small id="descError_edit_{{ $department_kpi->id }}" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
+                        <div class="col-md-6">
+                            Month:
+                            <select name="month" class="form-control" required>
+                                @foreach (range(1, 12) as $m)
+                                    <option 
+                                        value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}"
+                                        {{ (int)$department_kpi->month === $m ? 'selected' : '' }}>
+                                        {{ date('F', mktime(0, 0, 0, $m, 1)) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            Year:
+                            <select name="year" id="year" class="form-control" required>
+                                @for ($y = now()->year - 1; $y <= now()->year + 1; $y++)
+                                    <option 
+                                        value="{{ $y }}" 
+                                        {{ (int)$department_kpi->year === (int)$y ? 'selected' : '' }}>
+                                        {{ $y }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
