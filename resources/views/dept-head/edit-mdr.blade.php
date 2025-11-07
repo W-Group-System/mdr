@@ -155,7 +155,7 @@
                                 @foreach ($innovations as $innovation)
                                 <tr>
                                     <td>
-                                        @if($mdr->status == "Returned")
+                                        @if($mdr->status == "Returned" || $mdr->status == "Draft")
                                         <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
                                             data-target="#edit{{ $innovation->id }}">
                                             <i class="fa fa-pencil-square-o"></i>
