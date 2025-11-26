@@ -36,7 +36,7 @@
               <input name="attachment_description" class="form-control" value="{{ $department_kpi->attachment_description }}">
             </div>
 
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
               Month:
               <select name="month" class="form-control" required>
                 @foreach (range(1, 12) as $m)
@@ -54,7 +54,7 @@
                     <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
                   @endfor
                 </select>
-            </div>
+            </div> --}}
           </div>
         </div>
 

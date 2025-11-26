@@ -37,9 +37,9 @@ class MdrController extends Controller
         $month = date('m', strtotime($request->yearAndMonth));
 
         $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)
-        ->where('status', 'Active')->orderBy('name', 'asc')->get()
-        ->where('year', $year)
-        ->where('month', $month);
+        ->where('status', 'Active')->orderBy('name', 'asc')->get();
+        // ->where('year', $year)
+        // ->where('month', $month);
         $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $mdr_groups = MdrGroup::get();
