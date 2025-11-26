@@ -30,7 +30,7 @@
                             <input name="attachment_description" id="attachment_description" class="form-control">
                             <small id="descError" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             Month:
                             <select name="month" id="month" class="form-control" required>
                                 @foreach (range(1, 12) as $m)
@@ -54,7 +54,7 @@
                                     <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
                                 @endfor
                             </select>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">

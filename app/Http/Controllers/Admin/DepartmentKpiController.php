@@ -23,8 +23,8 @@ class DepartmentKpiController extends Controller
             ->when($selectedDepartment, function ($query, $selectedDepartment) {
                 $query->where('department_id', $selectedDepartment);
             })
-            ->where('month', $selectedMonth)
-            ->where('year', $selectedYear)
+            // ->where('month', $selectedMonth)
+            // ->where('year', $selectedYear)
             ->orderBy('department_id', 'asc')
             ->get();
         
@@ -54,8 +54,8 @@ class DepartmentKpiController extends Controller
         $mdrSetup->target = $request->target;
         $mdrSetup->attachment_description = $request->attachment_description;
         $mdrSetup->status = "Active";
-        $mdrSetup->month = $request->month;
-        $mdrSetup->year = $request->year;
+        // $mdrSetup->month = $request->month;
+        // $mdrSetup->year = $request->year;
         $mdrSetup->save();
 
         Alert::success('Successfully Added')->persistent('Dismiss');
@@ -75,8 +75,8 @@ class DepartmentKpiController extends Controller
         $mdrSetup->name = $request->kpiName;
         $mdrSetup->target = $request->target;
         $mdrSetup->attachment_description = $request->attachment_description;
-        $mdrSetup->month = $request->month;
-        $mdrSetup->year = $request->year;
+        // $mdrSetup->month = $request->month;
+        // $mdrSetup->year = $request->year;
         $mdrSetup->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
@@ -93,8 +93,8 @@ class DepartmentKpiController extends Controller
         $duplicate->name = $request->kpiName;
         $duplicate->target = $request->target;
         $duplicate->attachment_description = $request->attachment_description;
-        $duplicate->month = $request->month;
-        $duplicate->year = $request->year;
+        // $duplicate->month = $request->month;
+        // $duplicate->year = $request->year;
         $duplicate->status = 'Active';
         $duplicate->save();
 

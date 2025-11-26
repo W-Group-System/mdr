@@ -23,7 +23,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-lg-3">
+                            {{-- <div class="col-lg-3">
                                 <select name="month" id="monthFilter" class="form-control">
                                     @foreach (range(1, 12) as $m)
                                         @php
@@ -36,9 +36,9 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> --}}
 
-                            <div class="col-lg-2">
+                            {{-- <div class="col-lg-2">
                                 <select name="year" id="yearFilter" class="form-control">
                                     @for ($y = now()->year - 1; $y <= now()->year + 1; $y++)
                                         <option value="{{ $y }}" {{ ($selectedYear ?? date('Y')) == $y ? 'selected' : '' }}>
@@ -46,7 +46,7 @@
                                         </option>
                                     @endfor
                                 </select>
-                            </div>
+                            </div> --}}
 
                             <div class="col-lg-2">
                                 <button class="btn btn-sm btn-primary" type="submit">Filter</button>
