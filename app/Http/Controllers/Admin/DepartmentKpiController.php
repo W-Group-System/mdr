@@ -22,6 +22,8 @@ class DepartmentKpiController extends Controller
         $department_kpis = DepartmentKpi::with('mdr_group','department')
             ->when($selectedDepartment, function ($query, $selectedDepartment) {
                 $query->where('department_id', $selectedDepartment);
+            }, function ($query) {
+                return $query->whereRaw('1 = 0');
             })
             // ->where('month', $selectedMonth)
             // ->where('year', $selectedYear)
