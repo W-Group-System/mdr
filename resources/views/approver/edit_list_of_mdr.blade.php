@@ -42,11 +42,13 @@
                                                             {!! nl2br($dptGoals->departmentKpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            <input type="hidden" name="target[]" value="{{$dptGoals->departmentKpi->target}}">
-                                                            {!! nl2br($dptGoals->departmentKpi->target) !!}
+                                                            {{-- <input type="hidden" name="target[]" value="{{$dptGoals->departmentKpi->target}}">
+                                                            {!! nl2br($dptGoals->departmentKpi->target) !!} --}}
+                                                            <input type="hidden" name="target[]" value="{{$dptGoals->target}}">
+                                                            {!! nl2br($dptGoals->target) !!}
                                                         </td>
                                                         <td>
-                                                            {{$dptGoals->actual}}
+                                                            {!! nl2br($dptGoals->actual) !!}
                                                         </td>
                                                         <td>
                                                             <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="{{$dptGoals->weight}}" required>
