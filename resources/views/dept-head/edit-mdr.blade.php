@@ -65,8 +65,9 @@
                                                     class="fa fa-comments"></i> {{ count($dptGoals->comments) }}
                                                 Comments</a></p>
                                     </td>
-                                    <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td>
-                                    <td>{{$dptGoals->actual}}</td>
+                                    {{-- <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td> --}}
+                                    <td>{!! nl2br($dptGoals->target) !!}</td>
+                                    <td>{!! nl2br($dptGoals->actual) !!}</td>
                                     <td>{{ $dptGoals->weight }}</td>
                                     <td>{{$dptGoals->grade}}</td>
                                     <td>{!! nl2br($dptGoals->remarks) !!}</td>
