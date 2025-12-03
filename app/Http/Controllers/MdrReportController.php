@@ -41,6 +41,13 @@ class MdrReportController extends Controller
             $object->mdr_history = $mdr_history;
             $wli_reports_array[] = $object;
         }
+        $wli_reports_array = collect($wli_reports_array)->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
+
 
         $whi_reports_array = [];
         foreach($departments->where('company_id',2) as $department)
@@ -60,6 +67,12 @@ class MdrReportController extends Controller
             $object->mdr_history = $mdr_history;
             $whi_reports_array[] = $object;
         }
+        $whi_reports_array = collect($whi_reports_array)->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
 
         $other_reports_array = [];
         foreach ($departments->whereNotIn('company_id', [2, 3]) as $department) {
@@ -81,6 +94,12 @@ class MdrReportController extends Controller
             $object->mdr_history = $mdr_history;
             $other_reports_array[] = $object;
         }
+        $other_reports_array = collect($other_reports_array)->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
         // dd($wli_reports_array);
         return view('approver.history-mdr',
             array(
@@ -210,6 +229,12 @@ class MdrReportController extends Controller
             $object->mdr_history = $mdr_history;
             $data['wli'][] = $object;
         }
+        $data['wli'] = collect($data['wli'])->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,     
+                $item->mdr->score ?? 9999        
+            ];
+        })->values()->all();
 
         $data['whi'] = [];
         foreach($departments->where('company_id',2) as $department)
@@ -228,6 +253,12 @@ class MdrReportController extends Controller
             $object->mdr = $mdr;
             $data['whi'][] = $object;
         }
+        $data['whi'] = collect($data['whi'])->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
 
         $data['other'] = [];
         foreach($departments->whereNotIn('company_id', [2, 3]) as $department)
@@ -246,6 +277,13 @@ class MdrReportController extends Controller
             $object->mdr = $mdr;
             $data['other'][] = $object;
         }
+        $data['other'] = collect($data['other'])->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
+
         
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('approver.mdr_report', ['data' => $data])
