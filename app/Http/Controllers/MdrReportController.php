@@ -60,11 +60,33 @@ class MdrReportController extends Controller
             $object->mdr_history = $mdr_history;
             $whi_reports_array[] = $object;
         }
+
+        $other_reports_array = [];
+        foreach ($departments->whereNotIn('company_id', [2, 3]) as $department) {
+
+            // $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($request->year_month)))
+                ->where('month', date('m', strtotime(($request->year_month))))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
+            
+
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->departments = $department;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr = $mdr;
+            $object->mdr_history = $mdr_history;
+            $other_reports_array[] = $object;
+        }
         // dd($wli_reports_array);
         return view('approver.history-mdr',
             array(
                 'wli_reports_array' => $wli_reports_array,
                 'whi_reports_array' => $whi_reports_array,
+                'other_reports_array' => $other_reports_array,
                 'year_month' => $request->year_month
                 // 'process_improvement' => $process_improvement,
                 // 'departments' => $departments,
@@ -205,6 +227,24 @@ class MdrReportController extends Controller
             $object->mdr_history = $mdr_history;
             $object->mdr = $mdr;
             $data['whi'][] = $object;
+        }
+
+        $data['other'] = [];
+        foreach($departments->whereNotIn('company_id', [2, 3]) as $department)
+        {
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($year_month)))
+                ->where('month', date('m', strtotime($year_month)))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->departments = $department;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr_history = $mdr_history;
+            $object->mdr = $mdr;
+            $data['other'][] = $object;
         }
         
         $pdf = App::make('dompdf.wrapper');

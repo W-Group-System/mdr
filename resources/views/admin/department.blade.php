@@ -78,6 +78,7 @@
                                     <th>Department Name</th>
                                     <th>Department Head</th>
                                     <th>Target Date</th>
+                                    <th>Company</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -120,6 +121,7 @@
                                             @endphp
                                             {{$due_date}}
                                         </td>
+                                        <td>{{ optional($departmentData->company)->name }}</td>
                                         <td>
                                             @if($departmentData->status == "Active")
                                                 <div class="label label-primary">Active</div>
