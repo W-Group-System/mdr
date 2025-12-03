@@ -25,25 +25,39 @@ class MdrReportController extends Controller
         {
 
             // $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
-            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime(($request->year_month))))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($request->year_month)))
+                ->where('month', date('m', strtotime(($request->year_month))))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
+            
 
             $object = new stdClass;
             $object->department = $department->name;
             $object->departments = $department;
             $object->head = isset($department->user->name) ? $department->user->name : null;
             $object->mdr = $mdr;
+            $object->mdr_history = $mdr_history;
             $wli_reports_array[] = $object;
         }
 
         $whi_reports_array = [];
         foreach($departments->where('company_id',2) as $department)
         {
-            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($request->year_month)))
+                ->where('month', date('m', strtotime($request->year_month)))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
+
             $object = new stdClass;
             $object->department = $department->name;
             $object->departments = $department;
             $object->head = isset($department->user->name) ? $department->user->name : null;
             $object->mdr = $mdr;
+            $object->mdr_history = $mdr_history;
             $whi_reports_array[] = $object;
         }
         // dd($wli_reports_array);
@@ -142,6 +156,7 @@ class MdrReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    
     public function destroy($id)
     {
         //
@@ -158,23 +173,36 @@ class MdrReportController extends Controller
         $data['wli'] = [];
         foreach($departments->where('company_id',3) as $department)
         {
-            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($year_month)))->where('month', date('m', strtotime($year_month)))->orderBy('score','asc')->first();
+            // $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($year_month)))->where('month', date('m', strtotime($year_month)))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($year_month)))
+                ->where('month', date('m', strtotime($year_month)))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
             $object = new stdClass;
             $object->department = $department->name;
             $object->departments = $department;
             $object->head = isset($department->user->name) ? $department->user->name : null;
             $object->mdr = $mdr;
+            $object->mdr_history = $mdr_history;
             $data['wli'][] = $object;
         }
 
         $data['whi'] = [];
         foreach($departments->where('company_id',2) as $department)
         {
-            $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($year_month)))->where('month', date('m', strtotime($year_month)))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($year_month)))
+                ->where('month', date('m', strtotime($year_month)))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
             $object = new stdClass;
             $object->department = $department->name;
             $object->departments = $department;
             $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr_history = $mdr_history;
             $object->mdr = $mdr;
             $data['whi'][] = $object;
         }

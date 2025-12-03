@@ -15,15 +15,15 @@ class ApprovedNotification extends Notification
      * @return void
      */
 
-    private $name;
-    private $approver;
-    private $monthOf;
+    private $mdrOwner;
+    private $year;
+    private $month;
     
-    public function __construct($name, $approver, $monthOf)
+    public function __construct($mdrOwner, $year, $month)
     {
-        $this->name = $name;
-        $this->approver = $approver;
-        $this->monthOf = $monthOf;
+        $this->mdrOwner = $mdrOwner->name;
+        $this->year = $year;
+        $this->month = $month;
     }
 
     /**
@@ -46,9 +46,9 @@ class ApprovedNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->greeting("Hello Mr./Ms. ".' '. $this->name)
-                    ->line('We would like to inform you that your MDR in ' . date('F Y', strtotime($this->monthOf)). ' is approved by ' . $this->approver)
-                    ->action('Click the button to see your MDR', url('for_approval'))
+                    ->greeting("Hello Mr./Ms. ".' '. $this->mdrOwner)
+                    ->line('We would like to inform you that your MDR in ' . date('F Y', strtotime($this->year . '-' . $this->month . '-01')) . ' is approved' )
+                    ->action('Click the button to see your MDR', url('mdr'))
                     ->line('Thank you for using our application!');
     }
 
