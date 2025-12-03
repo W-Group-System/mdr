@@ -4,6 +4,7 @@ namespace App\DeptHead;
 
 use App\AcceptanceHistory;
 use App\Admin\Department;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 class Mdr extends Model implements Auditable

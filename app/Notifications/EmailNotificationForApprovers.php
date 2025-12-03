@@ -19,13 +19,15 @@ class EmailNotificationForApprovers extends Notification
 
     private $user;
     private $dept;
-    private $yearAndMonth;
+    private $year;
+    private $month;
     
-    public function __construct($user, $dept, $yearAndMonth)
+    public function __construct($user, $dept, $year, $month)
     {
         $this->user = $user->name;
         $this->dept = $dept->name;
-        $this->yearAndMonth = $yearAndMonth;
+        $this->year = $year;
+        $this->month = $month;
     }
 
     /**
@@ -49,7 +51,7 @@ class EmailNotificationForApprovers extends Notification
     {
         return (new MailMessage)
                     ->greeting('Hello Mr./Ms. ' . $this->user)
-                    ->line('This is the request approval for the '. $this->dept. ' in the Month of ' . date('F Y', strtotime($this->yearAndMonth)))
+                    ->line('This is the request approval for the '. $this->dept. ' in the Month of ' . date('F Y', strtotime($this->year . '-' . $this->month . '-01')))
                     ->action('Pending Approval', url('for_approval'))
                     ->line('Thank you for using our application!');
     }

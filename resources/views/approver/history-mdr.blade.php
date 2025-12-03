@@ -44,19 +44,30 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th rowspan="2">Company</th>
                                     <th rowspan="2">Nos.</th>
                                     <th rowspan="2">Department</th>
                                     <th rowspan="2">PIC</th>
+                                    <th colspan="3" rowspan="1">History</th>
                                     <th colspan="2" rowspan="1">MDR Submission</th>
                                     <th rowspan="2">Timeliness</th>
                                     <th rowspan="2">Operational Objectives</th>
                                     <th rowspan="2">Innovation</th>
-                                    <th rowspan="2">Rating</th>
-                                    <th rowspan="2">Rating</th>
+                                    <th rowspan="2">@if($year_month) {{ date('F', strtotime($year_month)) }} @endif Rating</th>
+                                    {{-- <th rowspan="2">Rating</th> --}}
                                     <th rowspan="2">Remarks</th>
                                     <th rowspan="2">Action</th>
                                 </tr>
+                                @php
+                                    $selectedDate = \Carbon\Carbon::parse($year_month);
+                                    $month1 = $selectedDate->copy()->subMonths(3); 
+                                    $month2 = $selectedDate->copy()->subMonths(2); 
+                                    $month3 = $selectedDate->copy()->subMonths(1);
+                                @endphp
                                 <tr>
+                                    <th>{{ $month1->format('F Y') }}</th>
+                                    <th>{{ $month2->format('F Y') }}</th>
+                                    <th>{{ $month3->format('F Y') }}</th>
                                     <th>Pre-approved Date</th>
                                     <th>Actual Submission</th>
                                 </tr>
@@ -65,9 +76,30 @@
                                 @if(count($whi_reports_array) > 0)
                                     @foreach ($whi_reports_array as $key=>$whi_reports_data)
                                         <tr @if($whi_reports_data->mdr) @if($whi_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
+                                            @if($key == 0)
+                                                <td rowspan="{{ count($whi_reports_array) }}" style="vertical-align: middle; font-weight:bold;">
+                                                    WHI
+                                                </td>
+                                            @endif
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $whi_reports_data->department }}</td>
                                             <td>{{ $whi_reports_data->head }}</td>
+                                            @php
+                                                $history = $whi_reports_data->mdr_history ?? collect();
+                                                $m1 = $history->where('month', $month1->format('m'))
+                                                            ->where('year', $month1->format('Y'))
+                                                            ->first();
+                                                $m2 = $history->where('month', $month2->format('m'))
+                                                            ->where('year', $month2->format('Y'))
+                                                            ->first();
+                                                $m3 = $history->where('month', $month3->format('m'))
+                                                            ->where('year', $month3->format('Y'))
+                                                            ->first();
+                                            @endphp
+
+                                            <td>{{ $m1 ? number_format($m1->score,2) : '-' }}</td>
+                                            <td>{{ $m2 ? number_format($m2->score,2) : '-' }}</td>
+                                            <td>{{ $m3 ? number_format($m3->score,2) : '-' }}</td>
                                             <td>
                                                 @if($whi_reports_data->mdr)
                                                 {{ $whi_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month", strtotime($whi_reports_data->mdr->month))).'-'.$whi_reports_data->mdr->year }}
@@ -110,9 +142,9 @@
                                                 <b><i>No MDR Submitted</i></b>
                                                 @endif
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 0.00
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 @php
                                                     $year = date('Y', strtotime($year_month));
@@ -157,19 +189,24 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th rowspan="2">Company</th>
                                     <th rowspan="2">Nos.</th>
                                     <th rowspan="2">Department</th>
                                     <th rowspan="2">PIC</th>
+                                    <th colspan="3" rowspan="1">History</th>
                                     <th colspan="2" rowspan="1">MDR Submission</th>
                                     <th rowspan="2">Timeliness</th>
                                     <th rowspan="2">Operational Objectives</th>
                                     <th rowspan="2">Innovation</th>
                                     <th rowspan="2">@if($year_month) {{ date('F', strtotime($year_month)) }} @endif Rating</th>
-                                    <th rowspan="2">@if($year_month) {{ date('F', strtotime('-1 month', strtotime($year_month))) }} @endif Rating</th>
+                                    {{-- <th rowspan="2">@if($year_month) {{ date('F', strtotime('-1 month', strtotime($year_month))) }} @endif Rating</th> --}}
                                     <th rowspan="2">Remarks</th>
                                     <th rowspan="2">Action</th>
                                 </tr>
                                 <tr>
+                                    <th>{{ $month1->format('F Y') }}</th>
+                                    <th>{{ $month2->format('F Y') }}</th>
+                                    <th>{{ $month3->format('F Y') }}</th>
                                     <th>Pre-approved Date</th>
                                     <th>Actual Submission</th>
                                 </tr>
@@ -179,9 +216,30 @@
                                     @foreach ($wli_reports_array as $key=>$wli_reports_data)
                                         {{-- @dd($wli_reports_data) --}}
                                         <tr @if($wli_reports_data->mdr) @if($wli_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
+                                            @if($key == 0)
+                                                <td rowspan="{{ count($wli_reports_array) }}" style="vertical-align: middle; font-weight:bold;">
+                                                    WLI
+                                                </td>
+                                            @endif
                                             <td>{{ $key+1 }}</td>
                                             <td>{{ $wli_reports_data->department }}</td>
                                             <td>{{ $wli_reports_data->head }}</td>
+                                             @php
+                                                $history = $wli_reports_data->mdr_history ?? collect();
+                                                $m1 = $history->where('month', $month1->format('m'))
+                                                            ->where('year', $month1->format('Y'))
+                                                            ->first();
+                                                $m2 = $history->where('month', $month2->format('m'))
+                                                            ->where('year', $month2->format('Y'))
+                                                            ->first();
+                                                $m3 = $history->where('month', $month3->format('m'))
+                                                            ->where('year', $month3->format('Y'))
+                                                            ->first();
+                                            @endphp
+
+                                            <td>{{ $m1 ? number_format($m1->score,2) : '-' }}</td>
+                                            <td>{{ $m2 ? number_format($m2->score,2) : '-' }}</td>
+                                            <td>{{ $m3 ? number_format($m3->score,2) : '-' }}</td>
                                             <td>
                                                 @if($wli_reports_data->mdr)
                                                 {{ $wli_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+1 month", strtotime($wli_reports_data->mdr->year.'-'.$wli_reports_data->mdr->month))).'-'.$wli_reports_data->mdr->year }}
@@ -224,9 +282,9 @@
                                                 <b><i>No MDR Submitted</i></b>
                                                 @endif
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 0.00
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 @php
                                                     $year = date('Y', strtotime($year_month));

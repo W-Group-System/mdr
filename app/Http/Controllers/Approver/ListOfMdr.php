@@ -27,6 +27,7 @@ use App\Jobs\ReturnNotificationJob;
 use App\Notifications\ApprovedNotification;
 use App\Notifications\EmailNotification;
 use App\Notifications\EmailNotificationForApprovers;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\HRNotification;
 use App\Notifications\ReturnNotification;
 use App\Notifications\NotifyDeptHead;
@@ -146,12 +147,19 @@ class ListOfMdr extends Controller
             {
                 $nextMdrApprovers->status = "Pending";
                 $nextMdrApprovers->save();
+                $nextUser = $nextMdrApprovers->users;
+                if ($nextUser) {
+                Notification::send($nextUser, new EmailNotificationForApprovers($nextUser, $mdrSummary->departments, $mdrSummary->year, $mdrSummary->month));
+            }
             }
             else
             {
                 $mdrSummary->status = "Approved";
                 $mdrSummary->save();
-
+                $mdrOwner = $mdrSummary->departments->user;
+                if ($mdrOwner) {
+                Notification::send($mdrOwner, new ApprovedNotification($mdrOwner,  $mdrSummary->year, $mdrSummary->month));
+                }
                 // if ($mdrSummary->score < 2.99)
                 // {
                 //     $warnings = Warnings::where('mdr_id',$mdrSummary->id)->first();
@@ -219,18 +227,26 @@ class ListOfMdr extends Controller
             $returnToApprover = MdrApprovers::where('mdr_id', $mdr_approvers->mdrRelationship->id)->orderBy('level', 'asc')->get();
             $secondApprover = MdrApprovers::where('level', 2)->where('mdr_id', $mdr_approvers->mdrRelationship->id)->first();
             $firstApprover = MdrApprovers::where('level', 1)->where('mdr_id', $mdr_approvers->mdrRelationship->id)->first();
-            
+            $returnRecipient = null;
             if (auth()->user()->id == $firstApprover->user_id)
             {
                 $mdrSummary->level = null;
                 $mdrSummary->status = "Returned";
                 $mdrSummary->is_accepted = null;
                 $mdrSummary->save();
+                $returnRecipient = $mdrSummary->departments->user;
             }
             else
             {
                 $mdrSummary->level = 1;
                 $mdrSummary->save();
+
+                $previousApprover = MdrApprovers::where('mdr_id', $mdrSummary->id)
+                    ->orderBy('level', 'asc')
+                    ->first();
+                if ($previousApprover) {
+                    $returnRecipient = $previousApprover->users;
+                }
             }
 
             foreach($returnToApprover as $key=>$approver)
@@ -257,6 +273,25 @@ class ListOfMdr extends Controller
                 }
 
                 $mdrApprover->save();
+            }
+            if ($returnRecipient) {
+                $approverName = auth()->user()->name;
+                if ($returnRecipient->id == $mdrSummary->departments->user->id) {
+                    $link = url('mdr'); 
+                } else {
+                    $link = url('for_approval?filter=returned'); 
+                }
+                Notification::send(
+                $returnRecipient,
+                new ReturnNotification(
+                    $returnRecipient->name,
+                    $mdrSummary->year,
+                    $mdrSummary->month,
+                    $approverName,
+                    $mdrSummary->departments, 
+                    $link
+                    )
+                );
             }
 
             // if (auth()->user()->role == "Approver" || auth()->user()->role == "Business Process Manager")

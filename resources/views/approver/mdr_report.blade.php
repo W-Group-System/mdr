@@ -65,18 +65,28 @@
                     <th rowspan="2">Nos.</th>
                     <th rowspan="2">Department</th>
                     <th rowspan="2">PIC</th>
+                    <th colspan="3" rowspan="1">History</th>
                     <th rowspan="1" colspan="2">MDR Submission</th>
                     <th rowspan="2">Timeliness</th>
-                    <th rowspan="2">Operational Objectives (3.00)</th>
-                    <th rowspan="2">Innovation (1.50)</th>
+                    <th rowspan="2">Operational Objectives</th>
+                    <th rowspan="2">Innovation</th>
                     <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F',
                         strtotime($data['year_and_month'])) }} @endif Rating</th>
-                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
-                        strtotime($data['year_and_month']))) }} @endif Rating</th>
+                    {{-- <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
+                        strtotime($data['year_and_month']))) }} @endif Rating</th> --}}
                     <th rowspan="2">Reason for Low Grade</th>
                     <th rowspan="2">Action Plan</th>
                 </tr>
+                    @php
+                        $selectedDate = \Carbon\Carbon::parse($data['year_and_month']);
+                        $month1 = $selectedDate->copy()->subMonths(3); 
+                        $month2 = $selectedDate->copy()->subMonths(2); 
+                        $month3 = $selectedDate->copy()->subMonths(1);
+                    @endphp
                 <tr>
+                    <th>{{ $month1->format('F Y') }}</th>
+                    <th>{{ $month2->format('F Y') }}</th>
+                    <th>{{ $month3->format('F Y') }}</th>
                     <th>Pre-approved Date</th>
                     <th>Actual Submission</th>
                 </tr>
@@ -93,6 +103,22 @@
                             {{ $whi->departments->user->name }}
                             @endif
                         </td>
+                        @php
+                            $history = $whi->mdr_history ?? collect();
+                            $m1 = $history->where('month', $month1->format('m'))
+                                        ->where('year', $month1->format('Y'))
+                                        ->first();
+                            $m2 = $history->where('month', $month2->format('m'))
+                                        ->where('year', $month2->format('Y'))
+                                        ->first();
+                            $m3 = $history->where('month', $month3->format('m'))
+                                        ->where('year', $month3->format('Y'))
+                                        ->first();
+                        @endphp
+
+                        <td>{{ $m1 ? number_format($m1->score,2) : '-' }}</td>
+                        <td>{{ $m2 ? number_format($m2->score,2) : '-' }}</td>
+                        <td>{{ $m3 ? number_format($m3->score,2) : '-' }}</td>
                         <td class="text-center">
                             @if($whi->mdr)
                             {{ $whi->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month",
@@ -136,9 +162,9 @@
                             <b><i>No MDR Submitted</i></b>
                             @endif
                         </td>
-                        <td class="text-center">
+                        {{-- <td class="text-center">
                             0.00
-                        </td>
+                        </td> --}}
                         <td class="text-center">
                             @php
                             $year = date('Y', strtotime($data['year_and_month']));
@@ -162,18 +188,22 @@
                     <th rowspan="2">Nos.</th>
                     <th rowspan="2">Department</th>
                     <th rowspan="2">PIC</th>
+                    <th colspan="3" rowspan="1">History</th>
                     <th rowspan="1" colspan="2">MDR Submission</th>
                     <th rowspan="2">Timeliness</th>
-                    <th rowspan="2">Operational Objectives (3.00)</th>
-                    <th rowspan="2">Innovation (1.50)</th>
+                    <th rowspan="2">Operational Objectives</th>
+                    <th rowspan="2">Innovation</th>
                     <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F',
                         strtotime($data['year_and_month'])) }} @endif Rating</th>
-                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
-                        strtotime($data['year_and_month']))) }} @endif Rating</th>
+                    {{-- <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
+                        strtotime($data['year_and_month']))) }} @endif Rating</th> --}}
                     <th rowspan="2">Reason for Low Grade</th>
                     <th rowspan="2">Action Plan</th>
                 </tr>
                 <tr>
+                    <th>{{ $month1->format('F Y') }}</th>
+                    <th>{{ $month2->format('F Y') }}</th>
+                    <th>{{ $month3->format('F Y') }}</th>
                     <th>Pre-approved Date</th>
                     <th>Actual Submission</th>
                 </tr>
@@ -192,6 +222,22 @@
                             {{ $wli->departments->user->name }}
                             @endif
                         </td>
+                        @php
+                            $history = $wli->mdr_history ?? collect();
+                            $m1 = $history->where('month', $month1->format('m'))
+                                        ->where('year', $month1->format('Y'))
+                                        ->first();
+                            $m2 = $history->where('month', $month2->format('m'))
+                                        ->where('year', $month2->format('Y'))
+                                        ->first();
+                            $m3 = $history->where('month', $month3->format('m'))
+                                        ->where('year', $month3->format('Y'))
+                                        ->first();
+                        @endphp
+
+                        <td>{{ $m1 ? number_format($m1->score,2) : '-' }}</td>
+                        <td>{{ $m2 ? number_format($m2->score,2) : '-' }}</td>
+                        <td>{{ $m3 ? number_format($m3->score,2) : '-' }}</td>
                         <td class="text-center">
                             @if($wli->mdr)
                             {{ $wli->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month",
@@ -235,9 +281,9 @@
                             <b><i>No MDR Submitted</i></b>
                             @endif
                         </td>
-                        <td class="text-center">
+                        {{-- <td class="text-center">
                             0.00
-                        </td>
+                        </td> --}}
                         <td>
                             @php
                             $year = date('Y', strtotime($data['year_and_month']));
