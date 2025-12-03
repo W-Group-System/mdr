@@ -332,7 +332,7 @@
                 @foreach ($data['other'] as $key=>$other)
                 <tr @if($other->mdr) @if($other->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
                         <td>
-                            WLI
+                            OTHERS
                         </td>
                         <td>{{ $key+1 }}</td>
                         <td>{{ $other->department }}</td>
