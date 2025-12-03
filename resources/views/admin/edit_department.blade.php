@@ -34,6 +34,15 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-12">
+                            Company :
+                            <select name="company" id="company" class="form-control cat">
+                                <option value="">-Company-</option>
+                                @foreach ($companies as $company)
+                                    <option value="{{ $company->id }}" {{ $company->id == $departmentData->company_id ? 'selected' : '' }}>{{ $company->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         {{-- <div class="col-md-12">
                             <button type="button" class="btn btn-sm btn-primary addApprover">
                                 <i class="fa fa-plus"></i>

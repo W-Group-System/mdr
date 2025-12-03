@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Admin\Company;
 use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
 use Illuminate\Http\Request;
@@ -16,12 +17,14 @@ class DepartmentController extends Controller
         $departmentList = Department::get();
 
         $user =  User::where('status', "Active")->get();
+        $companies =  Company::where('status', "Active")->get();
 
         return view('admin.department',
             array(
                 'departmentList' => $departmentList,
                 'user' => $user,
                 'targetDate' => $this->targetDate(),
+                'companies' => $companies,
             )
         );
     }
@@ -36,6 +39,7 @@ class DepartmentController extends Controller
         $dept->name = $request->departmentName;
         $dept->user_id = $request->departmentHead;
         $dept->target_date = $request->targetDate;
+        $dept->company_id = $request->company;
         $dept->status = "Active";
         $dept->save();
 
@@ -53,6 +57,7 @@ class DepartmentController extends Controller
         $dept->name = $request->departmentName;
         $dept->user_id = $request->departmentHead;
         $dept->target_date = $request->targetDate;
+        $dept->company_id = $request->company;
         $dept->save();
 
         if ($request->has('approver'))

@@ -299,6 +299,125 @@
                 @endforeach
             </tbody>
         </table>
+
+        <table border="1" cellpadding="0" cellspacing="0" style="margin-top: 10px;">
+            <thead>
+                <tr>
+                    <th rowspan="2">Company</th>
+                    <th rowspan="2">Nos.</th>
+                    <th rowspan="2">Department</th>
+                    <th rowspan="2">PIC</th>
+                    <th colspan="3" rowspan="1">History</th>
+                    <th rowspan="1" colspan="2">MDR Submission</th>
+                    <th rowspan="2">Timeliness</th>
+                    <th rowspan="2">Operational Objectives</th>
+                    <th rowspan="2">Innovation</th>
+                    <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F',
+                        strtotime($data['year_and_month'])) }} @endif Rating</th>
+                    {{-- <th rowspan="2" class="bg-success">@if($data['year_and_month']) {{ date('F', strtotime('-1 month',
+                        strtotime($data['year_and_month']))) }} @endif Rating</th> --}}
+                    <th rowspan="2">Reason for Low Grade</th>
+                    <th rowspan="2">Action Plan</th>
+                </tr>
+                <tr>
+                    <th>{{ $month1->format('F Y') }}</th>
+                    <th>{{ $month2->format('F Y') }}</th>
+                    <th>{{ $month3->format('F Y') }}</th>
+                    <th>Pre-approved Date</th>
+                    <th>Actual Submission</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{-- @dd($data['whi']) --}}
+                @foreach ($data['other'] as $key=>$other)
+                <tr @if($other->mdr) @if($other->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
+                        <td>
+                            WLI
+                        </td>
+                        <td>{{ $key+1 }}</td>
+                        <td>{{ $other->department }}</td>
+                        <td class="text-center">
+                            @if($other->departments->user)
+                            {{ $other->departments->user->name }}
+                            @endif
+                        </td>
+                        @php
+                            $history = $other->mdr_history ?? collect();
+                            $m1 = $history->where('month', $month1->format('m'))
+                                        ->where('year', $month1->format('Y'))
+                                        ->first();
+                            $m2 = $history->where('month', $month2->format('m'))
+                                        ->where('year', $month2->format('Y'))
+                                        ->first();
+                            $m3 = $history->where('month', $month3->format('m'))
+                                        ->where('year', $month3->format('Y'))
+                                        ->first();
+                        @endphp
+
+                        <td>{{ $m1 ? number_format($m1->score,2) : '-' }}</td>
+                        <td>{{ $m2 ? number_format($m2->score,2) : '-' }}</td>
+                        <td>{{ $m3 ? number_format($m3->score,2) : '-' }}</td>
+                        <td class="text-center">
+                            @if($other->mdr)
+                            {{ $other->mdr->departments->target_date.'-'.date('M', strtotime("+ 1 month",
+                            strtotime($other->mdr->month))).'-'.$other->mdr->year }}
+                            @else
+                            -
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($other->mdr)
+                            {{ date('d-M-Y', strtotime($other->mdr->created_at)) }}
+                            @else
+                            -
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($other->mdr)
+                            {{ number_format($other->mdr->timeliness,2) }}
+                            @else
+                            0.00
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($other->mdr)
+                            {{ number_format($other->mdr->grade,2) }}
+                            @else
+                            0.00
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($other->mdr)
+                            {{ number_format($other->mdr->innovation_scores,2) }}
+                            @else
+                            0.00
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($other->mdr)
+                            {{ number_format($other->mdr->score,2) }}
+                            @else
+                            <b><i>No MDR Submitted</i></b>
+                            @endif
+                        </td>
+                        {{-- <td class="text-center">
+                            0.00
+                        </td> --}}
+                        <td>
+                            @php
+                            $year = date('Y', strtotime($data['year_and_month']));
+                            $month = date('m', strtotime($data['year_and_month']));
+                            @endphp
+                            @foreach (($other->departments->remarks)->where('year', $year)->where('month',
+                            $month) as $remarks)
+                            <p class="text-justify">{!! nl2br(e($remarks->remarks)) !!}</p>
+                            @endforeach
+                        </td>
+                        <td class="text-center"></td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
