@@ -35,11 +35,18 @@
                     </button>
                     @endif
                     @if($mdr->status == "Draft")
-                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
-                        style="margin-top: 3px;">
-                        <i class="fa fa-pencil"></i>
-                        Edit KPI
-                    </button>
+                        @if(count($departmentalGoals->where('year', date('Y', strtotime($yearAndMonth)))->where('month', date('m', strtotime($yearAndMonth)))) > 0)
+                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
+                            style="margin-top: 3px;">
+                            <i class="fa fa-pencil"></i>
+                            Edit KPI
+                        </button>
+                        @else
+                        <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#newKpi" @if($departmentalGoals->isNotEmpty()) disabled @endif>
+                            <i class="fa fa-plus"></i>
+                            Add KPI
+                        </button>
+                        @endif
                     @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
@@ -468,4 +475,6 @@
         });
     });
 </script>
+@include('dept-head.new_kpi')
+
 @endpush
