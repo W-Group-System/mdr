@@ -70,6 +70,7 @@ class UserController extends Controller
         else {
             $user = User::findOrFail($id);
             if ($user) {
+                $user->name = $request->name;
                 $user->department_id = $request->department;
                 $user->email = $request->email;
                 $user->role = $request->role;
