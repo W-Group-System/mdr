@@ -32,6 +32,7 @@
                                             <tbody>
                                                 @foreach ($departmentalGoals as $key=>$dptGoals)
                                                     <input type="hidden" name="department_goals_id[]" value="{{$dptGoals->id}}">
+                                                    <input type="hidden" name="mdr_id[]" value="{{$mdr->id}}">
                                                     <tr>
                                                         <td>
                                                             {!! nl2br($dptGoals->departmentKpi->name) !!}

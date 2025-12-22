@@ -33,6 +33,7 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->target = $request->target[$key];
             $departmentalGoals->actual = $request->actual[$key];
             $departmentalGoals->remarks = $request->remarks[$key];
+            $departmentalGoals->mdr_id = $request->mdr_id[$key];
             $departmentalGoals->year = date('Y', strtotime($request->yearAndMonth));
             $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
             $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
@@ -70,6 +71,7 @@ class DepartmentalGoalsController extends Controller
         foreach($departmentalGoals as $deptKey=>$dptGoals)
         {
             $dptGoals->actual = $request->actual[$deptKey];
+            $dptGoals->mdr_id = $request->mdr_id[$deptKey];
             $dptGoals->remarks = $request->remarks[$deptKey];
             $dptGoals->target = $request->target[$deptKey];
             $dptGoals->save();
