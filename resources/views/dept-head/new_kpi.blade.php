@@ -33,6 +33,7 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($department_kpis as $key=>$department_kpi)
+                                                    <input type="hidden" name="mdr_id[]" value="{{$mdr->id}}">
                                                     <tr>
                                                         <td>
                                                             <input type="hidden" name="department_kpi_id[{{ $key }}]" value="{{$department_kpi->id}}">
