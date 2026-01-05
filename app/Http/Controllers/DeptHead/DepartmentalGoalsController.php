@@ -30,10 +30,10 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals = new DepartmentalGoals;
             $departmentalGoals->department_kpi_id = $department_kpi_id;
             $departmentalGoals->department_id = auth()->user()->department_id;
-            $departmentalGoals->target = $request->target[$key];
-            $departmentalGoals->actual = $request->actual[$key];
-            $departmentalGoals->remarks = $request->remarks[$key];
-            $departmentalGoals->mdr_id = $request->mdr_id[$key];
+            $departmentalGoals->target = $request->target[$key] ?? null;
+            $departmentalGoals->actual = $request->actual[$key] ?? null;
+            $departmentalGoals->remarks = $request->remarks[$key] ?? null;
+            $departmentalGoals->mdr_id = $request->mdr_id[$key] ?? null;
             $departmentalGoals->year = date('Y', strtotime($request->yearAndMonth));
             $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
             $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
@@ -70,10 +70,10 @@ class DepartmentalGoalsController extends Controller
         $departmentalGoals = DepartmentalGoals::findMany($request->department_goals_id);
         foreach($departmentalGoals as $deptKey=>$dptGoals)
         {
-            $dptGoals->actual = $request->actual[$deptKey];
-            $dptGoals->mdr_id = $request->mdr_id[$deptKey];
-            $dptGoals->remarks = $request->remarks[$deptKey];
-            $dptGoals->target = $request->target[$deptKey];
+            $dptGoals->actual = $request->actual[$deptKey] ?? null;
+            $dptGoals->mdr_id = $request->mdr_id[$deptKey] ?? null;
+            $dptGoals->remarks = $request->remarks[$deptKey] ?? null;
+            $dptGoals->target = $request->target[$deptKey] ?? null;
             $dptGoals->save();
 
             if ($request->has('file') && isset($request->file('file')[$deptKey]))
