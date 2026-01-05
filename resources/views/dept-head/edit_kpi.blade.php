@@ -35,6 +35,7 @@
                                                     @if (isset($mdr))
                                                         <input type="hidden" name="mdr_id[]" value="{{$mdr->id}}">
                                                     @endif
+                                                    
                                                     <tr>
                                                         <td>
                                                             {!! nl2br($dptGoals->departmentKpi->name) !!}
