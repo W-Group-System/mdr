@@ -160,7 +160,7 @@
         <table cellpadding='1' cellspacing='0' border="1" style="width: 100%;">
             <tr>
                 <td>
-                    <p class="font-weight-bold ml-1" style="font-size:11">Company: <span class="font-weight-normal">{{ $data['mdr']->departments->company->name }}</span></p>
+                    <p class="font-weight-bold ml-1" style="font-size:11">Company: <span class="font-weight-normal">{{ optional(optional($data['mdr']->departments)->company)->name }}</span></p>
                 </td>
                 <td>
                     <p class="font-weight-bold ml-1 text-center" style="font-size: 11;">Criteria</p>
