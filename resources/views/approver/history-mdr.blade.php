@@ -459,6 +459,141 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Shared Services Reports</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Company</th>
+                                    <th rowspan="2">Nos.</th>
+                                    <th rowspan="2">Department</th>
+                                    <th rowspan="2">PIC</th>
+                                    <th colspan="3" rowspan="1">History</th>
+                                    <th colspan="2" rowspan="1">MDR Submission</th>
+                                    <th rowspan="2">Timeliness</th>
+                                    <th rowspan="2">Operational Objectives</th>
+                                    <th rowspan="2">Innovation</th>
+                                    <th rowspan="2">@if($year_month) {{ date('F', strtotime($year_month)) }} @endif Rating</th>
+                                    <th rowspan="2">Remarks</th>
+                                    <th rowspan="2">Action</th>
+                                </tr>
+                                <tr>
+                                    <th>{{ $month1->format('F Y') }}</th>
+                                    <th>{{ $month2->format('F Y') }}</th>
+                                    <th>{{ $month3->format('F Y') }}</th>
+                                    <th>Pre-approved Date</th>
+                                    <th>Actual Submission</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(count($shared_reports_array) > 0)
+                                    @foreach ($shared_reports_array as $key=>$shared_reports_data)
+                                        <tr @if($shared_reports_data->mdr) @if($shared_reports_data->mdr->score < 3.00) class="bg-warning" style="color: black;" @endif @endif>
+                                            @if($key == 0)
+                                                <td rowspan="{{ count($shared_reports_array) }}" style="vertical-align: middle; font-weight:bold;">
+                                                    SHARED SERVICES
+                                                </td>
+                                            @endif
+                                            <td>{{ $key+1 }}</td>
+                                            <td>{{ $shared_reports_data->department }}</td>
+                                            <td>{{ $shared_reports_data->head }}</td>
+                                             @php
+                                                $history = $shared_reports_data->mdr_history ?? collect();
+                                                $m1 = $history->where('month', $month1->format('m'))
+                                                            ->where('year', $month1->format('Y'))
+                                                            ->first();
+                                                $m2 = $history->where('month', $month2->format('m'))
+                                                            ->where('year', $month2->format('Y'))
+                                                            ->first();
+                                                $m3 = $history->where('month', $month3->format('m'))
+                                                            ->where('year', $month3->format('Y'))
+                                                            ->first();
+                                            @endphp
+
+                                            <td>{{ $m1 ? number_format($m1->score,2) : '-' }}</td>
+                                            <td>{{ $m2 ? number_format($m2->score,2) : '-' }}</td>
+                                            <td>{{ $m3 ? number_format($m3->score,2) : '-' }}</td>
+                                            <td>
+                                                @if($shared_reports_data->mdr)
+                                                {{ $shared_reports_data->mdr->departments->target_date.'-'.date('M', strtotime("+1 month", strtotime($shared_reports_data->mdr->year.'-'.$shared_reports_data->mdr->month))).'-'.$shared_reports_data->mdr->year }}
+                                                @else
+                                                -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($shared_reports_data->mdr)
+                                                {{ date('d-M-Y', strtotime($shared_reports_data->mdr->created_at)) }}
+                                                @else
+                                                -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($shared_reports_data->mdr)
+                                                {{ number_format($shared_reports_data->mdr->timeliness,2) }}
+                                                @else
+                                                0.00
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($shared_reports_data->mdr)
+                                                {{ number_format($shared_reports_data->mdr->grade,2) }}
+                                                @else
+                                                0.00
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($shared_reports_data->mdr)
+                                                {{ number_format($shared_reports_data->mdr->innovation_scores,2) }}
+                                                @else
+                                                0.00
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($shared_reports_data->mdr)
+                                                {{ number_format($shared_reports_data->mdr->score,2) }}
+                                                @else
+                                                <b><i>No MDR Submitted</i></b>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $year = date('Y', strtotime($year_month));
+                                                    $month = date('m', strtotime($year_month));
+                                                @endphp
+                                                @foreach (($shared_reports_data->departments->remarks)->where('year', $year)->where('month', $month) as $remarks)
+                                                    <p style="text-align: justify; text-justify:inter-word;">{!! nl2br(e($remarks->remarks)) !!}</p>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @if($year_month)
+                                                    @if($shared_reports_data->mdr)
+                                                        @if($shared_reports_data->mdr->grade < 3.00)
+                                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#remarksModal{{ $shared_reports_data->departments->id }}">
+                                                            <i class="fa fa-comment"></i>
+                                                        </button>
+                                                        @endif
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        </tr>
+
+                                    @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="10" class="text-center">No data available.</td>
+                                </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

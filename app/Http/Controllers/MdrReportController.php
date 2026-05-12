@@ -75,7 +75,7 @@ class MdrReportController extends Controller
         })->values()->all();
 
         $other_reports_array = [];
-        foreach ($departments->whereNotIn('company_id', [2, 3]) as $department) {
+        foreach ($departments->whereNotIn('company_id', [2, 3, 37]) as $department) {
 
             // $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
             $mdr = Mdr::with('departments')
@@ -100,12 +100,40 @@ class MdrReportController extends Controller
                 $item->mdr->score ?? 9999
             ];
         })->values()->all();
-        // dd($wli_reports_array);
+
+        $shared_reports_array = [];
+        foreach ($departments->where('company_id', 37) as $department) {
+
+            // $mdr = Mdr::with('departments')->where('department_id', $department->id)->where('year', date('Y', strtotime($request->year_month)))->where('month', date('m', strtotime('-1 month', strtotime($request->year_month))))->orderBy('score','asc')->first();
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($request->year_month)))
+                ->where('month', date('m', strtotime(($request->year_month))))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
+            
+
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->departments = $department;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr = $mdr;
+            $object->mdr_history = $mdr_history;
+            $shared_reports_array[] = $object;
+        }
+        $shared_reports_array = collect($shared_reports_array)->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
+        // dd($shared_reports_array);
         return view('approver.history-mdr',
             array(
                 'wli_reports_array' => $wli_reports_array,
                 'whi_reports_array' => $whi_reports_array,
                 'other_reports_array' => $other_reports_array,
+                'shared_reports_array' => $shared_reports_array,
                 'year_month' => $request->year_month
                 // 'process_improvement' => $process_improvement,
                 // 'departments' => $departments,
@@ -284,6 +312,29 @@ class MdrReportController extends Controller
             ];
         })->values()->all();
 
+        $data['shared'] = [];
+        foreach($departments->where('company_id', 37) as $department)
+        {
+            $mdr = Mdr::with('departments')
+                ->where('department_id', $department->id)
+                ->where('year', date('Y', strtotime($year_month)))
+                ->where('month', date('m', strtotime($year_month)))
+                ->orderBy('score','asc')->first();
+            $mdr_history = Mdr::where('department_id', $department->id)->get();
+            $object = new stdClass;
+            $object->department = $department->name;
+            $object->departments = $department;
+            $object->head = isset($department->user->name) ? $department->user->name : null;
+            $object->mdr_history = $mdr_history;
+            $object->mdr = $mdr;
+            $data['shared'][] = $object;
+        }
+        $data['shared'] = collect($data['shared'])->sortBy(function ($item) {
+            return [
+                is_null($item->mdr) ? 0 : 1,
+                $item->mdr->score ?? 9999
+            ];
+        })->values()->all();
         
         $pdf = App::make('dompdf.wrapper');
         $pdf->loadView('approver.mdr_report', ['data' => $data])
