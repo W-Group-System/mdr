@@ -63,11 +63,27 @@
         </div>
     </div>
 </div>
-
+<style>
+    .swal2-container {
+        z-index: 999999 !important;
+    }
+</style>
 <script>
     function deactivateMdr(e)
     {
-        $(e).closest("tr").remove()
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This file will be permanently deleted.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(e).closest("tr").remove()
+            }
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
