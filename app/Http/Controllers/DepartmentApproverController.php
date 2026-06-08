@@ -6,6 +6,7 @@ use App\Admin\DepartmentApprovers;
 use App\DeptHead\MdrApprovers;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentApproverController extends Controller
@@ -47,7 +48,13 @@ class DepartmentApproverController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'level' => 'unique:department_approvers,status_level',
+            // 'level' => 'unique:department_approvers,status_level',
+            'level' => [
+                Rule::unique('department_approvers', 'status_level')
+                    ->where(function ($query) {
+                        return $query->where('status', 'Active');
+                    }),
+            ],
             'approver' => 'unique:department_approvers,user_id'
         ]);
 
@@ -152,6 +159,17 @@ class DepartmentApproverController extends Controller
     public function activate($id)
     {
         $department_approvers = DepartmentApprovers::findOrFail($id);
+        $existingActive = DepartmentApprovers::where('status_level', $department_approvers->status_level)
+            ->where('status', 'Active')
+            ->where('id', '!=', $department_approvers->id)
+            ->exists();
+        if ($existingActive) {
+            Alert::error('Cannot activate. An active approver already exists for Level ' . $department_approvers->status_level)
+                ->persistent('Dismiss');
+
+            return back();
+        }
+
         $department_approvers->status = 'Active';
         $department_approvers->save();
 
