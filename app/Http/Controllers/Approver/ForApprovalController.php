@@ -89,12 +89,32 @@ class ForApprovalController extends Controller
 
     public function forAcceptance() {
 
-        $mdr = Mdr::where('is_accepted', null)
-                    ->where(function ($query) {
-                        $query->where('status', '!=', 'Returned')
-                            ->where('status', '!=', 'Draft');
-                    })
-                    ->orderBy('id', 'desc')->get();
+        $approver = DepartmentApprovers::where('user_id', auth()->id())
+            ->where('status', 'Active')
+            ->first();
+
+        $mdrs = Mdr::whereNull('is_accepted')
+            ->whereNotIn('status', ['Returned', 'Draft']);
+        
+        if ($approver && $approver->status_level == 1) {
+
+            $companyIds = $approver->company_id
+                ? explode(',', $approver->company_id)
+                : [];
+
+            $mdrs->whereHas('departments', function ($query) use ($companyIds) {
+                $query->whereIn('company_id', $companyIds);
+            });
+        }
+
+        $mdr = $mdrs->orderByDesc('id')->get();
+
+        // $mdr = Mdr::where('is_accepted', null)
+        //             ->where(function ($query) {
+        //                 $query->where('status', '!=', 'Returned')
+        //                     ->where('status', '!=', 'Draft');
+        //             })
+        //             ->orderBy('id', 'desc')->get();
 
         return view('approver.for_acceptance', 
             array(

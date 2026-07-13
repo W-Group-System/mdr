@@ -338,14 +338,30 @@ class ListOfMdr extends Controller
         if($request->action === "Accepted") 
         {
             if($mdrSummary->date_accepted === null) {
-               $department_approvers = DepartmentApprovers::where('status','Active')->orderBy('status_level', 'asc')->get();
+            //    $department_approvers = DepartmentApprovers::where('status','Active')->orderBy('status_level', 'asc')->get();
+            $companyId = $mdrSummary->departments->company_id;
+
+            $department_approvers = DepartmentApprovers::where('status', 'Active')
+                ->where(function ($query) use ($companyId) {
+
+                    $query->where(function ($q) use ($companyId) {
+                        $q->where('status_level', 1)
+                        ->whereRaw('FIND_IN_SET(?, company_id)', [$companyId]);
+                    })
+
+                    ->orWhere('status_level', '>', 1);
+
+                })
+                ->orderBy('status_level', 'asc')
+                ->get();
                 foreach($department_approvers as $key=>$department_approver)
                 {
                     
                     $dept_approver = new MdrApprovers;
                     $dept_approver->mdr_id = $mdrSummary->id;
                     $dept_approver->user_id = $department_approver->user_id;
-                    $dept_approver->level = $key+1;
+                    // $dept_approver->level = $key+1;
+                    $dept_approver->level = $department_approver->status_level;
                     if ($key == 0)
                     {
                         $dept_approver->status = 'Pending';
@@ -424,13 +440,29 @@ class ListOfMdr extends Controller
         } 
         elseif($request->action === "AcceptLateApprove") 
         {
-            $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->get();
+            $companyId = $mdrSummary->departments->company_id;
+
+            // $department_approvers = DepartmentApprovers::orderBy('status_level', 'asc')->get();
+            $department_approvers = DepartmentApprovers::where('status', 'Active')
+                ->where(function ($query) use ($companyId) {
+
+                    $query->where(function ($q) use ($companyId) {
+                        $q->where('status_level', 1)
+                        ->whereRaw('FIND_IN_SET(?, company_id)', [$companyId]);
+                    })
+
+                    ->orWhere('status_level', '>', 1);
+
+                })
+                ->orderBy('status_level', 'asc')
+                ->get();
             foreach($department_approvers as $key=>$department_approver)
             {
                 $dept_approver = new MdrApprovers;
                 $dept_approver->mdr_id = $mdrSummary->id;
                 $dept_approver->user_id = $department_approver->user_id;
-                $dept_approver->level = $key+1;
+                // $dept_approver->level = $key+1;
+                $dept_approver->level = $department_approver->status_level;
                 if ($key == 0)
                 {
                     $dept_approver->status = 'Pending';
