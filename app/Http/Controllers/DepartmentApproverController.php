@@ -218,20 +218,34 @@ class DepartmentApproverController extends Controller
 
     public function activate($id)
     {
-        $department_approvers = DepartmentApprovers::findOrFail($id);
-        $existingActive = DepartmentApprovers::where('status_level', $department_approvers->status_level)
-            ->where('status', 'Active')
-            ->where('id', '!=', $department_approvers->id)
-            ->exists();
-        if ($existingActive) {
-            Alert::error('Cannot activate. An active approver already exists for Level ' . $department_approvers->status_level)
-                ->persistent('Dismiss');
+        $department_approver = DepartmentApprovers::findOrFail($id);
+        // $existingActive = DepartmentApprovers::where('status_level', $department_approvers->status_level)
+        //     ->where('status', 'Active')
+        //     ->where('id', '!=', $department_approvers->id)
+        //     ->exists();
+        // if ($existingActive) {
+        //     Alert::error('Cannot activate. An active approver already exists for Level ' . $department_approvers->status_level)
+        //         ->persistent('Dismiss');
 
-            return back();
+        //     return back();
+        // }
+        if ($department_approver->status_level != 1) {
+            $existingActive = DepartmentApprovers::where('status_level', $department_approver->status_level)
+                ->where('status', 'Active')
+                ->where('id', '!=', $department_approver->id)
+                ->exists();
+
+            if ($existingActive) {
+                Alert::error(
+                    'Cannot activate. An active approver already exists for Level ' . $department_approver->status_level
+                )->persistent('Dismiss');
+
+                return back();
+            }
         }
 
-        $department_approvers->status = 'Active';
-        $department_approvers->save();
+        $department_approver->status = 'Active';
+        $department_approver->save();
 
         Alert::success('Successfully Activated')->persistent('Dismiss');
         return back();
