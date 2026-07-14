@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin\Company;
 use App\Admin\DepartmentApprovers;
 use App\DeptHead\MdrApprovers;
 use App\User;
@@ -20,11 +21,12 @@ class DepartmentApproverController extends Controller
     {
         $department_approvers = DepartmentApprovers::with('user')->orderBy('status_level','asc')->get();
         $users = User::where('status','Active')->get();
-
+        $companies = Company::get();
         return view('admin.department_approvers', 
             array(
                 'department_approvers' => $department_approvers,
-                'users' => $users
+                'users' => $users,
+                'companies' => $companies,
             )
         );
     }
@@ -47,21 +49,41 @@ class DepartmentApproverController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            // 'level' => 'unique:department_approvers,status_level',
-            'level' => [
-                Rule::unique('department_approvers', 'status_level')
-                    ->where(function ($query) {
-                        return $query->where('status', 'Active');
-                    }),
-            ],
-            'approver' => 'unique:department_approvers,user_id'
+        $request->validate([
+            'approver' => 'unique:department_approvers,user_id',
         ]);
+        if ($request->level != 1) {
+            $request->validate([
+                'level' => [
+                    Rule::unique('department_approvers', 'status_level')
+                        ->where(function ($query) {
+                            return $query->where('status', 'Active');
+                        }),
+                ],
+            ]);
+        }
+        // $this->validate($request, [
+        //     // 'level' => 'unique:department_approvers,status_level',
+        //     'level' => [
+        //         Rule::unique('department_approvers', 'status_level')
+        //             ->where(function ($query) {
+        //                 return $query->where('status', 'Active');
+        //             }),
+        //     ],
+        //     'approver' => 'unique:department_approvers,user_id'
+        // ]);
 
         $department_approvers = new DepartmentApprovers;
         $department_approvers->user_id = $request->approver;
         $department_approvers->status_level = $request->level;
         $department_approvers->status = 'Active';
+        if ($request->level == 1) {
+            $department_approvers->company_id = !empty($request->companies)
+                ? implode(',', $request->companies)
+                : null;
+        } else {
+            $department_approvers->company_id = null;
+        }
         $department_approvers->save();
 
         Alert::success('Successfully Saved')->persistent('Dismiss');
@@ -99,10 +121,48 @@ class DepartmentApproverController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // $this->validate($request, [
+        //     'level' => [
+        //         Rule::unique('department_approvers', 'status_level')
+        //             ->where(function ($query) {
+        //                 return $query->where('status', 'Active');
+        //             }),
+        //     ],
+        //     'approver' => 'unique:department_approvers,user_id',
+        //     'companies' => 'required_if:level,1'
+        // ]);
         // dd($request->all(),$id);
         $department_approvers = DepartmentApprovers::findOrFail($id);
+
+        $request->validate([
+            'approver' => [
+                Rule::unique('department_approvers', 'user_id')
+                    ->ignore($department_approvers->id),
+            ],
+            'companies' => 'required_if:level,1|array',
+        ]);
+        if ($request->level != 1) {
+            $request->validate([
+                'level' => [
+                    Rule::unique('department_approvers', 'status_level')
+                        ->ignore($department_approvers->id)
+                        ->where(function ($query) {
+                            return $query->where('status', 'Active');
+                        }),
+                ],
+            ]);
+        }
+
+        
         $department_approvers->user_id = $request->approver;
         $department_approvers->status_level = $request->level;
+        if ($request->level == 1) {
+            $department_approvers->company_id = !empty($request->companies)
+                ? implode(',', $request->companies)
+                : null;
+        } else {
+            $department_approvers->company_id = null;
+        }
         $department_approvers->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');
@@ -158,20 +218,34 @@ class DepartmentApproverController extends Controller
 
     public function activate($id)
     {
-        $department_approvers = DepartmentApprovers::findOrFail($id);
-        $existingActive = DepartmentApprovers::where('status_level', $department_approvers->status_level)
-            ->where('status', 'Active')
-            ->where('id', '!=', $department_approvers->id)
-            ->exists();
-        if ($existingActive) {
-            Alert::error('Cannot activate. An active approver already exists for Level ' . $department_approvers->status_level)
-                ->persistent('Dismiss');
+        $department_approver = DepartmentApprovers::findOrFail($id);
+        // $existingActive = DepartmentApprovers::where('status_level', $department_approvers->status_level)
+        //     ->where('status', 'Active')
+        //     ->where('id', '!=', $department_approvers->id)
+        //     ->exists();
+        // if ($existingActive) {
+        //     Alert::error('Cannot activate. An active approver already exists for Level ' . $department_approvers->status_level)
+        //         ->persistent('Dismiss');
 
-            return back();
+        //     return back();
+        // }
+        if ($department_approver->status_level != 1) {
+            $existingActive = DepartmentApprovers::where('status_level', $department_approver->status_level)
+                ->where('status', 'Active')
+                ->where('id', '!=', $department_approver->id)
+                ->exists();
+
+            if ($existingActive) {
+                Alert::error(
+                    'Cannot activate. An active approver already exists for Level ' . $department_approver->status_level
+                )->persistent('Dismiss');
+
+                return back();
+            }
         }
 
-        $department_approvers->status = 'Active';
-        $department_approvers->save();
+        $department_approver->status = 'Active';
+        $department_approver->save();
 
         Alert::success('Successfully Activated')->persistent('Dismiss');
         return back();

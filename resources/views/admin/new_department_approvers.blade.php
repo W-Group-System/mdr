@@ -19,7 +19,17 @@
                         </div>
                         <div class="col-lg-12">
                             Level :
-                            <input type="number" name="level" class="form-control" required>
+                            <input type="number" name="level" id="addLevel" class="form-control" required>
+                        </div>
+                        <div class="col-lg-12" id="addCompanySection" style="display:none;">
+                            Department Companies :
+                            <select name="companies[]" class="form-control cat" multiple>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}">
+                                        {{ $company->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -31,3 +41,4 @@
         </div>
     </div>
 </div>
+

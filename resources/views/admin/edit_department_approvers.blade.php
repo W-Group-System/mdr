@@ -19,7 +19,27 @@
                         </div>
                         <div class="col-lg-12">
                             Level :
-                            <input type="number" name="level" class="form-control" value="{{ $department_approver->status_level }}" required>
+                            <input type="number" name="level" class="form-control level" data-id="{{ $department_approver->id }}" value="{{ $department_approver->status_level }}" required>
+                        </div>
+                        <div class="col-lg-12"
+                            id="companySection{{ $department_approver->id }}"
+                            @if($department_approver->status_level != 1) style="display:none;" @endif>
+
+                            Department Companies :
+
+                            @php
+                                $selectedCompanies = $department_approver->company_id
+                                    ? explode(',', $department_approver->company_id)
+                                    : [];
+                            @endphp
+                            <select name="companies[]" class="cat" multiple>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}"
+                                        {{ in_array($company->id, $selectedCompanies) ? 'selected' : '' }}>
+                                        {{ $company->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>

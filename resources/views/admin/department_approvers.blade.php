@@ -139,7 +139,8 @@
 
 <script>
     $(document).ready(function() {
-        $(".cat").chosen({width: "100%"});
+        
+        $(".cat").chosen({ width: "100%" });
 
         var userTable = $('#departmentTable').DataTable({
             pageLength: 10,
@@ -149,6 +150,38 @@
             dom: '<"html5buttons"B>lTfgitp',
             buttons: []
         });
+
+        $('#addLevel').on('change', function () {
+
+            if ($(this).val() == "1") {
+                $('#addCompanySection').show();
+                $('#addCompanySection select').trigger('chosen:updated');
+            } else {
+                $('#addCompanySection').hide();
+                $('#addCompanySection select')
+                    .val([])
+                    .trigger('chosen:updated');
+            }
+
+        });
+
+        $(document).on('change', '.level', function () {
+
+            var id = $(this).data('id');
+
+            if ($(this).val() == "1") {
+                $('#companySection' + id).show();
+                $('#companySection' + id + ' select').trigger('chosen:updated');
+            } else {
+                $('#companySection' + id).hide();
+                $('#companySection' + id + ' select')
+                    .val([])
+                    .trigger('chosen:updated');
+            }
+
+        });
+
+        
     })
 </script>
 @endpush
