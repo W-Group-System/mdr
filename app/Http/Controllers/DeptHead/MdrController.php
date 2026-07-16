@@ -61,7 +61,7 @@ class MdrController extends Controller
             ->where(function ($query) {
                 $query->where(function ($q) {
                     $q->where('status_level', 1)
-                    ->where('company_id', auth()->user()->company_id);
+                    ->whereRaw('FIND_IN_SET(?, company_id)', [auth()->user()->company_id]);
                 })->orWhere('status_level', '>', 1);
             })
             ->orderBy('status_level')
