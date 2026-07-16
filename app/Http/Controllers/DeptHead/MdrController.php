@@ -56,7 +56,16 @@ class MdrController extends Controller
     }
 
     public function mdrView(Request $request) {
-        $department_approvers = DepartmentApprovers::get();
+        // $department_approvers = DepartmentApprovers::get();
+        $department_approvers = DepartmentApprovers::where('status', 'Active')
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('status_level', 1)
+                    ->where('company_id', auth()->user()->company_id);
+                })->orWhere('status_level', '>', 1);
+            })
+            ->orderBy('status_level')
+            ->get();
         $mdr_year_exists = Mdr::where('department_id', auth()->user()->department_id)->orderBy('year', 'desc')->orderBy('month', 'desc')->first();
         $mdrs = Mdr::where('department_id', auth()->user()->department_id)->orderBy('year', 'desc')->orderBy('month', 'desc')->get();
 
