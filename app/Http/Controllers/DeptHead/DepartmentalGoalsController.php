@@ -37,6 +37,7 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->year = date('Y', strtotime($request->yearAndMonth));
             $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
             $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
+            $departmentalGoals->final_grade =  $request->final_grade;
             $departmentalGoals->save();
 
             if ($request->hasFile("file.$key")) {
@@ -74,6 +75,7 @@ class DepartmentalGoalsController extends Controller
             $dptGoals->mdr_id = $request->mdr_id[$deptKey] ?? null;
             $dptGoals->remarks = $request->remarks[$deptKey] ?? null;
             $dptGoals->target = $request->target[$deptKey] ?? null;
+            $dptGoals->final_grade =  $request->final_grade;
             $dptGoals->save();
 
             if ($request->has('file') && isset($request->file('file')[$deptKey]))

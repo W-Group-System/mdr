@@ -58,6 +58,7 @@ class DepartmentKpiController extends Controller
         $mdrSetup->status = "Active";
         $mdrSetup->month = $request->month;
         $mdrSetup->year = $request->year;
+        $mdrSetup->weight = $request->weight;
         $mdrSetup->save();
 
         Alert::success('Successfully Added')->persistent('Dismiss');

@@ -106,6 +106,7 @@
                                     <th>Departments</th>
                                     <th>Department KPI</th>
                                     <th>Target</th>
+                                    <th>Weight</th>
                                     <th>Attachment Needed</th>
                                     <th>Status</th>
                                 </tr>
@@ -145,6 +146,7 @@
                                         <td>{{ $department_kpi->department->name }}</td>
                                         <td>{!! nl2br($department_kpi->name) !!}</td>
                                         <td>{!! nl2br($department_kpi->target) !!}</td>
+                                        <td>{!! nl2br($department_kpi->weight) !!}</td>
                                         <td>{{ $department_kpi->attachment_description }}</td>
                                         <td>
                                             <div class="label label-{{$department_kpi->status == "Inactive" ? 'danger' : 'primary'}}">{{$department_kpi->status == "Inactive" ? 'Inactive' : 'Active'}}</div>

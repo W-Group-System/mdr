@@ -23,12 +23,13 @@
                                             <thead>
                                                 <tr>
                                                     <th>KPI</th>
-                                                    <th>Target</th>
-                                                    <th>Actual</th>
-                                                    {{-- <th>Grade</th> --}}
+                                                    <th>Target (%)</th>
+                                                    <th>Actual (%)</th>
+                                                    <th>Weight</th>
+                                                    <th>Weighted Score</th>
                                                     <th>Remarks</th>
                                                     <th>Attachments</th>
-                                                    <th>Action</th>
+                                                    {{-- <th>Action</th> --}}
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -42,14 +43,17 @@
                                                             {!! nl2br($department_kpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            <textarea name="target[{{ $key }}]" class="form-control" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
+                                                            <textarea name="target[{{ $key }}]" class="form-control target numerical" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <textarea name="actual[{{ $key }}]" class="form-control" cols="30" rows="10" required></textarea>
+                                                            <textarea name="actual[{{ $key }}]" class="form-control actual numerical" cols="30" rows="10" required></textarea>
                                                         </td>
-                                                        {{-- <td>
-                                                            <input type="number" name="grade[]" class="form-control input-sm" maxlength="3" value="{{old('grade[]')}}" disabled required>
-                                                        </td> --}}
+                                                        <td class="weight">
+                                                            {!! nl2br($department_kpi->weight) !!}
+                                                        </td>
+                                                        <td class="weighted-score">
+                                                            0
+                                                        </td>
                                                         <td>
                                                             <textarea name="remarks[{{ $key }}]" class="form-control input-sm" cols="30" rows="10" required></textarea>
                                                         </td>
@@ -59,14 +63,22 @@
                                                             </small>
                                                             <input type="file" name="file[{{ $key }}][]" class="form-control input-md" multiple required>
                                                         </td>
-                                                        <td>
+                                                        {{-- <td>
                                                             <button type="button" class="btn btn-danger" onclick="deactivateMdr(this)">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
-                                                        </td>
+                                                        </td> --}}
                                                     </tr>
                                                 @endforeach
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td>Total Score:<input type="hidden" name="final_grade" id="totalWeightedScoreHidden" value=""></td>
+                                                    <td><h2><span id="totalWeightedScore">0.00</span></h2></td>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -93,5 +105,51 @@ function saveNewDraft() {
     });
 
     document.getElementById('mdrForm').submit();
+
 }
+document.addEventListener('DOMContentLoaded', function() {
+    $('.numerical').on('keypress', function (e) {
+        // Allow numbers (0-9)
+        if (e.which >= 48 && e.which <= 57) {
+            return true;
+        }
+        // Allow decimal point (.)
+        if (e.which === 46) {
+            return true;
+        }
+        // Allow Enter
+        if (e.which === 13) {
+            return true;
+        }
+        e.preventDefault();
+    });
+
+    $(this).on('input', '.actual', function () {
+        computeRow($(this).closest('tr'));
+        calculateTotalWeightedScore();
+    });
+
+    function calculateTotalWeightedScore() {
+        var total = 0;
+        $('.weighted-score').each(function () {
+            total += parseFloat($(this).text()) || 0;
+        });
+        $('#totalWeightedScoreHidden').val(total.toFixed(2));
+        $('#totalWeightedScore').text(total.toFixed(2));
+    }
+
+    function computeRow(row) {
+        var target = parseFloat(row.find('.target').val()) || 0;
+        var actual = parseFloat(row.find('.actual').val()) || 0;
+        var weight = parseFloat(row.find('.weight').text()) || 0;
+
+        var weightedScore = 0;
+
+        if (target > 0) {
+            weightedScore = (actual / target) * weight;
+        }
+
+        row.find('.weighted-score').text(weightedScore.toFixed(2));
+    }
+});
 </script>

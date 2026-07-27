@@ -90,7 +90,7 @@
                         @if(check_access('For Approval MDR','update'))
                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
                                 <i class="fa fa-pencil"></i>
-                                Add Grade
+                                Edit Grade
                             </button>
                         @endif
                     @endif
