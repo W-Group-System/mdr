@@ -80,6 +80,7 @@ class DepartmentKpiController extends Controller
         $mdrSetup->attachment_description = $request->attachment_description;
         $mdrSetup->month = $request->month;
         $mdrSetup->year = $request->year;
+        $mdrSetup->weight = $request->weight;
         $mdrSetup->save();
 
         Alert::success('Successfully Updated')->persistent('Dismiss');

@@ -22,8 +22,16 @@
                             <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" required>{{$department_kpi->name}}</textarea>
                         </div>
                         <div class="col-md-12">
-                            Target :
-                            <textarea name="target" id="" class="form-control" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    Target :
+                                    <textarea name="target" id="" class="form-control numerical" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    Weight :
+                                    <textarea name="weight" id="" class="form-control numerical" cols="30" rows="10" required>{{$department_kpi->weight}}</textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-12">
                             Attachment Needed
