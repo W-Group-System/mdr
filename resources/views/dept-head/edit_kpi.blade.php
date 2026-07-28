@@ -47,10 +47,10 @@
                                                         <td>
                                                             <textarea name="actual[]" class="form-control numerical actual" cols="30" rows="10" required>{{$dptGoals->actual}}</textarea>
                                                         </td>
-                                                         <td class="weight">
+                                                         <td class="weight-edit">
                                                             {!! nl2br($dptGoals->departmentKpi->weight) !!}
                                                         </td>
-                                                        <td class="weighted-score">
+                                                        <td class="edit-weighted-score">
                                                             0
                                                         </td>
                                                         <td>
@@ -67,8 +67,9 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="3"></td>
+                                                    <td colspan="2"></td>
                                                     <td>Total Score: <input type="hidden" name="final_grade" id="editTotalWeightedScoreHidden" value=""> </td>
+                                                    <td><h2><span id="editTotalWeight">0.00</span></h2></td>
                                                     <td><h2><span id="EditTotalWeightedScore">0.00</span></h2></td>
                                                     <td colspan="2"></td>
                                                 </tr>
@@ -132,27 +133,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateTotalWeightedScore() {
         var total = 0;
-        $('.weighted-score').each(function () {
+        var weightTotal = 0;
+        $('.edit-weighted-score').each(function () {
             total += parseFloat($(this).text()) || 0;
         });
-        console.log(total);
-        
+        $('.weight-edit').each(function () {
+            // console.log($(this).text());
+            
+            weightTotal += parseFloat($(this).text()) || 0;
+        });
         $('#editTotalWeightedScoreHidden').val(total.toFixed(2));
         $('#EditTotalWeightedScore').text(total.toFixed(2));
+
+        $('#editTotalWeight').text(weightTotal.toFixed(2));
     }
 
     function computeRow(row) {
         var target = parseFloat(row.find('.target').val()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
-        var weight = parseFloat(row.find('.weight').text()) || 0;
+        var weight = parseFloat(row.find('.weight-edit').text()) || 0;
 
         var weightedScore = 0;
 
+        if (actual > target) {
+            actual = target;
+        }
         if (target > 0) {
             weightedScore = (actual / target) * weight;
         }
 
-        row.find('.weighted-score').text(weightedScore.toFixed(2));
+        row.find('.edit-weighted-score').text(weightedScore.toFixed(2));
     }
 });
 </script>

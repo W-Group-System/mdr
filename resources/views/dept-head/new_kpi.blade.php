@@ -19,7 +19,7 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="table-responsive">
-                                        <table class="table table-hover table-striped table-bordered">
+                                        <table class="table table-hover table-striped table-bordered" id="newKpiTable">
                                             <thead>
                                                 <tr>
                                                     <th>KPI</th>
@@ -73,8 +73,9 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="3"></td>
+                                                    <td colspan="2"></td>
                                                     <td>Total Score:<input type="hidden" name="final_grade" id="totalWeightedScoreHidden" value=""></td>
+                                                    <td><h2><span id="totalWeight">0.00</span></h2></td>
                                                     <td><h2><span id="totalWeightedScore">0.00</span></h2></td>
                                                     <td colspan="2"></td>
                                                 </tr>
@@ -108,6 +109,13 @@ function saveNewDraft() {
 
 }
 document.addEventListener('DOMContentLoaded', function() {
+    $('#newKpi').on('shown.bs.modal', function () {
+        $('#newKpiTable tbody tr').each(function () {
+            computeRow($(this));
+        });
+        calculateTotalWeightedScore();
+
+    });
     $('.numerical').on('keypress', function (e) {
         // Allow numbers (0-9)
         if (e.which >= 48 && e.which <= 57) {
@@ -131,20 +139,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculateTotalWeightedScore() {
         var total = 0;
+        var weightTotal = 0;
         $('.weighted-score').each(function () {
             total += parseFloat($(this).text()) || 0;
         });
+        $('.weight').each(function () {
+            weightTotal += parseFloat($(this).text()) || 0;
+            console.log($(this).text());
+            
+        });
         $('#totalWeightedScoreHidden').val(total.toFixed(2));
         $('#totalWeightedScore').text(total.toFixed(2));
+
+        $('#totalWeight').text(weightTotal.toFixed(2));
     }
 
     function computeRow(row) {
         var target = parseFloat(row.find('.target').val()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
         var weight = parseFloat(row.find('.weight').text()) || 0;
-
+        
         var weightedScore = 0;
-
+        if (actual > target) {
+            actual = target;
+        }
         if (target > 0) {
             weightedScore = (actual / target) * weight;
         }
