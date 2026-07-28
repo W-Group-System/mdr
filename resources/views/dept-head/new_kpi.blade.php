@@ -73,8 +73,13 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
+                                                    <td colspan="3"></td>
+                                                    <td><b>Total Weight</b></td>
+                                                    <td><b>Total Weighted Score</b></td>
                                                     <td colspan="2"></td>
-                                                    <td>Total Score:<input type="hidden" name="final_grade" id="totalWeightedScoreHidden" value=""></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"><input type="hidden" name="final_grade" id="totalWeightedScoreHidden" value=""></td>
                                                     <td><h2><span id="totalWeight">0.00</span></h2></td>
                                                     <td><h2><span id="totalWeightedScore">0.00</span></h2></td>
                                                     <td colspan="2"></td>
