@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
     });
 
-    $(this).on('input', '.actual', function () {
+    $(this).on('input', '.actual, .target', function () {
         computeRow($(this).closest('tr'));
         calculateTotalWeightedScore();
     });
@@ -138,8 +138,6 @@ document.addEventListener('DOMContentLoaded', function() {
             total += parseFloat($(this).text()) || 0;
         });
         $('.weight-edit').each(function () {
-            // console.log($(this).text());
-            
             weightTotal += parseFloat($(this).text()) || 0;
         });
         $('#editTotalWeightedScoreHidden').val(total.toFixed(2));
