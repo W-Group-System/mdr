@@ -95,7 +95,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
                     <button class="btn btn-success" type="button" onclick="saveNewDraft()">Save Draft</button>
-                    <button class="btn btn-primary" type="submit">Save</button>
+                    <button class="btn btn-primary saveKpi" type="submit">Save</button>
                 </div>
             </form>
         </div>
