@@ -110,7 +110,7 @@
             });
         });
 
-        const saveButtons = document.querySelectorAll('.saveKpi');
+        const saveButtons = document.querySelectorAll('.forfuturereference');
 
         saveButtons.forEach(function (saveButton) {
             saveButton.addEventListener('click', function (e) {
