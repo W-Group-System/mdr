@@ -109,6 +109,34 @@
                 });
             });
         });
+
+        const saveButtons = document.querySelectorAll('.forfuturereference');
+
+        saveButtons.forEach(function (saveButton) {
+            saveButton.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const form = this.closest('form');
+
+                Swal.fire({
+                    title: "Are you sure you want to submit this report?",
+                    html: `
+                        <p>By clicking <strong>Confirm</strong>, you acknowledge that you have reviewed the results. The submitted report is subject to review and final approval and may still be updated during the approval process.</p>
+
+                        <p><strong>Note:</strong> If your report grade is <span style="color:red;">Failed</span>, please verify and validate the results before confirming.</p>
+                    `,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Confirm"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
     });
 </script>
 

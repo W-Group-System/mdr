@@ -22,15 +22,24 @@
                             <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" required></textarea>
                         </div>
                         <div class="col-md-12">
-                            Target :
-                            <textarea name="target" id="" class="form-control" cols="30" rows="10" required></textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    Target :
+                                    <textarea name="target" id="" class="form-control numerical" cols="30" rows="10" required></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    Weight :
+                                    <textarea name="weight" id="" class="form-control numerical" cols="30" rows="10" required></textarea>
+                                </div>
+                            </div>
+                            
                         </div>
                         <div class="col-md-12">
                             Attachment Needed
                             <input name="attachment_description" id="attachment_description" class="form-control">
                             <small id="descError" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
-                        {{-- <div class="col-md-6">
+                        <div class="col-md-6">
                             Month:
                             <select name="month" id="month" class="form-control" required>
                                 @foreach (range(1, 12) as $m)
@@ -54,7 +63,7 @@
                                     <option value="{{ $y }}" {{ now()->year == $y ? 'selected' : '' }}>{{ $y }}</option>
                                 @endfor
                             </select>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -78,5 +87,26 @@ document.addEventListener('DOMContentLoaded', function() {
             error.style.display = 'none';
         }
     });
+
+    $('.numerical').on('keypress', function (e) {
+        // Allow numbers (0-9)
+        if (e.which >= 48 && e.which <= 57) {
+            return true;
+        }
+
+        // Allow decimal point (.)
+        if (e.which === 46) {
+            return true;
+        }
+
+        // Allow Enter
+        if (e.which === 13) {
+            return true;
+        }
+
+        // Prevent everything else
+        e.preventDefault();
+    });
+
 });
 </script>

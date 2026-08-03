@@ -22,15 +22,23 @@
                             <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" required>{{$department_kpi->name}}</textarea>
                         </div>
                         <div class="col-md-12">
-                            Target :
-                            <textarea name="target" id="" class="form-control" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    Target :
+                                    <textarea name="target" id="" class="form-control numerical" cols="30" rows="10" required>{{$department_kpi->target}}</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    Weight :
+                                    <textarea name="weight" id="" class="form-control numerical" cols="30" rows="10" required>{{$department_kpi->weight}}</textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-12">
                             Attachment Needed
                             <input name="attachment_description" id="attachment_description_edit_{{ $department_kpi->id }}" class="form-control" value="{{ $department_kpi->attachment_description }}">
                             <small id="descError_edit_{{ $department_kpi->id }}" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
-                        {{-- <div class="col-md-6">
+                        <div class="col-md-6">
                             Month:
                             <select name="month" class="form-control" required>
                                 @foreach (range(1, 12) as $m)
@@ -54,7 +62,7 @@
                                     </option>
                                 @endfor
                             </select>
-                        </div> --}}
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
