@@ -91,6 +91,7 @@ class ListOfMdr extends Controller
             $dptGoals->remarks = $request->remarks[$key];
             $dptGoals->grade = $request->grade[$key];
             $dptGoals->weight = $request->weight[$key];
+            $dptGoals->actual = $request->actual[$key];
             $dptGoals->save();
             if ($request->hasFile("file.$key"))
             {

@@ -700,6 +700,69 @@
                 });
             });
         });
+
+        $('#editKpi').on('shown.bs.modal', function () {
+        $('#editKpiTable tbody tr').each(function () {
+            computeRow($(this));
+        });
+        calculateTotalWeightedScore();
+
     });
+    
+    $('.numerical').on('keypress', function (e) {
+        // Allow numbers (0-9)
+        if (e.which >= 48 && e.which <= 57) {
+            return true;
+        }
+        // Allow decimal point (.)
+        if (e.which === 46) {
+            return true;
+        }
+        // Allow Enter
+        if (e.which === 13) {
+            return true;
+        }
+        e.preventDefault();
+    });
+
+    $(this).on('input', '.actual', function () {
+        computeRow($(this).closest('tr'));
+        calculateTotalWeightedScore();
+    });
+
+    function calculateTotalWeightedScore() {
+        var total = 0;
+        var weightTotal = 0;
+        $('.edit-weighted-score').each(function () {
+            total += parseFloat($(this).text()) || 0;
+        });
+        $('.weight-edit').each(function () {
+            weightTotal += parseFloat($(this).text()) || 0;
+        });
+        $('#editTotalWeightedScoreHidden').val(total.toFixed(2));
+        $('#EditTotalWeightedScore').text(total.toFixed(2));
+
+        $('#editTotalWeight').text(weightTotal.toFixed(2));
+    }
+
+    function computeRow(row) {
+        var target = parseFloat(row.find('.target').text()) || 0;
+        var actual = parseFloat(row.find('.actual').val()) || 0;
+        var weight = parseFloat(row.find('.weight-edit').text()) || 0;
+
+        var weightedScore = 0;
+
+        if (actual > target) {
+            actual = target;
+        }
+        if (target > 0) {
+            weightedScore = (actual / target) * weight;
+        }
+
+        row.find('.edit-weighted-score').find('.weighted-score-span').text(weightedScore.toFixed(2));
+        row.find('input[name="grade[]"]').val(weightedScore.toFixed(2));
+    }
+    });
+
 </script>
 @endpush

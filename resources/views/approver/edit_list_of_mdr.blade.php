@@ -20,7 +20,7 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="table-responsive">
-                                        <table class="table table-hover table-striped table-bordered">
+                                        <table class="table table-hover table-striped table-bordered" id="editKpiTable">
                                             <thead>
                                                 <tr>
                                                     <th>KPI</th>
@@ -41,21 +41,32 @@
                                                             <input type="hidden" name="name[]" value="{{$dptGoals->departmentKpi->name}}">
                                                             {!! nl2br($dptGoals->departmentKpi->name) !!}
                                                         </td>
-                                                        <td>
+                                                        <td class="target">
                                                             {{-- <input type="hidden" name="target[]" value="{{$dptGoals->departmentKpi->target}}">
-                                                            {!! nl2br($dptGoals->departmentKpi->target) !!} --}}
+                                                            {{-- {!! nl2br($dptGoals->departmentKpi->target) !!} --}}
                                                             <input type="hidden" name="target[]" value="{{$dptGoals->target}}">
                                                             {!! nl2br($dptGoals->target) !!}
                                                         </td>
                                                         <td>
-                                                            {!! nl2br($dptGoals->actual) !!}
+                                                            {{-- {!! nl2br($dptGoals->actual) !!} --}}
+                                                            <input type="text" name="actual[]" class="form-control input-sm actual numerical" step=".01" value="{{ $dptGoals->actual }}" required>
+                                                        </td>
+                                                        <td class="weight-edit">
+                                                            <input type="hidden" name="weight[]" class="form-control input-sm" step=".01" value="{{ $dptGoals->weight }}">
+                                                            {!! nl2br($dptGoals->weight) !!}
+                                                        </td>
+                                                        <td class="edit-weighted-score">
+                                                            <input type="hidden" name="grade[]" class="form-control input-sm grade" step=".01" value="">
+                                                            <span class="weighted-score-span">0</span>
+                                                        </td>
+                                                        {{-- <td>
+                                                            {!! nl2br($dptGoals->weight) !!}
+                                                            <-- <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="c" required> -->
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="{{$dptGoals->weight}}" required>
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" name="grade[]" class="form-control input-sm" step=".01" value="{{$dptGoals->grade}}" max="{{ $dptGoals->weight }}" required>
-                                                        </td>
+                                                            {!! nl2br($dptGoals->grade) !!}
+                                                            <-- <input type="number" name="grade[]" class="form-control input-sm" step=".01" value="{{$dptGoals->grade}}" max="{{ $dptGoals->weight }}" required> -->
+                                                        </td> --}}
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
                                                         </td>
@@ -68,6 +79,20 @@
                                                     </tr>
                                                 @endforeach
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td><b>Total Weight</b></td>
+                                                    <td><b>Total Weighted Grade</b></td>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"><input type="hidden" name="final_grade" id="editTotalWeightedScoreHidden" value=""></td>
+                                                    <td><h2><span id="editTotalWeight">0.00</span></h2></td>
+                                                    <td><h2><span id="EditTotalWeightedScore">0.00</span></h2></td>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
