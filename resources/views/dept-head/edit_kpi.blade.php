@@ -48,10 +48,12 @@
                                                             <textarea name="actual[]" class="form-control numerical actual" cols="30" rows="10" required>{{$dptGoals->actual}}</textarea>
                                                         </td>
                                                          <td class="weight-edit">
-                                                            {!! nl2br($dptGoals->departmentKpi->weight) !!}
+                                                            <input type="hidden" name="weight[]" value="{{ $dptGoals->departmentKpi->weight }}">
+                                                            <span class="deptWeightEdit">{!! nl2br($dptGoals->departmentKpi->weight) !!}</span>
                                                         </td>
                                                         <td class="edit-weighted-score">
-                                                            0
+                                                            <input type="hidden" class="edit-weighted-score-hidden" name="grade[]" value="0">
+                                                            <span class="edit-weighted-score-span">0</span>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
@@ -139,10 +141,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateTotalWeightedScore() {
         var total = 0;
         var weightTotal = 0;
-        $('.edit-weighted-score').each(function () {
+        $('.edit-weighted-score-span').each(function () {
             total += parseFloat($(this).text()) || 0;
         });
-        $('.weight-edit').each(function () {
+        $('.deptWeightEdit').each(function () {
             weightTotal += parseFloat($(this).text()) || 0;
         });
         $('#editTotalWeightedScoreHidden').val(total.toFixed(2));
@@ -154,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function computeRow(row) {
         var target = parseFloat(row.find('.target').val()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
-        var weight = parseFloat(row.find('.weight-edit').text()) || 0;
+        var weight = parseFloat(row.find('.deptWeightEdit').text()) || 0;
 
         var weightedScore = 0;
 
@@ -165,7 +167,8 @@ document.addEventListener('DOMContentLoaded', function() {
             weightedScore = (actual / target) * weight;
         }
 
-        row.find('.edit-weighted-score').text(weightedScore.toFixed(2));
+        row.find('.edit-weighted-score-span').text(weightedScore.toFixed(2));
+        row.find('.edit-weighted-score-hidden').val(weightedScore.toFixed(2));
     }
 });
 </script>

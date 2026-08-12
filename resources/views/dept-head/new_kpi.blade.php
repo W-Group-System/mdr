@@ -49,10 +49,12 @@
                                                             <textarea name="actual[{{ $key }}]" class="form-control actual numerical" cols="30" rows="10" required></textarea>
                                                         </td>
                                                         <td class="weight">
-                                                            {!! nl2br($department_kpi->weight) !!}
+                                                            <input type="hidden" name="weight[{{ $key }}]" value="{{ $department_kpi->weight }}">
+                                                            <span class="deptWeight">{!! nl2br($department_kpi->weight) !!}</span>
                                                         </td>
                                                         <td class="weighted-score">
-                                                            0
+                                                            <input type="hidden" class="weighted-score-hidden" name="grade[{{ $key }}]" value="0">
+                                                            <span class="weighted-score-span">0</span>
                                                         </td>
                                                         <td>
                                                             <textarea name="remarks[{{ $key }}]" class="form-control input-sm" cols="30" rows="10" required></textarea>
@@ -145,10 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateTotalWeightedScore() {
         var total = 0;
         var weightTotal = 0;
-        $('.weighted-score').each(function () {
+        $('.weighted-score-span').each(function () {
             total += parseFloat($(this).text()) || 0;
         });
-        $('.weight').each(function () {
+        $('.deptWeight').each(function () {
             weightTotal += parseFloat($(this).text()) || 0;
             
         });
@@ -161,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function computeRow(row) {
         var target = parseFloat(row.find('.target').val()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
-        var weight = parseFloat(row.find('.weight').text()) || 0;
+        var weight = parseFloat(row.find('.deptWeight').text()) || 0;
         
         var weightedScore = 0;
         if (actual > target) {
@@ -171,7 +173,8 @@ document.addEventListener('DOMContentLoaded', function() {
             weightedScore = (actual / target) * weight;
         }
 
-        row.find('.weighted-score').text(weightedScore.toFixed(2));
+        row.find('.weighted-score-span').text(weightedScore.toFixed(2));
+        row.find('.weighted-score-hidden').val(weightedScore.toFixed(2));
     }
 });
 </script>
