@@ -660,13 +660,14 @@
 
             var totalWeight = 0
             $("[name='weight[]']").each(function(key, item) {
-                return totalWeight += parseFloat(item.value)
+                totalWeight += parseFloat(item.value) || 0;
             })
+            totalWeight = parseFloat(totalWeight.toFixed(2));
 
             if (totalWeight > maxTotal)
             {
                 swal({
-                    title: `Error because the weight is greater than ${maxTotal}`,
+                    title: `Error because the weight is greater than ${totalWeight}`,
                     type: "error"
                 })
             }
