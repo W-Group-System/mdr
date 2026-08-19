@@ -52,8 +52,8 @@
                                                             <input type="text" name="actual[]" class="form-control input-sm actual numerical" step=".01" value="{{ $dptGoals->actual }}" required>
                                                         </td>
                                                         <td class="weight-edit">
-                                                            <input type="hidden" name="weight[]" class="form-control input-sm" step=".01" value="{{ $dptGoals->weight }}">
-                                                            {!! nl2br($dptGoals->weight) !!}
+                                                            <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="{{ $dptGoals->weight }}">
+                                                            {{-- {!! nl2br($dptGoals->weight) !!} --}}
                                                         </td>
                                                         <td class="edit-weighted-score">
                                                             <input type="hidden" name="grade[]" class="form-control input-sm grade" step=".01" value="">

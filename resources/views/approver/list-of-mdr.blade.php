@@ -738,7 +738,8 @@
             total += parseFloat($(this).text()) || 0;
         });
         $('.weight-edit').each(function () {
-            weightTotal += parseFloat($(this).text()) || 0;
+            // weightTotal += parseFloat($(this).text()) || 0;
+            weightTotal += parseFloat($(this).find('input[name="weight[]"]').val()) || 0;
         });
         $('#editTotalWeightedScoreHidden').val(total.toFixed(2));
         $('#EditTotalWeightedScore').text(total.toFixed(2));
@@ -749,7 +750,8 @@
     function computeRow(row) {
         var target = parseFloat(row.find('.target').text()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
-        var weight = parseFloat(row.find('.weight-edit').text()) || 0;
+        // var weight = parseFloat(row.find('.weight-edit').text()) || 0;
+        var weight = parseFloat(row.find('.weight-edit input[name="weight[]"]').val()) || 0;
 
         var weightedScore = 0;
 
