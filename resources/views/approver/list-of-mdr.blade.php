@@ -125,10 +125,10 @@
                                     <td>{!! nl2br($dptGoals->target) !!}</td>
                                     <td>{!! nl2br($dptGoals->actual) !!}</td>
                                     <td>
-                                        {{number_format($dptGoals->weight,2)}}
+                                        {{($dptGoals->weight)}}
                                     </td>
                                     <td>
-                                        {{number_format($dptGoals->grade,2)}}
+                                        {{($dptGoals->grade)}}
                                     </td>
                                     <td>
                                         {!! nl2br($dptGoals->remarks) !!}
@@ -759,8 +759,8 @@
             weightedScore = (actual / target) * weight;
         }
 
-        row.find('.edit-weighted-score').find('.weighted-score-span').text(weightedScore.toFixed(2));
-        row.find('input[name="grade[]"]').val(weightedScore.toFixed(2));
+        row.find('.edit-weighted-score').find('.weighted-score-span').text(weightedScore.toFixed(3));
+        row.find('input[name="grade[]"]').val(weightedScore.toFixed(3));
     }
     });
 
