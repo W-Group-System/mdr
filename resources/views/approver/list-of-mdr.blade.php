@@ -645,6 +645,7 @@
                 let val = parseFloat($(this).val()) || 0;
                 weightGrade += val;
             });
+            weightGrade = parseFloat(weightGrade.toFixed(2));
 
             if (parseFloat(weightGrade) >  maxTotal)
             {
