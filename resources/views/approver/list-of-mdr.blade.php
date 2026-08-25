@@ -749,7 +749,8 @@
     }
 
     function computeRow(row) {
-        var target = parseFloat(row.find('.target').text()) || 0;
+        // var target = parseFloat(row.find('.target').text()) || 0;
+        var target = parseFloat(row.find('.target input[name="target[]"]').val()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
         // var weight = parseFloat(row.find('.weight-edit').text()) || 0;
         var weight = parseFloat(row.find('.weight-edit input[name="weight[]"]').val()) || 0;

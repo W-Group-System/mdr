@@ -44,8 +44,8 @@
                                                         <td class="target">
                                                             {{-- <input type="hidden" name="target[]" value="{{$dptGoals->departmentKpi->target}}">
                                                             {{-- {!! nl2br($dptGoals->departmentKpi->target) !!} --}}
-                                                            <input type="hidden" name="target[]" value="{{$dptGoals->target}}">
-                                                            {!! nl2br($dptGoals->target) !!}
+                                                            <input type="number" name="target[]" value="{{$dptGoals->target}}">
+                                                            {{-- {!! nl2br($dptGoals->target) !!} --}}
                                                         </td>
                                                         <td>
                                                             {{-- {!! nl2br($dptGoals->actual) !!} --}}
