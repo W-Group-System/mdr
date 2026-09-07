@@ -480,9 +480,9 @@
                                     <select name="action" class="form-control" required>
                                         <option value="">Select Action</option>
                                         <option value="Approved">Approve</option>
-                                        @if(auth()->id() !== $lastApprover->user_id)
+                                        {{-- @if(auth()->id() !== $lastApprover->user_id) --}}
                                             <option value="Returned">Return</option>
-                                        @endif
+                                        {{-- @endif --}}
                                     </select>
                                 </div>
                                 <div class="col-md-8">
