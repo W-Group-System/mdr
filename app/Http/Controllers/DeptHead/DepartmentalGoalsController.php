@@ -38,6 +38,7 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
             $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
             $departmentalGoals->final_grade =  $request->final_grade;
+            $departmentalGoals->weight =  $request->weight[$key] ?? null;
             $departmentalGoals->save();
 
             if ($request->hasFile("file.$key")) {

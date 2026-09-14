@@ -50,6 +50,9 @@
                                                         </td>
                                                         <td class="weight">
                                                             {!! nl2br($department_kpi->weight) !!}
+                                                            <input type="hidden"
+                                                            name="weight[{{ $key }}]"
+                                                            value="{{ $department_kpi->weight }}">
                                                         </td>
                                                         <td class="weighted-score">
                                                             0
