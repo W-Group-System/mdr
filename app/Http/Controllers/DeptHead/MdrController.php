@@ -53,6 +53,8 @@ class MdrController extends Controller
                 'mdr_groups' => $mdr_groups
             )
         );
+
+        // dd($department_kpis);
     }
 
     public function mdrView(Request $request) {

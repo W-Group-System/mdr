@@ -47,6 +47,9 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::post('/duplicateDepartmentKpiSave/{id}', 'Admin\DepartmentKpiController@duplicateDepartmentKpiSave');
     Route::post('/deactivate_mdr_setup/{id}', 'Admin\DepartmentKpiController@deactivate');
     Route::post('/activate_mdr_setup/{id}', 'Admin\DepartmentKpiController@activate');
+    // Added
+    Route::get('/department_kpis_list', 'Admin\DepartmentKpiController@list')->name('kpi.view')->middleware('checkAccess');
+    Route::post('/addBulkDepartmentKpi', 'Admin\DepartmentKpiController@addBulkDepartmentKpi')->name('kpi.addBulk');
 
     # Companies
     Route::get('/companies', 'Admin\CompanyController@index')->name('settings')->middleware('checkAccess');
