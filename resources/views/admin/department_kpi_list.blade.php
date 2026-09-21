@@ -190,11 +190,11 @@
                                             </td>
                                             <!-- Target -->
                                             <td>
-                                                <textarea name="target[]" class="form-control" rows="3">{{ $department_kpi->target }}</textarea>
+                                                <textarea name="target[]" class="form-control numerical" rows="3">{{ $department_kpi->target }}</textarea>
                                             </td>
                                             <!-- Weight -->
                                             <td>
-                                                <textarea name="weight[]" class="form-control" rows="3">{{ $department_kpi->weight }}</textarea>
+                                                <textarea name="weight[]" class="form-control numerical" rows="3">{{ $department_kpi->weight }}</textarea>
                                             </td>
                                             <!-- Attachment needed -->
                                             <td>
@@ -412,6 +412,27 @@
         // Toggle all checkboxes in the duplicate modal
         $(document).on('change', '#selectAllDuplicate', function() {
             $('#duplicateModal tbody input[type="checkbox"]').prop('checked', this.checked);
+        });
+        
+        // Input restriction
+        $('.numerical').on('keypress', function (e) {
+        // Allow numbers (0-9)
+            if (e.which >= 48 && e.which <= 57) {
+                return true;
+            }
+
+            // Allow decimal point (.)
+            if (e.which === 46) {
+                return true;
+            }
+
+            // Allow Enter
+            if (e.which === 13) {
+                return true;
+            }
+
+            // Prevent everything else
+            e.preventDefault();
         });
     });
 </script>

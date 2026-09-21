@@ -38,9 +38,7 @@
                             </div>
                         </div>
                     </div>
-
                     <p class="text-muted">Select the KPIs you want to duplicate:</p>
-                    
                     <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
@@ -53,7 +51,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               <!-- Display only in the duplicate those active status -->
+                                <!-- Display only in the duplicate those active status -->
                                 @forelse ($department_kpis->where('status', 'Active') as $kpi)
                                     <tr>
                                         <td style="text-align: center; vertical-align: middle;">
@@ -74,7 +72,6 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
