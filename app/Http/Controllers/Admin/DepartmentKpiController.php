@@ -14,15 +14,17 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentKpiController extends Controller
 {
-    
+
     public function index(Request $request) 
     {
         $selectedMonth = $request->input('month', date('m'));
         $selectedYear = $request->input('year', date('Y'));
         $selectedDepartment = $request->department;
         
-        $departmentList = Department::select('id', 'name', 'code')->where('status', "Active")->get();
-  
+        $departmentList = Department::select('id', 'name', 'code')
+            ->where('status', 'Active')
+            ->get();
+
         $department_kpis = DB::table('departments as dept')
             ->join('department_kpis as kpi', 'dept.id', '=', 'kpi.department_id')
             ->select(
@@ -33,28 +35,38 @@ class DepartmentKpiController extends Controller
                 'kpi.month',
                 DB::raw('COUNT(kpi.id) as total_kpi')
             )
-        ->where('kpi.status', 'Active')
-        ->when($selectedDepartment, function ($query, $selectedDepartment) {
-            $query->where('kpi.department_id', $selectedDepartment);
-        })
-        ->when($request->filled('month'), function ($query) use ($request) {
-            $query->where('kpi.month', $request->month);
-        })
-        ->when($request->filled('year'), function ($query) use ($request) {
-            $query->where('kpi.year', $request->year);
-        })
-        ->groupBy('dept.id', 'dept.name', 'dept.code', 'kpi.year', 'kpi.month')
-        ->orderBy('dept.name', 'asc')
-        ->orderBy('kpi.year', 'desc')
-        ->orderBy('kpi.month', 'desc')
-        ->get();
+            ->where('kpi.status', 'Active')
+            ->when($selectedDepartment, function ($query, $selectedDepartment) {
+                $query->where('kpi.department_id', $selectedDepartment);
+            })
+            ->when($request->filled('month'), function ($query) use ($request) {
+                $query->where('kpi.month', $request->month);
+            })
+            ->when($request->filled('year'), function ($query) use ($request) {
+                $query->where('kpi.year', $request->year);
+            })
+            ->groupBy(
+                'dept.id',
+                'dept.name',
+                'dept.code',
+                'kpi.year',
+                'kpi.month'
+            )
+            ->orderBy('kpi.year', 'desc')
+            ->orderBy('kpi.month', 'desc')
+            ->orderBy('dept.name', 'asc')
+            ->get();
 
         return view('admin.department_kpi', [
             'departmentList' => $departmentList,
             'department' => $request->department,
             'department_kpis' => $department_kpis,
-            'selectedMonth' => $request->filled('month') ? $request->month : $selectedMonth,
-            'selectedYear' => $request->filled('year') ? $request->year : $selectedYear,
+            'selectedMonth' => $request->filled('month') 
+                ? $request->month 
+                : $selectedMonth,
+            'selectedYear' => $request->filled('year') 
+                ? $request->year 
+                : $selectedYear,
         ]);
     }
 
@@ -95,12 +107,10 @@ class DepartmentKpiController extends Controller
     }
     public function addBulkDepartmentKpi(Request $request)
     {
-        //Get parameters
         $departmentId = $request->query('department');
         $year = $request->query('year');
         $month = $request->query('month');
 
-        // Loop through the rows submitted from the table to update or create
         if ($request->has('name')) {
             foreach ($request->name as $index => $name) {
                 $kpiId = $request->id[$index] ?? null;
@@ -139,24 +149,42 @@ class DepartmentKpiController extends Controller
     public function duplicateBulkDepartmentKpi(Request $request)
     {
         $departmentId = $request->query('department');
-        
-        // Get the chosen destination month and year from the modal dropdowns
+
         $targetMonth = $request->input('target_month');
         $targetYear = $request->input('target_year');
 
+        // Check if KPIs already exist for the same department, year, and month
+        $exists = DepartmentKpi::where('department_id', $departmentId)
+            ->where('year', $targetYear)
+            ->where('month', $targetMonth)
+            ->exists();
+
+        if ($exists) {
+            Alert::warning('Already exists')->persistent('Dismiss');
+
+            return redirect()->route('kpi.view', [
+                'department' => $departmentId,
+                'month' => str_pad($targetMonth, 2, '0', STR_PAD_LEFT),
+                'year' => $targetYear,
+            ]);
+        }
+
         if ($request->has('selected_kpis') && is_array($request->selected_kpis)) {
+
             foreach ($request->selected_kpis as $kpiId) {
+
                 $originalKpi = DepartmentKpi::find($kpiId);
 
                 if ($originalKpi) {
+
                     $newKpi = new DepartmentKpi();
 
-                    // Assign selected target period parameters
+                    // Assign target period
                     $newKpi->department_id = $departmentId;
                     $newKpi->year = $targetYear;
                     $newKpi->month = $targetMonth;
 
-                    // Copy attributes from the original KPI
+                    // Copy KPI attributes
                     $newKpi->mdr_group_id = $originalKpi->mdr_group_id ?? 1;
                     $newKpi->name = $originalKpi->name;
                     $newKpi->target = $originalKpi->target;
@@ -169,7 +197,9 @@ class DepartmentKpiController extends Controller
             }
 
             Alert::success('Successfully Duplicated')->persistent('Dismiss');
+
         } else {
+
             Alert::warning('No KPIs selected for duplication')->persistent('Dismiss');
         }
 
