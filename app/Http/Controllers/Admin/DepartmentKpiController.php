@@ -14,42 +14,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentKpiController extends Controller
 {
-   
-    // public function index(Request $request) 
-    // {
-         
-    //     $selectedMonth = $request->input('month', date('m'));
-    //     $selectedYear = $request->input('year', date('Y'));
-    //     $selectedDepartment = $request->department;
-        
-    //     // show fillup  department column
-    //     $departmentList = Department::select('id', 'name', 'code')->where('status', "Active")->get();
-
-    //     $department_kpis = DepartmentKpi::with('mdr_group', 'department')
-    //         ->when($selectedDepartment, function ($query, $selectedDepartment) {
-    //             $query->where('department_id', $selectedDepartment);
-    //         }, function ($query) {
-    //             return $query->whereRaw('1 = 0'); 
-    //         })
-    //         ->when($request->filled('month'), function ($query) use ($request) {
-    //             $query->where('month', $request->month);
-    //         })
-    //         ->when($request->filled('year'), function ($query) use ($request) {
-    //             $query->where('year', $request->year);
-    //         })
-    //         ->orderBy('department_id', 'asc')
-    //         ->get();
-
-    //     return view('admin.department_kpi', [
-    //         'departmentList' => $departmentList,
-    //         'department' => $request->department,
-    //         'department_kpis' => $department_kpis,
-    //         'selectedMonth' => $request->filled('month') ? $request->month : $selectedMonth,
-    //         'selectedYear' => $request->filled('year') ? $request->year : $selectedYear,
-    //     ]);
-    //     // dd($departmentList);
-    // }
-
+    
     public function index(Request $request) 
     {
         $selectedMonth = $request->input('month', date('m'));
@@ -94,20 +59,22 @@ class DepartmentKpiController extends Controller
     }
 
     // department kpi list
-    public  function list(Request $request)
+    public function list(Request $request)
     {
-       $selectedMonth = $request->input('month', date('m'));
+        $selectedMonth = $request->input('month', date('m'));
         $selectedYear = $request->input('year', date('Y'));
         $selectedDepartment = $request->department;
-        
-        // show fillup  department column
-        $departmentList = Department::select('id', 'name', 'code')->where('status', "Active")->get();
+
+        // Show fill-up department column
+        $departmentList = Department::select('id', 'name', 'code')
+            ->where('status', 'Active')
+            ->get();
 
         $department_kpis = DepartmentKpi::with('mdr_group', 'department')
             ->when($selectedDepartment, function ($query, $selectedDepartment) {
                 $query->where('department_id', $selectedDepartment);
             }, function ($query) {
-                return $query->whereRaw('1 = 0'); 
+                return $query->whereRaw('1 = 0');
             })
             ->when($request->filled('month'), function ($query) use ($request) {
                 $query->where('month', $request->month);
@@ -126,7 +93,6 @@ class DepartmentKpiController extends Controller
             'selectedYear' => $request->filled('year') ? $request->year : $selectedYear,
         ]);
     }
-
     public function addBulkDepartmentKpi(Request $request)
     {
         //Get parameters
@@ -168,6 +134,50 @@ class DepartmentKpiController extends Controller
 
         Alert::success('Successfully Added')->persistent('Dismiss');
         return back();
+    }
+
+    public function duplicateBulkDepartmentKpi(Request $request)
+    {
+        $departmentId = $request->query('department');
+        
+        // Get the chosen destination month and year from the modal dropdowns
+        $targetMonth = $request->input('target_month');
+        $targetYear = $request->input('target_year');
+
+        if ($request->has('selected_kpis') && is_array($request->selected_kpis)) {
+            foreach ($request->selected_kpis as $kpiId) {
+                $originalKpi = DepartmentKpi::find($kpiId);
+
+                if ($originalKpi) {
+                    $newKpi = new DepartmentKpi();
+
+                    // Assign selected target period parameters
+                    $newKpi->department_id = $departmentId;
+                    $newKpi->year = $targetYear;
+                    $newKpi->month = $targetMonth;
+
+                    // Copy attributes from the original KPI
+                    $newKpi->mdr_group_id = $originalKpi->mdr_group_id ?? 1;
+                    $newKpi->name = $originalKpi->name;
+                    $newKpi->target = $originalKpi->target;
+                    $newKpi->weight = $originalKpi->weight;
+                    $newKpi->attachment_description = $originalKpi->attachment_description;
+                    $newKpi->status = $originalKpi->status ?? 'Active';
+
+                    $newKpi->save();
+                }
+            }
+
+            Alert::success('Successfully Duplicated')->persistent('Dismiss');
+        } else {
+            Alert::warning('No KPIs selected for duplication')->persistent('Dismiss');
+        }
+
+        return redirect()->route('kpi.view', [
+            'department' => $departmentId,
+            'month' => str_pad($targetMonth, 2, '0', STR_PAD_LEFT),
+            'year' => $targetYear,
+        ]);
     }
 
     public function addDepartmentKpi(Request $request) {

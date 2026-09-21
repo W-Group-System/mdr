@@ -32,31 +32,92 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MdrController extends Controller
 {
-    public function index(Request $request) {
-        $year = date('Y', strtotime($request->yearAndMonth));
-        $month = date('m', strtotime($request->yearAndMonth));
+    public function index(Request $request)
+    {
+        $selectedYear = date('Y', strtotime($request->yearAndMonth));
+        $selectedMonth = date('m', strtotime($request->yearAndMonth));
 
-        $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)
-        ->where('status', 'Active')->orderBy('name', 'asc')->get()
-        ->where('year', $year)
-        ->where('month', $month);
-        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
-        $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
-        $mdr_groups = MdrGroup::get();
+        $departmentId = auth()->user()->department_id;
+
+        // Get KPI based on the selected month and year
+        $department_kpis = DepartmentKpi::where('department_id', $departmentId)
+            ->where('status', 'Active')
+            ->where('year', $selectedYear)
+            ->where('month', $selectedMonth)
+            ->orderBy('name', 'asc')
+            ->get();
+
+        //Default KPI year/month is the selected year/month
+        $kpiYear = $selectedYear;
+        $kpiMonth = $selectedMonth;
+
         
-        return view('dept-head.mdr',
-            array(
-                'department_kpis' => $department_kpis,
-                'yearAndMonth' => $request->yearAndMonth,
-                'departmentalGoals' => $departmentalGoals,
-                'innovations' => $innovations,
-                'mdr_groups' => $mdr_groups
-            )
-        );
+        //If there are no KPI records for the selected month, 
+        //it will fallback to recent previous KPI
+        if ($department_kpis->isEmpty()) {
 
-        // dd($department_kpis);
+            $latestKpi = DepartmentKpi::where('department_id', $departmentId)
+                ->where('status', 'Active')
+                ->where(function ($query) use ($selectedYear, $selectedMonth) {
+
+                    $query->where('year', '<', $selectedYear)
+                        ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                            $query->where('year', $selectedYear)
+                                ->where('month', '<', $selectedMonth);
+                        });
+
+                })
+                ->orderBy('year', 'desc')
+                ->orderBy('month', 'desc')
+                ->first();
+
+            
+            //If previous KPI data exists,
+            //use that year/month for the KPI modal.
+            if ($latestKpi) {
+
+                $kpiYear = $latestKpi->year;
+                $kpiMonth = $latestKpi->month;
+
+                $department_kpis = DepartmentKpi::where('department_id', $departmentId)
+                    ->where('status', 'Active')
+                    ->where('year', $kpiYear)
+                    ->where('month', $kpiMonth)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            }
+        }
+
+        //Year/month used only by the KPI modal
+        $kpiYearAndMonth = $kpiYear . '-' . str_pad($kpiMonth, 2, '0', STR_PAD_LEFT);
+
+        $departmentalGoals = DepartmentalGoals::where('department_id', $departmentId)
+            ->where('year', $selectedYear)
+            ->where('month', $selectedMonth)
+            ->get();
+
+        $innovations = Innovation::where('department_id', $departmentId)
+            ->where('year', $selectedYear)
+            ->where('month', $selectedMonth)
+            ->get();
+
+        $mdr_groups = MdrGroup::get();
+
+        return view('dept-head.mdr', [
+            'department_kpis' => $department_kpis,
+
+            // Selected month/year
+            'yearAndMonth' => $request->yearAndMonth,
+
+            // Actual month/year used for KPI template
+            'kpiYearAndMonth' => $kpiYearAndMonth,
+
+            'departmentalGoals' => $departmentalGoals,
+            'innovations' => $innovations,
+            'mdr_groups' => $mdr_groups
+        ]);
     }
-
+    
     public function mdrView(Request $request) {
         // $department_approvers = DepartmentApprovers::get();
         $department_approvers = DepartmentApprovers::where('status', 'Active')

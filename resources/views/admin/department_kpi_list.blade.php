@@ -44,29 +44,6 @@
   <form action="{{ route('kpi.addBulk', ['department' => $department, 'month' => $selectedMonth, 'year' =>$selectedYear]) }}" method="POST">
         @csrf
         <div class="row">
-            <!-- Department KPI Header -->
-            <div class="col-lg-12">
-                <div class="ibox float-e-margins">
-                    @php
-                        $departmentData = $departmentList->firstWhere('id',$department);
-                    @endphp
-
-                    <div class="ibox-title">
-                        <h5>
-                            Department KPI's -
-                            {{ $departmentData->code ?? '' }}
-                            {{ $departmentData->name ?? '--' }}
-                        </h5>
-                        <div class="pull-right">
-                            <span class="label label-primary">
-                                As of
-                                {{ date('F', mktime(0, 0, 0, (int) $selectedMonth, 1)) }} {{$selectedYear }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Active -->
             <div class="col-lg-3">
                 <div class="ibox float-e-margins">
@@ -104,28 +81,70 @@
                     </div>
                 </div>
             </div>
+            <!-- Department KPI Header -->
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    @php
+                        $departmentData = $departmentList->firstWhere('id',$department);
+                    @endphp
+                    <div class="ibox-title">
+                        <h5>
+                            Department KPI's -
+                            {{ $departmentData->code ?? '' }}
+                            {{ $departmentData->name ?? '--' }}
+                        </h5>
+                        <div class="pull-right">
+                            <span class="label label-primary">
+                                As of
+                                {{ date('F', mktime(0, 0, 0, (int) $selectedMonth, 1)) }} {{$selectedYear }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+        
             <!-- KPI Table -->
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <!-- Action Buttons Header -->
-                    <div class="ibox-title clearfix">
+                    <div class="ibox-title clearfix d-flex align-items-center gap-2">
                         @if(check_access('Department KPI', 'create'))
                             <button type="submit" class="btn btn-sm btn-primary">
                                 <span><i class="fa fa-save"></i></span>
                                 &nbsp;Save
                             </button>
                         @endif
-
-                        <button type="button" id="addRowBtn" class="btn btn-sm btn-success pull-right">
+                        
+                        <button type="button" id="addRowBtn" class="btn btn-sm btn-success">
                             <span><i class="fa fa-plus"></i></span>
                             &nbsp;Add Row
+                        </button>
+                        
+                        <button type="button" id="duplicateBtn" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#duplicateModal">
+                            <span><i class="fa fa-plus"></i></span>
+                            &nbsp;Duplicate
                         </button>
                     </div>
                     <!-- End Action Buttons Header -->
 
                     <div class="ibox-content">
                         @include('components.error')
+
+                        <!-- Status Filter Dropdown Control (Active selected by default) -->
+                        <div class="row m-b-sm">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label" for="statusFilter">Filter by Status:</label>
+                                    <select id="statusFilter" class="form-control input-sm">
+                                        <option value="">All Statuses</option>
+                                        <option value="Active" selected>Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive table-scrollable-container">
                             <table
                                 class="table table-striped table-bordered table-hover"
@@ -207,20 +226,40 @@
             <!-- End KPI Table -->
         </div>
     </form>
+    @include('admin.duplicate')
 </div>
+
 @endsection
 
 @push('scripts')
 <script src="js/plugins/dataTables/datatables.min.js"></script>
 <script>
     $(document).ready(function() {
+        // Custom search filter
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            if (settings.nTable.id !== 'departmentKpiTable') {
+                return true;
+            }
+
+            const selectedStatus = $('#statusFilter').val();
+            if (!selectedStatus) {
+                return true; // Show all if nothing is selected
+            }
+
+            const rowNode = settings.aoData[dataIndex].nTr;
+            const statusCell = $(rowNode).find('td.col-status');
+            const statusText = statusCell.find('.label').text().trim() || statusCell.find('input[name="status[]"]').val();
+
+            return statusText === selectedStatus;
+        });
+
         const table = $('#departmentKpiTable').DataTable({
             paging: false,
-            info: false,
+            info: true,
             ordering: false,
             responsive: false,
-            stateSave: true,
-            autoWidth: false, // Prevent DataTables from hardcoding wrong column px widths
+            stateSave: false,
+            autoWidth: false,
             dom: '<"html5buttons"B>lTfgitp',
             buttons: [],
             columnDefs: [
@@ -230,7 +269,24 @@
             ]
         });
 
-        // column re-adjustment after initial load
+        // Trigger row number re-indexing right away based on default Active filter
+        updateRowNumbers();
+
+        // Trigger table redraw when status filter dropdown changes
+        $('#statusFilter').on('change', function() {
+            table.draw();
+            updateRowNumbers();
+            table.columns.adjust();
+        });
+
+        //Re-index sequence numbers dynamically based on visible rows
+        function updateRowNumbers() {
+            $('#departmentKpiTable tbody tr:visible').each(function(index) {
+                $(this).find('td:first').text(index + 1);
+            });
+        }
+
+        // Column re-adjustment after initial load
         setTimeout(function() {
             table.columns.adjust();
         }, 200);
@@ -269,13 +325,14 @@
         const textareas = document.querySelectorAll('#departmentKpiTable textarea.form-control');
         textareas.forEach(textarea => observeTextarea(textarea));
 
+        // Add row
         $('#addRowBtn').on('click', function() {
-            const tbody = $('#departmentKpiTable tbody');
-            const rowCount = tbody.find('tr').length + 1;
-
+            $('#statusFilter').val('Active');
+            table.draw();
+            
             const newRowHtml = `
                 <tr>
-                    <td>${rowCount}</td>
+                    <td></td>
                     <td class="col-action">
                         <input type="hidden" name="id[]" value="">
                         <button type="button" class="btn btn-sm btn-danger remove-row-btn" title="Remove Row">
@@ -293,13 +350,11 @@
                 </tr>
             `;
 
-            tbody.append(newRowHtml);
+            const addedNode = table.row.add($(newRowHtml)).node();
+            table.draw(false);
+            updateRowNumbers();
 
-            $('#departmentKpiTable tbody tr').each(function(index) {
-                $(this).find('td:first').text(index + 1);
-            });
-
-            const newRowTextareas = tbody.find('tr:last textarea.form-control');
+            const newRowTextareas = $(addedNode).find('textarea.form-control');
             newRowTextareas.each(function() {
                 observeTextarea(this);
             });
@@ -310,14 +365,26 @@
             if (scrollContainer) {
                 $(scrollContainer).animate({
                     scrollTop: scrollContainer.scrollHeight
-                }, 300);
+                }, {
+                    duration: 300,
+                    complete: function() {
+                        table.columns.adjust();
+                    }
+                });
             }
         });
 
+        // Remove Row
         $('#departmentKpiTable').on('click', '.remove-row-btn', function() {
-            $(this).closest('tr').remove();$('#departmentKpiTable tbody tr').each(function(index) {
-                $(this).find('td:first').text(index + 1);
-            });
+            const tr = $(this).closest('tr');
+            
+            if (table.row(tr).length) {
+                table.row(tr).remove().draw(false);
+            } else {
+                tr.remove();
+            }
+            
+            updateRowNumbers();
             table.columns.adjust();
         });
 
@@ -340,6 +407,11 @@
 
             $('body').append(form);
             form.submit();
+        });
+
+        // Toggle all checkboxes in the duplicate modal
+        $(document).on('change', '#selectAllDuplicate', function() {
+            $('#duplicateModal tbody input[type="checkbox"]').prop('checked', this.checked);
         });
     });
 </script>
