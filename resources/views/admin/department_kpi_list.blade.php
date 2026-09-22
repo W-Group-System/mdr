@@ -339,8 +339,8 @@
                         </button>
                     </td>
                     <td><textarea name="name[]" class="form-control" rows="3"></textarea></td>
-                    <td><textarea name="target[]" class="form-control" rows="3"></textarea></td>
-                    <td><textarea name="weight[]" class="form-control" rows="3"></textarea></td>
+                    <td><textarea name="target[]" class="form-control numerical" rows="3"></textarea></td>
+                    <td><textarea name="weight[]" class="form-control numerical" rows="3"></textarea></td>
                     <td><textarea name="attachment_description[]" class="form-control" rows="3"></textarea></td>
                     <td class="col-status">
                         <div class="label label-primary">Active</div>
@@ -413,25 +413,35 @@
             $('#duplicateModal tbody input[type="checkbox"]').prop('checked', this.checked);
         });
         
-        // Input restriction
-        $('.numerical').on('keypress', function (e) {
-            // Allow numbers (0-9)
+        // Numerical input restriction
+        $(document).on('keypress', 'textarea.numerical', function (e) {
+            // Allow numbers
             if (e.which >= 48 && e.which <= 57) {
                 return true;
             }
-            
-            // Allow decimal point (.)
+            // Allow decimal point
             if (e.which === 46) {
                 return true;
             }
-
             // Allow Enter
             if (e.which === 13) {
                 return true;
             }
-
-            // Prevent everything else
             e.preventDefault();
+        });
+
+        // Prevent invalid characters when pasting
+        $(document).on('input', 'textarea.numerical', function () {
+            let value = $(this).val();
+            // Keep only numbers and decimal point
+            value = value.replace(/[^0-9.]/g, '');
+
+            // Allow only one decimal point
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            $(this).val(value);
         });
     });
 </script>

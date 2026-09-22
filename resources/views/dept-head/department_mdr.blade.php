@@ -64,14 +64,14 @@
                                         <td>{{ number_format($mdr->score,2) }}</td>
                                         <td>
                                             @if($mdr->status == 'Pending')
-                                            <span class="label label-warning">
+                                                <span class="label label-warning"> {{ $mdr->status }}</span>
                                             @elseif($mdr->status == 'Approved')
-                                            <span class="label label-primary">
+                                                <span class="label label-primary"> {{ $mdr->status }}</span>
                                             @elseif($mdr->status == 'Returned')
-                                            <span class="label label-danger">
+                                                <span class="label label-danger"> {{ $mdr->status }}</span>
+                                            @else
+                                                <span class="label label-secondary">{{ $mdr->status }}</span>
                                             @endif
-                                            {{ $mdr->status }}
-                                            </span>
                                         </td>
                                     </tr>
 

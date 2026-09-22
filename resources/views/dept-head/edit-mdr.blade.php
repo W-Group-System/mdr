@@ -24,30 +24,32 @@
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
-                    Departmental Goals
+                     <h5>Department Goals</h5>
+                    <div class="ibox-tools">
+                        @if($mdr->status == "Returned")
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
+                                style="margin-top: 3px;">
+                                <i class="fa fa-pencil"></i>
+                                Edit KPI
+                            </button>
+                        @endif
+                        @if($mdr->status == "Draft")
+                            @if(count($departmentalGoals->where('year', date('Y', strtotime($yearAndMonth)))->where('month', date('m', strtotime($yearAndMonth)))) > 0)
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
+                                    style="margin-top: 3px;">
+                                    <i class="fa fa-pencil"></i>
+                                    Edit KPI
+                                </button>
+                            @else
+                                <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#newKpi" @if($departmentalGoals->isNotEmpty()) disabled @endif>
+                                    <i class="fa fa-plus"></i>
+                                    Add KPI
+                                </button>
+                            @endif
+                        @endif
+                    </div>
                 </div>
                 <div class="ibox-content">
-                    @if($mdr->status == "Returned")
-                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
-                        style="margin-top: 3px;">
-                        <i class="fa fa-pencil"></i>
-                        Edit KPI
-                    </button>
-                    @endif
-                    @if($mdr->status == "Draft")
-                        @if(count($departmentalGoals->where('year', date('Y', strtotime($yearAndMonth)))->where('month', date('m', strtotime($yearAndMonth)))) > 0)
-                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
-                            style="margin-top: 3px;">
-                            <i class="fa fa-pencil"></i>
-                            Edit KPI
-                        </button>
-                        @else
-                        <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#newKpi" @if($departmentalGoals->isNotEmpty()) disabled @endif>
-                            <i class="fa fa-plus"></i>
-                            Add KPI
-                        </button>
-                        @endif
-                    @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover" id="departmentalGoals">
                             <thead>
@@ -142,10 +144,12 @@
                 <div class="ibox-title">
                     <h5>Innovation</h5>
                     @if($mdr->status == "Returned" || $mdr->status == "Draft")
-                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
-                        <span><i class="fa fa-plus"></i></span>&nbsp;
-                        Add Innovation
-                    </button>
+                    <div class="ibox-tools">
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
+                            <span><i class="fa fa-plus"></i></span>&nbsp;
+                            Add Innovation
+                        </button>
+                    </div>
                     @endif
                 </div>
                 <div class="ibox-content">

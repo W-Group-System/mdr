@@ -4,7 +4,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">New KPI</h5>
+                <h5 class="modal-title">View KPI</h5>
             </div>
 
             <form method="POST"
@@ -248,11 +248,11 @@
                         Close
                     </button>
 
-                    <button class="btn btn-success"
+                    <!-- <button class="btn btn-success"
                             type="button"
                             onclick="saveNewDraft()">
                         Save Draft
-                    </button>
+                    </button> -->
 
                     <button class="btn btn-primary saveKpi"
                             type="submit">
