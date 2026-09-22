@@ -125,10 +125,10 @@
                                     <td>{!! nl2br($dptGoals->target) !!}</td>
                                     <td>{!! nl2br($dptGoals->actual) !!}</td>
                                     <td>
-                                        {{number_format($dptGoals->weight,2)}}
+                                        {{($dptGoals->weight)}}
                                     </td>
                                     <td>
-                                        {{number_format($dptGoals->grade,2)}}
+                                        {{($dptGoals->grade)}}
                                     </td>
                                     <td>
                                         {!! nl2br($dptGoals->remarks) !!}
@@ -480,9 +480,9 @@
                                     <select name="action" class="form-control" required>
                                         <option value="">Select Action</option>
                                         <option value="Approved">Approve</option>
-                                        @if(auth()->id() !== $lastApprover->user_id)
+                                        {{-- @if(auth()->id() !== $lastApprover->user_id) --}}
                                             <option value="Returned">Return</option>
-                                        @endif
+                                        {{-- @endif --}}
                                     </select>
                                 </div>
                                 <div class="col-md-8">
@@ -645,6 +645,7 @@
                 let val = parseFloat($(this).val()) || 0;
                 weightGrade += val;
             });
+            weightGrade = parseFloat(weightGrade.toFixed(2));
 
             if (parseFloat(weightGrade) >  maxTotal)
             {
@@ -660,13 +661,14 @@
 
             var totalWeight = 0
             $("[name='weight[]']").each(function(key, item) {
-                return totalWeight += parseFloat(item.value)
+                totalWeight += parseFloat(item.value) || 0;
             })
+            totalWeight = parseFloat(totalWeight.toFixed(2));
 
             if (totalWeight > maxTotal)
             {
                 swal({
-                    title: `Error because the weight is greater than ${maxTotal}`,
+                    title: `Error because the weight is greater than ${totalWeight}`,
                     type: "error"
                 })
             }
@@ -737,7 +739,8 @@
             total += parseFloat($(this).text()) || 0;
         });
         $('.weight-edit').each(function () {
-            weightTotal += parseFloat($(this).text()) || 0;
+            // weightTotal += parseFloat($(this).text()) || 0;
+            weightTotal += parseFloat($(this).find('input[name="weight[]"]').val()) || 0;
         });
         $('#editTotalWeightedScoreHidden').val(total.toFixed(2));
         $('#EditTotalWeightedScore').text(total.toFixed(2));
@@ -746,9 +749,11 @@
     }
 
     function computeRow(row) {
-        var target = parseFloat(row.find('.target').text()) || 0;
+        // var target = parseFloat(row.find('.target').text()) || 0;
+        var target = parseFloat(row.find('.target input[name="target[]"]').val()) || 0;
         var actual = parseFloat(row.find('.actual').val()) || 0;
-        var weight = parseFloat(row.find('.weight-edit').text()) || 0;
+        // var weight = parseFloat(row.find('.weight-edit').text()) || 0;
+        var weight = parseFloat(row.find('.weight-edit input[name="weight[]"]').val()) || 0;
 
         var weightedScore = 0;
 
@@ -759,8 +764,8 @@
             weightedScore = (actual / target) * weight;
         }
 
-        row.find('.edit-weighted-score').find('.weighted-score-span').text(weightedScore.toFixed(2));
-        row.find('input[name="grade[]"]').val(weightedScore.toFixed(2));
+        row.find('.edit-weighted-score').find('.weighted-score-span').text(weightedScore.toFixed(3));
+        row.find('input[name="grade[]"]').val(weightedScore.toFixed(3));
     }
     });
 
