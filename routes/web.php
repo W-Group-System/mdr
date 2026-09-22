@@ -47,6 +47,10 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::post('/duplicateDepartmentKpiSave/{id}', 'Admin\DepartmentKpiController@duplicateDepartmentKpiSave');
     Route::post('/deactivate_mdr_setup/{id}', 'Admin\DepartmentKpiController@deactivate');
     Route::post('/activate_mdr_setup/{id}', 'Admin\DepartmentKpiController@activate');
+    // Added
+    Route::get('/department_kpis_list', 'Admin\DepartmentKpiController@list')->name('kpi.view')->middleware('checkAccess');
+    Route::post('/addBulkDepartmentKpi', 'Admin\DepartmentKpiController@addBulkDepartmentKpi')->name('kpi.addBulk');
+    Route::post('/duplicateBulkDepartmentKpi', 'Admin\DepartmentKpiController@duplicateBulkDepartmentKpi')->name('kpi.duplicate');
 
     # Companies
     Route::get('/companies', 'Admin\CompanyController@index')->name('settings')->middleware('checkAccess');
@@ -121,6 +125,7 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     // Route::post('/add_innovation_remarks', 'Approver\ListOfMdr@addInnovationRemarks');
     Route::post('/add_pd_remarks/{id}', 'Approver\ListOfMdr@addPdRemarks');
     Route::post('/accept_mdr/{id}', 'Approver\ListOfMdr@acceptMdr');
+
 
     # For Acceptance MDR
     Route::get('/for_acceptance', 'Approver\ForApprovalController@forAcceptance')->name('forAcceptance')->middleware('checkAccess');

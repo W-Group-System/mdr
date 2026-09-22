@@ -120,7 +120,6 @@ class UserController extends Controller
                 return back();
             }
         }
-        
     }
 
     public function userAccessModule($id)
@@ -144,7 +143,9 @@ class UserController extends Controller
         {
             foreach($request->module_access as $moduleKey=>$module)
             {
-                $user_access_module = UserAccessModule::where('user_id', $request->user_id)->where('module_id',$moduleKey)->first();
+                // $user_access_module = UserAccessModule::where('user_id', $request->user_id)->where('module_id',$moduleKey)->first();
+                // define the useraccessmodule fillable property at the useraccessmodule model
+                $user_access_module = UserAccessModule::firstOrNew(['user_id' => $request->user_id, 'module_id' => $moduleKey]);
                 foreach($module as $actionKey=>$value)
                 {
                     if ($actionKey == "read")
@@ -169,7 +170,8 @@ class UserController extends Controller
 
             foreach($request->submodule_access as $submoduleKey=>$module)
             {
-                $user_access_module = UserAccessModule::where('user_id', $request->user_id)->where('submodule_id',$submoduleKey)->first();
+                // $user_access_module = UserAccessModule::where('user_id', $request->user_id)->where('submodule_id',$submoduleKey)->first();
+                $user_access_module = UserAccessModule::firstOrNew(['user_id' => $request->user_id, 'submodule_id' => $submoduleKey]);
                 foreach($module as $actionKey=>$value)
                 {
                     if ($actionKey == "read")

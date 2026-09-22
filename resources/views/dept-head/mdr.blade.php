@@ -15,6 +15,7 @@
     @include('components.error')
     
     @include('dept-head.departmental-goals', array('departmentalGoals' => $departmentalGoals, 'yearAndMonth' => $yearAndMonth))
+    
     @if($mdr_groups->where('name', 'Innovation')->where('status','Active')->isNotEmpty())
         @include('dept-head.innovation', array('innovations' => $innovations))
     @endif

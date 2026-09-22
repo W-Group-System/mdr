@@ -23,6 +23,7 @@ class ForApprovalController extends Controller
 
         if ($isAdmin) {
             $mdrApprovers = MdrApprovers::with(['mdrRelationship', 'siblingApprovers'])
+                ->whereHas('mdrRelationship') //added this to fix the bug
                 ->orderBy('id', 'desc')
                 ->get();
         } else {
@@ -85,6 +86,7 @@ class ForApprovalController extends Controller
                 'filter'   => $filter,
             )
         );
+        // dd($mdrApprovers);
     }
 
     public function forAcceptance() {
@@ -162,6 +164,7 @@ class ForApprovalController extends Controller
             'redirect' => url('timeliness_approval') 
         ]);
     }
+    
     public function disapproveTimeliness(Request $request, $id) {
         $timeliness = Mdr::findOrFail($id);
         $timeliness->timeliness_approval = "Disapproved";

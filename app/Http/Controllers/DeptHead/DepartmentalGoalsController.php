@@ -34,9 +34,11 @@ class DepartmentalGoalsController extends Controller
             $departmentalGoals->actual = $request->actual[$key] ?? null;
             $departmentalGoals->remarks = $request->remarks[$key] ?? null;
             $departmentalGoals->mdr_id = $request->mdr_id[$key] ?? null;
+            $departmentalGoals->weight = $request->weight[$key] ?? null;
             $departmentalGoals->year = date('Y', strtotime($request->yearAndMonth));
             $departmentalGoals->month = date('m', strtotime($request->yearAndMonth));
             $departmentalGoals->deadline = generateSafeDeadline($request->yearAndMonth, auth()->user()->department->target_date);
+            $departmentalGoals->grade =  $request->grade[$key] ?? null;
             $departmentalGoals->final_grade =  $request->final_grade;
             $departmentalGoals->weight =  $request->weight[$key] ?? null;
             $departmentalGoals->save();
@@ -76,6 +78,8 @@ class DepartmentalGoalsController extends Controller
             $dptGoals->mdr_id = $request->mdr_id[$deptKey] ?? null;
             $dptGoals->remarks = $request->remarks[$deptKey] ?? null;
             $dptGoals->target = $request->target[$deptKey] ?? null;
+            $dptGoals->weight = $request->weight[$deptKey] ?? null;
+            $dptGoals->grade = $request->grade[$deptKey] ?? null;
             $dptGoals->final_grade =  $request->final_grade;
             $dptGoals->save();
 

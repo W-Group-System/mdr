@@ -17,6 +17,7 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="col-md-12">
                             Department KPI :
                             <textarea name="kpiName" id="" class="form-control" cols="30" rows="10" required></textarea>
@@ -39,6 +40,8 @@
                             <input name="attachment_description" id="attachment_description" class="form-control">
                             <small id="descError" class="text-danger" style="display:none;">Max 50 characters allowed.</small>
                         </div>
+
+
                         <div class="col-md-6">
                             Month:
                             <select name="month" id="month" class="form-control" required>
@@ -53,9 +56,8 @@
                                     </option>
                                 @endforeach
                             </select>
-
                         </div>
-
+                    
                         <div class="col-md-6">
                             Year:
                             <select name="year" id="year" class="form-control" required>
@@ -76,37 +78,33 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('attachment_description');
-    const error = document.getElementById('descError');
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('attachment_description');
+        const error = document.getElementById('descError');
 
-    input.addEventListener('input', function() {
-        if (this.value.length > 50) {
-            error.style.display = 'inline';
-        } else {
-            error.style.display = 'none';
-        }
+        input.addEventListener('input', function() {
+            if (this.value.length > 50) {
+                error.style.display = 'inline';
+            } else {
+                error.style.display = 'none';
+            }
+        });
+
+        $('.numerical').on('keypress', function (e) {
+            // Allow numbers (0-9)
+            if (e.which >= 48 && e.which <= 57) {
+                return true;
+            }
+            // Allow decimal point (.)
+            if (e.which === 46) {
+                return true;
+            }
+            // Allow Enter
+            if (e.which === 13) {
+                return true;
+            }
+            // Prevent everything else
+            e.preventDefault();
+        });
     });
-
-    $('.numerical').on('keypress', function (e) {
-        // Allow numbers (0-9)
-        if (e.which >= 48 && e.which <= 57) {
-            return true;
-        }
-
-        // Allow decimal point (.)
-        if (e.which === 46) {
-            return true;
-        }
-
-        // Allow Enter
-        if (e.which === 13) {
-            return true;
-        }
-
-        // Prevent everything else
-        e.preventDefault();
-    });
-
-});
 </script>

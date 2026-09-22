@@ -32,29 +32,91 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MdrController extends Controller
 {
-    public function index(Request $request) {
-        $year = date('Y', strtotime($request->yearAndMonth));
-        $month = date('m', strtotime($request->yearAndMonth));
+    public function index(Request $request)
+    {
+        // Selected MDR month/year
+        $yearAndMonth = $request->input('yearAndMonth', date('Y-m'));
 
-        $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)
-        ->where('status', 'Active')->orderBy('name', 'asc')->get()
-        ->where('year', $year)
-        ->where('month', $month);
-        $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
-        $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $selectedYear = date('Y', strtotime($yearAndMonth));
+        $selectedMonth = date('m', strtotime($yearAndMonth));
+
+        $departmentId = auth()->user()->department_id;
+
+        // Get KPI for selected month/year
+        $department_kpis = DepartmentKpi::where('department_id', $departmentId)
+            ->where('status', 'Active')
+            ->where('year', $selectedYear)
+            ->where('month', $selectedMonth)
+            ->orderBy('name', 'asc')
+            ->get();
+
+        // Fallback to latest previous KPI if no KPI exists
+        $isKpiFallback = false;
+        $fallbackYear = null;
+        $fallbackMonth = null;
+
+        if ($department_kpis->isEmpty()) {
+
+            $latestKpi = DepartmentKpi::where('department_id', $departmentId)
+                ->where('status', 'Active')
+                ->where(function ($query) use ($selectedYear, $selectedMonth) {
+
+                    $query->where('year', '<', $selectedYear)
+                        ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+
+                            $query->where('year', $selectedYear)
+                                ->where('month', '<', $selectedMonth);
+
+                        });
+
+                })
+                ->orderBy('year', 'desc')
+                ->orderBy('month', 'desc')
+                ->first();
+
+            if ($latestKpi) {
+
+                $isKpiFallback = true;
+
+                $fallbackYear = $latestKpi->year;
+                $fallbackMonth = $latestKpi->month;
+
+                // Get KPI records from the fallback month
+                $department_kpis = DepartmentKpi::where('department_id', $departmentId)
+                    ->where('status', 'Active')
+                    ->where('year', $fallbackYear)
+                    ->where('month', $fallbackMonth)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            }
+        }
+
+        // Get departmental goals based on selected month/year
+        $departmentalGoals = DepartmentalGoals::where('department_id', $departmentId)
+            ->where('year', $selectedYear)
+            ->where('month', $selectedMonth)
+            ->get();
+
+        // Get innovations based on selected month/year
+        $innovations = Innovation::where('department_id', $departmentId)
+            ->where('year', $selectedYear)
+            ->where('month', $selectedMonth)
+            ->get();
+
         $mdr_groups = MdrGroup::get();
-        
-        return view('dept-head.mdr',
-            array(
-                'department_kpis' => $department_kpis,
-                'yearAndMonth' => $request->yearAndMonth,
-                'departmentalGoals' => $departmentalGoals,
-                'innovations' => $innovations,
-                'mdr_groups' => $mdr_groups
-            )
-        );
-    }
 
+        return view('dept-head.mdr', [
+            'department_kpis' => $department_kpis,
+            'yearAndMonth' => $yearAndMonth,
+            'isKpiFallback' => $isKpiFallback,
+            'fallbackYear' => $fallbackYear,
+            'fallbackMonth' => $fallbackMonth,
+            'departmentalGoals' => $departmentalGoals,
+            'innovations' => $innovations,
+            'mdr_groups' => $mdr_groups
+        ]);
+    }
+    
     public function mdrView(Request $request) {
         // $department_approvers = DepartmentApprovers::get();
         $department_approvers = DepartmentApprovers::where('status', 'Active')
