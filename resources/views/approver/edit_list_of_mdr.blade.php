@@ -44,28 +44,28 @@
                                                         <td class="target">
                                                             {{-- <input type="hidden" name="target[]" value="{{$dptGoals->departmentKpi->target}}">
                                                             {{-- {!! nl2br($dptGoals->departmentKpi->target) !!} --}}
-                                                            <input type="hidden" name="target[]" value="{{$dptGoals->target}}">
-                                                            {!! nl2br($dptGoals->target) !!}
+                                                            <input type="number" name="target[]" value="{{$dptGoals->target}}">
+                                                            {{-- {!! nl2br($dptGoals->target) !!} --}}
                                                         </td>
                                                         <td>
                                                             {{-- {!! nl2br($dptGoals->actual) !!} --}}
-                                                            <input type="text" name="actual[]" class="form-control input-sm actual numerical" step=".01" value="{{ $dptGoals->actual }}" required>
+                                                            <input type="text" name="actual[]" class="form-control input-sm actual numerical" step="0.001" value="{{ $dptGoals->actual }}" required>
                                                         </td>
                                                         <td class="weight-edit">
-                                                            <input type="hidden" name="weight[]" class="form-control input-sm" step=".01" value="{{ $dptGoals->weight }}">
-                                                            {!! nl2br($dptGoals->weight) !!}
+                                                            <input type="number" name="weight[]" class="form-control input-sm" step="0.001" value="{{ $dptGoals->weight }}">
+                                                            {{-- {!! nl2br($dptGoals->weight) !!} --}}
                                                         </td>
                                                         <td class="edit-weighted-score">
-                                                            <input type="hidden" name="grade[]" class="form-control input-sm grade" step=".01" value="">
+                                                            <input type="hidden" name="grade[]" class="form-control input-sm grade" step="0.001" value="">
                                                             <span class="weighted-score-span">0</span>
                                                         </td>
                                                         {{-- <td>
                                                             {!! nl2br($dptGoals->weight) !!}
-                                                            <-- <input type="number" name="weight[]" class="form-control input-sm" step=".01" value="c" required> -->
+                                                            <-- <input type="number" name="weight[]" class="form-control input-sm" step="0.001" value="c" required> -->
                                                         </td>
                                                         <td>
                                                             {!! nl2br($dptGoals->grade) !!}
-                                                            <-- <input type="number" name="grade[]" class="form-control input-sm" step=".01" value="{{$dptGoals->grade}}" max="{{ $dptGoals->weight }}" required> -->
+                                                            <-- <input type="number" name="grade[]" class="form-control input-sm" step="0.001" value="{{$dptGoals->grade}}" max="{{ $dptGoals->weight }}" required> -->
                                                         </td> --}}
                                                         <td>
                                                             <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
