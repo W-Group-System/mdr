@@ -16,30 +16,55 @@
                 @csrf
 
                 {{-- Selected year/month for the MDR --}}
-                <input type="hidden" name="yearAndMonth" value="{{ $yearAndMonth }}">
+                <input type="hidden"
+                       name="yearAndMonth"
+                       value="{{ $yearAndMonth }}">
 
-                {{-- Year/month actually used for the KPI template --}}
-                <input type="hidden" name="kpiYearAndMonth" value="{{ $kpiYearAndMonth }}">
+                {{-- MDR ID --}}
+                @if (isset($mdr))
+                    <input type="hidden"
+                           name="mdr_id"
+                           value="{{ $mdr->id }}">
+                @endif
 
-                <input type="hidden" name="save_type" id="save_type" value="final">
-
+                <input type="hidden"
+                       name="save_type"
+                       id="save_type"
+                       value="final">
 
                 <div class="modal-body">
+
                     <div class="row">
                         <div class="col-md-12 mx-2">
+
                             {{-- KPI fallback alert --}}
-                            @if ($kpiYearAndMonth != $yearAndMonth)
-                                <div class="alert alert-warning" style="margin-bottom: 20px;">
+                            @if (isset($isKpiFallback) && $isKpiFallback)
+                                <div class="alert alert-warning"
+                                     style="margin-bottom: 20px;">
+
                                     <strong>Notice:</strong>
+
                                     No KPI was found for
                                     {{ date('F Y', strtotime($yearAndMonth)) }}.
-                                    Using KPI template from
-                                    <strong>{{ date('F Y', strtotime($kpiYearAndMonth)) }}</strong>.
+
+                                    Using the latest KPI template from
+                                    <strong>
+                                        {{ date(
+                                            'F Y',
+                                            strtotime(
+                                                $fallbackYear . '-' .
+                                                str_pad($fallbackMonth, 2, '0', STR_PAD_LEFT) .
+                                                '-01'
+                                            )
+                                        ) }}
+                                    </strong>.
+
                                 </div>
                             @endif
 
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-md-12">
 
@@ -47,8 +72,6 @@
 
                                 <div class="panel-heading">
                                     Department KPI
-
-                                 
                                 </div>
 
                                 <div class="panel-body">
@@ -73,12 +96,6 @@
                                             <tbody>
 
                                                 @foreach ($department_kpis as $key => $department_kpi)
-
-                                                    @if (isset($mdr))
-                                                        <input type="text"
-                                                               name="mdr_id[]"
-                                                               value="{{ $mdr->id }}">
-                                                    @endif
 
                                                     <tr>
 
@@ -250,7 +267,6 @@
     </div>
 </div>
 
-
 <script>
 
 function saveNewDraft() {
@@ -264,7 +280,6 @@ function saveNewDraft() {
     document.getElementById('mdrForm').submit();
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
 
     $('#newKpi').on('shown.bs.modal', function () {
@@ -276,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateTotalWeightedScore();
 
     });
-
 
     $('.numerical').on('keypress', function (e) {
 
@@ -298,7 +312,6 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
     });
 
-
     $(document).on('input', '.actual, .target', function () {
 
         computeRow($(this).closest('tr'));
@@ -306,7 +319,6 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateTotalWeightedScore();
 
     });
-
 
     function calculateTotalWeightedScore() {
 
@@ -331,7 +343,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         $('#totalWeight').text(weightTotal.toFixed(2));
     }
-
 
     function computeRow(row) {
 
@@ -359,4 +370,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
-

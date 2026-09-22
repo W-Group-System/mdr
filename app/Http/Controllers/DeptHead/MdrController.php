@@ -34,12 +34,15 @@ class MdrController extends Controller
 {
     public function index(Request $request)
     {
-        $selectedYear = date('Y', strtotime($request->yearAndMonth));
-        $selectedMonth = date('m', strtotime($request->yearAndMonth));
+        // Selected MDR month/year
+        $yearAndMonth = $request->input('yearAndMonth', date('Y-m'));
+
+        $selectedYear = date('Y', strtotime($yearAndMonth));
+        $selectedMonth = date('m', strtotime($yearAndMonth));
 
         $departmentId = auth()->user()->department_id;
 
-        // Get KPI based on the selected month and year
+        // Get KPI for selected month/year
         $department_kpis = DepartmentKpi::where('department_id', $departmentId)
             ->where('status', 'Active')
             ->where('year', $selectedYear)
@@ -47,13 +50,11 @@ class MdrController extends Controller
             ->orderBy('name', 'asc')
             ->get();
 
-        //Default KPI year/month is the selected year/month
-        $kpiYear = $selectedYear;
-        $kpiMonth = $selectedMonth;
+        // Fallback to latest previous KPI if no KPI exists
+        $isKpiFallback = false;
+        $fallbackYear = null;
+        $fallbackMonth = null;
 
-        
-        //If there are no KPI records for the selected month, 
-        //it will fallback to recent previous KPI
         if ($department_kpis->isEmpty()) {
 
             $latestKpi = DepartmentKpi::where('department_id', $departmentId)
@@ -62,8 +63,10 @@ class MdrController extends Controller
 
                     $query->where('year', '<', $selectedYear)
                         ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+
                             $query->where('year', $selectedYear)
                                 ->where('month', '<', $selectedMonth);
+
                         });
 
                 })
@@ -71,31 +74,30 @@ class MdrController extends Controller
                 ->orderBy('month', 'desc')
                 ->first();
 
-            
-            //If previous KPI data exists,
-            //use that year/month for the KPI modal.
             if ($latestKpi) {
 
-                $kpiYear = $latestKpi->year;
-                $kpiMonth = $latestKpi->month;
+                $isKpiFallback = true;
 
+                $fallbackYear = $latestKpi->year;
+                $fallbackMonth = $latestKpi->month;
+
+                // Get KPI records from the fallback month
                 $department_kpis = DepartmentKpi::where('department_id', $departmentId)
                     ->where('status', 'Active')
-                    ->where('year', $kpiYear)
-                    ->where('month', $kpiMonth)
+                    ->where('year', $fallbackYear)
+                    ->where('month', $fallbackMonth)
                     ->orderBy('name', 'asc')
                     ->get();
             }
         }
 
-        //Year/month used only by the KPI modal
-        $kpiYearAndMonth = $kpiYear . '-' . str_pad($kpiMonth, 2, '0', STR_PAD_LEFT);
-
+        // Get departmental goals based on selected month/year
         $departmentalGoals = DepartmentalGoals::where('department_id', $departmentId)
             ->where('year', $selectedYear)
             ->where('month', $selectedMonth)
             ->get();
 
+        // Get innovations based on selected month/year
         $innovations = Innovation::where('department_id', $departmentId)
             ->where('year', $selectedYear)
             ->where('month', $selectedMonth)
@@ -105,13 +107,10 @@ class MdrController extends Controller
 
         return view('dept-head.mdr', [
             'department_kpis' => $department_kpis,
-
-            // Selected month/year
-            'yearAndMonth' => $request->yearAndMonth,
-
-            // Actual month/year used for KPI template
-            'kpiYearAndMonth' => $kpiYearAndMonth,
-
+            'yearAndMonth' => $yearAndMonth,
+            'isKpiFallback' => $isKpiFallback,
+            'fallbackYear' => $fallbackYear,
+            'fallbackMonth' => $fallbackMonth,
             'departmentalGoals' => $departmentalGoals,
             'innovations' => $innovations,
             'mdr_groups' => $mdr_groups

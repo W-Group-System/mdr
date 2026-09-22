@@ -102,7 +102,6 @@
                     </div>
                 </div>
             </div>
-
         
             <!-- KPI Table -->
             <div class="col-lg-12">
@@ -416,11 +415,11 @@
         
         // Input restriction
         $('.numerical').on('keypress', function (e) {
-        // Allow numbers (0-9)
+            // Allow numbers (0-9)
             if (e.which >= 48 && e.which <= 57) {
                 return true;
             }
-
+            
             // Allow decimal point (.)
             if (e.which === 46) {
                 return true;
