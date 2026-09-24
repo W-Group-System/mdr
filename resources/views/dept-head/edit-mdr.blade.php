@@ -294,11 +294,11 @@
         </div>
         <!-- End -->
 
-        <!-- MDR Score -->
+        <!-- MDR Rating -->
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
-                    <h5>MDR Scores</h5>
+                    <h5>MDR Rating</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">

@@ -12,7 +12,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
-                    <h5>MDR Scores</h5>
+                    <h5>MDR Rating</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -189,8 +189,8 @@
                         <table class="table table-bordered" id="innovationTable">
                             <thead>
                                 <tr>
-                                    <th>Project Charter</th>
-                                    <th>Project Benefit</th>
+                                    <th>Project Title</th>
+                                    <th>Project Expectations/Benefits</th>
                                     <th>Attachments</th>
                                 </tr>
                             </thead>
