@@ -32,7 +32,7 @@
                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
                                 style="margin-top: 3px;">
                                 <i class="fa fa-pencil"></i>
-                                Edit KPI
+                                View KPI
                             </button>
                         @endif
                         @if($mdr->status == "Draft")
@@ -40,12 +40,12 @@
                                 <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
                                     style="margin-top: 3px;">
                                     <i class="fa fa-pencil"></i>
-                                    Edit KPI
+                                    View KPI
                                 </button>
                             @else
                                 <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#newKpi" @if($departmentalGoals->isNotEmpty()) disabled @endif>
                                     <i class="fa fa-plus"></i>
-                                    Add KPI
+                                    View KPI
                                 </button>
                             @endif
                         @endif

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" id="kpiModal">
         <div class="modal-content" >
             <div class="modal-header">
-                <h5 class="modal-title">Edit KPI</h5>
+                <!-- <h5 class="modal-title">Edit KPI</h5> -->
             </div>
             <form method="POST" action="{{url('update_kpi')}}" id="mdrFormEdit" onsubmit="show()" enctype="multipart/form-data">
                 @csrf

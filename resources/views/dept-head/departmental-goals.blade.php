@@ -4,7 +4,7 @@
             @if(count($departmentalGoals->where('year', date('Y', strtotime($yearAndMonth)))->where('month', date('m', strtotime($yearAndMonth)))) > 0)
             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi" style="margin-top: 3px;">
                 <i class="fa fa-pencil"></i>
-                Edit KPI
+                View KPI
             </button>
             @else
             <button class="btn btn-sm btn-primary" type="button" data-toggle="modal" data-target="#newKpi" @if($departmentalGoals->isNotEmpty()) disabled @endif>
