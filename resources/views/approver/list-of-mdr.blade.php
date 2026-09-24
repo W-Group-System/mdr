@@ -20,7 +20,7 @@
                             <thead>
                                 <tr>
                                     @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
-                                    <th>Actions</th>
+                                        <th>Actions</th>
                                     @endif
                                     <th>Month</th>
                                     <th>Operational Objectives</th>

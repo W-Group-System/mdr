@@ -4,7 +4,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">View KPI</h5>
+                <!-- <h5 class="modal-title">View KPI</h5> -->
             </div>
 
             <form method="POST"

@@ -32,6 +32,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MdrController extends Controller
 {
+    // Department MDR/new-mdr page
     public function index(Request $request)
     {
         // Selected MDR month/year
@@ -105,6 +106,7 @@ class MdrController extends Controller
 
         $mdr_groups = MdrGroup::get();
 
+
         return view('dept-head.mdr', [
             'department_kpis' => $department_kpis,
             'yearAndMonth' => $yearAndMonth,
@@ -115,8 +117,11 @@ class MdrController extends Controller
             'innovations' => $innovations,
             'mdr_groups' => $mdr_groups
         ]);
+
+        // dd($mdrSummary);
     }
     
+    //Department MDR page
     public function mdrView(Request $request) 
     {
         // $department_approvers = DepartmentApprovers::get();
@@ -139,13 +144,16 @@ class MdrController extends Controller
                 // 'mdrApprovers' => $mdrApprovers
             )
         );
-    }
 
+        // dd($mdrs);
+    }
+    
+    //mdr/edit_mdr page
     public function edit(Request $request) {
         // dd($request->all());
         $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
-        $mdr = Mdr::findOrFail($request->mdr_id);
+        $mdr = Mdr::with('departments','innovation','departmentalGoals')->findOrFail($request->mdr_id);
         $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)
         ->where('status', 'Active')->orderBy('name', 'asc')->get();
         return view('dept-head.edit-mdr',
@@ -157,6 +165,7 @@ class MdrController extends Controller
                 'mdr' => $mdr
             )
         );
+        // dd($departmentalGoals);
     }
 
     public function submitMdr(Request $request) 

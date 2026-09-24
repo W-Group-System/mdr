@@ -21,6 +21,8 @@
     <div class="row">
         <h1 class="text-center">{{ date('F Y', strtotime($yearAndMonth)) }}</h1>
         @include('components.error')
+
+        <!-- Department Goals -->
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
@@ -77,8 +79,27 @@
                                     {{-- <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td> --}}
                                     <td>{!! nl2br($dptGoals->target) !!}</td>
                                     <td>{!! nl2br($dptGoals->actual) !!}</td>
-                                    <td>{{ $dptGoals->weight }}</td>
-                                    <td>{{$dptGoals->grade}}</td>
+                                    <td class="weightDets">
+                                        <!-- {{ $dptGoals->weight }} -->
+                                        <input type="hidden"
+                                            name="weightInputs[]"
+                                            value="{{ $dptGoals->weight }}">
+
+                                        <span class="deptWeightDets">
+                                            {!! nl2br($dptGoals->weight) !!}
+                                        </span>
+                                    </td>
+                                    <td class="weightedScoreDets">
+                                        <!-- {{$dptGoals->grade}} -->
+                                        <input type="hidden"
+                                            class="weightedScoreDetsHidden"
+                                            name="grade[]"
+                                            value="{{ $dptGoals->grade }}">
+
+                                        <span class="deptWeightedScoreDets">
+                                            {{ $dptGoals->grade }}
+                                        </span>
+                                    </td>
                                     <td>{!! nl2br($dptGoals->remarks) !!}</td>
                                     <td>
                                         @foreach ($dptGoals->attachments as $key=>$attachment)
@@ -133,12 +154,68 @@
                                 @include('comments')
                                 @endforeach
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3"></td>
+                                <td><b>Total Weight</b></td>
+                                <td><b>Total Weighted Score</b></td>
+                                <td colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <input type="hidden" name="sumOfScore" id="sumOfScoreHidden" value="0">
+                                </td>
+                                <td>
+                                    <h2><span id="sumTotalWeight">0.00</span></h2>
+                                </td>
+                                <td>
+                                    <h2><span id="sumTotalWeightedScore">0.00</span></h2>
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- End -->
+        
+        <!-- Timeliness Objectives -->
+        <div class="col-md-12">
+            <div class="ibox float-e-margins" style="margin-top: 10px">
+                <div class="ibox-title">
+                    <h5>Timeliness Objectives</h5>
+                </div>
 
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="timelinessTable">
+                            <thead>
+                                <th>Submission Date</th>
+                                <th>Submission Deadline</th>
+                                <th>Grade</th>
+                                <th>Remarks</th>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
+                                @endphp
+                                @foreach ($innovations as $innovation)
+                                    <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
+                                    <td>{{ $fullTargetDate->format('F d, Y') }}</td>
+                                    <td>{{ $mdr->timeliness}}</td>
+                                    <td>{{ $mdr->timeliness_remarks }}</td>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End -->
+        
+        <!-- Innovation -->
         <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
@@ -157,32 +234,41 @@
                         <table class="table table-bordered table-hover" id="innovationTable">
                             <thead>
                                 <tr>
-                                    <th>Actions</th>
-                                    <th>Project Charter</th>
-                                    <th>Project Benefit</th>
-                                    <th>Accomplishment Report</th>
+                                    @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                                        <th>Actions</th>
+                                    @endif
+                                    <th>Project Title</th>
+                                    <th>Project Expectations/Benefits</th>
+                                    <th>Attachment</th>
+                                    <th>Grade</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <!-- @php
+                                        $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
+                                    @endphp
+                                    {{ $fullTargetDate->format('F d, Y') }} -->
                                 @foreach ($innovations as $innovation)
                                 <tr>
-                                    <td>
-                                        @if($mdr->status == "Returned" || $mdr->status == "Draft")
-                                        <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
-                                            data-target="#edit{{ $innovation->id }}">
-                                            <i class="fa fa-pencil-square-o"></i>
-                                        </button>
-
-                                        <form action="{{ url('deleteInnovation/'.$innovation->id) }}" method="post"
-                                            onsubmit="show()" style="display: inline-block;">
-                                            @csrf
-
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fa fa-trash"></i>
+                                    @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                                        <td>
+                                        
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                                data-target="#edit{{ $innovation->id }}">
+                                                <i class="fa fa-pencil-square-o"></i>
                                             </button>
-                                        </form>
-                                        @endif
-                                    </td>
+
+                                            <form action="{{ url('deleteInnovation/'.$innovation->id) }}" method="post"
+                                                onsubmit="show()" style="display: inline-block;">
+                                                @csrf
+
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        
+                                        </td>
+                                    @endif
                                     <td>{{ $innovation->project_charter }}</td>
                                     <td>{{ $innovation->project_benefit }}</td>
                                     <td>
@@ -192,6 +278,9 @@
                                         </a>
                                         <br>
                                         @endforeach
+                                    </td>
+                                    <td>
+                                        {{ $mdr->innovation_scores }}
                                     </td>
                                 </tr>
 
@@ -203,7 +292,43 @@
                 </div>
             </div>
         </div>
+        <!-- End -->
 
+        <!-- MDR Score -->
+        <div class="col-md-12">
+            <div class="ibox float-e-margins" style="margin-top: 10px;">
+                <div class="ibox-title">
+                    <h5>MDR Scores</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="summaryKpiTable">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Operational</th>
+                                    <th>Timeliness</th>
+                                    <th>Innovation</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <td>{{ date('F', mktime(0, 0, 0, $mdr->month,1)).' '.$mdr->year}}</td>
+                                <td>
+                                {{ $mdr->grade ?? '0.00' }}
+                                </td>
+                                <td>{{ $mdr->timeliness ?? '0.00' }}</td>
+                                <td>{{ $mdr->innovation_scores ?? '0.00' }}</td>
+                                <td>{{ number_format($mdr->score,2) }}</td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End -->
+        
+        <!-- Actions -->
         {{-- <div class="col-md-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
@@ -359,6 +484,7 @@
                 </div>
             </div>
         </div>
+        <!-- End -->
     </div>
 </div>
 
@@ -382,6 +508,26 @@
 
 <script>
     $(document).ready(function() {
+        // Calculate total weight and total weighted score
+        function calculateTotals() {
+            let totalWeight = 0;
+            let totalWeightedScore = 0;
+
+            $('input[name="weightInputs[]"]').each(function () {
+                totalWeight += parseFloat($(this).val()) || 0;
+            });
+
+            $('input[name="grade[]"]').each(function () {
+                totalWeightedScore += parseFloat($(this).val()) || 0;
+            });
+
+            $('#sumTotalWeight').text(totalWeight.toFixed(2));
+            $('#sumTotalWeightedScore').text(totalWeightedScore.toFixed(2));
+            $('#sumOfScoreHidden').val(totalWeightedScore.toFixed(2));
+        }
+        // Calculate totals on page load
+        calculateTotals();
+        
         $("[name='grade[]']").keypress(function(event) {
             if (event.keyCode == 8) {
                 return
@@ -455,6 +601,8 @@
     });
 
     document.addEventListener('DOMContentLoaded', function() {
+       
+
         const deleteButtons = document.querySelectorAll('.deleteFileBtn');
 
         deleteButtons.forEach(btn => {
