@@ -64,9 +64,8 @@
                                 <td>
                                     {{ $dptGoals->grade }}
                                 </td>
-
-                                <td>
-                                    {!! nl2br($dptGoals->remarks) !!}
+                                <td style="white-space: normal; word-break: break-word; overflow-wrap: anywhere;">
+                                    {!! nl2br(e($dptGoals->remarks)) !!}
                                 </td>
 
                                 <td>
@@ -101,8 +100,8 @@
                     <tfoot>
                         <tr>
                             <td colspan="3"></td>
-                            <td><b>Total Weight</b></td>
-                            <td><b>Total Weighted Score</b></td>
+                            <td style="white-space: nowrap;"><b>Total Weight</b></td>
+                            <td style="white-space: nowrap;"><b>Total Weighted Score</b></td>
                             <td colspan="3"></td>
                         </tr>
                         <tr>
@@ -130,40 +129,6 @@
     }
 </style>
 
-<!-- Timeliness Objective -->
-<div class="col-lg-12">
-    <div class="ibox float-e-margins" style="margin-top: 10px;">
-        <div class="ibox-title">
-            <h5>Timeliness Objectives</h5>
-        </div>
-        <div class="ibox-content">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="innovationTable">
-                    @php $yearAndMonth = request('yearAndMonth'); @endphp
-                    <thead>
-                        <tr>
-                            <th>Submission Date</th>
-                            <th>Submission Deadline</th>
-                            <th>Grade</th>
-                            <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                               N/A
-                            </td>
-                            <td>N/A</td>
-                            <td>0.00</td>
-                            <td>N/A</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- End -->
 
 
 <!-- <script>

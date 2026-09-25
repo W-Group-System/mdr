@@ -76,12 +76,12 @@
                     <tbody>
                         <tr>
                             <td>
-                                {{ $yearAndMonth ? \Carbon\Carbon::createFromFormat('Y-m', $yearAndMonth)->format('F Y') : '' }}
+                                <h2><span>{{ $yearAndMonth ? \Carbon\Carbon::createFromFormat('Y-m', $yearAndMonth)->format('F Y') : '' }}</span></h2>
                             </td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
-                            <td>0.00</td>
+                            <td><h2><span>0.00</span></h2></td>
+                            <td><h2><span>0.00</span></h2></td>
+                            <td><h2><span>0.00</span></h2></td>
+                            <td><h2><span>0.00</span></h2></td>
                         </tr>
                     </tbody>
                 </table>

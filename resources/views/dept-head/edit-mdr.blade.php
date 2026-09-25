@@ -154,26 +154,26 @@
                                 @include('comments')
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                            <tr>
-                                <td colspan="3"></td>
-                                <td><b>Total Weight</b></td>
-                                <td><b>Total Weighted Score</b></td>
-                                <td colspan="3"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <input type="hidden" name="sumOfScore" id="sumOfScoreHidden" value="0">
-                                </td>
-                                <td>
-                                    <h2><span id="sumTotalWeight">0.00</span></h2>
-                                </td>
-                                <td>
-                                    <h2><span id="sumTotalWeightedScore">0.00</span></h2>
-                                </td>
-                                <td colspan="3"></td>
-                            </tr>
-                        </tfoot>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td style="white-space: nowrap;"><b>Total Weight</b></td>
+                                        <td style="white-space: nowrap;"><b>Total Weighted Score</b></td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <input type="hidden" name="sumOfScore" id="sumOfScoreHidden" value="0">
+                                        </td>
+                                        <td>
+                                            <h2><span id="sumTotalWeight">0.00</span></h2>
+                                        </td>
+                                        <td>
+                                            <h2><span id="sumTotalWeightedScore">0.00</span></h2>
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                </tfoot>
                         </table>
                     </div>
                 </div>
@@ -202,10 +202,10 @@
                                     $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
                                 @endphp
                                 @foreach ($innovations as $innovation)
-                                    <td>{{ date('F d, Y', strtotime($mdr->created_at)) }}</td>
-                                    <td>{{ $fullTargetDate->format('F d, Y') }}</td>
-                                    <td>{{ $mdr->timeliness}}</td>
-                                    <td>{{ $mdr->timeliness_remarks }}</td>
+                                    <td>{{ $mdr->created_at ? date('F d, Y', strtotime($mdr->created_at)) : 'N/A' }}</td>
+                                    <td>{{ $fullTargetDate ? $fullTargetDate->format('F d, Y') : 'N/A' }}</td>
+                                    <td>{{ $mdr->timeliness ?? '0.00'}}</td>
+                                    <td>{{ $mdr->timeliness_remarks ?? 'N/A' }}</td>
                                 @endforeach
                             </tbody>
                         </table>
@@ -313,13 +313,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td>{{ date('F', mktime(0, 0, 0, $mdr->month,1)).' '.$mdr->year}}</td>
+                                <td><h2><span>{{ date('F', mktime(0, 0, 0, $mdr->month,1)).' '.$mdr->year }}</span></h2></td>
                                 <td>
-                                {{ $mdr->grade ?? '0.00' }}
+                                <h2><span>{{ $mdr->grade ?? '0.00' }}</span></h2>
                                 </td>
-                                <td>{{ $mdr->timeliness ?? '0.00' }}</td>
-                                <td>{{ $mdr->innovation_scores ?? '0.00' }}</td>
-                                <td>{{ number_format($mdr->score,2) }}</td>
+                                <td><h2><span>{{ $mdr->timeliness ?? '0.00' }}</span></h2></td>
+                                <td><h2><span>{{ $mdr->innovation_scores ?? '0.00' }}</span></h2></td>
+                                <td><h2><span>{{ number_format($mdr->score,2) }}</span></h2> </td>
                             </tbody>
                         </table>
                     </div>
