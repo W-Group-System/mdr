@@ -51,6 +51,24 @@
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
 <script src="js/plugins/dataTables/datatables.min.js"></script>
 <script>
+
+    // Function to update the operational column in Innovation
+function updateOperationalScore() {
+    // Get the text value from the departmental goals total weighted score span
+    const totalWeightedScore = $('#sumTotalWeightedScore').text().trim();
+
+    // Set it to your innovation column/input target
+    $('#operationalTotalScore').text(totalWeightedScore);
+    $('#operationalTotalScoreInput').val(totalWeightedScore); // If it's an input field
+}
+
+// Run on document ready
+$(document).ready(function() {
+    updateOperationalScore();
+
+    // If your departmental goals score recalculates dynamically via JS events, 
+    // call updateOperationalScore() right after those calculations finish.
+});
 $(document).ready(function() {
     $('#processDevelopmentTable').DataTable({
         pageLength: 10,
