@@ -51,25 +51,31 @@
 <script src="js/plugins/chosen/chosen.jquery.js"></script>
 <script src="js/plugins/dataTables/datatables.min.js"></script>
 <script>
-
-    // Function to update the operational column in Innovation
 function updateOperationalScore() {
-    // Get the text value from the departmental goals total weighted score span
-    const totalWeightedScore = $('#sumTotalWeightedScore').text().trim();
-
-    // Set it to your innovation column/input target
-    $('#operationalTotalScore').text(totalWeightedScore);
-    $('#operationalTotalScoreInput').val(totalWeightedScore); // If it's an input field
+    const totalWeightedScore = parseFloat($('#sumTotalWeightedScore').text().trim()) || 0;
+    $('#operationalTotalScore').text(totalWeightedScore.toFixed(2));
+    
+    // Trigger total calculation whenever operational updates
+    calculateMdrTotal();
 }
 
-// Run on document ready
+function calculateMdrTotal() {
+    let operational = parseFloat($('#operationalTotalScore').text()) || 0;
+    
+    // Assuming you can give your timeliness and innovation cells or spans specific IDs or classes
+    let timeliness = parseFloat($('#timelinessScore').text()) || 0;
+    let innovation = parseFloat($('#innovationScore').text()) || 0;
+
+    let totalGrade = operational + timeliness + innovation;
+
+    // Output to Total Grade span/display
+    $('#totalGradeScore').text(totalGrade.toFixed(2));
+}
+
 $(document).ready(function() {
     updateOperationalScore();
+    calculateMdrTotal();
 
-    // If your departmental goals score recalculates dynamically via JS events, 
-    // call updateOperationalScore() right after those calculations finish.
-});
-$(document).ready(function() {
     $('#processDevelopmentTable').DataTable({
         pageLength: 10,
         ordering: false,
@@ -96,12 +102,12 @@ $(document).ready(function() {
 
     $("[name='grade[]']").keypress(function(event) {
         if (event.keyCode == 8) {
-            return
+            return;
         }
 
         if (event.keyCode < 48 || event.keyCode > 57) {
             event.preventDefault(); 
-        } 
+        }   
     });
 
     $('#submitMdrForm').on('submit', function (e) {
@@ -121,7 +127,6 @@ $(document).ready(function() {
         });
 
         if (missing) {
-            // e.preventDefault();
             swal(
                 "Incomplete KPI Data",
                 "Please ensure all KPIs have Target, Actual, Remarks, and at least one Attachment before submitting.",
@@ -136,7 +141,6 @@ $(document).ready(function() {
             title: "Are you sure you want to submit this report?",
             html: `
                 <p>By clicking <strong>Confirm</strong>, you acknowledge that you have reviewed the results. The submitted report is subject to review and final approval and may still be updated during the approval process.</p>
-
                 <p><strong>Note:</strong> If your report grade is <span style="color:red;">Failed</span>, please verify and validate the results before confirming.</p>
             `,
             icon: "warning",
@@ -150,39 +154,7 @@ $(document).ready(function() {
             }
         });
     });
-
-
-    //  $('#submitMdrForm').on('submit', function (e) {
-    //     let missing = false;
-    //     let message = '';
-
-       
-    //     let kpiInputs = $('#newKpi').find('[name^="target["], [name^="actual["], [name^="remarks["], [name^="file["]');
-
-    //     if (kpiInputs.length === 0) {
-    //         e.preventDefault();
-    //         swal("Missing KPI", "Please add at least one KPI before submitting the MDR.", "error");
-    //         return false;
-    //     }
-
-    //     $('#newKpi').find('textarea[required], input[type="file"][required]').each(function () {
-    //         if (!$(this).val() || ($(this).attr('type') === 'file' && this.files.length === 0)) {
-    //             missing = true;
-    //         }
-    //     });
-
-    //     if (missing) {
-    //         e.preventDefault();
-    //         swal("Incomplete KPI", "Please complete all required KPI fields (Target, Actual, Remarks, and Attachments).", "error");
-    //         return false;
-    //     }
-
-    //     return true;
-    // });
-
-
-})
-
+});
 </script>
 
 @endpush

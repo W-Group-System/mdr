@@ -78,12 +78,10 @@
                             <td>
                                 <h2><span>{{ $yearAndMonth ? \Carbon\Carbon::createFromFormat('Y-m', $yearAndMonth)->format('F Y') : '' }}</span></h2>
                             </td>
-                            <td ><h2><span id="operationalTotalScore">0.00</span></h2>
-                                <input type="hidden" id="operationalTotalScoreInput" name="..." readonly>
-                            </td>
-                            <td><h2><span>0.00</span></h2></td>
-                            <td ><h2><span>0.00</span></h2></td>
-                            <td><h2><span>0.00</span></h2></td>
+                            <td><h2><span id="operationalTotalScore">0.00</span></h2></td>
+                            <td><h2><span id="timelinessScore">0.00</span></h2></td>
+                            <td><h2><span id="innovationScore">0.00</span></h2></td>
+                            <td><h2><span id="totalGradeScore">0.00</span></h2></td>
                         </tr>
                     </tbody>
                 </table>

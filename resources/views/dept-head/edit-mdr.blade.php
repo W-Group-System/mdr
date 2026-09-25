@@ -313,19 +313,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td><h2><span>{{ date('F', mktime(0, 0, 0, $mdr->month,1)).' '.$mdr->year }}</span></h2></td>
                                 <td>
-                                <h2><span>{{ $mdr->grade ?? '0.00' }}</span></h2>
+                                    <h2><span>{{ date('F', mktime(0, 0, 0, $mdr->month, 1)).' '.$mdr->year }}</span></h2>
                                 </td>
-                                <td><h2><span>{{ $mdr->timeliness ?? '0.00' }}</span></h2></td>
-                                <td><h2><span>{{ $mdr->innovation_scores ?? '0.00' }}</span></h2></td>
-                                <td><h2><span>{{ number_format($mdr->score,2) }}</span></h2> </td>
+                                <td>
+                                    <h2>
+                                        <span>
+                                            @if ($mdr->grade != '0.00' && $mdr->grade !== null && $mdr->grade !== '')
+                                                {{ $mdr->grade }}
+                                            @else
+                                                <span id="fallInput">0.00</span>
+                                            @endif
+                                        </span>
+                                    </h2>
+                                </td>
+                                <td>
+                                    <h2><span id="timelinessDisplay">{{ $mdr->timeliness ?? '0.00' }}</span></h2> 
+                                </td>
+                                <td>
+                                    <h2><span id="innovationDisplay">{{ $mdr->innovation_scores ?? '0.00' }}</span></h2>
+                                </td>
+                                <td>
+                                    @php
+                                        $calculatedScore = ($mdr->score === null || $mdr->score == '0.00') 
+                                            ? (($mdr->innovation_scores ?? 0) + ($mdr->timeliness ?? 0) + ($mdr->grade ?? 0))
+                                            : $mdr->score;
+                                    @endphp
+                                    
+                                    <h2><span id="totalScoreDisplay">{{ number_format($calculatedScore, 2) }}</span></h2> 
+                                </td>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- End -->
         <!-- End -->
         
         <!-- Actions -->
@@ -508,13 +531,18 @@
 
 <script>
     $(document).ready(function() {
-        // Calculate total weight and total weighted score
+        
+        // Function to calculate sum of weights and scores
         function calculateTotals() {
             let totalWeight = 0;
             let totalWeightedScore = 0;
 
             $('input[name="weightInputs[]"]').each(function () {
                 totalWeight += parseFloat($(this).val()) || 0;
+            });
+
+            $('input[name="fallInput[]"]').each(function () {
+                totalWeightedScore += parseFloat($(this).val()) || 0;
             });
 
             $('input[name="grade[]"]').each(function () {
@@ -524,13 +552,39 @@
             $('#sumTotalWeight').text(totalWeight.toFixed(2));
             $('#sumTotalWeightedScore').text(totalWeightedScore.toFixed(2));
             $('#sumOfScoreHidden').val(totalWeightedScore.toFixed(2));
+
+            // Push total to operational display element
+            $('#fallInput').text(totalWeightedScore.toFixed(2));
+
+            calculateDynamicScore();
         }
-        // Calculate totals on page load
+
+        // Function to calculate dynamic total score using text contents instead of inputs
+        function calculateDynamicScore() {
+            let timeliness = parseFloat($('#timelinessDisplay').text()) || 0;
+            let innovation = parseFloat($('#innovationDisplay').text()) || 0;
+            let grade = parseFloat($('[name="grade[]"]').val()) || parseFloat($('#fallInput').text()) || 0;
+
+            let totalScore = innovation + timeliness + grade;
+
+            // Update display element text
+            $('#totalScoreDisplay').text(totalScore.toFixed(2));
+        }
+
+        // Trigger calculation on input changes for active grade fields
+        $(document).on('input', '[name="grade[]"], input[name="fallInput[]"]', function() {
+            calculateTotals();
+            calculateDynamicScore();
+        });
+
+        // Run calculations on initial page load
         calculateTotals();
+        calculateDynamicScore();
         
+        // Numeric validation for grade inputs
         $("[name='grade[]']").keypress(function(event) {
             if (event.keyCode == 8) {
-                return
+                return;
             }
 
             if (event.keyCode < 48 || event.keyCode > 57) {
@@ -538,7 +592,8 @@
             }   
         });
 
-        $('#processDevelopmentTable').DataTable({
+        // Initialize DataTables cleanly
+        $('#processDevelopmentTable, #innovationTable, #departmentalGoals').DataTable({
             pageLength: 10,
             ordering: false,
             responsive: true,
@@ -546,22 +601,7 @@
             buttons: [],
         });
 
-        $('#innovationTable').DataTable({
-            pageLength: 10,
-            ordering: false,
-            responsive: true,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: [],
-        });
-
-        $('#departmentalGoals').DataTable({
-            pageLength: 10,
-            ordering: false,
-            responsive: true,
-            dom: '<"html5buttons"B>lTfgitp',
-            buttons: [],
-        });
-
+        // Modal Form Validation and Submission Handler
         $(".approveBtn").on('click', function (e) {
             e.preventDefault();
             let form = $(this).closest('form');
@@ -600,9 +640,8 @@
         });
     });
 
+    // Delete file confirmation handler
     document.addEventListener('DOMContentLoaded', function() {
-       
-
         const deleteButtons = document.querySelectorAll('.deleteFileBtn');
 
         deleteButtons.forEach(btn => {
