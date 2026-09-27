@@ -123,7 +123,7 @@
                                             <br>
                                         @endforeach
                                     </td>
-                                     <td>
+                                    <td>
                                         @foreach ($dptGoals->pmoAttachments as $key=>$file)
                                             <div class="d-flex align-items-center mb-1" style="gap: 6px;">
                                                 <span>{{ $key + 1 }}.</span>
@@ -373,7 +373,7 @@
                                     </th>
                                     <th>DICR Number</th>
                                     <th>Date Approved</th>
-                                    <th>Attachments</th>
+                                    <th>Attachments 1</th>
                                 </tr>
                             </thead>
                             <tbody>
