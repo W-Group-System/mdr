@@ -12,15 +12,15 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            Project Charter :
+                            Project Ttitle :
                             <input type="text" name="project_charter" class="form-control input-sm" value="{{ $innovation->project_charter }}" required >
                         </div>
                         <div class="col-md-12">
-                            Project Benefit :
+                            Project Expectations/Benefits :
                             <textarea name="project_benefit" cols="30" rows="10" class="form-control" required>{{ $innovation->project_benefit }}</textarea>
                         </div>
                         <div class="col-md-12">
-                            Accomplishment Report :
+                            Attachment :
                             <input type="file" name="accomplishment_report[]" class="form-control" multiple >
                         </div>
                     </div>

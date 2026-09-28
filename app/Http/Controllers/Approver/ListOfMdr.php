@@ -89,6 +89,8 @@ class ListOfMdr extends Controller
         foreach($departmentalGoalsList as $key=>$dptGoals)
         {
             $dptGoals->remarks = $request->remarks[$key];
+            // Added this
+            $dptGoals->target = $request->target[$key];
             $dptGoals->grade = $request->grade[$key];
             $dptGoals->weight = $request->weight[$key];
             $dptGoals->actual = $request->actual[$key];

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit MDR Scores</h5>
+                <h5 class="modal-title">Edit MDR Rating</h5>
             </div>
             <form action="{{url('submit_scores/'.$mdrSummary->id)}}" method="post" onsubmit="show()">
                 @csrf

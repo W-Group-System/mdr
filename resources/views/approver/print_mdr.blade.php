@@ -272,15 +272,15 @@
         <table cellpadding='0' cellspacing='0' border="1" style="width: 100%;" class="mt-1">
             <tr>
                 <td style="background:rgb(170, 170, 170)">
-                    <p class="font-weight-bold m-0 p-2 text-center" style="font-size:11">Project Charter</p>
+                    <p class="font-weight-bold m-0 p-2 text-center" style="font-size:11">Project Title</p>
                     <p class="font-weight-normal text-center"><i>(activity will be considered Innovation if the two (2) criteria is met: 1. Benefits/Impact, 2. Project Completion Report)</i></p>
                 </td>
                 <td style="background:rgb(170, 170, 170)">
-                    <p class="font-weight-bold m-0 p-2 text-center" style="font-size:11">Project Benefit</p>
+                    <p class="font-weight-bold m-0 p-2 text-center" style="font-size:11">Project Expectations/Benefits</p>
                     <p class="font-weight-normal text-center"><i>(Time Savings/Reductions, Financial Impact)</i></p>
                 </td>
                 <td style="background:rgb(170, 170, 170)">
-                    <p class="font-weight-bold m-0 p-2 text-center" style="font-size: 11;">Accomplishment Report</p>
+                    <p class="font-weight-bold m-0 p-2 text-center" style="font-size: 11;">Attachment</p>
                 </td>
             </tr>
             <tr>

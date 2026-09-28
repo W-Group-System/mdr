@@ -12,7 +12,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
-                    <h5>MDR Scores</h5>
+                    <h5>MDR Rating</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="table-responsive">
@@ -20,7 +20,7 @@
                             <thead>
                                 <tr>
                                     @if(auth()->user()->role != "Department Head" && auth()->user()->role != "Administrator")
-                                    <th>Actions</th>
+                                        <th>Actions</th>
                                     @endif
                                     <th>Month</th>
                                     <th>Operational Objectives</th>
@@ -113,11 +113,11 @@
                             <tbody>
                                 @foreach ($mdrSummary->departmentalGoals as $dptGoals)
                                 <tr>
-                                    {{-- <td>
+                                    <!-- {{-- <td>
                                         <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#editKpi{{$dptGoals->id}}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </button>
-                                    </td> --}}
+                                    </td> --}} -->
                                     <td>{!! nl2br($dptGoals->departmentKpi->name) !!}
                                         <p class="m-t-md"><a href="javascript:void(0)" data-toggle="modal" data-target="#comments{{ $dptGoals->id }}"><i class="fa fa-comments"></i> {{ count($dptGoals->comments) }} Comments</a></p>
                                     </td>
@@ -169,7 +169,6 @@
                                         @endforeach
                                     </td>
                                 </tr>
-
                                     @include('comments')
                                 @endforeach
                             </tbody>
@@ -189,8 +188,8 @@
                         <table class="table table-bordered" id="innovationTable">
                             <thead>
                                 <tr>
-                                    <th>Project Charter</th>
-                                    <th>Project Benefit</th>
+                                    <th>Project Title</th>
+                                    <th>Project Expectations/Benefits</th>
                                     <th>Attachments</th>
                                 </tr>
                             </thead>

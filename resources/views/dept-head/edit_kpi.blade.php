@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" id="kpiModal">
         <div class="modal-content" >
             <div class="modal-header">
-                <h5 class="modal-title">Edit KPI</h5>
+                <!-- <h5 class="modal-title">Edit KPI</h5> -->
             </div>
             <form method="POST" action="{{url('update_kpi')}}" id="mdrFormEdit" onsubmit="show()" enctype="multipart/form-data">
                 @csrf
@@ -90,7 +90,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                    <button class="btn btn-success" type="button" onclick="saveDraft()">Save Draft</button>
+                    <!-- <button class="btn btn-success" type="button" onclick="saveDraft()">Save Draft</button> -->
                     <button class="btn btn-primary saveKpi" type="submit">Save</button>
                 </div>
             </form>
@@ -108,6 +108,7 @@ function saveDraft() {
 
     document.getElementById('mdrFormEdit').submit();
 }
+
 document.addEventListener('DOMContentLoaded', function() {
     $('#editKpi').on('shown.bs.modal', function () {
         $('#editKpiTable tbody tr').each(function () {

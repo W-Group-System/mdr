@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" id="kpiModal">
         <div class="modal-content" >
             <div class="modal-header">
-                <h5 class="modal-title">Edit KPI</h5>
+                <!-- <h5 class="modal-title">Edit KPI</h5> -->
             </div>
             <form method="POST" id="gradeForm" action="{{url('addGradeAndRemarks')}}" enctype="multipart/form-data">
                 @csrf
@@ -56,7 +56,7 @@
                                                             {{-- {!! nl2br($dptGoals->weight) !!} --}}
                                                         </td>
                                                         <td class="edit-weighted-score">
-                                                            <input type="hidden" name="grade[]" class="form-control input-sm grade" step="0.001" value="">
+                                                            <input type="text" name="grade[]" class="form-control input-sm grade" step="0.001" value="">
                                                             <span class="weighted-score-span">0</span>
                                                         </td>
                                                         {{-- <td>

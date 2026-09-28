@@ -1,3 +1,5 @@
+
+<!-- Innovation -->
 <div class="col-lg-12">
     <div class="ibox float-e-margins" style="margin-top: 10px;">
         <div class="ibox-title">
@@ -12,9 +14,10 @@
                     <thead>
                         <tr>
                             <th>Actions</th>
-                            <th>Project Charter</th>
-                            <th>Project Benefit</th>
-                            <th>Accomplishment Report</th>
+                            <th>Project Title</th>
+                            <th>Project Expectations/Benefits</th>
+                            <th>Attachment</th>
+                            <th>Grade</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,6 +41,9 @@
                                     <br>
                                 @endforeach
                             </td>
+                            <td>
+                                0.00
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -46,6 +52,45 @@
         </div>
     </div>
 </div>
+<!-- End -->
+ 
+<!-- MDR Rating -->
+<div class="col-lg-12">
+    <div class="ibox float-e-margins" style="margin-top: 10px;">
+        <div class="ibox-title">
+            <h5>MDR Rating</h5>
+        </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="innovationTable">
+                    @php $yearAndMonth = request('yearAndMonth'); @endphp
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Operational</th>
+                            <th>Timeliness</th>
+                            <th>Innovation</th>
+                            <th>Total Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h2><span>{{ $yearAndMonth ? \Carbon\Carbon::createFromFormat('Y-m', $yearAndMonth)->format('F Y') : '' }}</span></h2>
+                            </td>
+                            <td><h2><span id="operationalTotalScore">0.00</span></h2></td>
+                            <td><h2><span id="timelinessScore">0.00</span></h2></td>
+                            <td><h2><span id="innovationScore">0.00</span></h2></td>
+                            <td><h2><span id="totalGradeScore">0.00</span></h2></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End -->
+
 
 @include('dept-head.add_innovation')
 @foreach ($innovations as $innovation)

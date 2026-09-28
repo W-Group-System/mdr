@@ -32,6 +32,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class MdrController extends Controller
 {
+    // Department MDR/new-mdr page
     public function index(Request $request)
     {
         // Selected MDR month/year
@@ -105,6 +106,7 @@ class MdrController extends Controller
 
         $mdr_groups = MdrGroup::get();
 
+
         return view('dept-head.mdr', [
             'department_kpis' => $department_kpis,
             'yearAndMonth' => $yearAndMonth,
@@ -115,9 +117,13 @@ class MdrController extends Controller
             'innovations' => $innovations,
             'mdr_groups' => $mdr_groups
         ]);
+
+        // dd($mdrSummary);
     }
     
-    public function mdrView(Request $request) {
+    //Department MDR page
+    public function mdrView(Request $request) 
+    {
         // $department_approvers = DepartmentApprovers::get();
         $department_approvers = DepartmentApprovers::where('status', 'Active')
             ->where(function ($query) {
@@ -131,20 +137,23 @@ class MdrController extends Controller
         $mdr_year_exists = Mdr::where('department_id', auth()->user()->department_id)->orderBy('year', 'desc')->orderBy('month', 'desc')->first();
         $mdrs = Mdr::where('department_id', auth()->user()->department_id)->orderBy('year', 'desc')->orderBy('month', 'desc')->get();
 
-        return view('dept-head.department_mdr', array(
+            return view('dept-head.department_mdr', array(
                 'mdrs' => $mdrs,
                 'year_and_month' => $mdr_year_exists ? $mdr_year_exists->year.'-'.$mdr_year_exists->month : '',
                 'department_approvers' => $department_approvers,
                 // 'mdrApprovers' => $mdrApprovers
             )
         );
-    }
 
+        // dd($mdrs);
+    }
+    
+    //mdr/edit_mdr page
     public function edit(Request $request) {
         // dd($request->all());
         $departmentalGoals = DepartmentalGoals::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
         $innovations = Innovation::where('department_id', auth()->user()->department_id)->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
-        $mdr = Mdr::findOrFail($request->mdr_id);
+        $mdr = Mdr::with('departments','innovation','departmentalGoals')->findOrFail($request->mdr_id);
         $department_kpis = DepartmentKpi::where('department_id', auth()->user()->department_id)
         ->where('status', 'Active')->orderBy('name', 'asc')->get();
         return view('dept-head.edit-mdr',
@@ -156,6 +165,7 @@ class MdrController extends Controller
                 'mdr' => $mdr
             )
         );
+        // dd($departmentalGoals);
     }
 
     public function submitMdr(Request $request) 
