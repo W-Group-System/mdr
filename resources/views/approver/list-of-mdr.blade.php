@@ -113,11 +113,11 @@
                             <tbody>
                                 @foreach ($mdrSummary->departmentalGoals as $dptGoals)
                                 <tr>
-                                    {{-- <td>
+                                    <!-- {{-- <td>
                                         <button class="btn btn-sm btn-warning" type="button" data-toggle="modal" data-target="#editKpi{{$dptGoals->id}}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </button>
-                                    </td> --}}
+                                    </td> --}} -->
                                     <td>{!! nl2br($dptGoals->departmentKpi->name) !!}
                                         <p class="m-t-md"><a href="javascript:void(0)" data-toggle="modal" data-target="#comments{{ $dptGoals->id }}"><i class="fa fa-comments"></i> {{ count($dptGoals->comments) }} Comments</a></p>
                                     </td>
@@ -169,7 +169,6 @@
                                         @endforeach
                                     </td>
                                 </tr>
-
                                     @include('comments')
                                 @endforeach
                             </tbody>

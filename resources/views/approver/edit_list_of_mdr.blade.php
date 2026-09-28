@@ -56,7 +56,7 @@
                                                             {{-- {!! nl2br($dptGoals->weight) !!} --}}
                                                         </td>
                                                         <td class="edit-weighted-score">
-                                                            <input type="hidden" name="grade[]" class="form-control input-sm grade" step="0.001" value="">
+                                                            <input type="text" name="grade[]" class="form-control input-sm grade" step="0.001" value="">
                                                             <span class="weighted-score-span">0</span>
                                                         </td>
                                                         {{-- <td>
