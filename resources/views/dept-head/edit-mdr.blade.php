@@ -201,12 +201,12 @@
                                 @php
                                     $fullTargetDate = getAdjustedTargetDate($mdr->month, $mdr->year, $mdr->departments->target_date);
                                 @endphp
-                                @foreach ($innovations as $innovation)
+                              
                                     <td>{{ $mdr->created_at ? date('F d, Y', strtotime($mdr->created_at)) : 'N/A' }}</td>
                                     <td>{{ $fullTargetDate ? $fullTargetDate->format('F d, Y') : 'N/A' }}</td>
                                     <td>{{ $mdr->timeliness ?? '0.00'}}</td>
                                     <td>{{ $mdr->timeliness_remarks ?? 'N/A' }}</td>
-                                @endforeach
+                      
                             </tbody>
                         </table>
                     </div>
@@ -313,35 +313,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <td>
-                                    <h2><span>{{ date('F', mktime(0, 0, 0, $mdr->month, 1)).' '.$mdr->year }}</span></h2>
-                                </td>
-                                <td>
-                                    <h2>
-                                        <span>
-                                            @if ($mdr->grade != '0.00' && $mdr->grade !== null && $mdr->grade !== '')
-                                                {{ $mdr->grade }}
-                                            @else
-                                                <span id="fallInput">0.00</span>
-                                            @endif
-                                        </span>
-                                    </h2>
-                                </td>
-                                <td>
-                                    <h2><span id="timelinessDisplay">{{ $mdr->timeliness ?? '0.00' }}</span></h2> 
-                                </td>
-                                <td>
-                                    <h2><span id="innovationDisplay">{{ $mdr->innovation_scores ?? '0.00' }}</span></h2>
-                                </td>
-                                <td>
-                                    @php
-                                        $calculatedScore = ($mdr->score === null || $mdr->score == '0.00') 
-                                            ? (($mdr->innovation_scores ?? 0) + ($mdr->timeliness ?? 0) + ($mdr->grade ?? 0))
-                                            : $mdr->score;
-                                    @endphp
-                                    
-                                    <h2><span id="totalScoreDisplay">{{ number_format($calculatedScore, 2) }}</span></h2> 
-                                </td>
+                                <tr>
+                                    <td>
+                                        <h2>
+                                            <span>
+                                                {{ date('F', mktime(0, 0, 0, $mdr->month, 1)) . ' ' . $mdr->year }}
+                                            </span>
+                                        </h2>
+                                    </td>
+
+                                    {{-- OPERATIONAL --}}
+                                    <td>
+                                        <h2>
+                                            <span id="operationalDisplay">0.00</span>
+                                        </h2>
+                                    </td>
+
+                                    {{-- TIMELINESS --}}
+                                    <td>
+                                        <h2>
+                                            <span id="timelinessDisplay">
+                                                {{ number_format($mdr->timeliness ?? 0, 2) }}
+                                            </span>
+                                        </h2>
+                                    </td>
+
+                                    {{-- INNOVATION --}}
+                                    <td>
+                                        <h2>
+                                            <span id="innovationDisplay">
+                                                {{ number_format($mdr->innovation_scores ?? 0, 2) }}
+                                            </span>
+                                        </h2>
+                                    </td>
+
+                                    {{-- TOTAL --}}
+                                    <td>
+                                        <h2>
+                                            <span id="totalScoreDisplay">0.00</span>
+                                        </h2>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -531,68 +543,123 @@
 
 <script>
     $(document).ready(function() {
-        
-        // Function to calculate sum of weights and scores
+
+        //round to 2 decimal places
+        function roundToTwo(value) {
+            return Math.round((value + Number.EPSILON) * 100) / 100;
+        }
+
+        // Function to calculate sum of weights and Operational score
         function calculateTotals() {
+
             let totalWeight = 0;
-            let totalWeightedScore = 0;
+            let operationalScore = 0;
 
             $('input[name="weightInputs[]"]').each(function () {
                 totalWeight += parseFloat($(this).val()) || 0;
             });
 
+            // Fall Input is part of the Operational score
             $('input[name="fallInput[]"]').each(function () {
-                totalWeightedScore += parseFloat($(this).val()) || 0;
+                operationalScore += parseFloat($(this).val()) || 0;
             });
 
+            // Grade is also part of the Operational score
             $('input[name="grade[]"]').each(function () {
-                totalWeightedScore += parseFloat($(this).val()) || 0;
+                operationalScore += parseFloat($(this).val()) || 0;
             });
 
+            // Round the individual calculated values
+            totalWeight = roundToTwo(totalWeight);
+            operationalScore = roundToTwo(operationalScore);
+
+
+            // Display values
             $('#sumTotalWeight').text(totalWeight.toFixed(2));
-            $('#sumTotalWeightedScore').text(totalWeightedScore.toFixed(2));
-            $('#sumOfScoreHidden').val(totalWeightedScore.toFixed(2));
 
-            // Push total to operational display element
-            $('#fallInput').text(totalWeightedScore.toFixed(2));
+            $('#sumTotalWeightedScore').text(
+                operationalScore.toFixed(2)
+            );
 
-            calculateDynamicScore();
+            $('#sumOfScoreHidden').val(
+                operationalScore.toFixed(2)
+            );
+
+            // Display the calculated Operational score
+            $('#operationalDisplay').text(
+                operationalScore.toFixed(2)
+            );
+
+            // Calculate the final Total
+            calculateDynamicScore(operationalScore);
         }
 
-        // Function to calculate dynamic total score using text contents instead of inputs
-        function calculateDynamicScore() {
-            let timeliness = parseFloat($('#timelinessDisplay').text()) || 0;
-            let innovation = parseFloat($('#innovationDisplay').text()) || 0;
-            let grade = parseFloat($('[name="grade[]"]').val()) || parseFloat($('#fallInput').text()) || 0;
+        // Function to calculate final Total Score
+        // Total = Operational + Timeliness + Innovation
+        function calculateDynamicScore(operationalScore) {
 
-            let totalScore = innovation + timeliness + grade;
+            // Round Operational first
+            operationalScore = roundToTwo(operationalScore);
 
-            // Update display element text
-            $('#totalScoreDisplay').text(totalScore.toFixed(2));
+
+            let timeliness = parseFloat(
+                $('#timelinessDisplay').text()
+            ) || 0;
+
+            let innovation = parseFloat(
+                $('#innovationDisplay').text()
+            ) || 0;
+
+
+            // Round each displayed component before adding
+            timeliness = roundToTwo(timeliness);
+            innovation = roundToTwo(innovation);
+
+
+            // Total = Operational + Timeliness + Innovation
+            let totalScore =
+                operationalScore +
+                timeliness +
+                innovation;
+
+
+            // Round final result
+            totalScore = roundToTwo(totalScore);
+
+
+            $('#totalScoreDisplay').text(
+                totalScore.toFixed(2)
+            );
         }
 
-        // Trigger calculation on input changes for active grade fields
-        $(document).on('input', '[name="grade[]"], input[name="fallInput[]"]', function() {
-            calculateTotals();
-            calculateDynamicScore();
-        });
+        // Trigger calculation when Grade or Fall Input changes
+        $(document).on(
+            'input',
+            '[name="grade[]"], input[name="fallInput[]"]',
+            function() {
+
+                calculateTotals();
+
+            }
+        );
 
         // Run calculations on initial page load
         calculateTotals();
-        calculateDynamicScore();
-        
+
         // Numeric validation for grade inputs
         $("[name='grade[]']").keypress(function(event) {
+
             if (event.keyCode == 8) {
                 return;
             }
 
             if (event.keyCode < 48 || event.keyCode > 57) {
-                event.preventDefault(); 
-            }   
+                event.preventDefault();
+            }
+
         });
 
-        // Initialize DataTables cleanly
+        // Initialize DataTables
         $('#processDevelopmentTable, #innovationTable, #departmentalGoals').DataTable({
             pageLength: 10,
             ordering: false,
@@ -603,17 +670,26 @@
 
         // Modal Form Validation and Submission Handler
         $(".approveBtn").on('click', function (e) {
+
             e.preventDefault();
+
             let form = $(this).closest('form');
             let hasMissingFields = false;
 
+
             $('#editKpi').find('textarea[required], input[required]').each(function () {
+
                 if (!$(this).val().trim()) {
+
                     hasMissingFields = true;
                     $(this).addClass('is-invalid');
+
                 } else {
+
                     $(this).removeClass('is-invalid');
+
                 }
+
             });
 
             if (hasMissingFields) {
@@ -623,8 +699,10 @@
                     icon: "warning",
                     confirmButtonText: "OK"
                 });
+
                 return false;
             }
+
 
             swal({
                 title: "Are you sure?",
@@ -634,19 +712,28 @@
                 confirmButtonColor: "#1ab394",
                 confirmButtonText: "Yes, submit it!",
                 closeOnConfirm: false
+
             }, function () {
+
                 form.submit();
+
             });
+
         });
+
     });
 
     // Delete file confirmation handler
     document.addEventListener('DOMContentLoaded', function() {
+
         const deleteButtons = document.querySelectorAll('.deleteFileBtn');
 
         deleteButtons.forEach(btn => {
+
             btn.addEventListener('click', function(e) {
+
                 e.preventDefault();
+
                 const form = this.closest('form');
 
                 Swal.fire({
@@ -657,7 +744,9 @@
                     confirmButtonColor: "#d33",
                     cancelButtonColor: "#3085d6",
                     confirmButtonText: "Yes, delete it!"
+
                 }).then((result) => {
+
                     if (result.isConfirmed) {
                         form.submit();
                     }
