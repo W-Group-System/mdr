@@ -60,6 +60,8 @@ class ListOfMdr extends Controller
                 'maxTotal' => $maxTotal,
             )
         );
+
+        
     }
 
     public function addGradeAndRemarks(Request $request) 

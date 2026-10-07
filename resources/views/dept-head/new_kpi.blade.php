@@ -113,7 +113,7 @@
                                                                 class="form-control target numerical"
                                                                 cols="30"
                                                                 rows="10"
-                                                                required>{{ $department_kpi->target }}</textarea>
+                                                                >{{ $department_kpi->target }}</textarea>
                                                         </td>
 
                                                         <td>
@@ -122,7 +122,7 @@
                                                                 class="form-control actual numerical"
                                                                 cols="30"
                                                                 rows="10"
-                                                                required></textarea>
+                                                                ></textarea>
                                                         </td>
 
                                                         <td class="weight">
@@ -156,7 +156,7 @@
                                                                 class="form-control input-sm"
                                                                 cols="30"
                                                                 rows="10"
-                                                                required></textarea>
+                                                                ></textarea>
                                                         </td>
 
                                                         <td>
@@ -170,7 +170,7 @@
                                                                    name="file[{{ $key }}][]"
                                                                    class="form-control input-md"
                                                                    multiple
-                                                                   required>
+                                                                >
 
                                                         </td>
 
