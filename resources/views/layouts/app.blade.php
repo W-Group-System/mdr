@@ -169,6 +169,14 @@
                             <span class="nav-label">Department MDR</span>
                         </a>
                     </li>
+                        @if (auth()->user()->department->code == "IAD")
+                             <li class="{{ Route::currentRouteName() == "audit_view" ? 'active' : '' }}">
+                                <a href="{{ url('audit_view') }}">
+                                    <i class="fa fa-file"></i>
+                                    <span class="nav-label">Department MDR Special Access</span>
+                                </a>
+                            </li>
+                        @endif
                     @endif
                 </ul>
             </div>

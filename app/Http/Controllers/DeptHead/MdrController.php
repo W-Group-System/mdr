@@ -344,5 +344,16 @@ class MdrController extends Controller
         return back()->with('success', 'Attachment deleted successfully.');
     }
 
+    public function iaView(Request $request) 
+    {
+        $mdrs = Mdr::where('department_id', '20')->orderBy('year', 'desc')->orderBy('month', 'desc')->get();
+
+            return view('special_access.department_mdr', array(
+                'mdrs' => $mdrs,
+            )
+        );
+
+    }
+
     
 }
