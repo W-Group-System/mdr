@@ -83,6 +83,9 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::delete('/deleteDeptHeadAttachment/{id}', 'DeptHead\MdrController@deleteDeptHeadAttachment');
     Route::delete('/deletePmoAttachment/{id}', 'Approver\ListOfMdr@deletePmoAttachment');
 
+    # Internal Audit Special Access
+    Route::get('/audit_view', 'DeptHead\MdrController@iaView');
+
     # Departmental Goals
     // Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
     Route::post('/deleteKpiAttachments', 'DeptHead\DepartmentalGoalsController@deleteAttachments');
