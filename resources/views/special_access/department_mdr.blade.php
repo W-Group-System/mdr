@@ -42,7 +42,7 @@
                                                 <i class="fa fa-history"></i>
                                             </button>
 
-                                            <form action="{{ url('edit_mdr') }}" method="get" style="display: inline-block;" onsubmit="show()">
+                                            <form action="{{ url('edit_mdr_audit') }}" method="get" style="display: inline-block;" onsubmit="show()">
                                                 <input type="hidden" name="yearAndMonth" value="{{ $mdr->year.'-'.$mdr->month }}">
                                                 <input type="hidden" name="mdr_id" value="{{ $mdr->id }}">
 
