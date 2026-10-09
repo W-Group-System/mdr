@@ -355,5 +355,24 @@ class MdrController extends Controller
 
     }
 
+    public function iaViewEdit(Request $request) {
+        // dd($request->all());
+        $departmentalGoals = DepartmentalGoals::where('department_id', '20')->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $innovations = Innovation::where('department_id', '20')->where('year', date('Y', strtotime($request->yearAndMonth)))->where('month', date('m', strtotime($request->yearAndMonth)))->get();
+        $mdr = Mdr::with('departments','innovation','departmentalGoals')->findOrFail($request->mdr_id);
+        $department_kpis = DepartmentKpi::where('department_id', '20')
+        ->where('status', 'Active')->orderBy('name', 'asc')->get();
+        return view('dept-head.edit-mdr',
+            array(
+                'departmentalGoals' => $departmentalGoals,
+                'yearAndMonth' => $request->yearAndMonth,
+                'innovations' => $innovations,
+                'department_kpis' => $department_kpis,
+                'mdr' => $mdr
+            )
+        );
+        // dd($departmentalGoals);
+    }
+
     
 }

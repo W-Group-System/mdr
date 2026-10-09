@@ -85,6 +85,8 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
 
     # Internal Audit Special Access
     Route::get('/audit_view', 'DeptHead\MdrController@iaView');
+    Route::get('/edit_mdr_audit', 'DeptHead\MdrController@iaViewEdit');
+
 
     # Departmental Goals
     // Route::post('/uploadAttachments/{id}', 'DeptHead\DepartmentalGoalsController@uploadAttachments');
