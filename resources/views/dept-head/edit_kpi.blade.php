@@ -42,10 +42,10 @@
                                                             {!! nl2br($dptGoals->departmentKpi->name) !!}
                                                         </td>
                                                         <td>
-                                                            <textarea name="target[]" class="form-control numerical target" cols="30" rows="10" required>{{$dptGoals->target}}</textarea>
+                                                            <textarea name="target[]" class="form-control numerical target" cols="30" rows="10" >{{$dptGoals->target}}</textarea>
                                                         </td>
                                                         <td>
-                                                            <textarea name="actual[]" class="form-control numerical actual" cols="30" rows="10" required>{{$dptGoals->actual}}</textarea>
+                                                            <textarea name="actual[]" class="form-control numerical actual" cols="30" rows="10" >{{$dptGoals->actual}}</textarea>
                                                         </td>
                                                          <td class="weight-edit">
                                                             <input type="hidden" name="weight[]" value="{{ $dptGoals->departmentKpi->weight }}">
@@ -56,7 +56,7 @@
                                                             <span class="edit-weighted-score-span">0</span>
                                                         </td>
                                                         <td>
-                                                            <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" required>{{$dptGoals->remarks}}</textarea>
+                                                            <textarea name="remarks[]" class="form-control input-sm" cols="30" rows="10" >{{$dptGoals->remarks}}</textarea>
                                                         </td>
                                                         <td>
                                                             <small class="form-text text-muted">
