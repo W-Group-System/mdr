@@ -28,7 +28,7 @@
                 <div class="ibox-title">
                      <h5>Department Goals</h5>
                     <div class="ibox-tools">
-                        @if($mdr->status == "Returned")
+                        @if($mdr->status == "Returned" || ($mdr->status == "Reviewer Returned"))
                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editKpi"
                                 style="margin-top: 3px;">
                                 <i class="fa fa-pencil"></i>
@@ -107,7 +107,7 @@
                                             <a href="{{url($attachment->file_path)}}" target="_blank">
                                                 <i class="fa fa-file-pdf-o"></i>
                                             </a>
-                                            @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                                            @if($mdr->status == "Returned" || $mdr->status == "Draft" || ($mdr->status == "Reviewer Returned"))
                                                 <form action="{{ url('deleteDeptHeadAttachment/' . $attachment->id) }}" 
                                                     method="POST" 
                                                     class="deleteAttachmentForm m-0 p-0" 
@@ -220,7 +220,7 @@
             <div class="ibox float-e-margins" style="margin-top: 10px;">
                 <div class="ibox-title">
                     <h5>Innovation</h5>
-                    @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                    @if($mdr->status == "Returned" || $mdr->status == "Draft" || $mdr->status == "Reviewer Returned")
                     <div class="ibox-tools">
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addModal">
                             <span><i class="fa fa-plus"></i></span>&nbsp;
@@ -234,7 +234,7 @@
                         <table class="table table-bordered table-hover" id="innovationTable">
                             <thead>
                                 <tr>
-                                    @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                                    @if($mdr->status == "Returned" || $mdr->status == "Draft" || ($mdr->status == "Reviewer Returned"))
                                         <th>Actions</th>
                                     @endif
                                     <th>Project Title</th>
@@ -250,7 +250,7 @@
                                     {{ $fullTargetDate->format('F d, Y') }} -->
                                 @foreach ($innovations as $innovation)
                                 <tr>
-                                    @if($mdr->status == "Returned" || $mdr->status == "Draft")
+                                    @if($mdr->status == "Returned" || $mdr->status == "Draft" || ($mdr->status == "Reviewer Returned"))
                                         <td>
                                         
                                             <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
@@ -484,7 +484,7 @@
                                 @endforeach
                             </div>
                         </div>
-                        @if($mdr->status == "Returned")
+                        @if(($mdr->status == "Returned") || ($mdr->status == "Reviewer Returned"))
                         <div class="col-md-12">
                             <form action="{{url('submitMdr')}}" method="POST" onsubmit="show()">
                                 @csrf

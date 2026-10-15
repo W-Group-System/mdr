@@ -310,20 +310,34 @@
                                 @endif
                                 @if ($mdrSummary->timeliness_approval != "Yes")
                                     <div class="col-md-4">
+                                        @php
+                                            $isReviewer = \App\Admin\DepartmentReviewer::where('user_id', auth()->id())
+                                                ->where('status', 'Active')
+                                                ->whereRaw('FIND_IN_SET(?, department_id)', [$mdrSummary->department_id])
+                                                ->exists();
+                                        @endphp
                                         Actions :
-                                        <select name="action" class="form-control" required>
-                                            <option value="" disabled selected>Select Action</option>
-                                            @if (($mdrSummary->timeliness_approval === "Approved") || ($mdrSummary->timeliness_approval === "Disapproved"))
-                                            <option value="AcceptLateApprove">Accept</option>
-                                            <option value="Returned">Return</option>
-                                            @else    
-                                            <option value="Accepted">Accept</option>
-                                            <option value="Returned">Return</option>
-                                            @if (now() > $fullTargetDate)
-                                            <option value="Timeliness Approval">Timeliness Approval</option>
-                                            @endif
-                                            @endif
-                                        </select>
+                                        @if ($isReviewer)
+                                            <select name="action" class="form-control" required> 
+                                                <option value="" disabled selected>Select Action</option>
+                                                <option value="Reviewer">Reviewed</option>
+                                                <option value="Reviewer Returned">Return</option>
+                                            </select>
+                                        @else
+                                            <select name="action" class="form-control" required>
+                                                <option value="" disabled selected>Select Action</option>
+                                                @if (($mdrSummary->timeliness_approval === "Approved") || ($mdrSummary->timeliness_approval === "Disapproved"))
+                                                <option value="AcceptLateApprove">Accept</option>
+                                                <option value="Returned">Return</option>
+                                                @else    
+                                                <option value="Accepted">Accept</option>
+                                                <option value="Returned">Return</option>
+                                                @if (now() > $fullTargetDate)
+                                                <option value="Timeliness Approval">Timeliness Approval</option>
+                                                @endif
+                                                @endif
+                                            </select>
+                                        @endif
                                     </div>
                                     <div class="col-md-8">
                                         Remarks :

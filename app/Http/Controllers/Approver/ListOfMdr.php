@@ -508,6 +508,30 @@ class ListOfMdr extends Controller
             $history_logs->save();
 
             Alert::success('Successfully Approved')->persistent('Dismiss');
+        } elseif($request->action === "Reviewer") {
+            $mdrSummary->status = 'Pending';
+            $mdrSummary->save();
+
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = "Reviewed";
+            $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrSummary->id;
+            $history_logs->save();
+            Alert::success('Successfully Reviewed')->persistent('Dismiss');
+            return redirect('/for_review');
+        } elseif($request->action === "Reviewer Returned") {
+            $mdrSummary->status = 'Reviewer Returned';
+            $mdrSummary->save();
+
+            $history_logs = new AcceptanceHistory();
+            $history_logs->user_id = auth()->user()->id;
+            $history_logs->action = "Reviewer Returned";
+            $history_logs->remarks = $request->remarks;
+            $history_logs->mdr_id = $mdrSummary->id;
+            $history_logs->save();
+            Alert::success('Successfully Reviewed')->persistent('Dismiss');
+            return redirect('/for_review');
         }
 
         // DepartmentalGoals::where('department_id', $request->department_id)
