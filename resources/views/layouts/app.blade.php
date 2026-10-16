@@ -108,6 +108,22 @@
                     </li>
                     @endif
 
+                    @php
+
+                        $isReviewer =  \App\Admin\DepartmentReviewer::where('status', 'Active')
+                            ->where('user_id', auth()->user()->id)
+                            ->exists();
+                    @endphp
+
+                    @if($isReviewer)
+                        <li class="{{ Route::currentRouteName() == 'forReview' ? 'active' : '' }}">
+                            <a href="{{ url('for_review') }}">
+                                <i class="fa fa-eye"></i>
+                                <span class="nav-label">For Review</span>
+                            </a>
+                        </li>
+                    @endif
+
                     @if(check_access('Timeliness Approval','read'))
                     <li class="{{ Route::currentRouteName() == "timelinessApproval" ? 'active' : '' }}">
                         <a href="{{ url('timeliness_approval') }}">
@@ -135,6 +151,7 @@
                             <li class=""><a href="{{ url('user-accounts') }}">User Accounts</a></li>
                             @endif
                             @if(check_access('Department Approvers','read'))
+                            <li class=""><a href="{{ url('department-reviewers') }}">Department Reviewers</a></li>
                             <li class=""><a href="{{ url('department-approvers') }}">Department Approvers</a></li>
                             @endif
                             @if(check_access('Timeliness Setup','read'))

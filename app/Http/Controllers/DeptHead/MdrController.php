@@ -5,6 +5,7 @@ namespace App\Http\Controllers\DeptHead;
 use App\AcceptanceHistory;
 use App\Admin\DepartmentApprovers;
 use App\Admin\Department;
+use App\Admin\DepartmentReviewer;
 use App\Admin\MdrGroup;
 use App\Admin\MdrSetup;
 use App\Approver\MdrSummary;
@@ -217,8 +218,10 @@ class MdrController extends Controller
                 // // $history_logs->remarks = $request->remarks;
                 // $history_logs->mdr_id = $mdrs->id;
                 // $history_logs->save();
+            } elseif($mdrs->status === "Reviewer Returned") {
+                $mdrs->status = 'Reviewer';
             }
-            $mdrs->status = 'Pending';
+            // $mdrs->status = 'Pending';
             // $mdrs->timeliness_approval = 'Yes';
             $innovations = Innovation::where('year', date('Y', strtotime($request->year_and_month)))->where('month', date('m', strtotime($request->year_and_month)))->where('department_id', auth()->user()->department_id)->update(['mdr_id' => $mdrs->id]);
 
@@ -255,7 +258,11 @@ class MdrController extends Controller
         else
         {
             $mdrs = new Mdr;
-            $mdrs->status = 'Pending';
+            $departmentId = auth()->user()->department_id;
+            $reviewerExists = DepartmentReviewer::where('status', 'Active')
+                ->whereRaw('FIND_IN_SET(?, department_id)', [$departmentId])
+                ->exists();
+            $mdrs->status = $reviewerExists ? 'Reviewer' : 'Pending';
             $mdrs->department_id = auth()->user()->department_id;
             $mdrs->year = date('Y', strtotime($request->year_and_month));
             $mdrs->month = date('m', strtotime($request->year_and_month));

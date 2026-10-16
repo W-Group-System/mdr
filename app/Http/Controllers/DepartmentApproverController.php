@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Admin\Company;
+use App\Admin\Department;
 use App\Admin\DepartmentApprovers;
+use App\Admin\DepartmentReviewer;
+use App\DeptHead\Mdr;
 use App\DeptHead\MdrApprovers;
 use App\User;
 use Illuminate\Http\Request;
@@ -249,5 +252,85 @@ class DepartmentApproverController extends Controller
 
         Alert::success('Successfully Activated')->persistent('Dismiss');
         return back();
+    }
+
+    public function reviewers()
+    {
+        $department_reviewers = DepartmentReviewer::with('user')->get();
+        $users = User::where('status','Active')->get();
+        $departments = Department::get();
+        return view('admin.department_reviewers', 
+            array(
+                'department_reviewers' => $department_reviewers,
+                'users' => $users,
+                'departments' => $departments,
+            )
+        );
+    }
+    public function storereviewer(Request $request)
+    {
+        $request->validate([
+            'reviewer' => 'unique:department_reviewers,user_id',
+        ]);
+
+        $department_reviewers = new DepartmentReviewer;
+        $department_reviewers->user_id = $request->reviewer;
+        $department_reviewers->status = 'Active';
+        $department_reviewers->department_id = !empty($request->departments)
+                ? implode(',', $request->departments)
+                : null;
+        $department_reviewers->save();
+
+        Alert::success('Successfully Saved')->persistent('Dismiss');
+        return back();
+    }
+
+    public function updatereviewer(Request $request, $id)
+    {
+        $department_reviewer = DepartmentReviewer::findOrFail($id);
+
+        $request->validate([
+            'reviewer' => [
+                Rule::unique('department_reviewers', 'user_id')
+                    ->ignore($department_reviewer->id),
+            ],
+        ]);
+
+        
+        $department_reviewer->user_id = $request->reviewer;
+        $department_reviewer->department_id = !empty($request->departments)
+                ? implode(',', $request->departments)
+                : null;
+        $department_reviewer->save();
+
+        Alert::success('Successfully Updated')->persistent('Dismiss');
+        return back();
+    }
+
+    public function for_review() {
+
+        $reviewer = DepartmentReviewer::where('user_id', auth()->id())
+            ->where('status', 'Active')
+            ->first();
+
+        $mdrs = Mdr::whereNull('is_accepted')
+            ->where('status', ['Reviewer']);
+        
+
+        $departmentIds = $reviewer->department_id
+            ? explode(',', $reviewer->department_id)
+            : [];
+
+        $mdrs->whereHas('departments', function ($query) use ($departmentIds) {
+            $query->whereIn('department_id', $departmentIds);
+        });
+
+        $mdr = $mdrs->orderByDesc('id')->get();
+
+        return view('reviewer.for_review', 
+            array(
+                'mdrs' => $mdr,
+            )
+        );
     }
 }

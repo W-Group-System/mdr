@@ -96,7 +96,7 @@ class ForApprovalController extends Controller
             ->first();
 
         $mdrs = Mdr::whereNull('is_accepted')
-            ->whereNotIn('status', ['Returned', 'Draft']);
+            ->whereNotIn('status', ['Returned', 'Draft', 'Reviewer', 'Reviewer Returned']);
         
         if ($approver && $approver->status_level == 1) {
 

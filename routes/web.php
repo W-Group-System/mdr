@@ -176,4 +176,11 @@ Route::group(['middleware' => ['auth','deactivate']], function () {
     Route::post('update-department-approvers/{id}', 'DepartmentApproverController@update');
     Route::post('activate-department-approvers/{id}', 'DepartmentApproverController@activate');
     Route::post('deactivate-department-approvers/{id}', 'DepartmentApproverController@deactivate');
+
+    # Department Reviewers
+    Route::get('department-reviewers', 'DepartmentApproverController@reviewers');
+    Route::post('store-department-reviewers', 'DepartmentApproverController@storereviewer');
+    Route::post('update-department-reviewers/{id}', 'DepartmentApproverController@updatereviewer');
+    Route::get('/for_review', 'DepartmentApproverController@for_review')->name('forReview');
+
 });
