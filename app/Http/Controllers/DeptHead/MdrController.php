@@ -218,7 +218,7 @@ class MdrController extends Controller
                 // // $history_logs->remarks = $request->remarks;
                 // $history_logs->mdr_id = $mdrs->id;
                 // $history_logs->save();
-            } elseif($mdrs->status === "Reviewer Returned") {
+            } elseif($mdrs->status === "Reviewer Returned" || $mdrs->status === "Draft") {
                 $mdrs->status = 'Reviewer';
             }
             // $mdrs->status = 'Pending';
