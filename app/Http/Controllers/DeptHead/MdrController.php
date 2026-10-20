@@ -219,7 +219,12 @@ class MdrController extends Controller
                 // $history_logs->mdr_id = $mdrs->id;
                 // $history_logs->save();
             } elseif($mdrs->status === "Reviewer Returned" || $mdrs->status === "Draft") {
-                $mdrs->status = 'Reviewer';
+                // $mdrs->status = 'Reviewer';
+                $departmentId = auth()->user()->department_id;
+                $reviewerExists = DepartmentReviewer::where('status', 'Active')
+                    ->whereRaw('FIND_IN_SET(?, department_id)', [$departmentId])
+                    ->exists();
+                $mdrs->status = $reviewerExists ? 'Reviewer' : 'Pending';
             }
             // $mdrs->status = 'Pending';
             // $mdrs->timeliness_approval = 'Yes';
