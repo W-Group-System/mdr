@@ -124,11 +124,32 @@
                                     {{-- <td>{!! nl2br($dptGoals->departmentKpi->target) !!}</td> --}}
                                     <td>{!! nl2br($dptGoals->target) !!}</td>
                                     <td>{!! nl2br($dptGoals->actual) !!}</td>
-                                    <td>
+                                    {{-- <td>
                                         {{($dptGoals->weight)}}
                                     </td>
                                     <td>
                                         {{($dptGoals->grade)}}
+                                    </td> --}}
+                                    <td class="weightDets">
+                                        <!-- {{ $dptGoals->weight }} -->
+                                        <input type="hidden"
+                                            name="weightInputs[]"
+                                            value="{{ $dptGoals->weight }}">
+
+                                        <span class="deptWeightDets">
+                                            {!! nl2br($dptGoals->weight) !!}
+                                        </span>
+                                    </td>
+                                    <td class="weightedScoreDets">
+                                        <!-- {{$dptGoals->grade}} -->
+                                        <input type="hidden"
+                                            class="weightedScoreDetsHidden"
+                                            name="grade[]"
+                                            value="{{ $dptGoals->grade }}">
+
+                                        <span class="deptWeightedScoreDets">
+                                            {{ $dptGoals->grade }}
+                                        </span>
                                     </td>
                                     <td>
                                         {!! nl2br($dptGoals->remarks) !!}
@@ -172,6 +193,26 @@
                                     @include('comments')
                                 @endforeach
                             </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3"></td>
+                                        <td style="white-space: nowrap;"><b>Total Weight</b></td>
+                                        <td style="white-space: nowrap;"><b>Total Weighted Score</b></td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <input type="hidden" name="sumOfScore" id="sumOfScoreHidden" value="0">
+                                        </td>
+                                        <td>
+                                            <h2><span id="sumTotalWeight">0.00</span></h2>
+                                        </td>
+                                        <td>
+                                            <h2><span id="sumTotalWeightedScore">0.00</span></h2>
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
+                                </tfoot>
                         </table>
                     </div>
                 </div>
@@ -691,6 +732,108 @@
                 show()
             }
         })
+        
+        //round to 2 decimal places
+        function roundToTwo(value) {
+            return Math.round((value + Number.EPSILON) * 100) / 100;
+        }
+
+        // Function to calculate sum of weights and Operational score
+        function calculateTotals() {
+
+            let totalWeight = 0;
+            let operationalScore = 0;
+
+            $('input[name="weightInputs[]"]').each(function () {
+                totalWeight += parseFloat($(this).val()) || 0;
+            });
+
+            // Fall Input is part of the Operational score
+            $('input[name="fallInput[]"]').each(function () {
+                operationalScore += parseFloat($(this).val()) || 0;
+            });
+
+            // Grade is also part of the Operational score
+            $('input[name="grade[]"]').each(function () {
+                operationalScore += parseFloat($(this).val()) || 0;
+            });
+
+            // Round the individual calculated values
+            totalWeight = roundToTwo(totalWeight);
+            operationalScore = roundToTwo(operationalScore);
+
+
+            // Display values
+            $('#sumTotalWeight').text(totalWeight.toFixed(2));
+
+            $('#sumTotalWeightedScore').text(
+                operationalScore.toFixed(2)
+            );
+
+            $('#sumOfScoreHidden').val(
+                operationalScore.toFixed(2)
+            );
+
+            // Display the calculated Operational score
+            $('#operationalDisplay').text(
+                operationalScore.toFixed(2)
+            );
+
+            // Calculate the final Total
+            calculateDynamicScore(operationalScore);
+        }
+
+        // Function to calculate final Total Score
+        // Total = Operational + Timeliness + Innovation
+        function calculateDynamicScore(operationalScore) {
+
+            // Round Operational first
+            operationalScore = roundToTwo(operationalScore);
+
+
+            let timeliness = parseFloat(
+                $('#timelinessDisplay').text()
+            ) || 0;
+
+            let innovation = parseFloat(
+                $('#innovationDisplay').text()
+            ) || 0;
+
+
+            // Round each displayed component before adding
+            timeliness = roundToTwo(timeliness);
+            innovation = roundToTwo(innovation);
+
+
+            // Total = Operational + Timeliness + Innovation
+            let totalScore =
+                operationalScore +
+                timeliness +
+                innovation;
+
+
+            // Round final result
+            totalScore = roundToTwo(totalScore);
+
+
+            $('#totalScoreDisplay').text(
+                totalScore.toFixed(2)
+            );
+        }
+
+        // Trigger calculation when Grade or Fall Input changes
+        $(document).on(
+            'input',
+            '[name="grade[]"], input[name="fallInput[]"]',
+            function() {
+
+                calculateTotals();
+
+            }
+        );
+
+        // Run calculations on initial page load
+        calculateTotals();
     })
     document.addEventListener('DOMContentLoaded', function() {
         const deleteButtons = document.querySelectorAll('.deleteAttachmentBtn');
