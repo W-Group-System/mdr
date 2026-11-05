@@ -743,20 +743,41 @@
 
             let totalWeight = 0;
             let operationalScore = 0;
+            let table = $('#departmentalGoals').DataTable();
+            let allRows = table.rows().nodes();
 
-            $('input[name="weightInputs[]"]').each(function () {
-                totalWeight += parseFloat($(this).val()) || 0;
+            $(allRows).each(function () {
+
+                let weight = parseFloat(
+                    $(this).find('input[name="weightInputs[]"]').val()
+                ) || 0;
+
+                let grade = parseFloat(
+                    $(this).find('input[name="grade[]"]').val()
+                ) || 0;
+
+                let fallInput = parseFloat(
+                    $(this).find('input[name="fallInput[]"]').val()
+                ) || 0;
+
+                totalWeight += weight;
+                operationalScore += grade + fallInput;
+
             });
 
-            // Fall Input is part of the Operational score
-            $('input[name="fallInput[]"]').each(function () {
-                operationalScore += parseFloat($(this).val()) || 0;
-            });
+            // $('input[name="weightInputs[]"]').each(function () {
+            //     totalWeight += parseFloat($(this).val()) || 0;
+            // });
 
-            // Grade is also part of the Operational score
-            $('input[name="grade[]"]').each(function () {
-                operationalScore += parseFloat($(this).val()) || 0;
-            });
+            // // Fall Input is part of the Operational score
+            // $('input[name="fallInput[]"]').each(function () {
+            //     operationalScore += parseFloat($(this).val()) || 0;
+            // });
+
+            // // Grade is also part of the Operational score
+            // $('input[name="grade[]"]').each(function () {
+            //     operationalScore += parseFloat($(this).val()) || 0;
+            // });
 
             // Round the individual calculated values
             totalWeight = roundToTwo(totalWeight);
@@ -822,16 +843,19 @@
         }
 
         // Trigger calculation when Grade or Fall Input changes
-        $(document).on(
-            'input',
-            '[name="grade[]"], input[name="fallInput[]"]',
-            function() {
+        // $(document).on(
+        //     'input',
+        //     '[name="grade[]"], input[name="fallInput[]"]',
+        //     function() {
 
-                calculateTotals();
+        //         calculateTotals();
 
-            }
-        );
+        //     }
+        // );
 
+        $('#departmentalGoals').on('draw.dt', function () {
+            calculateTotals();
+        });
         // Run calculations on initial page load
         calculateTotals();
     })
