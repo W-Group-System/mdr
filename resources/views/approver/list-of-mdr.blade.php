@@ -944,8 +944,8 @@
             weightedScore = (actual / target) * weight;
         }
 
-        row.find('.edit-weighted-score').find('.weighted-score-span').text(weightedScore.toFixed(3));
-        row.find('input[name="grade[]"]').val(weightedScore.toFixed(3));
+        row.find('.edit-weighted-score').find('.weighted-score-span').text((Math.floor(weightedScore * 1000) / 1000).toFixed(3));
+        row.find('input[name="grade[]"]').val((Math.floor(weightedScore * 1000) / 1000).toFixed(3));
     }
     });
 
